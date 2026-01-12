@@ -1,0 +1,1344 @@
+### YamlMime:ManagedReference
+items:
+- uid: Seclai.Models.ContentDetailResponse
+  commentId: T:Seclai.Models.ContentDetailResponse
+  id: ContentDetailResponse
+  parent: Seclai.Models
+  children:
+  - Seclai.Models.ContentDetailResponse.ContentDuration
+  - Seclai.Models.ContentDetailResponse.ContentDurationDisplay
+  - Seclai.Models.ContentDetailResponse.ContentStatus
+  - Seclai.Models.ContentDetailResponse.ContentType
+  - Seclai.Models.ContentDetailResponse.ContentTypeDisplay
+  - Seclai.Models.ContentDetailResponse.ContentUrl
+  - Seclai.Models.ContentDetailResponse.ContentWordCount
+  - Seclai.Models.ContentDetailResponse.Description
+  - Seclai.Models.ContentDetailResponse.Error
+  - Seclai.Models.ContentDetailResponse.Id
+  - Seclai.Models.ContentDetailResponse.Metadata
+  - Seclai.Models.ContentDetailResponse.PublishedAt
+  - Seclai.Models.ContentDetailResponse.PulledAt
+  - Seclai.Models.ContentDetailResponse.SourceConnectionContentVersionId
+  - Seclai.Models.ContentDetailResponse.SourceConnectionId
+  - Seclai.Models.ContentDetailResponse.SourceName
+  - Seclai.Models.ContentDetailResponse.SourceType
+  - Seclai.Models.ContentDetailResponse.TextContent
+  - Seclai.Models.ContentDetailResponse.TextContentEnd
+  - Seclai.Models.ContentDetailResponse.TextContentStart
+  - Seclai.Models.ContentDetailResponse.TextContentTotalLength
+  - Seclai.Models.ContentDetailResponse.Title
+  langs:
+  - csharp
+  - vb
+  name: ContentDetailResponse
+  nameWithType: ContentDetailResponse
+  fullName: Seclai.Models.ContentDetailResponse
+  type: Class
+  assemblies:
+  - Seclai
+  namespace: Seclai.Models
+  syntax:
+    content: public sealed class ContentDetailResponse
+    content.vb: Public NotInheritable Class ContentDetailResponse
+  inheritance:
+  - System.Object
+  inheritedMembers:
+  - System.Object.Equals(System.Object)
+  - System.Object.Equals(System.Object,System.Object)
+  - System.Object.GetHashCode
+  - System.Object.GetType
+  - System.Object.ReferenceEquals(System.Object,System.Object)
+  - System.Object.ToString
+- uid: Seclai.Models.ContentDetailResponse.ContentDuration
+  commentId: P:Seclai.Models.ContentDetailResponse.ContentDuration
+  id: ContentDuration
+  parent: Seclai.Models.ContentDetailResponse
+  langs:
+  - csharp
+  - vb
+  name: ContentDuration
+  nameWithType: ContentDetailResponse.ContentDuration
+  fullName: Seclai.Models.ContentDetailResponse.ContentDuration
+  type: Property
+  assemblies:
+  - Seclai
+  namespace: Seclai.Models
+  syntax:
+    content: >-
+      [JsonPropertyName("content_duration")]
+
+      public int? ContentDuration { get; set; }
+    parameters: []
+    return:
+      type: System.Nullable{System.Int32}
+    content.vb: >-
+      <JsonPropertyName("content_duration")>
+
+      Public Property ContentDuration As Integer?
+  overload: Seclai.Models.ContentDetailResponse.ContentDuration*
+  attributes:
+  - type: System.Text.Json.Serialization.JsonPropertyNameAttribute
+    ctor: System.Text.Json.Serialization.JsonPropertyNameAttribute.#ctor(System.String)
+    arguments:
+    - type: System.String
+      value: content_duration
+- uid: Seclai.Models.ContentDetailResponse.ContentDurationDisplay
+  commentId: P:Seclai.Models.ContentDetailResponse.ContentDurationDisplay
+  id: ContentDurationDisplay
+  parent: Seclai.Models.ContentDetailResponse
+  langs:
+  - csharp
+  - vb
+  name: ContentDurationDisplay
+  nameWithType: ContentDetailResponse.ContentDurationDisplay
+  fullName: Seclai.Models.ContentDetailResponse.ContentDurationDisplay
+  type: Property
+  assemblies:
+  - Seclai
+  namespace: Seclai.Models
+  syntax:
+    content: >-
+      [JsonPropertyName("content_duration_display")]
+
+      public string? ContentDurationDisplay { get; set; }
+    parameters: []
+    return:
+      type: System.String
+    content.vb: >-
+      <JsonPropertyName("content_duration_display")>
+
+      Public Property ContentDurationDisplay As String
+  overload: Seclai.Models.ContentDetailResponse.ContentDurationDisplay*
+  attributes:
+  - type: System.Text.Json.Serialization.JsonPropertyNameAttribute
+    ctor: System.Text.Json.Serialization.JsonPropertyNameAttribute.#ctor(System.String)
+    arguments:
+    - type: System.String
+      value: content_duration_display
+- uid: Seclai.Models.ContentDetailResponse.ContentStatus
+  commentId: P:Seclai.Models.ContentDetailResponse.ContentStatus
+  id: ContentStatus
+  parent: Seclai.Models.ContentDetailResponse
+  langs:
+  - csharp
+  - vb
+  name: ContentStatus
+  nameWithType: ContentDetailResponse.ContentStatus
+  fullName: Seclai.Models.ContentDetailResponse.ContentStatus
+  type: Property
+  assemblies:
+  - Seclai
+  namespace: Seclai.Models
+  syntax:
+    content: >-
+      [JsonPropertyName("content_status")]
+
+      public string? ContentStatus { get; set; }
+    parameters: []
+    return:
+      type: System.String
+    content.vb: >-
+      <JsonPropertyName("content_status")>
+
+      Public Property ContentStatus As String
+  overload: Seclai.Models.ContentDetailResponse.ContentStatus*
+  attributes:
+  - type: System.Text.Json.Serialization.JsonPropertyNameAttribute
+    ctor: System.Text.Json.Serialization.JsonPropertyNameAttribute.#ctor(System.String)
+    arguments:
+    - type: System.String
+      value: content_status
+- uid: Seclai.Models.ContentDetailResponse.ContentType
+  commentId: P:Seclai.Models.ContentDetailResponse.ContentType
+  id: ContentType
+  parent: Seclai.Models.ContentDetailResponse
+  langs:
+  - csharp
+  - vb
+  name: ContentType
+  nameWithType: ContentDetailResponse.ContentType
+  fullName: Seclai.Models.ContentDetailResponse.ContentType
+  type: Property
+  assemblies:
+  - Seclai
+  namespace: Seclai.Models
+  syntax:
+    content: >-
+      [JsonPropertyName("content_type")]
+
+      public string? ContentType { get; set; }
+    parameters: []
+    return:
+      type: System.String
+    content.vb: >-
+      <JsonPropertyName("content_type")>
+
+      Public Property ContentType As String
+  overload: Seclai.Models.ContentDetailResponse.ContentType*
+  attributes:
+  - type: System.Text.Json.Serialization.JsonPropertyNameAttribute
+    ctor: System.Text.Json.Serialization.JsonPropertyNameAttribute.#ctor(System.String)
+    arguments:
+    - type: System.String
+      value: content_type
+- uid: Seclai.Models.ContentDetailResponse.ContentTypeDisplay
+  commentId: P:Seclai.Models.ContentDetailResponse.ContentTypeDisplay
+  id: ContentTypeDisplay
+  parent: Seclai.Models.ContentDetailResponse
+  langs:
+  - csharp
+  - vb
+  name: ContentTypeDisplay
+  nameWithType: ContentDetailResponse.ContentTypeDisplay
+  fullName: Seclai.Models.ContentDetailResponse.ContentTypeDisplay
+  type: Property
+  assemblies:
+  - Seclai
+  namespace: Seclai.Models
+  syntax:
+    content: >-
+      [JsonPropertyName("content_type_display")]
+
+      public string? ContentTypeDisplay { get; set; }
+    parameters: []
+    return:
+      type: System.String
+    content.vb: >-
+      <JsonPropertyName("content_type_display")>
+
+      Public Property ContentTypeDisplay As String
+  overload: Seclai.Models.ContentDetailResponse.ContentTypeDisplay*
+  attributes:
+  - type: System.Text.Json.Serialization.JsonPropertyNameAttribute
+    ctor: System.Text.Json.Serialization.JsonPropertyNameAttribute.#ctor(System.String)
+    arguments:
+    - type: System.String
+      value: content_type_display
+- uid: Seclai.Models.ContentDetailResponse.ContentUrl
+  commentId: P:Seclai.Models.ContentDetailResponse.ContentUrl
+  id: ContentUrl
+  parent: Seclai.Models.ContentDetailResponse
+  langs:
+  - csharp
+  - vb
+  name: ContentUrl
+  nameWithType: ContentDetailResponse.ContentUrl
+  fullName: Seclai.Models.ContentDetailResponse.ContentUrl
+  type: Property
+  assemblies:
+  - Seclai
+  namespace: Seclai.Models
+  syntax:
+    content: >-
+      [JsonPropertyName("content_url")]
+
+      public string? ContentUrl { get; set; }
+    parameters: []
+    return:
+      type: System.String
+    content.vb: >-
+      <JsonPropertyName("content_url")>
+
+      Public Property ContentUrl As String
+  overload: Seclai.Models.ContentDetailResponse.ContentUrl*
+  attributes:
+  - type: System.Text.Json.Serialization.JsonPropertyNameAttribute
+    ctor: System.Text.Json.Serialization.JsonPropertyNameAttribute.#ctor(System.String)
+    arguments:
+    - type: System.String
+      value: content_url
+- uid: Seclai.Models.ContentDetailResponse.ContentWordCount
+  commentId: P:Seclai.Models.ContentDetailResponse.ContentWordCount
+  id: ContentWordCount
+  parent: Seclai.Models.ContentDetailResponse
+  langs:
+  - csharp
+  - vb
+  name: ContentWordCount
+  nameWithType: ContentDetailResponse.ContentWordCount
+  fullName: Seclai.Models.ContentDetailResponse.ContentWordCount
+  type: Property
+  assemblies:
+  - Seclai
+  namespace: Seclai.Models
+  syntax:
+    content: >-
+      [JsonPropertyName("content_word_count")]
+
+      public int? ContentWordCount { get; set; }
+    parameters: []
+    return:
+      type: System.Nullable{System.Int32}
+    content.vb: >-
+      <JsonPropertyName("content_word_count")>
+
+      Public Property ContentWordCount As Integer?
+  overload: Seclai.Models.ContentDetailResponse.ContentWordCount*
+  attributes:
+  - type: System.Text.Json.Serialization.JsonPropertyNameAttribute
+    ctor: System.Text.Json.Serialization.JsonPropertyNameAttribute.#ctor(System.String)
+    arguments:
+    - type: System.String
+      value: content_word_count
+- uid: Seclai.Models.ContentDetailResponse.Description
+  commentId: P:Seclai.Models.ContentDetailResponse.Description
+  id: Description
+  parent: Seclai.Models.ContentDetailResponse
+  langs:
+  - csharp
+  - vb
+  name: Description
+  nameWithType: ContentDetailResponse.Description
+  fullName: Seclai.Models.ContentDetailResponse.Description
+  type: Property
+  assemblies:
+  - Seclai
+  namespace: Seclai.Models
+  syntax:
+    content: >-
+      [JsonPropertyName("description")]
+
+      public string? Description { get; set; }
+    parameters: []
+    return:
+      type: System.String
+    content.vb: >-
+      <JsonPropertyName("description")>
+
+      Public Property Description As String
+  overload: Seclai.Models.ContentDetailResponse.Description*
+  attributes:
+  - type: System.Text.Json.Serialization.JsonPropertyNameAttribute
+    ctor: System.Text.Json.Serialization.JsonPropertyNameAttribute.#ctor(System.String)
+    arguments:
+    - type: System.String
+      value: description
+- uid: Seclai.Models.ContentDetailResponse.Error
+  commentId: P:Seclai.Models.ContentDetailResponse.Error
+  id: Error
+  parent: Seclai.Models.ContentDetailResponse
+  langs:
+  - csharp
+  - vb
+  name: Error
+  nameWithType: ContentDetailResponse.Error
+  fullName: Seclai.Models.ContentDetailResponse.Error
+  type: Property
+  assemblies:
+  - Seclai
+  namespace: Seclai.Models
+  syntax:
+    content: >-
+      [JsonPropertyName("error")]
+
+      public string? Error { get; set; }
+    parameters: []
+    return:
+      type: System.String
+    content.vb: >-
+      <JsonPropertyName("error")>
+
+      Public Property [Error] As String
+  overload: Seclai.Models.ContentDetailResponse.Error*
+  attributes:
+  - type: System.Text.Json.Serialization.JsonPropertyNameAttribute
+    ctor: System.Text.Json.Serialization.JsonPropertyNameAttribute.#ctor(System.String)
+    arguments:
+    - type: System.String
+      value: error
+- uid: Seclai.Models.ContentDetailResponse.Id
+  commentId: P:Seclai.Models.ContentDetailResponse.Id
+  id: Id
+  parent: Seclai.Models.ContentDetailResponse
+  langs:
+  - csharp
+  - vb
+  name: Id
+  nameWithType: ContentDetailResponse.Id
+  fullName: Seclai.Models.ContentDetailResponse.Id
+  type: Property
+  assemblies:
+  - Seclai
+  namespace: Seclai.Models
+  syntax:
+    content: >-
+      [JsonPropertyName("id")]
+
+      public string? Id { get; set; }
+    parameters: []
+    return:
+      type: System.String
+    content.vb: >-
+      <JsonPropertyName("id")>
+
+      Public Property Id As String
+  overload: Seclai.Models.ContentDetailResponse.Id*
+  attributes:
+  - type: System.Text.Json.Serialization.JsonPropertyNameAttribute
+    ctor: System.Text.Json.Serialization.JsonPropertyNameAttribute.#ctor(System.String)
+    arguments:
+    - type: System.String
+      value: id
+- uid: Seclai.Models.ContentDetailResponse.Metadata
+  commentId: P:Seclai.Models.ContentDetailResponse.Metadata
+  id: Metadata
+  parent: Seclai.Models.ContentDetailResponse
+  langs:
+  - csharp
+  - vb
+  name: Metadata
+  nameWithType: ContentDetailResponse.Metadata
+  fullName: Seclai.Models.ContentDetailResponse.Metadata
+  type: Property
+  assemblies:
+  - Seclai
+  namespace: Seclai.Models
+  syntax:
+    content: >-
+      [JsonPropertyName("metadata")]
+
+      public List<Dictionary<string, string>>? Metadata { get; set; }
+    parameters: []
+    return:
+      type: System.Collections.Generic.List{System.Collections.Generic.Dictionary{System.String,System.String}}
+    content.vb: >-
+      <JsonPropertyName("metadata")>
+
+      Public Property Metadata As List(Of Dictionary(Of String, String))
+  overload: Seclai.Models.ContentDetailResponse.Metadata*
+  attributes:
+  - type: System.Text.Json.Serialization.JsonPropertyNameAttribute
+    ctor: System.Text.Json.Serialization.JsonPropertyNameAttribute.#ctor(System.String)
+    arguments:
+    - type: System.String
+      value: metadata
+- uid: Seclai.Models.ContentDetailResponse.PublishedAt
+  commentId: P:Seclai.Models.ContentDetailResponse.PublishedAt
+  id: PublishedAt
+  parent: Seclai.Models.ContentDetailResponse
+  langs:
+  - csharp
+  - vb
+  name: PublishedAt
+  nameWithType: ContentDetailResponse.PublishedAt
+  fullName: Seclai.Models.ContentDetailResponse.PublishedAt
+  type: Property
+  assemblies:
+  - Seclai
+  namespace: Seclai.Models
+  syntax:
+    content: >-
+      [JsonPropertyName("published_at")]
+
+      public string? PublishedAt { get; set; }
+    parameters: []
+    return:
+      type: System.String
+    content.vb: >-
+      <JsonPropertyName("published_at")>
+
+      Public Property PublishedAt As String
+  overload: Seclai.Models.ContentDetailResponse.PublishedAt*
+  attributes:
+  - type: System.Text.Json.Serialization.JsonPropertyNameAttribute
+    ctor: System.Text.Json.Serialization.JsonPropertyNameAttribute.#ctor(System.String)
+    arguments:
+    - type: System.String
+      value: published_at
+- uid: Seclai.Models.ContentDetailResponse.PulledAt
+  commentId: P:Seclai.Models.ContentDetailResponse.PulledAt
+  id: PulledAt
+  parent: Seclai.Models.ContentDetailResponse
+  langs:
+  - csharp
+  - vb
+  name: PulledAt
+  nameWithType: ContentDetailResponse.PulledAt
+  fullName: Seclai.Models.ContentDetailResponse.PulledAt
+  type: Property
+  assemblies:
+  - Seclai
+  namespace: Seclai.Models
+  syntax:
+    content: >-
+      [JsonPropertyName("pulled_at")]
+
+      public string? PulledAt { get; set; }
+    parameters: []
+    return:
+      type: System.String
+    content.vb: >-
+      <JsonPropertyName("pulled_at")>
+
+      Public Property PulledAt As String
+  overload: Seclai.Models.ContentDetailResponse.PulledAt*
+  attributes:
+  - type: System.Text.Json.Serialization.JsonPropertyNameAttribute
+    ctor: System.Text.Json.Serialization.JsonPropertyNameAttribute.#ctor(System.String)
+    arguments:
+    - type: System.String
+      value: pulled_at
+- uid: Seclai.Models.ContentDetailResponse.SourceConnectionContentVersionId
+  commentId: P:Seclai.Models.ContentDetailResponse.SourceConnectionContentVersionId
+  id: SourceConnectionContentVersionId
+  parent: Seclai.Models.ContentDetailResponse
+  langs:
+  - csharp
+  - vb
+  name: SourceConnectionContentVersionId
+  nameWithType: ContentDetailResponse.SourceConnectionContentVersionId
+  fullName: Seclai.Models.ContentDetailResponse.SourceConnectionContentVersionId
+  type: Property
+  assemblies:
+  - Seclai
+  namespace: Seclai.Models
+  syntax:
+    content: >-
+      [JsonPropertyName("source_connection_content_version_id")]
+
+      public string? SourceConnectionContentVersionId { get; set; }
+    parameters: []
+    return:
+      type: System.String
+    content.vb: >-
+      <JsonPropertyName("source_connection_content_version_id")>
+
+      Public Property SourceConnectionContentVersionId As String
+  overload: Seclai.Models.ContentDetailResponse.SourceConnectionContentVersionId*
+  attributes:
+  - type: System.Text.Json.Serialization.JsonPropertyNameAttribute
+    ctor: System.Text.Json.Serialization.JsonPropertyNameAttribute.#ctor(System.String)
+    arguments:
+    - type: System.String
+      value: source_connection_content_version_id
+- uid: Seclai.Models.ContentDetailResponse.SourceConnectionId
+  commentId: P:Seclai.Models.ContentDetailResponse.SourceConnectionId
+  id: SourceConnectionId
+  parent: Seclai.Models.ContentDetailResponse
+  langs:
+  - csharp
+  - vb
+  name: SourceConnectionId
+  nameWithType: ContentDetailResponse.SourceConnectionId
+  fullName: Seclai.Models.ContentDetailResponse.SourceConnectionId
+  type: Property
+  assemblies:
+  - Seclai
+  namespace: Seclai.Models
+  syntax:
+    content: >-
+      [JsonPropertyName("source_connection_id")]
+
+      public string? SourceConnectionId { get; set; }
+    parameters: []
+    return:
+      type: System.String
+    content.vb: >-
+      <JsonPropertyName("source_connection_id")>
+
+      Public Property SourceConnectionId As String
+  overload: Seclai.Models.ContentDetailResponse.SourceConnectionId*
+  attributes:
+  - type: System.Text.Json.Serialization.JsonPropertyNameAttribute
+    ctor: System.Text.Json.Serialization.JsonPropertyNameAttribute.#ctor(System.String)
+    arguments:
+    - type: System.String
+      value: source_connection_id
+- uid: Seclai.Models.ContentDetailResponse.SourceName
+  commentId: P:Seclai.Models.ContentDetailResponse.SourceName
+  id: SourceName
+  parent: Seclai.Models.ContentDetailResponse
+  langs:
+  - csharp
+  - vb
+  name: SourceName
+  nameWithType: ContentDetailResponse.SourceName
+  fullName: Seclai.Models.ContentDetailResponse.SourceName
+  type: Property
+  assemblies:
+  - Seclai
+  namespace: Seclai.Models
+  syntax:
+    content: >-
+      [JsonPropertyName("source_name")]
+
+      public string? SourceName { get; set; }
+    parameters: []
+    return:
+      type: System.String
+    content.vb: >-
+      <JsonPropertyName("source_name")>
+
+      Public Property SourceName As String
+  overload: Seclai.Models.ContentDetailResponse.SourceName*
+  attributes:
+  - type: System.Text.Json.Serialization.JsonPropertyNameAttribute
+    ctor: System.Text.Json.Serialization.JsonPropertyNameAttribute.#ctor(System.String)
+    arguments:
+    - type: System.String
+      value: source_name
+- uid: Seclai.Models.ContentDetailResponse.SourceType
+  commentId: P:Seclai.Models.ContentDetailResponse.SourceType
+  id: SourceType
+  parent: Seclai.Models.ContentDetailResponse
+  langs:
+  - csharp
+  - vb
+  name: SourceType
+  nameWithType: ContentDetailResponse.SourceType
+  fullName: Seclai.Models.ContentDetailResponse.SourceType
+  type: Property
+  assemblies:
+  - Seclai
+  namespace: Seclai.Models
+  syntax:
+    content: >-
+      [JsonPropertyName("source_type")]
+
+      public string? SourceType { get; set; }
+    parameters: []
+    return:
+      type: System.String
+    content.vb: >-
+      <JsonPropertyName("source_type")>
+
+      Public Property SourceType As String
+  overload: Seclai.Models.ContentDetailResponse.SourceType*
+  attributes:
+  - type: System.Text.Json.Serialization.JsonPropertyNameAttribute
+    ctor: System.Text.Json.Serialization.JsonPropertyNameAttribute.#ctor(System.String)
+    arguments:
+    - type: System.String
+      value: source_type
+- uid: Seclai.Models.ContentDetailResponse.TextContent
+  commentId: P:Seclai.Models.ContentDetailResponse.TextContent
+  id: TextContent
+  parent: Seclai.Models.ContentDetailResponse
+  langs:
+  - csharp
+  - vb
+  name: TextContent
+  nameWithType: ContentDetailResponse.TextContent
+  fullName: Seclai.Models.ContentDetailResponse.TextContent
+  type: Property
+  assemblies:
+  - Seclai
+  namespace: Seclai.Models
+  syntax:
+    content: >-
+      [JsonPropertyName("text_content")]
+
+      public string? TextContent { get; set; }
+    parameters: []
+    return:
+      type: System.String
+    content.vb: >-
+      <JsonPropertyName("text_content")>
+
+      Public Property TextContent As String
+  overload: Seclai.Models.ContentDetailResponse.TextContent*
+  attributes:
+  - type: System.Text.Json.Serialization.JsonPropertyNameAttribute
+    ctor: System.Text.Json.Serialization.JsonPropertyNameAttribute.#ctor(System.String)
+    arguments:
+    - type: System.String
+      value: text_content
+- uid: Seclai.Models.ContentDetailResponse.TextContentEnd
+  commentId: P:Seclai.Models.ContentDetailResponse.TextContentEnd
+  id: TextContentEnd
+  parent: Seclai.Models.ContentDetailResponse
+  langs:
+  - csharp
+  - vb
+  name: TextContentEnd
+  nameWithType: ContentDetailResponse.TextContentEnd
+  fullName: Seclai.Models.ContentDetailResponse.TextContentEnd
+  type: Property
+  assemblies:
+  - Seclai
+  namespace: Seclai.Models
+  syntax:
+    content: >-
+      [JsonPropertyName("text_content_end")]
+
+      public int TextContentEnd { get; set; }
+    parameters: []
+    return:
+      type: System.Int32
+    content.vb: >-
+      <JsonPropertyName("text_content_end")>
+
+      Public Property TextContentEnd As Integer
+  overload: Seclai.Models.ContentDetailResponse.TextContentEnd*
+  attributes:
+  - type: System.Text.Json.Serialization.JsonPropertyNameAttribute
+    ctor: System.Text.Json.Serialization.JsonPropertyNameAttribute.#ctor(System.String)
+    arguments:
+    - type: System.String
+      value: text_content_end
+- uid: Seclai.Models.ContentDetailResponse.TextContentStart
+  commentId: P:Seclai.Models.ContentDetailResponse.TextContentStart
+  id: TextContentStart
+  parent: Seclai.Models.ContentDetailResponse
+  langs:
+  - csharp
+  - vb
+  name: TextContentStart
+  nameWithType: ContentDetailResponse.TextContentStart
+  fullName: Seclai.Models.ContentDetailResponse.TextContentStart
+  type: Property
+  assemblies:
+  - Seclai
+  namespace: Seclai.Models
+  syntax:
+    content: >-
+      [JsonPropertyName("text_content_start")]
+
+      public int TextContentStart { get; set; }
+    parameters: []
+    return:
+      type: System.Int32
+    content.vb: >-
+      <JsonPropertyName("text_content_start")>
+
+      Public Property TextContentStart As Integer
+  overload: Seclai.Models.ContentDetailResponse.TextContentStart*
+  attributes:
+  - type: System.Text.Json.Serialization.JsonPropertyNameAttribute
+    ctor: System.Text.Json.Serialization.JsonPropertyNameAttribute.#ctor(System.String)
+    arguments:
+    - type: System.String
+      value: text_content_start
+- uid: Seclai.Models.ContentDetailResponse.TextContentTotalLength
+  commentId: P:Seclai.Models.ContentDetailResponse.TextContentTotalLength
+  id: TextContentTotalLength
+  parent: Seclai.Models.ContentDetailResponse
+  langs:
+  - csharp
+  - vb
+  name: TextContentTotalLength
+  nameWithType: ContentDetailResponse.TextContentTotalLength
+  fullName: Seclai.Models.ContentDetailResponse.TextContentTotalLength
+  type: Property
+  assemblies:
+  - Seclai
+  namespace: Seclai.Models
+  syntax:
+    content: >-
+      [JsonPropertyName("text_content_total_length")]
+
+      public int TextContentTotalLength { get; set; }
+    parameters: []
+    return:
+      type: System.Int32
+    content.vb: >-
+      <JsonPropertyName("text_content_total_length")>
+
+      Public Property TextContentTotalLength As Integer
+  overload: Seclai.Models.ContentDetailResponse.TextContentTotalLength*
+  attributes:
+  - type: System.Text.Json.Serialization.JsonPropertyNameAttribute
+    ctor: System.Text.Json.Serialization.JsonPropertyNameAttribute.#ctor(System.String)
+    arguments:
+    - type: System.String
+      value: text_content_total_length
+- uid: Seclai.Models.ContentDetailResponse.Title
+  commentId: P:Seclai.Models.ContentDetailResponse.Title
+  id: Title
+  parent: Seclai.Models.ContentDetailResponse
+  langs:
+  - csharp
+  - vb
+  name: Title
+  nameWithType: ContentDetailResponse.Title
+  fullName: Seclai.Models.ContentDetailResponse.Title
+  type: Property
+  assemblies:
+  - Seclai
+  namespace: Seclai.Models
+  syntax:
+    content: >-
+      [JsonPropertyName("title")]
+
+      public string? Title { get; set; }
+    parameters: []
+    return:
+      type: System.String
+    content.vb: >-
+      <JsonPropertyName("title")>
+
+      Public Property Title As String
+  overload: Seclai.Models.ContentDetailResponse.Title*
+  attributes:
+  - type: System.Text.Json.Serialization.JsonPropertyNameAttribute
+    ctor: System.Text.Json.Serialization.JsonPropertyNameAttribute.#ctor(System.String)
+    arguments:
+    - type: System.String
+      value: title
+references:
+- uid: Seclai.Models
+  commentId: N:Seclai.Models
+  href: Seclai.html
+  name: Seclai.Models
+  nameWithType: Seclai.Models
+  fullName: Seclai.Models
+  spec.csharp:
+  - uid: Seclai
+    name: Seclai
+    href: Seclai.html
+  - name: .
+  - uid: Seclai.Models
+    name: Models
+    href: Seclai.Models.html
+  spec.vb:
+  - uid: Seclai
+    name: Seclai
+    href: Seclai.html
+  - name: .
+  - uid: Seclai.Models
+    name: Models
+    href: Seclai.Models.html
+- uid: System.Object
+  commentId: T:System.Object
+  parent: System
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object
+  name: object
+  nameWithType: object
+  fullName: object
+  nameWithType.vb: Object
+  fullName.vb: Object
+  name.vb: Object
+- uid: System.Object.Equals(System.Object)
+  commentId: M:System.Object.Equals(System.Object)
+  parent: System.Object
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)
+  name: Equals(object)
+  nameWithType: object.Equals(object)
+  fullName: object.Equals(object)
+  nameWithType.vb: Object.Equals(Object)
+  fullName.vb: Object.Equals(Object)
+  name.vb: Equals(Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)
+  - name: (
+  - uid: System.Object
+    name: object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)
+  - name: (
+  - uid: System.Object
+    name: Object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+- uid: System.Object.Equals(System.Object,System.Object)
+  commentId: M:System.Object.Equals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)
+  name: Equals(object, object)
+  nameWithType: object.Equals(object, object)
+  fullName: object.Equals(object, object)
+  nameWithType.vb: Object.Equals(Object, Object)
+  fullName.vb: Object.Equals(Object, Object)
+  name.vb: Equals(Object, Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)
+  - name: (
+  - uid: System.Object
+    name: object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: ','
+  - name: " "
+  - uid: System.Object
+    name: object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)
+  - name: (
+  - uid: System.Object
+    name: Object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: ','
+  - name: " "
+  - uid: System.Object
+    name: Object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+- uid: System.Object.GetHashCode
+  commentId: M:System.Object.GetHashCode
+  parent: System.Object
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object.gethashcode
+  name: GetHashCode()
+  nameWithType: object.GetHashCode()
+  fullName: object.GetHashCode()
+  nameWithType.vb: Object.GetHashCode()
+  fullName.vb: Object.GetHashCode()
+  spec.csharp:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.gethashcode
+  - name: (
+  - name: )
+  spec.vb:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.gethashcode
+  - name: (
+  - name: )
+- uid: System.Object.GetType
+  commentId: M:System.Object.GetType
+  parent: System.Object
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object.gettype
+  name: GetType()
+  nameWithType: object.GetType()
+  fullName: object.GetType()
+  nameWithType.vb: Object.GetType()
+  fullName.vb: Object.GetType()
+  spec.csharp:
+  - uid: System.Object.GetType
+    name: GetType
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.gettype
+  - name: (
+  - name: )
+  spec.vb:
+  - uid: System.Object.GetType
+    name: GetType
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.gettype
+  - name: (
+  - name: )
+- uid: System.Object.ReferenceEquals(System.Object,System.Object)
+  commentId: M:System.Object.ReferenceEquals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object.referenceequals
+  name: ReferenceEquals(object, object)
+  nameWithType: object.ReferenceEquals(object, object)
+  fullName: object.ReferenceEquals(object, object)
+  nameWithType.vb: Object.ReferenceEquals(Object, Object)
+  fullName.vb: Object.ReferenceEquals(Object, Object)
+  name.vb: ReferenceEquals(Object, Object)
+  spec.csharp:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.referenceequals
+  - name: (
+  - uid: System.Object
+    name: object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: ','
+  - name: " "
+  - uid: System.Object
+    name: object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+  spec.vb:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.referenceequals
+  - name: (
+  - uid: System.Object
+    name: Object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: ','
+  - name: " "
+  - uid: System.Object
+    name: Object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+- uid: System.Object.ToString
+  commentId: M:System.Object.ToString
+  parent: System.Object
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object.tostring
+  name: ToString()
+  nameWithType: object.ToString()
+  fullName: object.ToString()
+  nameWithType.vb: Object.ToString()
+  fullName.vb: Object.ToString()
+  spec.csharp:
+  - uid: System.Object.ToString
+    name: ToString
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.tostring
+  - name: (
+  - name: )
+  spec.vb:
+  - uid: System.Object.ToString
+    name: ToString
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.tostring
+  - name: (
+  - name: )
+- uid: System
+  commentId: N:System
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system
+  name: System
+  nameWithType: System
+  fullName: System
+- uid: Seclai.Models.ContentDetailResponse.ContentDuration*
+  commentId: Overload:Seclai.Models.ContentDetailResponse.ContentDuration
+  href: Seclai.Models.ContentDetailResponse.html#Seclai_Models_ContentDetailResponse_ContentDuration
+  name: ContentDuration
+  nameWithType: ContentDetailResponse.ContentDuration
+  fullName: Seclai.Models.ContentDetailResponse.ContentDuration
+- uid: System.Nullable{System.Int32}
+  commentId: T:System.Nullable{System.Int32}
+  parent: System
+  definition: System.Nullable`1
+  href: https://learn.microsoft.com/dotnet/api/system.int32
+  name: int?
+  nameWithType: int?
+  fullName: int?
+  nameWithType.vb: Integer?
+  fullName.vb: Integer?
+  name.vb: Integer?
+  spec.csharp:
+  - uid: System.Int32
+    name: int
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.int32
+  - name: '?'
+  spec.vb:
+  - uid: System.Int32
+    name: Integer
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.int32
+  - name: '?'
+- uid: System.Nullable`1
+  commentId: T:System.Nullable`1
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.nullable-1
+  name: Nullable<T>
+  nameWithType: Nullable<T>
+  fullName: System.Nullable<T>
+  nameWithType.vb: Nullable(Of T)
+  fullName.vb: System.Nullable(Of T)
+  name.vb: Nullable(Of T)
+  spec.csharp:
+  - uid: System.Nullable`1
+    name: Nullable
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.nullable-1
+  - name: <
+  - name: T
+  - name: '>'
+  spec.vb:
+  - uid: System.Nullable`1
+    name: Nullable
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.nullable-1
+  - name: (
+  - name: Of
+  - name: " "
+  - name: T
+  - name: )
+- uid: Seclai.Models.ContentDetailResponse.ContentDurationDisplay*
+  commentId: Overload:Seclai.Models.ContentDetailResponse.ContentDurationDisplay
+  href: Seclai.Models.ContentDetailResponse.html#Seclai_Models_ContentDetailResponse_ContentDurationDisplay
+  name: ContentDurationDisplay
+  nameWithType: ContentDetailResponse.ContentDurationDisplay
+  fullName: Seclai.Models.ContentDetailResponse.ContentDurationDisplay
+- uid: System.String
+  commentId: T:System.String
+  parent: System
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.string
+  name: string
+  nameWithType: string
+  fullName: string
+  nameWithType.vb: String
+  fullName.vb: String
+  name.vb: String
+- uid: Seclai.Models.ContentDetailResponse.ContentStatus*
+  commentId: Overload:Seclai.Models.ContentDetailResponse.ContentStatus
+  href: Seclai.Models.ContentDetailResponse.html#Seclai_Models_ContentDetailResponse_ContentStatus
+  name: ContentStatus
+  nameWithType: ContentDetailResponse.ContentStatus
+  fullName: Seclai.Models.ContentDetailResponse.ContentStatus
+- uid: Seclai.Models.ContentDetailResponse.ContentType*
+  commentId: Overload:Seclai.Models.ContentDetailResponse.ContentType
+  href: Seclai.Models.ContentDetailResponse.html#Seclai_Models_ContentDetailResponse_ContentType
+  name: ContentType
+  nameWithType: ContentDetailResponse.ContentType
+  fullName: Seclai.Models.ContentDetailResponse.ContentType
+- uid: Seclai.Models.ContentDetailResponse.ContentTypeDisplay*
+  commentId: Overload:Seclai.Models.ContentDetailResponse.ContentTypeDisplay
+  href: Seclai.Models.ContentDetailResponse.html#Seclai_Models_ContentDetailResponse_ContentTypeDisplay
+  name: ContentTypeDisplay
+  nameWithType: ContentDetailResponse.ContentTypeDisplay
+  fullName: Seclai.Models.ContentDetailResponse.ContentTypeDisplay
+- uid: Seclai.Models.ContentDetailResponse.ContentUrl*
+  commentId: Overload:Seclai.Models.ContentDetailResponse.ContentUrl
+  href: Seclai.Models.ContentDetailResponse.html#Seclai_Models_ContentDetailResponse_ContentUrl
+  name: ContentUrl
+  nameWithType: ContentDetailResponse.ContentUrl
+  fullName: Seclai.Models.ContentDetailResponse.ContentUrl
+- uid: Seclai.Models.ContentDetailResponse.ContentWordCount*
+  commentId: Overload:Seclai.Models.ContentDetailResponse.ContentWordCount
+  href: Seclai.Models.ContentDetailResponse.html#Seclai_Models_ContentDetailResponse_ContentWordCount
+  name: ContentWordCount
+  nameWithType: ContentDetailResponse.ContentWordCount
+  fullName: Seclai.Models.ContentDetailResponse.ContentWordCount
+- uid: Seclai.Models.ContentDetailResponse.Description*
+  commentId: Overload:Seclai.Models.ContentDetailResponse.Description
+  href: Seclai.Models.ContentDetailResponse.html#Seclai_Models_ContentDetailResponse_Description
+  name: Description
+  nameWithType: ContentDetailResponse.Description
+  fullName: Seclai.Models.ContentDetailResponse.Description
+- uid: Seclai.Models.ContentDetailResponse.Error*
+  commentId: Overload:Seclai.Models.ContentDetailResponse.Error
+  href: Seclai.Models.ContentDetailResponse.html#Seclai_Models_ContentDetailResponse_Error
+  name: Error
+  nameWithType: ContentDetailResponse.Error
+  fullName: Seclai.Models.ContentDetailResponse.Error
+- uid: Seclai.Models.ContentDetailResponse.Id*
+  commentId: Overload:Seclai.Models.ContentDetailResponse.Id
+  href: Seclai.Models.ContentDetailResponse.html#Seclai_Models_ContentDetailResponse_Id
+  name: Id
+  nameWithType: ContentDetailResponse.Id
+  fullName: Seclai.Models.ContentDetailResponse.Id
+- uid: Seclai.Models.ContentDetailResponse.Metadata*
+  commentId: Overload:Seclai.Models.ContentDetailResponse.Metadata
+  href: Seclai.Models.ContentDetailResponse.html#Seclai_Models_ContentDetailResponse_Metadata
+  name: Metadata
+  nameWithType: ContentDetailResponse.Metadata
+  fullName: Seclai.Models.ContentDetailResponse.Metadata
+- uid: System.Collections.Generic.List{System.Collections.Generic.Dictionary{System.String,System.String}}
+  commentId: T:System.Collections.Generic.List{System.Collections.Generic.Dictionary{System.String,System.String}}
+  parent: System.Collections.Generic
+  definition: System.Collections.Generic.List`1
+  href: https://learn.microsoft.com/dotnet/api/system.collections.generic.list-1
+  name: List<Dictionary<string, string>>
+  nameWithType: List<Dictionary<string, string>>
+  fullName: System.Collections.Generic.List<System.Collections.Generic.Dictionary<string, string>>
+  nameWithType.vb: List(Of Dictionary(Of String, String))
+  fullName.vb: System.Collections.Generic.List(Of System.Collections.Generic.Dictionary(Of String, String))
+  name.vb: List(Of Dictionary(Of String, String))
+  spec.csharp:
+  - uid: System.Collections.Generic.List`1
+    name: List
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.collections.generic.list-1
+  - name: <
+  - uid: System.Collections.Generic.Dictionary`2
+    name: Dictionary
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.collections.generic.dictionary-2
+  - name: <
+  - uid: System.String
+    name: string
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.string
+  - name: ','
+  - name: " "
+  - uid: System.String
+    name: string
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.string
+  - name: '>'
+  - name: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.List`1
+    name: List
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.collections.generic.list-1
+  - name: (
+  - name: Of
+  - name: " "
+  - uid: System.Collections.Generic.Dictionary`2
+    name: Dictionary
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.collections.generic.dictionary-2
+  - name: (
+  - name: Of
+  - name: " "
+  - uid: System.String
+    name: String
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.string
+  - name: ','
+  - name: " "
+  - uid: System.String
+    name: String
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.string
+  - name: )
+  - name: )
+- uid: System.Collections.Generic.List`1
+  commentId: T:System.Collections.Generic.List`1
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.collections.generic.list-1
+  name: List<T>
+  nameWithType: List<T>
+  fullName: System.Collections.Generic.List<T>
+  nameWithType.vb: List(Of T)
+  fullName.vb: System.Collections.Generic.List(Of T)
+  name.vb: List(Of T)
+  spec.csharp:
+  - uid: System.Collections.Generic.List`1
+    name: List
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.collections.generic.list-1
+  - name: <
+  - name: T
+  - name: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.List`1
+    name: List
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.collections.generic.list-1
+  - name: (
+  - name: Of
+  - name: " "
+  - name: T
+  - name: )
+- uid: System.Collections.Generic
+  commentId: N:System.Collections.Generic
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system
+  name: System.Collections.Generic
+  nameWithType: System.Collections.Generic
+  fullName: System.Collections.Generic
+  spec.csharp:
+  - uid: System
+    name: System
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system
+  - name: .
+  - uid: System.Collections
+    name: Collections
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.collections
+  - name: .
+  - uid: System.Collections.Generic
+    name: Generic
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.collections.generic
+  spec.vb:
+  - uid: System
+    name: System
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system
+  - name: .
+  - uid: System.Collections
+    name: Collections
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.collections
+  - name: .
+  - uid: System.Collections.Generic
+    name: Generic
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.collections.generic
+- uid: Seclai.Models.ContentDetailResponse.PublishedAt*
+  commentId: Overload:Seclai.Models.ContentDetailResponse.PublishedAt
+  href: Seclai.Models.ContentDetailResponse.html#Seclai_Models_ContentDetailResponse_PublishedAt
+  name: PublishedAt
+  nameWithType: ContentDetailResponse.PublishedAt
+  fullName: Seclai.Models.ContentDetailResponse.PublishedAt
+- uid: Seclai.Models.ContentDetailResponse.PulledAt*
+  commentId: Overload:Seclai.Models.ContentDetailResponse.PulledAt
+  href: Seclai.Models.ContentDetailResponse.html#Seclai_Models_ContentDetailResponse_PulledAt
+  name: PulledAt
+  nameWithType: ContentDetailResponse.PulledAt
+  fullName: Seclai.Models.ContentDetailResponse.PulledAt
+- uid: Seclai.Models.ContentDetailResponse.SourceConnectionContentVersionId*
+  commentId: Overload:Seclai.Models.ContentDetailResponse.SourceConnectionContentVersionId
+  href: Seclai.Models.ContentDetailResponse.html#Seclai_Models_ContentDetailResponse_SourceConnectionContentVersionId
+  name: SourceConnectionContentVersionId
+  nameWithType: ContentDetailResponse.SourceConnectionContentVersionId
+  fullName: Seclai.Models.ContentDetailResponse.SourceConnectionContentVersionId
+- uid: Seclai.Models.ContentDetailResponse.SourceConnectionId*
+  commentId: Overload:Seclai.Models.ContentDetailResponse.SourceConnectionId
+  href: Seclai.Models.ContentDetailResponse.html#Seclai_Models_ContentDetailResponse_SourceConnectionId
+  name: SourceConnectionId
+  nameWithType: ContentDetailResponse.SourceConnectionId
+  fullName: Seclai.Models.ContentDetailResponse.SourceConnectionId
+- uid: Seclai.Models.ContentDetailResponse.SourceName*
+  commentId: Overload:Seclai.Models.ContentDetailResponse.SourceName
+  href: Seclai.Models.ContentDetailResponse.html#Seclai_Models_ContentDetailResponse_SourceName
+  name: SourceName
+  nameWithType: ContentDetailResponse.SourceName
+  fullName: Seclai.Models.ContentDetailResponse.SourceName
+- uid: Seclai.Models.ContentDetailResponse.SourceType*
+  commentId: Overload:Seclai.Models.ContentDetailResponse.SourceType
+  href: Seclai.Models.ContentDetailResponse.html#Seclai_Models_ContentDetailResponse_SourceType
+  name: SourceType
+  nameWithType: ContentDetailResponse.SourceType
+  fullName: Seclai.Models.ContentDetailResponse.SourceType
+- uid: Seclai.Models.ContentDetailResponse.TextContent*
+  commentId: Overload:Seclai.Models.ContentDetailResponse.TextContent
+  href: Seclai.Models.ContentDetailResponse.html#Seclai_Models_ContentDetailResponse_TextContent
+  name: TextContent
+  nameWithType: ContentDetailResponse.TextContent
+  fullName: Seclai.Models.ContentDetailResponse.TextContent
+- uid: Seclai.Models.ContentDetailResponse.TextContentEnd*
+  commentId: Overload:Seclai.Models.ContentDetailResponse.TextContentEnd
+  href: Seclai.Models.ContentDetailResponse.html#Seclai_Models_ContentDetailResponse_TextContentEnd
+  name: TextContentEnd
+  nameWithType: ContentDetailResponse.TextContentEnd
+  fullName: Seclai.Models.ContentDetailResponse.TextContentEnd
+- uid: System.Int32
+  commentId: T:System.Int32
+  parent: System
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.int32
+  name: int
+  nameWithType: int
+  fullName: int
+  nameWithType.vb: Integer
+  fullName.vb: Integer
+  name.vb: Integer
+- uid: Seclai.Models.ContentDetailResponse.TextContentStart*
+  commentId: Overload:Seclai.Models.ContentDetailResponse.TextContentStart
+  href: Seclai.Models.ContentDetailResponse.html#Seclai_Models_ContentDetailResponse_TextContentStart
+  name: TextContentStart
+  nameWithType: ContentDetailResponse.TextContentStart
+  fullName: Seclai.Models.ContentDetailResponse.TextContentStart
+- uid: Seclai.Models.ContentDetailResponse.TextContentTotalLength*
+  commentId: Overload:Seclai.Models.ContentDetailResponse.TextContentTotalLength
+  href: Seclai.Models.ContentDetailResponse.html#Seclai_Models_ContentDetailResponse_TextContentTotalLength
+  name: TextContentTotalLength
+  nameWithType: ContentDetailResponse.TextContentTotalLength
+  fullName: Seclai.Models.ContentDetailResponse.TextContentTotalLength
+- uid: Seclai.Models.ContentDetailResponse.Title*
+  commentId: Overload:Seclai.Models.ContentDetailResponse.Title
+  href: Seclai.Models.ContentDetailResponse.html#Seclai_Models_ContentDetailResponse_Title
+  name: Title
+  nameWithType: ContentDetailResponse.Title
+  fullName: Seclai.Models.ContentDetailResponse.Title

@@ -1,0 +1,60 @@
+### YamlMime:ManagedReference
+items:
+- uid: Seclai.Exceptions
+  commentId: N:Seclai.Exceptions
+  id: Seclai.Exceptions
+  children:
+  - Seclai.Exceptions.ApiException
+  - Seclai.Exceptions.ApiValidationException
+  - Seclai.Exceptions.ConfigurationException
+  langs:
+  - csharp
+  - vb
+  name: Seclai.Exceptions
+  nameWithType: Seclai.Exceptions
+  fullName: Seclai.Exceptions
+  type: Namespace
+  assemblies:
+  - Seclai
+references:
+- uid: Seclai.Exceptions.ApiException
+  commentId: T:Seclai.Exceptions.ApiException
+  parent: Seclai.Exceptions
+  href: Seclai.Exceptions.ApiException.html
+  name: ApiException
+  nameWithType: ApiException
+  fullName: Seclai.Exceptions.ApiException
+- uid: Seclai.Exceptions.ApiValidationException
+  commentId: T:Seclai.Exceptions.ApiValidationException
+  href: Seclai.Exceptions.ApiValidationException.html
+  name: ApiValidationException
+  nameWithType: ApiValidationException
+  fullName: Seclai.Exceptions.ApiValidationException
+- uid: Seclai.Exceptions.ConfigurationException
+  commentId: T:Seclai.Exceptions.ConfigurationException
+  href: Seclai.Exceptions.ConfigurationException.html
+  name: ConfigurationException
+  nameWithType: ConfigurationException
+  fullName: Seclai.Exceptions.ConfigurationException
+- uid: Seclai.Exceptions
+  commentId: N:Seclai.Exceptions
+  href: Seclai.html
+  name: Seclai.Exceptions
+  nameWithType: Seclai.Exceptions
+  fullName: Seclai.Exceptions
+  spec.csharp:
+  - uid: Seclai
+    name: Seclai
+    href: Seclai.html
+  - name: .
+  - uid: Seclai.Exceptions
+    name: Exceptions
+    href: Seclai.Exceptions.html
+  spec.vb:
+  - uid: Seclai
+    name: Seclai
+    href: Seclai.html
+  - name: .
+  - uid: Seclai.Exceptions
+    name: Exceptions
+    href: Seclai.Exceptions.html

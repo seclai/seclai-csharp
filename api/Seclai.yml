@@ -1,0 +1,37 @@
+### YamlMime:ManagedReference
+items:
+- uid: Seclai
+  commentId: N:Seclai
+  id: Seclai
+  children:
+  - Seclai.SeclaiClient
+  - Seclai.SeclaiClientOptions
+  langs:
+  - csharp
+  - vb
+  name: Seclai
+  nameWithType: Seclai
+  fullName: Seclai
+  type: Namespace
+  assemblies:
+  - Seclai
+references:
+- uid: Seclai.SeclaiClient
+  commentId: T:Seclai.SeclaiClient
+  href: Seclai.SeclaiClient.html
+  name: SeclaiClient
+  nameWithType: SeclaiClient
+  fullName: Seclai.SeclaiClient
+- uid: Seclai.SeclaiClientOptions
+  commentId: T:Seclai.SeclaiClientOptions
+  parent: Seclai
+  href: Seclai.SeclaiClientOptions.html
+  name: SeclaiClientOptions
+  nameWithType: SeclaiClientOptions
+  fullName: Seclai.SeclaiClientOptions
+- uid: Seclai
+  commentId: N:Seclai
+  href: Seclai.html
+  name: Seclai
+  nameWithType: Seclai
+  fullName: Seclai

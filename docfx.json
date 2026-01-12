@@ -1,0 +1,42 @@
+{
+  "metadata": [
+    {
+      "src": [
+        {
+          "files": [
+            "src/Seclai/Seclai.csproj"
+          ]
+        }
+      ],
+      "dest": "api",
+      "disableGitFeatures": true
+    }
+  ],
+  "build": {
+    "content": [
+      {
+        "files": [
+          "docs/**/*.md",
+          "docs/toc.yml",
+          "api/**/*.yml",
+          "api/index.md"
+        ]
+      }
+    ],
+    "resource": [
+      {
+        "files": [
+          "docs/images/**"
+        ]
+      }
+    ],
+    "globalMetadata": {
+      "_appTitle": "Seclai C# SDK",
+      "_enableSearch": true
+    },
+    "dest": "build/docs",
+    "template": [
+      "default"
+    ]
+  }
+}
