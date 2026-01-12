@@ -5,3 +5,4 @@ TestResults/
 
 # DocFX output
 build/
+dist/
