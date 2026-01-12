@@ -12,7 +12,15 @@
     <PackageId>Seclai.Sdk</PackageId>
     <Authors>Seclai</Authors>
     <Description>Official Seclai C# SDK.</Description>
+
+    <!-- nuget.org uses this file to render the package README. -->
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Pack the repository README into the .nupkg root as README.md. -->
+    <None Include="..\..\README.md" Pack="true" PackagePath="\" Link="README.md" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="System.Text.Json" Version="8.0.5" />
