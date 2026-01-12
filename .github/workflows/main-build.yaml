@@ -131,7 +131,7 @@ jobs:
         id: nuget-login
         with:
           # NuGet.org username (profile name), not email.
-          user: Seclai
+          user: seclai
 
       - name: Publish package to NuGet
         run: |
