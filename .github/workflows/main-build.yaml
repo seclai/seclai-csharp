@@ -62,8 +62,69 @@ jobs:
           set -euo pipefail
 
           echo "Repo: ${GITHUB_REPOSITORY}"
+          echo "Owner: ${GITHUB_REPOSITORY_OWNER}"
           echo "Ref: ${GITHUB_REF}"
           echo "Workflow ref: ${GITHUB_WORKFLOW_REF}"
+          echo "Run ID: ${GITHUB_RUN_ID}"
+          echo "Run attempt: ${GITHUB_RUN_ATTEMPT}"
+
+          # Dump key OIDC claims (without printing the token). These are the values
+          # nuget.org uses to validate Trusted Publishing policies.
+          python - <<'PY'
+          import base64
+          import json
+          import os
+          import sys
+          import urllib.request
+
+          req_url = os.environ.get("ACTIONS_ID_TOKEN_REQUEST_URL")
+          req_token = os.environ.get("ACTIONS_ID_TOKEN_REQUEST_TOKEN")
+          if not req_url or not req_token:
+            print("OIDC request environment missing; ensure job has permissions: id-token: write")
+            sys.exit(0)
+
+          # The request URL already includes a query string; append audience.
+          url = req_url + "&audience=https://www.nuget.org"
+          request = urllib.request.Request(url)
+          request.add_header("Authorization", f"bearer {req_token}")
+
+          with urllib.request.urlopen(request) as resp:
+            data = json.loads(resp.read().decode("utf-8"))
+
+          token = data.get("value")
+          if not token:
+            print("OIDC response did not include a token")
+            sys.exit(0)
+
+          # Decode JWT payload (base64url).
+          parts = token.split(".")
+          if len(parts) < 2:
+            print("OIDC token is not a JWT")
+            sys.exit(0)
+
+          payload_b64 = parts[1]
+          payload_b64 += "=" * (-len(payload_b64) % 4)
+          payload = json.loads(base64.urlsafe_b64decode(payload_b64.encode("utf-8")).decode("utf-8"))
+
+          keep = [
+            "aud",
+            "iss",
+            "sub",
+            "repository",
+            "repository_id",
+            "repository_owner",
+            "repository_owner_id",
+            "job_workflow_ref",
+            "ref",
+            "sha",
+            "actor",
+            "run_id",
+            "run_attempt",
+          ]
+          filtered = {k: payload.get(k) for k in keep if k in payload}
+          print("OIDC claims (filtered):")
+          print(json.dumps(filtered, indent=2, sort_keys=True))
+          PY
 
       - name: NuGet login
         uses: NuGet/login@v1
