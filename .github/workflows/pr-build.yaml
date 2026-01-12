@@ -1,0 +1,41 @@
+name: Pull Request Build
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build and Test
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout files
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: "0"
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Restore
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --configuration Release --no-restore
+
+      - name: Test
+        run: dotnet test --configuration Release --no-build
+
+      - name: Restore tools
+        run: dotnet tool restore
+
+      - name: Docs (sanity)
+        run: dotnet tool run docfx docfx.json

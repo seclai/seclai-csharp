@@ -1,0 +1,132 @@
+### YamlMime:ManagedReference
+items:
+- uid: Seclai.Models
+  commentId: N:Seclai.Models
+  id: Seclai.Models
+  children:
+  - Seclai.Models.AgentRunAttemptResponse
+  - Seclai.Models.AgentRunListResponse
+  - Seclai.Models.AgentRunRequest
+  - Seclai.Models.AgentRunResponse
+  - Seclai.Models.ContentDetailResponse
+  - Seclai.Models.ContentEmbeddingResponse
+  - Seclai.Models.ContentEmbeddingsListResponse
+  - Seclai.Models.FileUploadResponse
+  - Seclai.Models.HttpValidationError
+  - Seclai.Models.PaginationResponse
+  - Seclai.Models.SourceListResponse
+  - Seclai.Models.SourceResponse
+  - Seclai.Models.ValidationError
+  langs:
+  - csharp
+  - vb
+  name: Seclai.Models
+  nameWithType: Seclai.Models
+  fullName: Seclai.Models
+  type: Namespace
+  assemblies:
+  - Seclai
+references:
+- uid: Seclai.Models.AgentRunAttemptResponse
+  commentId: T:Seclai.Models.AgentRunAttemptResponse
+  href: Seclai.Models.AgentRunAttemptResponse.html
+  name: AgentRunAttemptResponse
+  nameWithType: AgentRunAttemptResponse
+  fullName: Seclai.Models.AgentRunAttemptResponse
+- uid: Seclai.Models.AgentRunListResponse
+  commentId: T:Seclai.Models.AgentRunListResponse
+  href: Seclai.Models.AgentRunListResponse.html
+  name: AgentRunListResponse
+  nameWithType: AgentRunListResponse
+  fullName: Seclai.Models.AgentRunListResponse
+- uid: Seclai.Models.AgentRunRequest
+  commentId: T:Seclai.Models.AgentRunRequest
+  parent: Seclai.Models
+  href: Seclai.Models.AgentRunRequest.html
+  name: AgentRunRequest
+  nameWithType: AgentRunRequest
+  fullName: Seclai.Models.AgentRunRequest
+- uid: Seclai.Models.AgentRunResponse
+  commentId: T:Seclai.Models.AgentRunResponse
+  href: Seclai.Models.AgentRunResponse.html
+  name: AgentRunResponse
+  nameWithType: AgentRunResponse
+  fullName: Seclai.Models.AgentRunResponse
+- uid: Seclai.Models.ContentDetailResponse
+  commentId: T:Seclai.Models.ContentDetailResponse
+  href: Seclai.Models.ContentDetailResponse.html
+  name: ContentDetailResponse
+  nameWithType: ContentDetailResponse
+  fullName: Seclai.Models.ContentDetailResponse
+- uid: Seclai.Models.ContentEmbeddingResponse
+  commentId: T:Seclai.Models.ContentEmbeddingResponse
+  href: Seclai.Models.ContentEmbeddingResponse.html
+  name: ContentEmbeddingResponse
+  nameWithType: ContentEmbeddingResponse
+  fullName: Seclai.Models.ContentEmbeddingResponse
+- uid: Seclai.Models.ContentEmbeddingsListResponse
+  commentId: T:Seclai.Models.ContentEmbeddingsListResponse
+  href: Seclai.Models.ContentEmbeddingsListResponse.html
+  name: ContentEmbeddingsListResponse
+  nameWithType: ContentEmbeddingsListResponse
+  fullName: Seclai.Models.ContentEmbeddingsListResponse
+- uid: Seclai.Models.FileUploadResponse
+  commentId: T:Seclai.Models.FileUploadResponse
+  href: Seclai.Models.FileUploadResponse.html
+  name: FileUploadResponse
+  nameWithType: FileUploadResponse
+  fullName: Seclai.Models.FileUploadResponse
+- uid: Seclai.Models.HttpValidationError
+  commentId: T:Seclai.Models.HttpValidationError
+  parent: Seclai.Models
+  href: Seclai.Models.HttpValidationError.html
+  name: HttpValidationError
+  nameWithType: HttpValidationError
+  fullName: Seclai.Models.HttpValidationError
+- uid: Seclai.Models.PaginationResponse
+  commentId: T:Seclai.Models.PaginationResponse
+  parent: Seclai.Models
+  href: Seclai.Models.PaginationResponse.html
+  name: PaginationResponse
+  nameWithType: PaginationResponse
+  fullName: Seclai.Models.PaginationResponse
+- uid: Seclai.Models.SourceListResponse
+  commentId: T:Seclai.Models.SourceListResponse
+  href: Seclai.Models.SourceListResponse.html
+  name: SourceListResponse
+  nameWithType: SourceListResponse
+  fullName: Seclai.Models.SourceListResponse
+- uid: Seclai.Models.SourceResponse
+  commentId: T:Seclai.Models.SourceResponse
+  href: Seclai.Models.SourceResponse.html
+  name: SourceResponse
+  nameWithType: SourceResponse
+  fullName: Seclai.Models.SourceResponse
+- uid: Seclai.Models.ValidationError
+  commentId: T:Seclai.Models.ValidationError
+  href: Seclai.Models.ValidationError.html
+  name: ValidationError
+  nameWithType: ValidationError
+  fullName: Seclai.Models.ValidationError
+- uid: Seclai.Models
+  commentId: N:Seclai.Models
+  href: Seclai.html
+  name: Seclai.Models
+  nameWithType: Seclai.Models
+  fullName: Seclai.Models
+  spec.csharp:
+  - uid: Seclai
+    name: Seclai
+    href: Seclai.html
+  - name: .
+  - uid: Seclai.Models
+    name: Models
+    href: Seclai.Models.html
+  spec.vb:
+  - uid: Seclai
+    name: Seclai
+    href: Seclai.html
+  - name: .
+  - uid: Seclai.Models
+    name: Models
+    href: Seclai.Models.html

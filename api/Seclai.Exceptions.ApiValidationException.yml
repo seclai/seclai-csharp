@@ -1,0 +1,648 @@
+### YamlMime:ManagedReference
+items:
+- uid: Seclai.Exceptions.ApiValidationException
+  commentId: T:Seclai.Exceptions.ApiValidationException
+  id: ApiValidationException
+  parent: Seclai.Exceptions
+  children:
+  - Seclai.Exceptions.ApiValidationException.#ctor(System.Net.HttpStatusCode,System.String,System.Uri,System.String,Seclai.Models.HttpValidationError)
+  - Seclai.Exceptions.ApiValidationException.Validation
+  langs:
+  - csharp
+  - vb
+  name: ApiValidationException
+  nameWithType: ApiValidationException
+  fullName: Seclai.Exceptions.ApiValidationException
+  type: Class
+  assemblies:
+  - Seclai
+  namespace: Seclai.Exceptions
+  syntax:
+    content: 'public sealed class ApiValidationException : ApiException, ISerializable'
+    content.vb: Public NotInheritable Class ApiValidationException Inherits ApiException Implements ISerializable
+  inheritance:
+  - System.Object
+  - System.Exception
+  - Seclai.Exceptions.ApiException
+  implements:
+  - System.Runtime.Serialization.ISerializable
+  inheritedMembers:
+  - Seclai.Exceptions.ApiException.StatusCode
+  - Seclai.Exceptions.ApiException.Method
+  - Seclai.Exceptions.ApiException.Url
+  - Seclai.Exceptions.ApiException.ResponseBody
+  - System.Exception.GetBaseException
+  - System.Exception.GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)
+  - System.Exception.GetType
+  - System.Exception.ToString
+  - System.Exception.Data
+  - System.Exception.HelpLink
+  - System.Exception.HResult
+  - System.Exception.InnerException
+  - System.Exception.Message
+  - System.Exception.Source
+  - System.Exception.StackTrace
+  - System.Exception.TargetSite
+  - System.Object.Equals(System.Object)
+  - System.Object.Equals(System.Object,System.Object)
+  - System.Object.GetHashCode
+  - System.Object.ReferenceEquals(System.Object,System.Object)
+- uid: Seclai.Exceptions.ApiValidationException.#ctor(System.Net.HttpStatusCode,System.String,System.Uri,System.String,Seclai.Models.HttpValidationError)
+  commentId: M:Seclai.Exceptions.ApiValidationException.#ctor(System.Net.HttpStatusCode,System.String,System.Uri,System.String,Seclai.Models.HttpValidationError)
+  id: '#ctor(System.Net.HttpStatusCode,System.String,System.Uri,System.String,Seclai.Models.HttpValidationError)'
+  parent: Seclai.Exceptions.ApiValidationException
+  langs:
+  - csharp
+  - vb
+  name: ApiValidationException(HttpStatusCode, string, Uri, string?, HttpValidationError?)
+  nameWithType: ApiValidationException.ApiValidationException(HttpStatusCode, string, Uri, string?, HttpValidationError?)
+  fullName: Seclai.Exceptions.ApiValidationException.ApiValidationException(System.Net.HttpStatusCode, string, System.Uri, string?, Seclai.Models.HttpValidationError?)
+  type: Constructor
+  assemblies:
+  - Seclai
+  namespace: Seclai.Exceptions
+  syntax:
+    content: public ApiValidationException(HttpStatusCode statusCode, string method, Uri url, string? responseBody, HttpValidationError? validation)
+    parameters:
+    - id: statusCode
+      type: System.Net.HttpStatusCode
+    - id: method
+      type: System.String
+    - id: url
+      type: System.Uri
+    - id: responseBody
+      type: System.String
+    - id: validation
+      type: Seclai.Models.HttpValidationError
+    content.vb: Public Sub New(statusCode As HttpStatusCode, method As String, url As Uri, responseBody As String, validation As HttpValidationError)
+  overload: Seclai.Exceptions.ApiValidationException.#ctor*
+  nameWithType.vb: ApiValidationException.New(HttpStatusCode, String, Uri, String, HttpValidationError)
+  fullName.vb: Seclai.Exceptions.ApiValidationException.New(System.Net.HttpStatusCode, String, System.Uri, String, Seclai.Models.HttpValidationError)
+  name.vb: New(HttpStatusCode, String, Uri, String, HttpValidationError)
+- uid: Seclai.Exceptions.ApiValidationException.Validation
+  commentId: P:Seclai.Exceptions.ApiValidationException.Validation
+  id: Validation
+  parent: Seclai.Exceptions.ApiValidationException
+  langs:
+  - csharp
+  - vb
+  name: Validation
+  nameWithType: ApiValidationException.Validation
+  fullName: Seclai.Exceptions.ApiValidationException.Validation
+  type: Property
+  assemblies:
+  - Seclai
+  namespace: Seclai.Exceptions
+  syntax:
+    content: public HttpValidationError? Validation { get; }
+    parameters: []
+    return:
+      type: Seclai.Models.HttpValidationError
+    content.vb: Public ReadOnly Property Validation As HttpValidationError
+  overload: Seclai.Exceptions.ApiValidationException.Validation*
+references:
+- uid: Seclai.Exceptions
+  commentId: N:Seclai.Exceptions
+  href: Seclai.html
+  name: Seclai.Exceptions
+  nameWithType: Seclai.Exceptions
+  fullName: Seclai.Exceptions
+  spec.csharp:
+  - uid: Seclai
+    name: Seclai
+    href: Seclai.html
+  - name: .
+  - uid: Seclai.Exceptions
+    name: Exceptions
+    href: Seclai.Exceptions.html
+  spec.vb:
+  - uid: Seclai
+    name: Seclai
+    href: Seclai.html
+  - name: .
+  - uid: Seclai.Exceptions
+    name: Exceptions
+    href: Seclai.Exceptions.html
+- uid: System.Object
+  commentId: T:System.Object
+  parent: System
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object
+  name: object
+  nameWithType: object
+  fullName: object
+  nameWithType.vb: Object
+  fullName.vb: Object
+  name.vb: Object
+- uid: System.Exception
+  commentId: T:System.Exception
+  parent: System
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.exception
+  name: Exception
+  nameWithType: Exception
+  fullName: System.Exception
+- uid: Seclai.Exceptions.ApiException
+  commentId: T:Seclai.Exceptions.ApiException
+  parent: Seclai.Exceptions
+  href: Seclai.Exceptions.ApiException.html
+  name: ApiException
+  nameWithType: ApiException
+  fullName: Seclai.Exceptions.ApiException
+- uid: System.Runtime.Serialization.ISerializable
+  commentId: T:System.Runtime.Serialization.ISerializable
+  parent: System.Runtime.Serialization
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.runtime.serialization.iserializable
+  name: ISerializable
+  nameWithType: ISerializable
+  fullName: System.Runtime.Serialization.ISerializable
+- uid: Seclai.Exceptions.ApiException.StatusCode
+  commentId: P:Seclai.Exceptions.ApiException.StatusCode
+  parent: Seclai.Exceptions.ApiException
+  href: Seclai.Exceptions.ApiException.html#Seclai_Exceptions_ApiException_StatusCode
+  name: StatusCode
+  nameWithType: ApiException.StatusCode
+  fullName: Seclai.Exceptions.ApiException.StatusCode
+- uid: Seclai.Exceptions.ApiException.Method
+  commentId: P:Seclai.Exceptions.ApiException.Method
+  parent: Seclai.Exceptions.ApiException
+  href: Seclai.Exceptions.ApiException.html#Seclai_Exceptions_ApiException_Method
+  name: Method
+  nameWithType: ApiException.Method
+  fullName: Seclai.Exceptions.ApiException.Method
+- uid: Seclai.Exceptions.ApiException.Url
+  commentId: P:Seclai.Exceptions.ApiException.Url
+  parent: Seclai.Exceptions.ApiException
+  href: Seclai.Exceptions.ApiException.html#Seclai_Exceptions_ApiException_Url
+  name: Url
+  nameWithType: ApiException.Url
+  fullName: Seclai.Exceptions.ApiException.Url
+- uid: Seclai.Exceptions.ApiException.ResponseBody
+  commentId: P:Seclai.Exceptions.ApiException.ResponseBody
+  parent: Seclai.Exceptions.ApiException
+  href: Seclai.Exceptions.ApiException.html#Seclai_Exceptions_ApiException_ResponseBody
+  name: ResponseBody
+  nameWithType: ApiException.ResponseBody
+  fullName: Seclai.Exceptions.ApiException.ResponseBody
+- uid: System.Exception.GetBaseException
+  commentId: M:System.Exception.GetBaseException
+  parent: System.Exception
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.exception.getbaseexception
+  name: GetBaseException()
+  nameWithType: Exception.GetBaseException()
+  fullName: System.Exception.GetBaseException()
+  spec.csharp:
+  - uid: System.Exception.GetBaseException
+    name: GetBaseException
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.exception.getbaseexception
+  - name: (
+  - name: )
+  spec.vb:
+  - uid: System.Exception.GetBaseException
+    name: GetBaseException
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.exception.getbaseexception
+  - name: (
+  - name: )
+- uid: System.Exception.GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)
+  commentId: M:System.Exception.GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)
+  parent: System.Exception
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.exception.getobjectdata
+  name: GetObjectData(SerializationInfo, StreamingContext)
+  nameWithType: Exception.GetObjectData(SerializationInfo, StreamingContext)
+  fullName: System.Exception.GetObjectData(System.Runtime.Serialization.SerializationInfo, System.Runtime.Serialization.StreamingContext)
+  spec.csharp:
+  - uid: System.Exception.GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)
+    name: GetObjectData
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.exception.getobjectdata
+  - name: (
+  - uid: System.Runtime.Serialization.SerializationInfo
+    name: SerializationInfo
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.runtime.serialization.serializationinfo
+  - name: ','
+  - name: " "
+  - uid: System.Runtime.Serialization.StreamingContext
+    name: StreamingContext
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.runtime.serialization.streamingcontext
+  - name: )
+  spec.vb:
+  - uid: System.Exception.GetObjectData(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)
+    name: GetObjectData
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.exception.getobjectdata
+  - name: (
+  - uid: System.Runtime.Serialization.SerializationInfo
+    name: SerializationInfo
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.runtime.serialization.serializationinfo
+  - name: ','
+  - name: " "
+  - uid: System.Runtime.Serialization.StreamingContext
+    name: StreamingContext
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.runtime.serialization.streamingcontext
+  - name: )
+- uid: System.Exception.GetType
+  commentId: M:System.Exception.GetType
+  parent: System.Exception
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.exception.gettype
+  name: GetType()
+  nameWithType: Exception.GetType()
+  fullName: System.Exception.GetType()
+  spec.csharp:
+  - uid: System.Exception.GetType
+    name: GetType
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.exception.gettype
+  - name: (
+  - name: )
+  spec.vb:
+  - uid: System.Exception.GetType
+    name: GetType
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.exception.gettype
+  - name: (
+  - name: )
+- uid: System.Exception.ToString
+  commentId: M:System.Exception.ToString
+  parent: System.Exception
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.exception.tostring
+  name: ToString()
+  nameWithType: Exception.ToString()
+  fullName: System.Exception.ToString()
+  spec.csharp:
+  - uid: System.Exception.ToString
+    name: ToString
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.exception.tostring
+  - name: (
+  - name: )
+  spec.vb:
+  - uid: System.Exception.ToString
+    name: ToString
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.exception.tostring
+  - name: (
+  - name: )
+- uid: System.Exception.Data
+  commentId: P:System.Exception.Data
+  parent: System.Exception
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.exception.data
+  name: Data
+  nameWithType: Exception.Data
+  fullName: System.Exception.Data
+- uid: System.Exception.HelpLink
+  commentId: P:System.Exception.HelpLink
+  parent: System.Exception
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.exception.helplink
+  name: HelpLink
+  nameWithType: Exception.HelpLink
+  fullName: System.Exception.HelpLink
+- uid: System.Exception.HResult
+  commentId: P:System.Exception.HResult
+  parent: System.Exception
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.exception.hresult
+  name: HResult
+  nameWithType: Exception.HResult
+  fullName: System.Exception.HResult
+- uid: System.Exception.InnerException
+  commentId: P:System.Exception.InnerException
+  parent: System.Exception
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.exception.innerexception
+  name: InnerException
+  nameWithType: Exception.InnerException
+  fullName: System.Exception.InnerException
+- uid: System.Exception.Message
+  commentId: P:System.Exception.Message
+  parent: System.Exception
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.exception.message
+  name: Message
+  nameWithType: Exception.Message
+  fullName: System.Exception.Message
+- uid: System.Exception.Source
+  commentId: P:System.Exception.Source
+  parent: System.Exception
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.exception.source
+  name: Source
+  nameWithType: Exception.Source
+  fullName: System.Exception.Source
+- uid: System.Exception.StackTrace
+  commentId: P:System.Exception.StackTrace
+  parent: System.Exception
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.exception.stacktrace
+  name: StackTrace
+  nameWithType: Exception.StackTrace
+  fullName: System.Exception.StackTrace
+- uid: System.Exception.TargetSite
+  commentId: P:System.Exception.TargetSite
+  parent: System.Exception
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.exception.targetsite
+  name: TargetSite
+  nameWithType: Exception.TargetSite
+  fullName: System.Exception.TargetSite
+- uid: System.Object.Equals(System.Object)
+  commentId: M:System.Object.Equals(System.Object)
+  parent: System.Object
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)
+  name: Equals(object)
+  nameWithType: object.Equals(object)
+  fullName: object.Equals(object)
+  nameWithType.vb: Object.Equals(Object)
+  fullName.vb: Object.Equals(Object)
+  name.vb: Equals(Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)
+  - name: (
+  - uid: System.Object
+    name: object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)
+  - name: (
+  - uid: System.Object
+    name: Object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+- uid: System.Object.Equals(System.Object,System.Object)
+  commentId: M:System.Object.Equals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)
+  name: Equals(object, object)
+  nameWithType: object.Equals(object, object)
+  fullName: object.Equals(object, object)
+  nameWithType.vb: Object.Equals(Object, Object)
+  fullName.vb: Object.Equals(Object, Object)
+  name.vb: Equals(Object, Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)
+  - name: (
+  - uid: System.Object
+    name: object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: ','
+  - name: " "
+  - uid: System.Object
+    name: object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)
+  - name: (
+  - uid: System.Object
+    name: Object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: ','
+  - name: " "
+  - uid: System.Object
+    name: Object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+- uid: System.Object.GetHashCode
+  commentId: M:System.Object.GetHashCode
+  parent: System.Object
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object.gethashcode
+  name: GetHashCode()
+  nameWithType: object.GetHashCode()
+  fullName: object.GetHashCode()
+  nameWithType.vb: Object.GetHashCode()
+  fullName.vb: Object.GetHashCode()
+  spec.csharp:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.gethashcode
+  - name: (
+  - name: )
+  spec.vb:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.gethashcode
+  - name: (
+  - name: )
+- uid: System.Object.ReferenceEquals(System.Object,System.Object)
+  commentId: M:System.Object.ReferenceEquals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.object.referenceequals
+  name: ReferenceEquals(object, object)
+  nameWithType: object.ReferenceEquals(object, object)
+  fullName: object.ReferenceEquals(object, object)
+  nameWithType.vb: Object.ReferenceEquals(Object, Object)
+  fullName.vb: Object.ReferenceEquals(Object, Object)
+  name.vb: ReferenceEquals(Object, Object)
+  spec.csharp:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.referenceequals
+  - name: (
+  - uid: System.Object
+    name: object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: ','
+  - name: " "
+  - uid: System.Object
+    name: object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+  spec.vb:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object.referenceequals
+  - name: (
+  - uid: System.Object
+    name: Object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: ','
+  - name: " "
+  - uid: System.Object
+    name: Object
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.object
+  - name: )
+- uid: System
+  commentId: N:System
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system
+  name: System
+  nameWithType: System
+  fullName: System
+- uid: System.Runtime.Serialization
+  commentId: N:System.Runtime.Serialization
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system
+  name: System.Runtime.Serialization
+  nameWithType: System.Runtime.Serialization
+  fullName: System.Runtime.Serialization
+  spec.csharp:
+  - uid: System
+    name: System
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system
+  - name: .
+  - uid: System.Runtime
+    name: Runtime
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.runtime
+  - name: .
+  - uid: System.Runtime.Serialization
+    name: Serialization
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.runtime.serialization
+  spec.vb:
+  - uid: System
+    name: System
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system
+  - name: .
+  - uid: System.Runtime
+    name: Runtime
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.runtime
+  - name: .
+  - uid: System.Runtime.Serialization
+    name: Serialization
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.runtime.serialization
+- uid: Seclai.Exceptions.ApiValidationException.#ctor*
+  commentId: Overload:Seclai.Exceptions.ApiValidationException.#ctor
+  href: Seclai.Exceptions.ApiValidationException.html#Seclai_Exceptions_ApiValidationException__ctor_System_Net_HttpStatusCode_System_String_System_Uri_System_String_Seclai_Models_HttpValidationError_
+  name: ApiValidationException
+  nameWithType: ApiValidationException.ApiValidationException
+  fullName: Seclai.Exceptions.ApiValidationException.ApiValidationException
+  nameWithType.vb: ApiValidationException.New
+  fullName.vb: Seclai.Exceptions.ApiValidationException.New
+  name.vb: New
+- uid: System.Net.HttpStatusCode
+  commentId: T:System.Net.HttpStatusCode
+  parent: System.Net
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.net.httpstatuscode
+  name: HttpStatusCode
+  nameWithType: HttpStatusCode
+  fullName: System.Net.HttpStatusCode
+- uid: System.String
+  commentId: T:System.String
+  parent: System
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.string
+  name: string
+  nameWithType: string
+  fullName: string
+  nameWithType.vb: String
+  fullName.vb: String
+  name.vb: String
+- uid: System.Uri
+  commentId: T:System.Uri
+  parent: System
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system.uri
+  name: Uri
+  nameWithType: Uri
+  fullName: System.Uri
+- uid: Seclai.Models.HttpValidationError
+  commentId: T:Seclai.Models.HttpValidationError
+  parent: Seclai.Models
+  href: Seclai.Models.HttpValidationError.html
+  name: HttpValidationError
+  nameWithType: HttpValidationError
+  fullName: Seclai.Models.HttpValidationError
+- uid: System.Net
+  commentId: N:System.Net
+  isExternal: true
+  href: https://learn.microsoft.com/dotnet/api/system
+  name: System.Net
+  nameWithType: System.Net
+  fullName: System.Net
+  spec.csharp:
+  - uid: System
+    name: System
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system
+  - name: .
+  - uid: System.Net
+    name: Net
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.net
+  spec.vb:
+  - uid: System
+    name: System
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system
+  - name: .
+  - uid: System.Net
+    name: Net
+    isExternal: true
+    href: https://learn.microsoft.com/dotnet/api/system.net
+- uid: Seclai.Models
+  commentId: N:Seclai.Models
+  href: Seclai.html
+  name: Seclai.Models
+  nameWithType: Seclai.Models
+  fullName: Seclai.Models
+  spec.csharp:
+  - uid: Seclai
+    name: Seclai
+    href: Seclai.html
+  - name: .
+  - uid: Seclai.Models
+    name: Models
+    href: Seclai.Models.html
+  spec.vb:
+  - uid: Seclai
+    name: Seclai
+    href: Seclai.html
+  - name: .
+  - uid: Seclai.Models
+    name: Models
+    href: Seclai.Models.html
+- uid: Seclai.Exceptions.ApiValidationException.Validation*
+  commentId: Overload:Seclai.Exceptions.ApiValidationException.Validation
+  href: Seclai.Exceptions.ApiValidationException.html#Seclai_Exceptions_ApiValidationException_Validation
+  name: Validation
+  nameWithType: ApiValidationException.Validation
+  fullName: Seclai.Exceptions.ApiValidationException.Validation
