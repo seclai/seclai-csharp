@@ -57,6 +57,7 @@ jobs:
             -p:ContinuousIntegrationBuild=true \
             --output dist
 
+<<<<<<< HEAD
       - name: Trusted Publisher preflight
         run: |
           set -euo pipefail
@@ -65,12 +66,18 @@ jobs:
           echo "Ref: ${GITHUB_REF}"
           echo "Workflow ref: ${GITHUB_WORKFLOW_REF}"
 
+=======
+>>>>>>> origin/main
       - name: NuGet login (OIDC → temp API key)
         uses: NuGet/login@v1
         id: nuget-login
         with:
           # NuGet.org username (profile name), not email.
+<<<<<<< HEAD
           user: Seclai
+=======
+          user: ${{ secrets.NUGET_USER }}
+>>>>>>> origin/main
 
       - name: Publish package to NuGet
         run: |
