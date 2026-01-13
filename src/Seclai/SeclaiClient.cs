@@ -29,8 +29,8 @@ public sealed class SeclaiClient
     {
         if (options is null) throw new ArgumentNullException(nameof(options));
 
-        var apiKey = (options.ApiKey ?? Environment.GetEnvironmentVariable("SECLAI_API_KEY"))?.Trim();
-        if (string.IsNullOrWhiteSpace(apiKey))
+        var apiKeyRaw = options.ApiKey ?? Environment.GetEnvironmentVariable("SECLAI_API_KEY");
+        if (string.IsNullOrWhiteSpace(apiKeyRaw))
         {
             throw new ConfigurationException("missing API key: provide SeclaiClientOptions.ApiKey or set SECLAI_API_KEY");
         }
@@ -39,7 +39,7 @@ public sealed class SeclaiClient
             ?? TryGetEnvUri("SECLAI_API_URL")
             ?? SeclaiClientOptions.DefaultBaseUri;
 
-        _apiKey = apiKey;
+        _apiKey = apiKeyRaw.Trim();
         _apiKeyHeader = string.IsNullOrWhiteSpace(options.ApiKeyHeader) ? "x-api-key" : options.ApiKeyHeader;
         _http = options.HttpClient ?? new HttpClient();
         _baseUri = EnsureTrailingSlash(baseUrl);
@@ -70,6 +70,145 @@ public sealed class SeclaiClient
     {
         if (string.IsNullOrWhiteSpace(agentId)) throw new ArgumentException("agentId is required", nameof(agentId));
         return await SendJsonAsync<AgentRunResponse>(HttpMethod.Post, $"/api/agents/{Uri.EscapeDataString(agentId)}/runs", query: null, body, cancellationToken);
+    }
+
+    public async Task<AgentRunResponse> RunStreamingAgentAndWaitAsync(
+        string agentId,
+        AgentRunStreamRequest body,
+        TimeSpan? timeout = null,
+        CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(agentId)) throw new ArgumentException("agentId is required", nameof(agentId));
+
+        var url = BuildUri($"/api/agents/{Uri.EscapeDataString(agentId)}/runs/stream", query: null);
+
+        using var req = new HttpRequestMessage(HttpMethod.Post, url);
+        req.Headers.TryAddWithoutValidation(_apiKeyHeader, _apiKey);
+        req.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("text/event-stream"));
+        req.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+        var json = JsonSerializer.Serialize(body, JsonOptions);
+        req.Content = new StringContent(json, Encoding.UTF8, "application/json");
+
+        var effectiveTimeout = timeout ?? TimeSpan.FromSeconds(60);
+        using var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+        cts.CancelAfter(effectiveTimeout);
+        var ct = cts.Token;
+
+        HttpResponseMessage? resp = null;
+        try
+        {
+            resp = await _http.SendAsync(req, HttpCompletionOption.ResponseHeadersRead, ct).ConfigureAwait(false);
+
+            // Ensure that cancellation/timeout aborts any pending stream reads.
+            using var _ = ct.Register(() =>
+            {
+                try { resp.Dispose(); } catch { /* ignore */ }
+            });
+
+            if (!resp.IsSuccessStatusCode)
+            {
+                var responseBody = await ReadBodyAsync(resp).ConfigureAwait(false);
+                ThrowApiError(resp.StatusCode, req.Method.Method, url, responseBody);
+            }
+
+            var mediaType = resp.Content.Headers.ContentType?.MediaType ?? string.Empty;
+            if (mediaType.IndexOf("application/json", StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                var responseBody = await ReadBodyAsync(resp).ConfigureAwait(false);
+                var parsed = JsonSerializer.Deserialize<AgentRunResponse>(responseBody ?? string.Empty, JsonOptions);
+                if (parsed is null) throw new StreamingException("Empty JSON response from streaming endpoint.");
+                return parsed;
+            }
+
+            using var stream = await resp.Content.ReadAsStreamAsync().ConfigureAwait(false);
+            using var reader = new StreamReader(stream, Encoding.UTF8);
+
+            string? currentEvent = null;
+            var dataLines = new List<string>();
+            AgentRunResponse? lastSeen = null;
+
+            AgentRunResponse? Dispatch()
+            {
+                if (currentEvent is null && dataLines.Count == 0) return null;
+                var evt = currentEvent;
+                var data = string.Join("\n", dataLines);
+                currentEvent = null;
+                dataLines.Clear();
+
+                if (string.IsNullOrWhiteSpace(evt) || string.IsNullOrWhiteSpace(data)) return null;
+                if (!string.Equals(evt, "init", StringComparison.OrdinalIgnoreCase) &&
+                    !string.Equals(evt, "done", StringComparison.OrdinalIgnoreCase))
+                {
+                    return null;
+                }
+
+                try
+                {
+                    var parsed = JsonSerializer.Deserialize<AgentRunResponse>(data, JsonOptions);
+                    if (parsed is null) return null;
+                    lastSeen = parsed;
+                    if (string.Equals(evt, "done", StringComparison.OrdinalIgnoreCase)) return parsed;
+                }
+                catch
+                {
+                    // ignore malformed event payloads
+                }
+                return null;
+            }
+
+            while (true)
+            {
+                ct.ThrowIfCancellationRequested();
+
+                string? line;
+                try
+                {
+                    line = await reader.ReadLineAsync().ConfigureAwait(false);
+                }
+                catch (Exception ex) when (ct.IsCancellationRequested)
+                {
+                    throw new StreamingException($"Timed out after {effectiveTimeout.TotalMilliseconds}ms waiting for streaming agent run to complete.", ex);
+                }
+
+                if (line is null) break;
+
+                if (line.Length == 0)
+                {
+                    var done = Dispatch();
+                    if (done is not null) return done;
+                    continue;
+                }
+
+                if (line.StartsWith(":", StringComparison.Ordinal)) continue;
+
+                if (line.StartsWith("event:", StringComparison.OrdinalIgnoreCase))
+                {
+                    currentEvent = line.Substring("event:".Length).Trim();
+                    if (currentEvent.Length == 0) currentEvent = null;
+                    continue;
+                }
+
+                if (line.StartsWith("data:", StringComparison.OrdinalIgnoreCase))
+                {
+                    dataLines.Add(line.Substring("data:".Length).TrimStart());
+                }
+            }
+
+            var final = Dispatch();
+            if (final is not null) return final;
+            if (lastSeen is not null) return lastSeen;
+
+            throw new StreamingException("Stream ended before receiving a 'done' event.");
+        }
+        catch (OperationCanceledException ex)
+        {
+            throw new StreamingException($"Timed out after {effectiveTimeout.TotalMilliseconds}ms waiting for streaming agent run to complete.", ex);
+        }
+        finally
+        {
+            resp?.Dispose();
+        }
     }
 
     public async Task<AgentRunListResponse> ListAgentRunsAsync(string agentId, int? page = null, int? limit = null, CancellationToken cancellationToken = default)
@@ -234,7 +373,7 @@ public sealed class SeclaiClient
             {
                 if (!string.IsNullOrWhiteSpace(responseBody))
                 {
-                    validation = JsonSerializer.Deserialize<HttpValidationError>(responseBody, JsonOptions);
+                    validation = JsonSerializer.Deserialize<HttpValidationError>(responseBody!, JsonOptions);
                 }
             }
             catch
