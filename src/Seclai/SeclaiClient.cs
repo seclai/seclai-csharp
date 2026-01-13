@@ -63,13 +63,13 @@ public sealed class SeclaiClient
         };
 
         // Note: spec path includes trailing slash.
-        return await SendJsonAsync<SourceListResponse>(HttpMethod.Get, "/api/sources/", query, body: null, cancellationToken);
+        return await SendJsonAsync<SourceListResponse>(HttpMethod.Get, "/sources/", query, body: null, cancellationToken);
     }
 
     public async Task<AgentRunResponse> RunAgentAsync(string agentId, AgentRunRequest body, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(agentId)) throw new ArgumentException("agentId is required", nameof(agentId));
-        return await SendJsonAsync<AgentRunResponse>(HttpMethod.Post, $"/api/agents/{Uri.EscapeDataString(agentId)}/runs", query: null, body, cancellationToken);
+        return await SendJsonAsync<AgentRunResponse>(HttpMethod.Post, $"/agents/{Uri.EscapeDataString(agentId)}/runs", query: null, body, cancellationToken);
     }
 
     public async Task<AgentRunResponse> RunStreamingAgentAndWaitAsync(
@@ -80,7 +80,7 @@ public sealed class SeclaiClient
     {
         if (string.IsNullOrWhiteSpace(agentId)) throw new ArgumentException("agentId is required", nameof(agentId));
 
-        var url = BuildUri($"/api/agents/{Uri.EscapeDataString(agentId)}/runs/stream", query: null);
+        var url = BuildUri($"/agents/{Uri.EscapeDataString(agentId)}/runs/stream", query: null);
 
         using var req = new HttpRequestMessage(HttpMethod.Post, url);
         req.Headers.TryAddWithoutValidation(_apiKeyHeader, _apiKey);
@@ -221,7 +221,7 @@ public sealed class SeclaiClient
             ["limit"] = limit is > 0 ? limit.Value.ToString() : null,
         };
 
-        return await SendJsonAsync<AgentRunListResponse>(HttpMethod.Get, $"/api/agents/{Uri.EscapeDataString(agentId)}/runs", query, body: null, cancellationToken);
+        return await SendJsonAsync<AgentRunListResponse>(HttpMethod.Get, $"/agents/{Uri.EscapeDataString(agentId)}/runs", query, body: null, cancellationToken);
     }
 
     public async Task<AgentRunResponse> GetAgentRunAsync(string agentId, string runId, CancellationToken cancellationToken = default)
@@ -229,7 +229,7 @@ public sealed class SeclaiClient
         if (string.IsNullOrWhiteSpace(agentId)) throw new ArgumentException("agentId is required", nameof(agentId));
         if (string.IsNullOrWhiteSpace(runId)) throw new ArgumentException("runId is required", nameof(runId));
 
-        return await SendJsonAsync<AgentRunResponse>(HttpMethod.Get, $"/api/agents/{Uri.EscapeDataString(agentId)}/runs/{Uri.EscapeDataString(runId)}", query: null, body: null, cancellationToken);
+        return await SendJsonAsync<AgentRunResponse>(HttpMethod.Get, $"/agents/{Uri.EscapeDataString(agentId)}/runs/{Uri.EscapeDataString(runId)}", query: null, body: null, cancellationToken);
     }
 
     public async Task<AgentRunResponse> DeleteAgentRunAsync(string agentId, string runId, CancellationToken cancellationToken = default)
@@ -237,7 +237,7 @@ public sealed class SeclaiClient
         if (string.IsNullOrWhiteSpace(agentId)) throw new ArgumentException("agentId is required", nameof(agentId));
         if (string.IsNullOrWhiteSpace(runId)) throw new ArgumentException("runId is required", nameof(runId));
 
-        return await SendJsonAsync<AgentRunResponse>(HttpMethod.Delete, $"/api/agents/{Uri.EscapeDataString(agentId)}/runs/{Uri.EscapeDataString(runId)}", query: null, body: null, cancellationToken);
+        return await SendJsonAsync<AgentRunResponse>(HttpMethod.Delete, $"/agents/{Uri.EscapeDataString(agentId)}/runs/{Uri.EscapeDataString(runId)}", query: null, body: null, cancellationToken);
     }
 
     public async Task<ContentDetailResponse> GetContentDetailAsync(
@@ -257,7 +257,7 @@ public sealed class SeclaiClient
             ["end"] = end is > 0 ? end.Value.ToString() : null,
         };
 
-        return await SendJsonAsync<ContentDetailResponse>(HttpMethod.Get, $"/api/contents/{Uri.EscapeDataString(sourceConnectionContentVersion)}", query, body: null, cancellationToken);
+        return await SendJsonAsync<ContentDetailResponse>(HttpMethod.Get, $"/contents/{Uri.EscapeDataString(sourceConnectionContentVersion)}", query, body: null, cancellationToken);
     }
 
     public async Task DeleteContentAsync(string sourceConnectionContentVersion, CancellationToken cancellationToken = default)
@@ -267,7 +267,7 @@ public sealed class SeclaiClient
             throw new ArgumentException("sourceConnectionContentVersion is required", nameof(sourceConnectionContentVersion));
         }
 
-        await SendJsonAsync<object>(HttpMethod.Delete, $"/api/contents/{Uri.EscapeDataString(sourceConnectionContentVersion)}", query: null, body: null, cancellationToken, expectBody: false);
+        await SendJsonAsync<object>(HttpMethod.Delete, $"/contents/{Uri.EscapeDataString(sourceConnectionContentVersion)}", query: null, body: null, cancellationToken, expectBody: false);
     }
 
     public async Task<ContentEmbeddingsListResponse> ListContentEmbeddingsAsync(
@@ -287,7 +287,7 @@ public sealed class SeclaiClient
             ["limit"] = limit is > 0 ? limit.Value.ToString() : null,
         };
 
-        return await SendJsonAsync<ContentEmbeddingsListResponse>(HttpMethod.Get, $"/api/contents/{Uri.EscapeDataString(sourceConnectionContentVersion)}/embeddings", query, body: null, cancellationToken);
+        return await SendJsonAsync<ContentEmbeddingsListResponse>(HttpMethod.Get, $"/contents/{Uri.EscapeDataString(sourceConnectionContentVersion)}/embeddings", query, body: null, cancellationToken);
     }
 
     public async Task<FileUploadResponse> UploadFileToSourceAsync(
@@ -301,7 +301,7 @@ public sealed class SeclaiClient
         if (fileBytes is null || fileBytes.Length == 0) throw new ArgumentException("fileBytes must be non-empty", nameof(fileBytes));
         if (string.IsNullOrWhiteSpace(fileName)) throw new ArgumentException("fileName is required", nameof(fileName));
 
-        var url = BuildUri($"/api/sources/{Uri.EscapeDataString(sourceConnectionId)}/upload", query: null);
+        var url = BuildUri($"/sources/{Uri.EscapeDataString(sourceConnectionId)}/upload", query: null);
 
         using var content = new MultipartFormDataContent();
         if (!string.IsNullOrWhiteSpace(title))

@@ -33,7 +33,7 @@ public sealed class SeclaiClientTests
     {
         var handler = new FakeHttpMessageHandler(req =>
         {
-            Assert.Equal("/api/sources/", req.RequestUri!.AbsolutePath);
+            Assert.Equal("/sources/", req.RequestUri!.AbsolutePath);
             Assert.True(req.Headers.TryGetValues("x-api-key", out var values));
             Assert.Contains("k", values);
             var body = "{\"data\":[],\"pagination\":{\"has_next\":false,\"has_prev\":false,\"limit\":20,\"page\":1,\"pages\":1,\"total\":0}}";
@@ -77,7 +77,7 @@ public sealed class SeclaiClientTests
         var handler = new FakeHttpMessageHandler(req =>
         {
             Assert.Equal(HttpMethod.Post, req.Method);
-            Assert.Equal("/api/agents/a/runs", req.RequestUri!.AbsolutePath);
+            Assert.Equal("/agents/a/runs", req.RequestUri!.AbsolutePath);
 
             var json = req.Content!.ReadAsStringAsync().GetAwaiter().GetResult();
             using var doc = JsonDocument.Parse(json);
@@ -104,7 +104,7 @@ public sealed class SeclaiClientTests
         var handler = new FakeHttpMessageHandler(req =>
         {
             Assert.Equal(HttpMethod.Post, req.Method);
-            Assert.Equal("/api/agents/a/runs/stream", req.RequestUri!.AbsolutePath);
+            Assert.Equal("/agents/a/runs/stream", req.RequestUri!.AbsolutePath);
 
             Assert.Contains(req.Headers.Accept, h => h.MediaType == "text/event-stream");
 
