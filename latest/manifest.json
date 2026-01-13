@@ -1,0 +1,387 @@
+{
+  "source_base_path": "/home/runner/work/seclai-csharp/seclai-csharp",
+  "xrefmap": "xrefmap.yml",
+  "files": [
+    {
+      "type": "Resource",
+      "output": {
+        "resource": {
+          "relative_path": "index.json"
+        }
+      }
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Seclai.Exceptions.ApiException.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Exceptions.ApiException.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Exceptions.ApiException",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Seclai.Exceptions.ApiValidationException.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Exceptions.ApiValidationException.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Exceptions.ApiValidationException",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Seclai.Exceptions.ConfigurationException.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Exceptions.ConfigurationException.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Exceptions.ConfigurationException",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Seclai.Exceptions.StreamingException.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Exceptions.StreamingException.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Exceptions.StreamingException",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Seclai.Exceptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Exceptions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Exceptions",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Seclai.Models.AgentRunAttemptResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.AgentRunAttemptResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.AgentRunAttemptResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Seclai.Models.AgentRunListResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.AgentRunListResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.AgentRunListResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Seclai.Models.AgentRunRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.AgentRunRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.AgentRunRequest",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Seclai.Models.AgentRunResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.AgentRunResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.AgentRunResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Seclai.Models.AgentRunStreamRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.AgentRunStreamRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.AgentRunStreamRequest",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Seclai.Models.ContentDetailResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.ContentDetailResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.ContentDetailResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Seclai.Models.ContentEmbeddingResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.ContentEmbeddingResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.ContentEmbeddingResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Seclai.Models.ContentEmbeddingsListResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.ContentEmbeddingsListResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.ContentEmbeddingsListResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Seclai.Models.FileUploadResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.FileUploadResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.FileUploadResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Seclai.Models.HttpValidationError.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.HttpValidationError.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.HttpValidationError",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Seclai.Models.PaginationResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.PaginationResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.PaginationResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Seclai.Models.SourceListResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.SourceListResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.SourceListResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Seclai.Models.SourceResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.SourceResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.SourceResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Seclai.Models.ValidationError.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.ValidationError.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.ValidationError",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Seclai.Models.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Seclai.SeclaiClient.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.SeclaiClient.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.SeclaiClient",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Seclai.SeclaiClientOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.SeclaiClientOptions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.SeclaiClientOptions",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Seclai.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai",
+      "Summary": null
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "api/index.md",
+      "output": {
+        ".html": {
+          "relative_path": "api/index.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "api/toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/toc.html"
+        },
+        ".json": {
+          "relative_path": "api/toc.json"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "docs/index.md",
+      "output": {
+        ".html": {
+          "relative_path": "docs/index.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "docs/toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "docs/toc.html"
+        },
+        ".json": {
+          "relative_path": "docs/toc.json"
+        }
+      },
+      "version": ""
+    }
+  ],
+  "groups": [
+    {
+      "xrefmap": "xrefmap.yml"
+    }
+  ]
+}
