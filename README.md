@@ -95,6 +95,19 @@ Build docs locally:
 
 ```bash
 dotnet tool restore
+rm -rf build/docs build/api
 dotnet tool run docfx docfx.json
+
+# static site output (upload `build/docs` to any static host, incl. GitHub Pages)
 open build/docs/index.html
+
+# if your browser/preview blocks JS/CSS when using file://, serve it locally:
+# cd build/docs && python3 -m http.server 8000
+```
+
+Or using the Makefile:
+
+```bash
+make docs
+make docs-serve
 ```

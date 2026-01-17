@@ -1,8 +1,7 @@
-# Seclai C# SDK
+# API Reference
 
-Official Seclai C# SDK.
+<meta http-equiv="refresh" content="0; url=api/index.html" />
 
-- Install: `dotnet add package Seclai.Sdk`
-- Source: this repository
+Redirecting to the API reference…
 
-See the API Reference for the full surface area.
+- If you are not redirected automatically: [Open the API Reference](~/api/index.md)

@@ -8,25 +8,37 @@
           ]
         }
       ],
-      "dest": "api",
+      "dest": "build/api",
       "disableGitFeatures": true
     }
   ],
   "build": {
     "content": [
       {
+        "src": "docs",
         "files": [
-          "docs/**/*.md",
-          "docs/toc.yml",
-          "api/**/*.yml",
+          "**/*.md",
+          "toc.yml"
+        ]
+      },
+      {
+        "files": [
           "api/index.md"
+        ]
+      },
+      {
+        "src": "build/api",
+        "dest": "api",
+        "files": [
+          "**/*.yml"
         ]
       }
     ],
     "resource": [
       {
+        "src": "docs",
         "files": [
-          "docs/images/**"
+          "images/**"
         ]
       }
     ],

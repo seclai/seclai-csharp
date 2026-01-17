@@ -190,6 +190,9 @@ jobs:
         run: |
           set -euo pipefail
 
+          rm -rf build/docs
+          rm -rf build/api
+
           dotnet tool run docfx docfx.json
 
           # docfx writes to build/docs; stage into versioned folders + latest
