@@ -229,7 +229,29 @@ public sealed class SeclaiClient
         if (string.IsNullOrWhiteSpace(agentId)) throw new ArgumentException("agentId is required", nameof(agentId));
         if (string.IsNullOrWhiteSpace(runId)) throw new ArgumentException("runId is required", nameof(runId));
 
-        return await SendJsonAsync<AgentRunResponse>(HttpMethod.Get, $"/agents/{Uri.EscapeDataString(agentId)}/runs/{Uri.EscapeDataString(runId)}", query: null, body: null, cancellationToken);
+        return await GetAgentRunAsync(agentId, runId, includeStepOutputs: false, cancellationToken);
+    }
+
+    public async Task<AgentRunResponse> GetAgentRunAsync(string agentId, string runId, bool includeStepOutputs, CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(agentId)) throw new ArgumentException("agentId is required", nameof(agentId));
+        if (string.IsNullOrWhiteSpace(runId)) throw new ArgumentException("runId is required", nameof(runId));
+
+        Dictionary<string, string?>? query = null;
+        if (includeStepOutputs)
+        {
+            query = new Dictionary<string, string?>
+            {
+                ["include_step_outputs"] = "true"
+            };
+        }
+
+        return await SendJsonAsync<AgentRunResponse>(
+            HttpMethod.Get,
+            $"/agents/{Uri.EscapeDataString(agentId)}/runs/{Uri.EscapeDataString(runId)}",
+            query,
+            body: null,
+            cancellationToken);
     }
 
     public async Task<AgentRunResponse> DeleteAgentRunAsync(string agentId, string runId, CancellationToken cancellationToken = default)

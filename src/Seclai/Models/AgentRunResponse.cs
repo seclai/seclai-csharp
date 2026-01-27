@@ -28,4 +28,7 @@ public sealed class AgentRunResponse
 
     [JsonPropertyName("status")]
     public string? Status { get; set; }
+
+    [JsonPropertyName("steps")]
+    public List<AgentRunStepResponse>? Steps { get; set; }
 }

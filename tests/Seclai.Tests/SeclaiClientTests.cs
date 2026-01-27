@@ -99,6 +99,52 @@ public sealed class SeclaiClientTests
     }
 
     [Fact]
+    public async Task GetAgentRun_CanIncludeStepOutputs()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Get, req.Method);
+            Assert.Equal("/agents/a/runs/run_1", req.RequestUri!.AbsolutePath);
+            Assert.Contains("include_step_outputs=true", req.RequestUri!.Query);
+
+            var body = "{" +
+                       "\"run_id\":\"run_1\"," +
+                       "\"status\":\"completed\"," +
+                       "\"attempts\":[]," +
+                       "\"error_count\":0," +
+                       "\"priority\":false," +
+                       "\"credits\":null," +
+                       "\"input\":null," +
+                       "\"output\":\"ok\"," +
+                       "\"steps\":[{" +
+                           "\"agent_step_id\":\"step_1\"," +
+                           "\"step_type\":\"tool\"," +
+                           "\"status\":\"completed\"," +
+                           "\"output\":\"out\"," +
+                           "\"output_content_type\":\"text/plain\"," +
+                           "\"started_at\":null," +
+                           "\"ended_at\":null," +
+                           "\"duration_seconds\":null," +
+                           "\"credits_used\":0" +
+                       "}]}";
+
+            return new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StringContent(body, Encoding.UTF8, "application/json")
+            };
+        });
+
+        using var http = new HttpClient(handler);
+        var client = new SeclaiClient(new SeclaiClientOptions { ApiKey = "k", BaseUri = new Uri("https://example.invalid"), HttpClient = http });
+
+        var res = await client.GetAgentRunAsync("a", "run_1", includeStepOutputs: true);
+        Assert.Equal("run_1", res.RunId);
+        Assert.NotNull(res.Steps);
+        Assert.Single(res.Steps!);
+        Assert.Equal("step_1", res.Steps![0].AgentStepId);
+    }
+
+    [Fact]
     public async Task RunStreamingAgentAndWait_ParsesDoneEvent()
     {
         var handler = new FakeHttpMessageHandler(req =>

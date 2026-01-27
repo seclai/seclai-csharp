@@ -73,6 +73,14 @@ class Program
 		);
 		Console.WriteLine($"Run: {run.Id} status={run.Status}");
 
+		// Get agent run details (optionally include step outputs)
+		var runWithSteps = await client.GetAgentRunAsync(
+			agentId: "sc_ag_123",
+			runId: "run_id",
+			includeStepOutputs: true
+		);
+		Console.WriteLine($"Steps: {runWithSteps.Steps?.Count ?? 0}");
+
 		// Run an agent via SSE streaming and wait for the final result
 		// Completes when the stream emits the final `done` event; throws on timeout or early termination.
 		var finalRun = await client.RunStreamingAgentAndWaitAsync(
