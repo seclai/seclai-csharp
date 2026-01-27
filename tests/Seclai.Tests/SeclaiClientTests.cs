@@ -104,7 +104,7 @@ public sealed class SeclaiClientTests
         var handler = new FakeHttpMessageHandler(req =>
         {
             Assert.Equal(HttpMethod.Get, req.Method);
-            Assert.Equal("/agents/a/runs/run_1", req.RequestUri!.AbsolutePath);
+            Assert.Equal("/agents/runs/run_1", req.RequestUri!.AbsolutePath);
             Assert.Contains("include_step_outputs=true", req.RequestUri!.Query);
 
             var body = "{" +
@@ -142,6 +142,85 @@ public sealed class SeclaiClientTests
         Assert.NotNull(res.Steps);
         Assert.Single(res.Steps!);
         Assert.Equal("step_1", res.Steps![0].AgentStepId);
+    }
+
+    [Fact]
+    public async Task GetAgentRunByRunId_CanIncludeStepOutputs()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Get, req.Method);
+            Assert.Equal("/agents/runs/run_1", req.RequestUri!.AbsolutePath);
+            Assert.Contains("include_step_outputs=true", req.RequestUri!.Query);
+
+            var body = "{" +
+                       "\"run_id\":\"run_1\"," +
+                       "\"status\":\"completed\"," +
+                       "\"attempts\":[]," +
+                       "\"error_count\":0," +
+                       "\"priority\":false," +
+                       "\"credits\":null," +
+                       "\"input\":null," +
+                       "\"output\":\"ok\"," +
+                       "\"steps\":[]}";
+
+            return new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StringContent(body, Encoding.UTF8, "application/json")
+            };
+        });
+
+        using var http = new HttpClient(handler);
+        var client = new SeclaiClient(new SeclaiClientOptions { ApiKey = "k", BaseUri = new Uri("https://example.invalid"), HttpClient = http });
+
+        var res = await client.GetAgentRunAsync("run_1", includeStepOutputs: true);
+        Assert.Equal("run_1", res.RunId);
+    }
+
+    [Fact]
+    public async Task DeleteAgentRun_UsesRunIdOnlyEndpoint()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Delete, req.Method);
+            Assert.Equal("/agents/runs/run_1", req.RequestUri!.AbsolutePath);
+
+            var resp = new AgentRunResponse { RunId = "run_1", Status = "processing" };
+            var body = JsonSerializer.Serialize(resp);
+            return new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StringContent(body, Encoding.UTF8, "application/json")
+            };
+        });
+
+        using var http = new HttpClient(handler);
+        var client = new SeclaiClient(new SeclaiClientOptions { ApiKey = "k", BaseUri = new Uri("https://example.invalid"), HttpClient = http });
+
+        var deleted = await client.DeleteAgentRunAsync("a", "run_1");
+        Assert.Equal("run_1", deleted.RunId);
+    }
+
+    [Fact]
+    public async Task DeleteAgentRunByRunId_UsesRunIdOnlyEndpoint()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Delete, req.Method);
+            Assert.Equal("/agents/runs/run_1", req.RequestUri!.AbsolutePath);
+
+            var resp = new AgentRunResponse { RunId = "run_1", Status = "processing" };
+            var body = JsonSerializer.Serialize(resp);
+            return new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StringContent(body, Encoding.UTF8, "application/json")
+            };
+        });
+
+        using var http = new HttpClient(handler);
+        var client = new SeclaiClient(new SeclaiClientOptions { ApiKey = "k", BaseUri = new Uri("https://example.invalid"), HttpClient = http });
+
+        var deleted = await client.DeleteAgentRunAsync("run_1");
+        Assert.Equal("run_1", deleted.RunId);
     }
 
     [Fact]

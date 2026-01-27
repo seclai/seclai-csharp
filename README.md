@@ -75,7 +75,6 @@ class Program
 
 		// Get agent run details (optionally include step outputs)
 		var runWithSteps = await client.GetAgentRunAsync(
-			agentId: "sc_ag_123",
 			runId: "run_id",
 			includeStepOutputs: true
 		);

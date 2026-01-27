@@ -224,17 +224,14 @@ public sealed class SeclaiClient
         return await SendJsonAsync<AgentRunListResponse>(HttpMethod.Get, $"/agents/{Uri.EscapeDataString(agentId)}/runs", query, body: null, cancellationToken);
     }
 
-    public async Task<AgentRunResponse> GetAgentRunAsync(string agentId, string runId, CancellationToken cancellationToken = default)
+    public Task<AgentRunResponse> GetAgentRunAsync(string runId, CancellationToken cancellationToken = default)
     {
-        if (string.IsNullOrWhiteSpace(agentId)) throw new ArgumentException("agentId is required", nameof(agentId));
         if (string.IsNullOrWhiteSpace(runId)) throw new ArgumentException("runId is required", nameof(runId));
-
-        return await GetAgentRunAsync(agentId, runId, includeStepOutputs: false, cancellationToken);
+        return GetAgentRunAsync(runId, includeStepOutputs: false, cancellationToken);
     }
 
-    public async Task<AgentRunResponse> GetAgentRunAsync(string agentId, string runId, bool includeStepOutputs, CancellationToken cancellationToken = default)
+    public async Task<AgentRunResponse> GetAgentRunAsync(string runId, bool includeStepOutputs, CancellationToken cancellationToken = default)
     {
-        if (string.IsNullOrWhiteSpace(agentId)) throw new ArgumentException("agentId is required", nameof(agentId));
         if (string.IsNullOrWhiteSpace(runId)) throw new ArgumentException("runId is required", nameof(runId));
 
         Dictionary<string, string?>? query = null;
@@ -248,18 +245,43 @@ public sealed class SeclaiClient
 
         return await SendJsonAsync<AgentRunResponse>(
             HttpMethod.Get,
-            $"/agents/{Uri.EscapeDataString(agentId)}/runs/{Uri.EscapeDataString(runId)}",
+            $"/agents/runs/{Uri.EscapeDataString(runId)}",
             query,
             body: null,
             cancellationToken);
     }
 
-    public async Task<AgentRunResponse> DeleteAgentRunAsync(string agentId, string runId, CancellationToken cancellationToken = default)
+    public async Task<AgentRunResponse> GetAgentRunAsync(string agentId, string runId, CancellationToken cancellationToken = default)
     {
-        if (string.IsNullOrWhiteSpace(agentId)) throw new ArgumentException("agentId is required", nameof(agentId));
         if (string.IsNullOrWhiteSpace(runId)) throw new ArgumentException("runId is required", nameof(runId));
 
-        return await SendJsonAsync<AgentRunResponse>(HttpMethod.Delete, $"/agents/{Uri.EscapeDataString(agentId)}/runs/{Uri.EscapeDataString(runId)}", query: null, body: null, cancellationToken);
+        // Backward-compatible signature: agentId is no longer required by the API.
+        _ = agentId;
+        return await GetAgentRunAsync(runId, includeStepOutputs: false, cancellationToken);
+    }
+
+    public async Task<AgentRunResponse> GetAgentRunAsync(string agentId, string runId, bool includeStepOutputs, CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(runId)) throw new ArgumentException("runId is required", nameof(runId));
+
+        // Backward-compatible signature: agentId is no longer required by the API.
+        _ = agentId;
+        return await GetAgentRunAsync(runId, includeStepOutputs, cancellationToken);
+    }
+
+    public Task<AgentRunResponse> DeleteAgentRunAsync(string runId, CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(runId)) throw new ArgumentException("runId is required", nameof(runId));
+        return SendJsonAsync<AgentRunResponse>(HttpMethod.Delete, $"/agents/runs/{Uri.EscapeDataString(runId)}", query: null, body: null, cancellationToken);
+    }
+
+    public async Task<AgentRunResponse> DeleteAgentRunAsync(string agentId, string runId, CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(runId)) throw new ArgumentException("runId is required", nameof(runId));
+
+        // Backward-compatible signature: agentId is no longer required by the API.
+        _ = agentId;
+        return await DeleteAgentRunAsync(runId, cancellationToken);
     }
 
     public async Task<ContentDetailResponse> GetContentDetailAsync(
