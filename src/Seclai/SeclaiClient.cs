@@ -290,11 +290,41 @@ public sealed class SeclaiClient
         return await SendJsonAsync<ContentEmbeddingsListResponse>(HttpMethod.Get, $"/contents/{Uri.EscapeDataString(sourceConnectionContentVersion)}/embeddings", query, body: null, cancellationToken);
     }
 
+    /// <summary>
+    /// Upload a file to a specific source connection.
+    /// </summary>
+    /// <remarks>
+    /// <para><strong>Maximum file size:</strong> 200 MiB.</para>
+    /// <para><strong>Supported MIME types:</strong></para>
+    /// <list type="bullet">
+    /// <item><description><c>application/epub+zip</c></description></item>
+    /// <item><description><c>application/json</c></description></item>
+    /// <item><description><c>application/msword</c></description></item>
+    /// <item><description><c>application/pdf</c></description></item>
+    /// <item><description><c>application/vnd.ms-excel</c></description></item>
+    /// <item><description><c>application/vnd.ms-outlook</c></description></item>
+    /// <item><description><c>application/vnd.ms-powerpoint</c></description></item>
+    /// <item><description><c>application/vnd.openxmlformats-officedocument.presentationml.presentation</c></description></item>
+    /// <item><description><c>application/vnd.openxmlformats-officedocument.spreadsheetml.sheet</c></description></item>
+    /// <item><description><c>application/vnd.openxmlformats-officedocument.wordprocessingml.document</c></description></item>
+    /// <item><description><c>application/xml</c></description></item>
+    /// <item><description><c>application/zip</c></description></item>
+    /// <item><description><c>audio/flac</c>, <c>audio/mp4</c>, <c>audio/mpeg</c>, <c>audio/ogg</c>, <c>audio/wav</c></description></item>
+    /// <item><description><c>image/bmp</c>, <c>image/gif</c>, <c>image/jpeg</c>, <c>image/png</c>, <c>image/tiff</c>, <c>image/webp</c></description></item>
+    /// <item><description><c>text/csv</c>, <c>text/html</c>, <c>text/markdown</c>, <c>text/x-markdown</c>, <c>text/plain</c>, <c>text/xml</c></description></item>
+    /// <item><description><c>video/mp4</c>, <c>video/quicktime</c>, <c>video/x-msvideo</c></description></item>
+    /// </list>
+    /// <para>
+    /// If <paramref name="mimeType"/> is omitted, the SDK attempts to infer it from <paramref name="fileName"/>.
+    /// If the upload is sent as <c>application/octet-stream</c>, the server attempts to infer the type from the file extension.
+    /// </para>
+    /// </remarks>
     public async Task<FileUploadResponse> UploadFileToSourceAsync(
         string sourceConnectionId,
         byte[] fileBytes,
         string fileName,
         string? title = null,
+        string? mimeType = null,
         CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(sourceConnectionId)) throw new ArgumentException("sourceConnectionId is required", nameof(sourceConnectionId));
@@ -309,8 +339,13 @@ public sealed class SeclaiClient
             content.Add(new StringContent(title, Encoding.UTF8), "title");
         }
 
+        var inferredMimeType = string.IsNullOrWhiteSpace(mimeType)
+            ? TryInferMimeTypeFromFileName(fileName)
+            : mimeType;
+
         var fileContent = new ByteArrayContent(fileBytes);
-        fileContent.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
+        fileContent.Headers.ContentType = new MediaTypeHeaderValue(
+            string.IsNullOrWhiteSpace(inferredMimeType) ? "application/octet-stream" : inferredMimeType);
         content.Add(fileContent, "file", fileName);
 
         using var req = new HttpRequestMessage(HttpMethod.Post, url) { Content = content };
@@ -327,6 +362,54 @@ public sealed class SeclaiClient
 
         var parsed = JsonSerializer.Deserialize<FileUploadResponse>(responseBody ?? string.Empty, JsonOptions);
         return parsed ?? new FileUploadResponse();
+    }
+
+    private static string? TryInferMimeTypeFromFileName(string fileName)
+    {
+        if (string.IsNullOrWhiteSpace(fileName)) return null;
+
+        var dot = fileName.LastIndexOf('.');
+        if (dot < 0 || dot == fileName.Length - 1) return null;
+
+        var ext = fileName.Substring(dot).ToLowerInvariant();
+        return ext switch
+        {
+            ".epub" => "application/epub+zip",
+            ".json" => "application/json",
+            ".doc" => "application/msword",
+            ".pdf" => "application/pdf",
+            ".xls" => "application/vnd.ms-excel",
+            ".msg" => "application/vnd.ms-outlook",
+            ".ppt" => "application/vnd.ms-powerpoint",
+            ".pptx" => "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+            ".xlsx" => "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            ".docx" => "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+            ".xml" => "application/xml",
+            ".zip" => "application/zip",
+            ".flac" => "audio/flac",
+            ".m4a" => "audio/mp4",
+            ".mp4" => "video/mp4",
+            ".mp3" => "audio/mpeg",
+            ".ogg" => "audio/ogg",
+            ".wav" => "audio/wav",
+            ".bmp" => "image/bmp",
+            ".gif" => "image/gif",
+            ".jpeg" => "image/jpeg",
+            ".jpg" => "image/jpeg",
+            ".png" => "image/png",
+            ".tiff" => "image/tiff",
+            ".tif" => "image/tiff",
+            ".webp" => "image/webp",
+            ".csv" => "text/csv",
+            ".html" => "text/html",
+            ".htm" => "text/html",
+            ".md" => "text/markdown",
+            ".markdown" => "text/markdown",
+            ".txt" => "text/plain",
+            ".avi" => "video/x-msvideo",
+            ".mov" => "video/quicktime",
+            _ => null
+        };
     }
 
     private async Task<T> SendJsonAsync<T>(HttpMethod method, string path, Dictionary<string, string?>? query, object? body, CancellationToken cancellationToken, bool expectBody = true)
