@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Text;
@@ -280,6 +281,104 @@ public sealed class SeclaiClientTests
                 new AgentRunStreamRequest { Input = "hi", Metadata = new System.Collections.Generic.Dictionary<string, JsonElement>() },
                 timeout: TimeSpan.FromMilliseconds(25)
             ));
+    }
+
+    [Fact]
+    public async Task UploadFileToSource_SendsMetadataMultipartField()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Post, req.Method);
+            Assert.Equal("/sources/sc_1/upload", req.RequestUri!.AbsolutePath);
+            Assert.Equal("multipart/form-data", req.Content!.Headers.ContentType!.MediaType);
+
+            var multipart = req.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+            Assert.True(multipart.Contains("name=\"metadata\"", StringComparison.Ordinal) || multipart.Contains("name=metadata", StringComparison.Ordinal));
+            Assert.True(multipart.Contains("name=\"file\"", StringComparison.Ordinal) || multipart.Contains("name=file", StringComparison.Ordinal));
+            Assert.True(multipart.Contains("filename=\"hello.txt\"", StringComparison.Ordinal) || multipart.Contains("filename=hello.txt", StringComparison.Ordinal));
+
+            var metadataJson = ExtractMultipartPartValue(multipart, "metadata");
+            using var doc = JsonDocument.Parse(metadataJson);
+            Assert.Equal("docs", doc.RootElement.GetProperty("category").GetString());
+            Assert.Equal("Ada", doc.RootElement.GetProperty("author").GetString());
+
+            var body = "{\"filename\":\"hello.txt\",\"status\":\"success\",\"source_connection_content_version_id\":\"sc_cv_1\"}";
+            return new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StringContent(body, Encoding.UTF8, "application/json")
+            };
+        });
+
+        using var http = new HttpClient(handler);
+        var client = new SeclaiClient(new SeclaiClientOptions { ApiKey = "k", BaseUri = new Uri("https://example.invalid"), HttpClient = http });
+
+        var res = await client.UploadFileToSourceAsync(
+            sourceConnectionId: "sc_1",
+            fileBytes: Encoding.UTF8.GetBytes("hello"),
+            fileName: "hello.txt",
+            metadata: new Dictionary<string, object?> { ["category"] = "docs", ["author"] = "Ada" });
+
+        Assert.Equal("hello.txt", res.Filename);
+        Assert.Equal("success", res.Status);
+        Assert.Equal("sc_cv_1", res.SourceConnectionContentVersionId);
+    }
+
+    [Fact]
+    public async Task UploadFileToContent_PostsToContentUploadEndpointAndSendsMetadata()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Post, req.Method);
+            Assert.Equal("/contents/sc_cv_123/upload", req.RequestUri!.AbsolutePath);
+            Assert.Equal("multipart/form-data", req.Content!.Headers.ContentType!.MediaType);
+
+            var multipart = req.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+            Assert.True(multipart.Contains("name=\"metadata\"", StringComparison.Ordinal) || multipart.Contains("name=metadata", StringComparison.Ordinal));
+            Assert.True(multipart.Contains("name=\"file\"", StringComparison.Ordinal) || multipart.Contains("name=file", StringComparison.Ordinal));
+            Assert.True(multipart.Contains("filename=\"updated.pdf\"", StringComparison.Ordinal) || multipart.Contains("filename=updated.pdf", StringComparison.Ordinal));
+
+            var metadataJson = ExtractMultipartPartValue(multipart, "metadata");
+            using var doc = JsonDocument.Parse(metadataJson);
+            Assert.Equal(2, doc.RootElement.GetProperty("revision").GetInt32());
+
+            var body = "{\"filename\":\"updated.pdf\",\"status\":\"success\",\"source_connection_content_version_id\":\"sc_cv_123\"}";
+            return new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StringContent(body, Encoding.UTF8, "application/json")
+            };
+        });
+
+        using var http = new HttpClient(handler);
+        var client = new SeclaiClient(new SeclaiClientOptions { ApiKey = "k", BaseUri = new Uri("https://example.invalid"), HttpClient = http });
+
+        var res = await client.UploadFileToContentAsync(
+            sourceConnectionContentVersionId: "sc_cv_123",
+            fileBytes: Encoding.UTF8.GetBytes("%PDF-1.4"),
+            fileName: "updated.pdf",
+            metadata: new Dictionary<string, object?> { ["revision"] = 2 });
+
+        Assert.Equal("updated.pdf", res.Filename);
+        Assert.Equal("success", res.Status);
+        Assert.Equal("sc_cv_123", res.SourceConnectionContentVersionId);
+    }
+
+    private static string ExtractMultipartPartValue(string multipart, string name)
+    {
+        var markerQuoted = $"name=\"{name}\"";
+        var markerUnquoted = $"name={name}";
+
+        var start = multipart.IndexOf(markerQuoted, StringComparison.Ordinal);
+        if (start < 0) start = multipart.IndexOf(markerUnquoted, StringComparison.Ordinal);
+        if (start < 0) throw new InvalidOperationException($"Missing multipart field '{name}'.");
+
+        start = multipart.IndexOf("\r\n\r\n", start, StringComparison.Ordinal);
+        if (start < 0) throw new InvalidOperationException("Invalid multipart format: missing header separator.");
+        start += 4;
+
+        var end = multipart.IndexOf("\r\n--", start, StringComparison.Ordinal);
+        if (end < 0) end = multipart.Length;
+
+        return multipart.Substring(start, end - start).TrimEnd('\r', '\n');
     }
 
     private sealed class NeverEndingStream : System.IO.Stream

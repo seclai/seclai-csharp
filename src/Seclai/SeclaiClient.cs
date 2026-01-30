@@ -368,6 +368,7 @@ public sealed class SeclaiClient
         byte[] fileBytes,
         string fileName,
         string? title = null,
+        IReadOnlyDictionary<string, object?>? metadata = null,
         string? mimeType = null,
         CancellationToken cancellationToken = default)
     {
@@ -381,6 +382,73 @@ public sealed class SeclaiClient
         if (!string.IsNullOrWhiteSpace(title))
         {
             content.Add(new StringContent(title, Encoding.UTF8), "title");
+        }
+
+        if (metadata is not null && metadata.Count > 0)
+        {
+            var metadataJson = JsonSerializer.Serialize(metadata, JsonOptions);
+            content.Add(new StringContent(metadataJson, Encoding.UTF8, "text/plain"), "metadata");
+        }
+
+        var inferredMimeType = string.IsNullOrWhiteSpace(mimeType)
+            ? TryInferMimeTypeFromFileName(fileName)
+            : mimeType;
+
+        var fileContent = new ByteArrayContent(fileBytes);
+        fileContent.Headers.ContentType = new MediaTypeHeaderValue(
+            string.IsNullOrWhiteSpace(inferredMimeType) ? "application/octet-stream" : inferredMimeType);
+        content.Add(fileContent, "file", fileName);
+
+        using var req = new HttpRequestMessage(HttpMethod.Post, url) { Content = content };
+        req.Headers.TryAddWithoutValidation(_apiKeyHeader, _apiKey);
+        req.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+        using var resp = await _http.SendAsync(req, cancellationToken).ConfigureAwait(false);
+        var responseBody = await ReadBodyAsync(resp).ConfigureAwait(false);
+
+        if (!resp.IsSuccessStatusCode)
+        {
+            ThrowApiError(resp.StatusCode, req.Method.Method, url, responseBody);
+        }
+
+        var parsed = JsonSerializer.Deserialize<FileUploadResponse>(responseBody ?? string.Empty, JsonOptions);
+        return parsed ?? new FileUploadResponse();
+    }
+
+    /// <summary>
+    /// Upload a file and replace the content backing an existing content version.
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// This uploads a new file to <c>/contents/{source_connection_content_version}/upload</c>.
+    /// It behaves like <see cref="UploadFileToSourceAsync"/>, but targets an existing content version ID.
+    /// </para>
+    /// </remarks>
+    public async Task<FileUploadResponse> UploadFileToContentAsync(
+        string sourceConnectionContentVersionId,
+        byte[] fileBytes,
+        string fileName,
+        string? title = null,
+        IReadOnlyDictionary<string, object?>? metadata = null,
+        string? mimeType = null,
+        CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(sourceConnectionContentVersionId)) throw new ArgumentException("sourceConnectionContentVersionId is required", nameof(sourceConnectionContentVersionId));
+        if (fileBytes is null || fileBytes.Length == 0) throw new ArgumentException("fileBytes must be non-empty", nameof(fileBytes));
+        if (string.IsNullOrWhiteSpace(fileName)) throw new ArgumentException("fileName is required", nameof(fileName));
+
+        var url = BuildUri($"/contents/{Uri.EscapeDataString(sourceConnectionContentVersionId)}/upload", query: null);
+
+        using var content = new MultipartFormDataContent();
+        if (!string.IsNullOrWhiteSpace(title))
+        {
+            content.Add(new StringContent(title, Encoding.UTF8), "title");
+        }
+
+        if (metadata is not null && metadata.Count > 0)
+        {
+            var metadataJson = JsonSerializer.Serialize(metadata, JsonOptions);
+            content.Add(new StringContent(metadataJson, Encoding.UTF8, "text/plain"), "metadata");
         }
 
         var inferredMimeType = string.IsNullOrWhiteSpace(mimeType)

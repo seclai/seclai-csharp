@@ -62,9 +62,27 @@ class Program
 			fileBytes: bytes,
 			fileName: "example.pdf",
 			title: "Example PDF",
+			metadata: new System.Collections.Generic.Dictionary<string, object?>
+			{
+				["category"] = "docs",
+				["author"] = "Ada"
+			},
 			mimeType: "application/pdf"
 		);
-		Console.WriteLine($"Uploaded: {upload.SourceConnectionContentVersion}");
+		Console.WriteLine($"Uploaded: {upload.SourceConnectionContentVersionId}");
+
+		// Replace the file backing an existing content version
+		var updatedBytes = await File.ReadAllBytesAsync("./example-updated.pdf");
+		var replaced = await client.UploadFileToContentAsync(
+			sourceConnectionContentVersionId: "sc_cv_123",
+			fileBytes: updatedBytes,
+			fileName: "example-updated.pdf",
+			metadata: new System.Collections.Generic.Dictionary<string, object?>
+			{
+				["revision"] = 2
+			}
+		);
+		Console.WriteLine($"Replaced: {replaced.SourceConnectionContentVersionId}");
 
 		// Run an agent
 		var run = await client.RunAgentAsync(
@@ -90,12 +108,12 @@ class Program
 		Console.WriteLine($"Final run: {finalRun.Id} status={finalRun.Status}");
 
 		// Fetch content details + embeddings
-		var content = await client.GetContentDetailAsync(upload.SourceConnectionContentVersion);
-		var embeddings = await client.ListContentEmbeddingsAsync(upload.SourceConnectionContentVersion, page: 1, limit: 20);
+		var content = await client.GetContentDetailAsync(upload.SourceConnectionContentVersionId!);
+		var embeddings = await client.ListContentEmbeddingsAsync(upload.SourceConnectionContentVersionId!, page: 1, limit: 20);
 		Console.WriteLine($"Content title: {content.Title} embeddings: {embeddings.Data.Count}");
 
 		// Delete content
-		await client.DeleteContentAsync(upload.SourceConnectionContentVersion);
+		await client.DeleteContentAsync(upload.SourceConnectionContentVersionId!);
 	}
 }
 ```
