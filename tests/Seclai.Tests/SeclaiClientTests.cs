@@ -44,8 +44,7 @@ public sealed class SeclaiClientTests
             };
         });
 
-        using var http = new HttpClient(handler);
-        var client = new SeclaiClient(new SeclaiClientOptions { ApiKey = "k", BaseUri = new Uri("https://example.invalid"), HttpClient = http });
+        var client = MakeClient(handler);
         var res = await client.ListSourcesAsync();
         Assert.NotNull(res);
         Assert.NotNull(res.Pagination);
@@ -63,8 +62,7 @@ public sealed class SeclaiClientTests
             };
         });
 
-        using var http = new HttpClient(handler);
-        var client = new SeclaiClient(new SeclaiClientOptions { ApiKey = "k", BaseUri = new Uri("https://example.invalid"), HttpClient = http });
+        var client = MakeClient(handler);
 
         var ex = await Assert.ThrowsAsync<ApiValidationException>(async () => await client.ListSourcesAsync(page: 0));
         Assert.NotNull(ex.Validation);
@@ -92,8 +90,7 @@ public sealed class SeclaiClientTests
             };
         });
 
-        using var http = new HttpClient(handler);
-        var client = new SeclaiClient(new SeclaiClientOptions { ApiKey = "k", BaseUri = new Uri("https://example.invalid"), HttpClient = http });
+        var client = MakeClient(handler);
 
         var res = await client.RunAgentAsync("a", new AgentRunRequest { Priority = false });
         Assert.Equal("run_1", res.RunId);
@@ -135,8 +132,7 @@ public sealed class SeclaiClientTests
             };
         });
 
-        using var http = new HttpClient(handler);
-        var client = new SeclaiClient(new SeclaiClientOptions { ApiKey = "k", BaseUri = new Uri("https://example.invalid"), HttpClient = http });
+        var client = MakeClient(handler);
 
         var res = await client.GetAgentRunAsync("run_1", includeStepOutputs: true);
         Assert.Equal("run_1", res.RunId);
@@ -171,8 +167,7 @@ public sealed class SeclaiClientTests
             };
         });
 
-        using var http = new HttpClient(handler);
-        var client = new SeclaiClient(new SeclaiClientOptions { ApiKey = "k", BaseUri = new Uri("https://example.invalid"), HttpClient = http });
+        var client = MakeClient(handler);
 
         var res = await client.GetAgentRunAsync("run_1", includeStepOutputs: true);
         Assert.Equal("run_1", res.RunId);
@@ -194,8 +189,7 @@ public sealed class SeclaiClientTests
             };
         });
 
-        using var http = new HttpClient(handler);
-        var client = new SeclaiClient(new SeclaiClientOptions { ApiKey = "k", BaseUri = new Uri("https://example.invalid"), HttpClient = http });
+        var client = MakeClient(handler);
 
         var deleted = await client.DeleteAgentRunAsync("run_1");
         Assert.Equal("run_1", deleted.RunId);
@@ -226,8 +220,7 @@ public sealed class SeclaiClientTests
             return resp;
         });
 
-        using var http = new HttpClient(handler);
-        var client = new SeclaiClient(new SeclaiClientOptions { ApiKey = "k", BaseUri = new Uri("https://example.invalid"), HttpClient = http });
+        var client = MakeClient(handler);
 
         var res = await client.RunStreamingAgentAndWaitAsync("a", new AgentRunStreamRequest { Input = "hi", Metadata = new System.Collections.Generic.Dictionary<string, JsonElement>() });
         Assert.Equal("run_1", res.RunId);
@@ -249,8 +242,7 @@ public sealed class SeclaiClientTests
             return resp;
         });
 
-        using var http = new HttpClient(handler);
-        var client = new SeclaiClient(new SeclaiClientOptions { ApiKey = "k", BaseUri = new Uri("https://example.invalid"), HttpClient = http });
+        var client = MakeClient(handler);
 
         await Assert.ThrowsAsync<StreamingException>(async () =>
             await client.RunStreamingAgentAndWaitAsync(
@@ -286,8 +278,7 @@ public sealed class SeclaiClientTests
             };
         });
 
-        using var http = new HttpClient(handler);
-        var client = new SeclaiClient(new SeclaiClientOptions { ApiKey = "k", BaseUri = new Uri("https://example.invalid"), HttpClient = http });
+        var client = MakeClient(handler);
 
         var res = await client.UploadFileToSourceAsync(
             sourceConnectionId: "sc_1",
@@ -325,8 +316,7 @@ public sealed class SeclaiClientTests
             };
         });
 
-        using var http = new HttpClient(handler);
-        var client = new SeclaiClient(new SeclaiClientOptions { ApiKey = "k", BaseUri = new Uri("https://example.invalid"), HttpClient = http });
+        var client = MakeClient(handler);
 
         var res = await client.UploadFileToContentAsync(
             sourceConnectionContentVersionId: "sc_cv_123",
