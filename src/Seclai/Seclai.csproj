@@ -12,7 +12,13 @@
 
     <PackageId>Seclai.Sdk</PackageId>
     <Authors>Seclai</Authors>
-    <Description>Official Seclai C# SDK.</Description>
+    <Description>Official Seclai C# SDK — agents, knowledge bases, memory banks, sources, evaluations, solutions, governance, alerts, search, and AI assistants.</Description>
+    <Copyright>Copyright (c) 2026 Seclai</Copyright>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <PackageTags>seclai;sdk;ai;agents;rag;knowledge-base;llm</PackageTags>
+    <PackageProjectUrl>https://seclai.com</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/seclai/seclai-csharp</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
 
     <!-- nuget.org uses this file to render the package README. -->
     <PackageReadmeFile>README.md</PackageReadmeFile>
@@ -24,6 +30,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="8.0.0" />
     <PackageReference Include="System.Text.Json" Version="8.0.5" />
   </ItemGroup>
 </Project>
