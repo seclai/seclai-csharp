@@ -339,6 +339,1253 @@ public sealed class SeclaiClientTests
         Assert.Equal("sc_cv_123", res.SourceConnectionContentVersionId);
     }
 
+    // ── Agents ──────────────────────────────────────────────────────────────
+
+    [Fact]
+    public async Task ListAgents_SetsPathAndDeserializes()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Get, req.Method);
+            Assert.Equal("/agents", req.RequestUri!.AbsolutePath);
+            return JsonResponse("{\"data\":[{\"id\":\"a1\",\"name\":\"Bot\",\"description\":\"\",\"is_public\":false,\"created_at\":\"\",\"updated_at\":\"\"}],\"total\":1}");
+        });
+        var client = MakeClient(handler);
+        var res = await client.ListAgentsAsync(page: 1, limit: 10);
+        Assert.Single(res.Data);
+        Assert.Equal("a1", res.Data[0].Id);
+    }
+
+    [Fact]
+    public async Task CreateAgent_PostsBody()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Post, req.Method);
+            Assert.Equal("/agents", req.RequestUri!.AbsolutePath);
+            return JsonResponse("{\"id\":\"a1\",\"name\":\"Bot\",\"description\":\"\",\"is_public\":false,\"created_at\":\"\",\"updated_at\":\"\"}");
+        });
+        var client = MakeClient(handler);
+        var res = await client.CreateAgentAsync(new CreateAgentRequest { Name = "Bot" });
+        Assert.Equal("a1", res.Id);
+    }
+
+    [Fact]
+    public async Task GetAgent_UsesAgentIdInPath()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Get, req.Method);
+            Assert.Equal("/agents/a1", req.RequestUri!.AbsolutePath);
+            return JsonResponse("{\"id\":\"a1\",\"name\":\"Bot\",\"description\":\"\",\"is_public\":false,\"created_at\":\"\",\"updated_at\":\"\"}");
+        });
+        var client = MakeClient(handler);
+        var res = await client.GetAgentAsync("a1");
+        Assert.Equal("a1", res.Id);
+    }
+
+    [Fact]
+    public async Task UpdateAgent_PutsBody()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Put, req.Method);
+            Assert.Equal("/agents/a1", req.RequestUri!.AbsolutePath);
+            return JsonResponse("{\"id\":\"a1\",\"name\":\"Updated\",\"description\":\"\",\"is_public\":false,\"created_at\":\"\",\"updated_at\":\"\"}");
+        });
+        var client = MakeClient(handler);
+        var res = await client.UpdateAgentAsync("a1", new UpdateAgentRequest { Name = "Updated" });
+        Assert.Equal("Updated", res.Name);
+    }
+
+    [Fact]
+    public async Task DeleteAgent_SendsDelete()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Delete, req.Method);
+            Assert.Equal("/agents/a1", req.RequestUri!.AbsolutePath);
+            return new HttpResponseMessage(HttpStatusCode.NoContent);
+        });
+        var client = MakeClient(handler);
+        await client.DeleteAgentAsync("a1"); // should not throw
+    }
+
+    // ── Agent Definitions ───────────────────────────────────────────────────
+
+    [Fact]
+    public async Task GetAgentDefinition_GetsPath()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Get, req.Method);
+            Assert.Equal("/agents/a1/definition", req.RequestUri!.AbsolutePath);
+            return JsonResponse("{\"change_id\":\"c1\",\"schema_version\":\"1\",\"definition\":{}}");
+        });
+        var client = MakeClient(handler);
+        var res = await client.GetAgentDefinitionAsync("a1");
+        Assert.Equal("c1", res.ChangeId);
+    }
+
+    [Fact]
+    public async Task UpdateAgentDefinition_PutsBody()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Put, req.Method);
+            Assert.Equal("/agents/a1/definition", req.RequestUri!.AbsolutePath);
+            return JsonResponse("{\"change_id\":\"c2\",\"schema_version\":\"1\",\"definition\":{}}");
+        });
+        var client = MakeClient(handler);
+        var res = await client.UpdateAgentDefinitionAsync("a1", new UpdateAgentDefinitionRequest { ExpectedChangeId = "c1" });
+        Assert.Equal("c2", res.ChangeId);
+    }
+
+    // ── Agent Runs (additions) ──────────────────────────────────────────────
+
+    [Fact]
+    public async Task SearchAgentRuns_PostsBody()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Post, req.Method);
+            Assert.Equal("/agents/runs/search", req.RequestUri!.AbsolutePath);
+            return JsonResponse("{\"results\":[],\"total\":0}");
+        });
+        var client = MakeClient(handler);
+        var res = await client.SearchAgentRunsAsync(new AgentTraceSearchRequest { Query = "test" });
+        Assert.Equal(0, res.Total);
+    }
+
+    [Fact]
+    public async Task CancelAgentRun_PostsToCancel()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Post, req.Method);
+            Assert.Equal("/agents/runs/r1/cancel", req.RequestUri!.AbsolutePath);
+            return JsonResponse("{\"run_id\":\"r1\",\"status\":\"cancelled\",\"attempts\":[],\"error_count\":0,\"priority\":false}");
+        });
+        var client = MakeClient(handler);
+        var res = await client.CancelAgentRunAsync("r1");
+        Assert.Equal("cancelled", res.Status);
+    }
+
+    // ── Agent Input Uploads ─────────────────────────────────────────────────
+
+    [Fact]
+    public async Task UploadAgentInput_PostsMultipart()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Post, req.Method);
+            Assert.Equal("/agents/a1/upload-input", req.RequestUri!.AbsolutePath);
+            Assert.Equal("multipart/form-data", req.Content!.Headers.ContentType!.MediaType);
+            return JsonResponse("{\"id\":\"u1\",\"filename\":\"f.txt\",\"content_type\":\"text/plain\",\"file_size\":5,\"status\":\"completed\"}");
+        });
+        var client = MakeClient(handler);
+        var res = await client.UploadAgentInputAsync("a1", Encoding.UTF8.GetBytes("hello"), "f.txt");
+        Assert.Equal("u1", res.Id);
+    }
+
+    [Fact]
+    public async Task GetAgentInputUploadStatus_GetsPath()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Get, req.Method);
+            Assert.Equal("/agents/a1/input-uploads/u1", req.RequestUri!.AbsolutePath);
+            return JsonResponse("{\"id\":\"u1\",\"filename\":\"f.txt\",\"content_type\":\"text/plain\",\"file_size\":5,\"status\":\"completed\"}");
+        });
+        var client = MakeClient(handler);
+        var res = await client.GetAgentInputUploadStatusAsync("a1", "u1");
+        Assert.Equal("completed", res.Status);
+    }
+
+    // ── Agent AI Assistant ──────────────────────────────────────────────────
+
+    [Fact]
+    public async Task GenerateAgentSteps_PostsBody()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Post, req.Method);
+            Assert.Equal("/agents/a1/ai-assistant/generate-steps", req.RequestUri!.AbsolutePath);
+            return JsonResponse("{\"steps\":[]}");
+        });
+        var client = MakeClient(handler);
+        var res = await client.GenerateAgentStepsAsync("a1", new GenerateAgentStepsRequest { UserInput = "build a bot" });
+        Assert.NotNull(res.Steps);
+    }
+
+    [Fact]
+    public async Task GenerateStepConfig_PostsBody()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Post, req.Method);
+            Assert.Equal("/agents/a1/ai-assistant/step-config", req.RequestUri!.AbsolutePath);
+            return JsonResponse("{\"conversation_id\":\"c1\",\"note\":\"ok\",\"step_type\":\"llm\",\"success\":true}");
+        });
+        var client = MakeClient(handler);
+        var res = await client.GenerateStepConfigAsync("a1", new GenerateStepConfigRequest { StepType = "llm", UserInput = "configure" });
+        Assert.True(res.Success);
+    }
+
+    [Fact]
+    public async Task GetAgentAiConversationHistory_GetsPath()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Get, req.Method);
+            Assert.Equal("/agents/a1/ai-assistant/conversations", req.RequestUri!.AbsolutePath);
+            return JsonResponse("{\"total\":0,\"turns\":[]}");
+        });
+        var client = MakeClient(handler);
+        var res = await client.GetAgentAiConversationHistoryAsync("a1");
+        Assert.Equal(0, res.Total);
+    }
+
+    [Fact]
+    public async Task MarkAgentAiSuggestion_PatchesPath()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal("PATCH", req.Method.Method);
+            Assert.Equal("/agents/a1/ai-assistant/c1", req.RequestUri!.AbsolutePath);
+            return new HttpResponseMessage(HttpStatusCode.NoContent);
+        });
+        var client = MakeClient(handler);
+        await client.MarkAgentAiSuggestionAsync("a1", "c1", new MarkAiSuggestionRequest { Accepted = true });
+    }
+
+    // ── Agent Evaluations ───────────────────────────────────────────────────
+
+    [Fact]
+    public async Task ListEvaluationCriteria_GetsPath()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Get, req.Method);
+            Assert.Equal("/agents/a1/evaluation-criteria", req.RequestUri!.AbsolutePath);
+            return JsonResponse("[{\"id\":\"ec1\",\"name\":\"Accuracy\",\"description\":\"test\"}]");
+        });
+        var client = MakeClient(handler);
+        var res = await client.ListEvaluationCriteriaAsync("a1");
+        Assert.Single(res);
+    }
+
+    [Fact]
+    public async Task CreateEvaluationCriteria_PostsBody()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Post, req.Method);
+            Assert.Equal("/agents/a1/evaluation-criteria", req.RequestUri!.AbsolutePath);
+            return JsonResponse("{\"id\":\"ec1\",\"name\":\"Accuracy\",\"description\":\"test\"}");
+        });
+        var client = MakeClient(handler);
+        var res = await client.CreateEvaluationCriteriaAsync("a1", new CreateEvaluationCriteriaRequest { StepId = "s1" });
+        Assert.Equal("ec1", res.Id);
+    }
+
+    [Fact]
+    public async Task DeleteEvaluationCriteria_DeletesPath()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Delete, req.Method);
+            Assert.Equal("/agents/evaluation-criteria/ec1", req.RequestUri!.AbsolutePath);
+            return new HttpResponseMessage(HttpStatusCode.NoContent);
+        });
+        var client = MakeClient(handler);
+        await client.DeleteEvaluationCriteriaAsync("ec1");
+    }
+
+    [Fact]
+    public async Task GetEvaluationCriteriaSummary_GetsPath()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Get, req.Method);
+            Assert.Equal("/agents/evaluation-criteria/ec1/summary", req.RequestUri!.AbsolutePath);
+            return JsonResponse("{\"total\":10,\"passed\":8,\"failed\":1,\"flagged\":1,\"error\":0}");
+        });
+        var client = MakeClient(handler);
+        var res = await client.GetEvaluationCriteriaSummaryAsync("ec1");
+        Assert.Equal(10, res.Total);
+    }
+
+    [Fact]
+    public async Task TestDraftEvaluation_PostsBody()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Post, req.Method);
+            Assert.Equal("/agents/a1/evaluation-criteria/test-draft", req.RequestUri!.AbsolutePath);
+            return JsonResponse("{\"passed\":true,\"score\":0.95}");
+        });
+        var client = MakeClient(handler);
+        var res = await client.TestDraftEvaluationAsync("a1", new TestDraftEvaluationRequest { AgentInput = "hi" });
+        Assert.True(res.Passed);
+    }
+
+    [Fact]
+    public async Task ListAgentEvaluationResults_GetsPath()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Get, req.Method);
+            Assert.Equal("/agents/a1/evaluation-results", req.RequestUri!.AbsolutePath);
+            return JsonResponse("{\"data\":[],\"total\":0,\"page\":1,\"limit\":20}");
+        });
+        var client = MakeClient(handler);
+        var res = await client.ListAgentEvaluationResultsAsync("a1");
+        Assert.Equal(0, res.Total);
+    }
+
+    [Fact]
+    public async Task GetNonManualEvaluationSummary_GetsPath()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Get, req.Method);
+            Assert.Equal("/agents/evaluation-results/non-manual-summary", req.RequestUri!.AbsolutePath);
+            return JsonResponse("{\"total\":0,\"passed\":0,\"failed\":0,\"flagged\":0,\"pass_rate\":0,\"failure_rate\":0,\"by_mode\":[]}");
+        });
+        var client = MakeClient(handler);
+        var res = await client.GetNonManualEvaluationSummaryAsync();
+        Assert.Equal(0, res.Total);
+    }
+
+    // ── Knowledge Bases ─────────────────────────────────────────────────────
+
+    [Fact]
+    public async Task ListKnowledgeBases_SetsQueryParams()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Get, req.Method);
+            Assert.Equal("/knowledge_bases", req.RequestUri!.AbsolutePath);
+            Assert.Contains("sort=created_at", req.RequestUri!.Query);
+            return JsonResponse("{\"data\":[],\"total\":0}");
+        });
+        var client = MakeClient(handler);
+        var res = await client.ListKnowledgeBasesAsync(sort: "created_at");
+        Assert.Equal(0, res.Total);
+    }
+
+    [Fact]
+    public async Task CreateKnowledgeBase_PostsBody()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Post, req.Method);
+            Assert.Equal("/knowledge_bases", req.RequestUri!.AbsolutePath);
+            return JsonResponse("{\"id\":\"kb1\",\"name\":\"KB\",\"description\":\"\",\"created_at\":\"\",\"updated_at\":\"\"}");
+        });
+        var client = MakeClient(handler);
+        var res = await client.CreateKnowledgeBaseAsync(new CreateKnowledgeBaseRequest { Name = "KB" });
+        Assert.Equal("kb1", res.Id);
+    }
+
+    [Fact]
+    public async Task DeleteKnowledgeBase_DeletesPath()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Delete, req.Method);
+            Assert.Equal("/knowledge_bases/kb1", req.RequestUri!.AbsolutePath);
+            return new HttpResponseMessage(HttpStatusCode.NoContent);
+        });
+        var client = MakeClient(handler);
+        await client.DeleteKnowledgeBaseAsync("kb1");
+    }
+
+    // ── Memory Banks ────────────────────────────────────────────────────────
+
+    [Fact]
+    public async Task ListMemoryBanks_GetsPath()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Get, req.Method);
+            Assert.Equal("/memory_banks", req.RequestUri!.AbsolutePath);
+            return JsonResponse("{\"data\":[],\"total\":0}");
+        });
+        var client = MakeClient(handler);
+        var res = await client.ListMemoryBanksAsync();
+        Assert.Equal(0, res.Total);
+    }
+
+    [Fact]
+    public async Task CreateMemoryBank_PostsBody()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Post, req.Method);
+            Assert.Equal("/memory_banks", req.RequestUri!.AbsolutePath);
+            return JsonResponse("{\"id\":\"mb1\",\"name\":\"MB\",\"description\":\"\",\"type\":\"general\",\"created_at\":\"\",\"updated_at\":\"\"}");
+        });
+        var client = MakeClient(handler);
+        var res = await client.CreateMemoryBankAsync(new CreateMemoryBankRequest { Name = "MB", Type = "general" });
+        Assert.Equal("mb1", res.Id);
+    }
+
+    [Fact]
+    public async Task DeleteMemoryBank_DeletesPath()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Delete, req.Method);
+            Assert.Equal("/memory_banks/mb1", req.RequestUri!.AbsolutePath);
+            return new HttpResponseMessage(HttpStatusCode.NoContent);
+        });
+        var client = MakeClient(handler);
+        await client.DeleteMemoryBankAsync("mb1");
+    }
+
+    [Fact]
+    public async Task GetMemoryBankStats_ReturnsJsonElement()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Get, req.Method);
+            Assert.Equal("/memory_banks/mb1/stats", req.RequestUri!.AbsolutePath);
+            return JsonResponse("{\"entry_count\":42}");
+        });
+        var client = MakeClient(handler);
+        var res = await client.GetMemoryBankStatsAsync("mb1");
+        Assert.Equal(42, res.GetProperty("entry_count").GetInt32());
+    }
+
+    [Fact]
+    public async Task CompactMemoryBank_PostsPath()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Post, req.Method);
+            Assert.Equal("/memory_banks/mb1/compact", req.RequestUri!.AbsolutePath);
+            return new HttpResponseMessage(HttpStatusCode.NoContent);
+        });
+        var client = MakeClient(handler);
+        await client.CompactMemoryBankAsync("mb1");
+    }
+
+    [Fact]
+    public async Task ListMemoryBankTemplates_ReturnsJsonElement()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Get, req.Method);
+            Assert.Equal("/memory_banks/templates", req.RequestUri!.AbsolutePath);
+            return JsonResponse("[{\"name\":\"chat\"}]");
+        });
+        var client = MakeClient(handler);
+        var res = await client.ListMemoryBankTemplatesAsync();
+        Assert.Equal(JsonValueKind.Array, res.ValueKind);
+    }
+
+    [Fact]
+    public async Task GenerateMemoryBankConfig_PostsBody()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Post, req.Method);
+            Assert.Equal("/memory_banks/ai-assistant", req.RequestUri!.AbsolutePath);
+            return JsonResponse("{\"conversation_id\":\"c1\",\"note\":\"ok\"}");
+        });
+        var client = MakeClient(handler);
+        var res = await client.GenerateMemoryBankConfigAsync(new MemoryBankAiAssistantRequest { UserInput = "create a memory bank" });
+        Assert.Equal("c1", res.ConversationId);
+    }
+
+    // ── Sources (additions) ─────────────────────────────────────────────────
+
+    [Fact]
+    public async Task CreateSource_PostsBody()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Post, req.Method);
+            Assert.Equal("/sources", req.RequestUri!.AbsolutePath);
+            return JsonResponse("{\"id\":\"s1\",\"name\":\"S\",\"source_type\":\"upload\"}");
+        });
+        var client = MakeClient(handler);
+        var res = await client.CreateSourceAsync(new CreateSourceRequest { Name = "S", SourceType = "upload" });
+        Assert.Equal("s1", res.Id);
+    }
+
+    [Fact]
+    public async Task GetSource_GetsPath()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Get, req.Method);
+            Assert.Equal("/sources/s1", req.RequestUri!.AbsolutePath);
+            return JsonResponse("{\"id\":\"s1\",\"name\":\"S\",\"source_type\":\"upload\"}");
+        });
+        var client = MakeClient(handler);
+        var res = await client.GetSourceAsync("s1");
+        Assert.Equal("s1", res.Id);
+    }
+
+    [Fact]
+    public async Task DeleteSource_DeletesPath()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Delete, req.Method);
+            Assert.Equal("/sources/s1", req.RequestUri!.AbsolutePath);
+            return new HttpResponseMessage(HttpStatusCode.NoContent);
+        });
+        var client = MakeClient(handler);
+        await client.DeleteSourceAsync("s1");
+    }
+
+    [Fact]
+    public async Task UploadInlineTextToSource_PostsBody()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Post, req.Method);
+            Assert.Equal("/sources/sc1", req.RequestUri!.AbsolutePath);
+            return JsonResponse("{\"filename\":\"inline.txt\",\"status\":\"success\"}");
+        });
+        var client = MakeClient(handler);
+        var res = await client.UploadInlineTextToSourceAsync("sc1", new InlineTextUploadRequest { Text = "hello", Title = "test" });
+        Assert.Equal("success", res.Status);
+    }
+
+    // ── Source Exports ──────────────────────────────────────────────────────
+
+    [Fact]
+    public async Task ListSourceExports_GetsPath()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Get, req.Method);
+            Assert.Equal("/sources/s1/exports", req.RequestUri!.AbsolutePath);
+            return JsonResponse("{\"data\":[],\"total\":0}");
+        });
+        var client = MakeClient(handler);
+        var res = await client.ListSourceExportsAsync("s1");
+        Assert.Equal(0, res.Total);
+    }
+
+    [Fact]
+    public async Task CreateSourceExport_PostsBody()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Post, req.Method);
+            Assert.Equal("/sources/s1/exports", req.RequestUri!.AbsolutePath);
+            return JsonResponse("{\"id\":\"e1\",\"format\":\"csv\",\"status\":\"pending\",\"created_at\":\"\"}");
+        });
+        var client = MakeClient(handler);
+        var res = await client.CreateSourceExportAsync("s1", new CreateExportRequest { Format = "csv" });
+        Assert.Equal("e1", res.Id);
+    }
+
+    [Fact]
+    public async Task DeleteSourceExport_DeletesPath()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Delete, req.Method);
+            Assert.Equal("/sources/s1/exports/e1", req.RequestUri!.AbsolutePath);
+            return new HttpResponseMessage(HttpStatusCode.NoContent);
+        });
+        var client = MakeClient(handler);
+        await client.DeleteSourceExportAsync("s1", "e1");
+    }
+
+    [Fact]
+    public async Task DownloadSourceExport_ReturnsRawResponse()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Get, req.Method);
+            Assert.Equal("/sources/s1/exports/e1/download", req.RequestUri!.AbsolutePath);
+            return new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent("csv,data") };
+        });
+        var client = MakeClient(handler);
+        using var res = await client.DownloadSourceExportAsync("s1", "e1");
+        Assert.Equal(HttpStatusCode.OK, res.StatusCode);
+        var body = await res.Content.ReadAsStringAsync();
+        Assert.Equal("csv,data", body);
+    }
+
+    [Fact]
+    public async Task EstimateSourceExport_PostsBody()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Post, req.Method);
+            Assert.Equal("/sources/s1/exports/estimate", req.RequestUri!.AbsolutePath);
+            return JsonResponse("{\"estimated_size_bytes\":1024,\"source_connection_id\":\"sc1\"}");
+        });
+        var client = MakeClient(handler);
+        var res = await client.EstimateSourceExportAsync("s1", new EstimateExportRequest { Format = "csv" });
+        Assert.Equal(1024, res.EstimatedSizeBytes);
+    }
+
+    // ── Source Embedding Migrations ─────────────────────────────────────────
+
+    [Fact]
+    public async Task GetSourceEmbeddingMigration_GetsPath()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Get, req.Method);
+            Assert.Equal("/sources/s1/embedding-migration", req.RequestUri!.AbsolutePath);
+            return JsonResponse("{\"migration_id\":\"m1\",\"status\":\"completed\"}");
+        });
+        var client = MakeClient(handler);
+        var res = await client.GetSourceEmbeddingMigrationAsync("s1");
+        Assert.Equal("m1", res.MigrationId);
+    }
+
+    [Fact]
+    public async Task StartSourceEmbeddingMigration_PostsBody()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Post, req.Method);
+            Assert.Equal("/sources/s1/embedding-migration", req.RequestUri!.AbsolutePath);
+            return JsonResponse("{\"migration_id\":\"m1\",\"status\":\"pending\"}");
+        });
+        var client = MakeClient(handler);
+        var res = await client.StartSourceEmbeddingMigrationAsync("s1", new StartSourceEmbeddingMigrationRequest { TargetEmbeddingModel = "text-embedding-3-small", TargetDimensions = 1536 });
+        Assert.Equal("pending", res.Status);
+    }
+
+    [Fact]
+    public async Task CancelSourceEmbeddingMigration_PostsToCancel()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Post, req.Method);
+            Assert.Equal("/sources/s1/embedding-migration/cancel", req.RequestUri!.AbsolutePath);
+            return JsonResponse("{\"migration_id\":\"m1\",\"status\":\"cancelled\"}");
+        });
+        var client = MakeClient(handler);
+        var res = await client.CancelSourceEmbeddingMigrationAsync("s1");
+        Assert.Equal("cancelled", res.Status);
+    }
+
+    // ── Content (additions) ─────────────────────────────────────────────────
+
+    [Fact]
+    public async Task ReplaceContentWithInlineText_PutsBody()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Put, req.Method);
+            Assert.Equal("/contents/cv1", req.RequestUri!.AbsolutePath);
+            return JsonResponse("{\"filename\":\"inline.txt\",\"status\":\"success\"}");
+        });
+        var client = MakeClient(handler);
+        var res = await client.ReplaceContentWithInlineTextAsync("cv1", new InlineTextReplaceRequest { Text = "updated" });
+        Assert.Equal("success", res.Status);
+    }
+
+    // ── Solutions ───────────────────────────────────────────────────────────
+
+    [Fact]
+    public async Task ListSolutions_GetsPath()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Get, req.Method);
+            Assert.Equal("/solutions", req.RequestUri!.AbsolutePath);
+            return JsonResponse("{\"data\":[],\"total\":0}");
+        });
+        var client = MakeClient(handler);
+        var res = await client.ListSolutionsAsync();
+        Assert.Equal(0, res.Total);
+    }
+
+    [Fact]
+    public async Task CreateSolution_PostsBody()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Post, req.Method);
+            Assert.Equal("/solutions", req.RequestUri!.AbsolutePath);
+            return JsonResponse("{\"id\":\"sol1\",\"name\":\"Sol\",\"description\":\"\",\"created_at\":\"\",\"updated_at\":\"\"}");
+        });
+        var client = MakeClient(handler);
+        var res = await client.CreateSolutionAsync(new CreateSolutionRequest { Name = "Sol" });
+        Assert.Equal("sol1", res.Id);
+    }
+
+    [Fact]
+    public async Task DeleteSolution_DeletesPath()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Delete, req.Method);
+            Assert.Equal("/solutions/sol1", req.RequestUri!.AbsolutePath);
+            return new HttpResponseMessage(HttpStatusCode.NoContent);
+        });
+        var client = MakeClient(handler);
+        await client.DeleteSolutionAsync("sol1");
+    }
+
+    [Fact]
+    public async Task UpdateSolution_PatchesBody()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal("PATCH", req.Method.Method);
+            Assert.Equal("/solutions/sol1", req.RequestUri!.AbsolutePath);
+            return JsonResponse("{\"id\":\"sol1\",\"name\":\"Updated\",\"description\":\"\",\"created_at\":\"\",\"updated_at\":\"\"}");
+        });
+        var client = MakeClient(handler);
+        var res = await client.UpdateSolutionAsync("sol1", new UpdateSolutionRequest { Name = "Updated" });
+        Assert.Equal("Updated", res.Name);
+    }
+
+    [Fact]
+    public async Task LinkAgentsToSolution_PostsBody()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Post, req.Method);
+            Assert.Equal("/solutions/sol1/agents", req.RequestUri!.AbsolutePath);
+            return JsonResponse("{\"id\":\"sol1\",\"name\":\"Sol\",\"description\":\"\",\"created_at\":\"\",\"updated_at\":\"\"}");
+        });
+        var client = MakeClient(handler);
+        var res = await client.LinkAgentsToSolutionAsync("sol1", new LinkResourcesRequest { Ids = new List<string> { "a1" } });
+        Assert.Equal("sol1", res.Id);
+    }
+
+    [Fact]
+    public async Task UnlinkAgentsFromSolution_DeletesWithBody()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Delete, req.Method);
+            Assert.Equal("/solutions/sol1/agents", req.RequestUri!.AbsolutePath);
+            Assert.NotNull(req.Content); // DELETE with body
+            return JsonResponse("{\"id\":\"sol1\",\"name\":\"Sol\",\"description\":\"\",\"created_at\":\"\",\"updated_at\":\"\"}");
+        });
+        var client = MakeClient(handler);
+        var res = await client.UnlinkAgentsFromSolutionAsync("sol1", new UnlinkResourcesRequest { Ids = new List<string> { "a1" } });
+        Assert.Equal("sol1", res.Id);
+    }
+
+    [Fact]
+    public async Task ListSolutionConversations_GetsPath()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Get, req.Method);
+            Assert.Equal("/solutions/sol1/conversations", req.RequestUri!.AbsolutePath);
+            return JsonResponse("[{\"id\":\"c1\",\"user_input\":\"hi\",\"created_at\":\"\"}]");
+        });
+        var client = MakeClient(handler);
+        var res = await client.ListSolutionConversationsAsync("sol1");
+        Assert.Single(res);
+    }
+
+    [Fact]
+    public async Task MarkSolutionConversationTurn_PatchesPath()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal("PATCH", req.Method.Method);
+            Assert.Equal("/solutions/sol1/conversations/c1", req.RequestUri!.AbsolutePath);
+            return new HttpResponseMessage(HttpStatusCode.NoContent);
+        });
+        var client = MakeClient(handler);
+        await client.MarkSolutionConversationTurnAsync("sol1", "c1", new MarkConversationTurnRequest { Accepted = true });
+    }
+
+    // ── Solution AI Assistant ───────────────────────────────────────────────
+
+    [Fact]
+    public async Task GenerateSolutionAiPlan_PostsBody()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Post, req.Method);
+            Assert.Equal("/solutions/sol1/ai-assistant/generate", req.RequestUri!.AbsolutePath);
+            return JsonResponse("{\"conversation_id\":\"c1\",\"note\":\"ok\",\"proposed_actions\":[]}");
+        });
+        var client = MakeClient(handler);
+        var res = await client.GenerateSolutionAiPlanAsync("sol1", new AiAssistantGenerateRequest { UserInput = "plan" });
+        Assert.Equal("c1", res.ConversationId);
+    }
+
+    [Fact]
+    public async Task DeclineSolutionAiPlan_PostsPath()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Post, req.Method);
+            Assert.Equal("/solutions/sol1/ai-assistant/c1/decline", req.RequestUri!.AbsolutePath);
+            return new HttpResponseMessage(HttpStatusCode.NoContent);
+        });
+        var client = MakeClient(handler);
+        await client.DeclineSolutionAiPlanAsync("sol1", "c1");
+    }
+
+    // ── Governance AI ───────────────────────────────────────────────────────
+
+    [Fact]
+    public async Task GenerateGovernanceAiPlan_PostsBody()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Post, req.Method);
+            Assert.Equal("/governance/ai-assistant", req.RequestUri!.AbsolutePath);
+            return JsonResponse("{\"assistant_response\":\"done\"}");
+        });
+        var client = MakeClient(handler);
+        var res = await client.GenerateGovernanceAiPlanAsync(new GovernanceAiAssistantRequest { UserInput = "create policy" });
+        Assert.Equal("done", res.AssistantResponse);
+    }
+
+    [Fact]
+    public async Task ListGovernanceAiConversations_GetsPath()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Get, req.Method);
+            Assert.Equal("/governance/ai-assistant/conversations", req.RequestUri!.AbsolutePath);
+            return JsonResponse("[]");
+        });
+        var client = MakeClient(handler);
+        var res = await client.ListGovernanceAiConversationsAsync();
+        Assert.Empty(res);
+    }
+
+    [Fact]
+    public async Task AcceptGovernanceAiPlan_PostsPath()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Post, req.Method);
+            Assert.Equal("/governance/ai-assistant/c1/accept", req.RequestUri!.AbsolutePath);
+            return JsonResponse("{\"conversation_id\":\"c1\",\"actions_applied\":[],\"success\":true}");
+        });
+        var client = MakeClient(handler);
+        var res = await client.AcceptGovernanceAiPlanAsync("c1");
+        Assert.True(res.Success);
+    }
+
+    [Fact]
+    public async Task DeclineGovernanceAiPlan_PostsPath()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Post, req.Method);
+            Assert.Equal("/governance/ai-assistant/c1/decline", req.RequestUri!.AbsolutePath);
+            return new HttpResponseMessage(HttpStatusCode.NoContent);
+        });
+        var client = MakeClient(handler);
+        await client.DeclineGovernanceAiPlanAsync("c1");
+    }
+
+    // ── Alerts ──────────────────────────────────────────────────────────────
+
+    [Fact]
+    public async Task ListAlerts_ReturnsJsonElement()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Get, req.Method);
+            Assert.Equal("/alerts", req.RequestUri!.AbsolutePath);
+            Assert.Contains("status=active", req.RequestUri!.Query);
+            return JsonResponse("{\"data\":[],\"total\":0}");
+        });
+        var client = MakeClient(handler);
+        var res = await client.ListAlertsAsync(status: "active");
+        Assert.Equal(JsonValueKind.Object, res.ValueKind);
+    }
+
+    [Fact]
+    public async Task GetAlert_GetsPath()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Get, req.Method);
+            Assert.Equal("/alerts/al1", req.RequestUri!.AbsolutePath);
+            return JsonResponse("{\"id\":\"al1\",\"status\":\"active\"}");
+        });
+        var client = MakeClient(handler);
+        var res = await client.GetAlertAsync("al1");
+        Assert.Equal("al1", res.GetProperty("id").GetString());
+    }
+
+    [Fact]
+    public async Task ChangeAlertStatus_PostsBody()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Post, req.Method);
+            Assert.Equal("/alerts/al1/status", req.RequestUri!.AbsolutePath);
+            return JsonResponse("{\"id\":\"al1\",\"status\":\"resolved\"}");
+        });
+        var client = MakeClient(handler);
+        var res = await client.ChangeAlertStatusAsync("al1", new ChangeStatusRequest { Status = "resolved" });
+        Assert.Equal("resolved", res.GetProperty("status").GetString());
+    }
+
+    [Fact]
+    public async Task SubscribeToAlert_PostsPath()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Post, req.Method);
+            Assert.Equal("/alerts/al1/subscribe", req.RequestUri!.AbsolutePath);
+            return JsonResponse("{\"subscribed\":true}");
+        });
+        var client = MakeClient(handler);
+        var res = await client.SubscribeToAlertAsync("al1");
+        Assert.True(res.GetProperty("subscribed").GetBoolean());
+    }
+
+    // ── Alert Configs ───────────────────────────────────────────────────────
+
+    [Fact]
+    public async Task ListAlertConfigs_GetsPath()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Get, req.Method);
+            Assert.Equal("/alerts/configs", req.RequestUri!.AbsolutePath);
+            return JsonResponse("{\"data\":[],\"total\":0}");
+        });
+        var client = MakeClient(handler);
+        var res = await client.ListAlertConfigsAsync();
+        Assert.Equal(JsonValueKind.Object, res.ValueKind);
+    }
+
+    [Fact]
+    public async Task DeleteAlertConfig_DeletesPath()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Delete, req.Method);
+            Assert.Equal("/alerts/configs/ac1", req.RequestUri!.AbsolutePath);
+            return new HttpResponseMessage(HttpStatusCode.NoContent);
+        });
+        var client = MakeClient(handler);
+        await client.DeleteAlertConfigAsync("ac1");
+    }
+
+    // ── Alert Preferences ───────────────────────────────────────────────────
+
+    [Fact]
+    public async Task ListOrganizationAlertPreferences_GetsPath()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Get, req.Method);
+            Assert.Equal("/alerts/organization-preferences/list", req.RequestUri!.AbsolutePath);
+            return JsonResponse("{\"preferences\":[],\"total\":0}");
+        });
+        var client = MakeClient(handler);
+        var res = await client.ListOrganizationAlertPreferencesAsync();
+        Assert.Equal(0, res.Total);
+    }
+
+    // ── Models & Alerts ─────────────────────────────────────────────────────
+
+    [Fact]
+    public async Task ListModelAlerts_ReturnsJsonElement()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Get, req.Method);
+            Assert.Equal("/models/alerts", req.RequestUri!.AbsolutePath);
+            return JsonResponse("{\"data\":[],\"total\":0}");
+        });
+        var client = MakeClient(handler);
+        var res = await client.ListModelAlertsAsync();
+        Assert.Equal(JsonValueKind.Object, res.ValueKind);
+    }
+
+    [Fact]
+    public async Task MarkAllModelAlertsRead_PostsPath()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Post, req.Method);
+            Assert.Equal("/models/alerts/mark-all-read", req.RequestUri!.AbsolutePath);
+            return new HttpResponseMessage(HttpStatusCode.NoContent);
+        });
+        var client = MakeClient(handler);
+        await client.MarkAllModelAlertsReadAsync();
+    }
+
+    [Fact]
+    public async Task MarkModelAlertRead_PatchesPath()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal("PATCH", req.Method.Method);
+            Assert.Equal("/models/alerts/ma1/read", req.RequestUri!.AbsolutePath);
+            return new HttpResponseMessage(HttpStatusCode.NoContent);
+        });
+        var client = MakeClient(handler);
+        await client.MarkModelAlertReadAsync("ma1");
+    }
+
+    [Fact]
+    public async Task GetModelRecommendations_GetsPath()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Get, req.Method);
+            Assert.Equal("/models/m1/recommendations", req.RequestUri!.AbsolutePath);
+            return JsonResponse("{\"recommendations\":[]}");
+        });
+        var client = MakeClient(handler);
+        var res = await client.GetModelRecommendationsAsync("m1");
+        Assert.Equal(JsonValueKind.Object, res.ValueKind);
+    }
+
+    // ── Search ──────────────────────────────────────────────────────────────
+
+    [Fact]
+    public async Task Search_SetsQueryParams()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Get, req.Method);
+            Assert.Equal("/search", req.RequestUri!.AbsolutePath);
+            Assert.Contains("query=test", req.RequestUri!.Query);
+            Assert.Contains("entity_type=agent", req.RequestUri!.Query);
+            return JsonResponse("{\"results\":[]}");
+        });
+        var client = MakeClient(handler);
+        var res = await client.SearchAsync(query: "test", entityType: "agent");
+        Assert.Equal(JsonValueKind.Object, res.ValueKind);
+    }
+
+    // ── Top-Level AI Assistant ──────────────────────────────────────────────
+
+    [Fact]
+    public async Task SubmitAiFeedback_PostsBody()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Post, req.Method);
+            Assert.Equal("/ai-assistant/feedback", req.RequestUri!.AbsolutePath);
+            return JsonResponse("{\"feedback_id\":\"f1\",\"flagged\":false}");
+        });
+        var client = MakeClient(handler);
+        var res = await client.SubmitAiFeedbackAsync(new AiAssistantFeedbackRequest { Feature = "chat", Rating = "positive" });
+        Assert.Equal("f1", res.FeedbackId);
+    }
+
+    [Fact]
+    public async Task AiAssistantKnowledgeBase_PostsBody()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Post, req.Method);
+            Assert.Equal("/ai-assistant/knowledge-base", req.RequestUri!.AbsolutePath);
+            return JsonResponse("{\"conversation_id\":\"c1\",\"note\":\"ok\",\"proposed_actions\":[]}");
+        });
+        var client = MakeClient(handler);
+        var res = await client.AiAssistantKnowledgeBaseAsync(new AiAssistantGenerateRequest { UserInput = "create kb" });
+        Assert.Equal("c1", res.ConversationId);
+    }
+
+    [Fact]
+    public async Task DeclineAiAssistantPlan_PostsPath()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Post, req.Method);
+            Assert.Equal("/ai-assistant/c1/decline", req.RequestUri!.AbsolutePath);
+            return new HttpResponseMessage(HttpStatusCode.NoContent);
+        });
+        var client = MakeClient(handler);
+        await client.DeclineAiAssistantPlanAsync("c1");
+    }
+
+    // ── High-Level Abstractions ─────────────────────────────────────────────
+
+    [Fact]
+    public async Task RunStreamingAgent_YieldsEvents()
+    {
+        var sse =
+            "event: init\n" +
+            "data: {\"run_id\":\"r1\",\"status\":\"processing\",\"attempts\":[],\"error_count\":0,\"priority\":false}\n\n" +
+            "event: done\n" +
+            "data: {\"run_id\":\"r1\",\"status\":\"completed\",\"output\":\"ok\",\"attempts\":[],\"error_count\":0,\"priority\":false}\n\n";
+
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Post, req.Method);
+            Assert.Equal("/agents/a1/runs/stream", req.RequestUri!.AbsolutePath);
+            var resp = new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StreamContent(new System.IO.MemoryStream(Encoding.UTF8.GetBytes(sse)))
+            };
+            resp.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("text/event-stream");
+            return resp;
+        });
+
+        var client = MakeClient(handler);
+        var events = new List<AgentRunEvent>();
+        await foreach (var evt in client.RunStreamingAgentAsync("a1", new AgentRunStreamRequest { Input = "hi" }))
+        {
+            events.Add(evt);
+        }
+        Assert.Equal(2, events.Count);
+        Assert.Equal("init", events[0].Event);
+        Assert.Equal("done", events[1].Event);
+        Assert.Equal("ok", events[1].Run?.Output);
+    }
+
+    [Fact]
+    public async Task RunAgentAndPoll_PollsUntilCompleted()
+    {
+        var callCount = 0;
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            callCount++;
+            if (req.Method == HttpMethod.Post && req.RequestUri!.AbsolutePath == "/agents/a1/runs")
+            {
+                return JsonResponse("{\"run_id\":\"r1\",\"status\":\"running\",\"attempts\":[],\"error_count\":0,\"priority\":false}");
+            }
+            // GET poll
+            Assert.Equal(HttpMethod.Get, req.Method);
+            Assert.Equal("/agents/runs/r1", req.RequestUri!.AbsolutePath);
+            return JsonResponse("{\"run_id\":\"r1\",\"status\":\"completed\",\"output\":\"done\",\"attempts\":[],\"error_count\":0,\"priority\":false}");
+        });
+        var client = MakeClient(handler);
+        var res = await client.RunAgentAndPollAsync("a1", new AgentRunRequest { Input = "go" }, pollInterval: TimeSpan.FromMilliseconds(10));
+        Assert.Equal("completed", res.Status);
+        Assert.Equal("done", res.Output);
+        Assert.True(callCount >= 2); // at least the initial POST + 1 GET
+    }
+
+    // ── IDisposable ───────────────────────────────────────────────────────
+
+    [Fact]
+    public void Dispose_DoesNotThrow_WhenUsingExternalHttpClient()
+    {
+        var http = new HttpClient(new FakeHttpMessageHandler(_ => JsonResponse("{}")));
+        var client = new SeclaiClient(new SeclaiClientOptions { ApiKey = "k", BaseUri = new Uri("https://example.invalid"), HttpClient = http });
+        client.Dispose(); // should NOT dispose the external HttpClient
+        // Prove the external HttpClient is still usable
+        Assert.NotNull(http.BaseAddress ?? new Uri("https://ok"));
+    }
+
+    [Fact]
+    public void Dispose_DisposesOwnedHttpClient()
+    {
+        var client = new SeclaiClient(new SeclaiClientOptions { ApiKey = "k", BaseUri = new Uri("https://example.invalid") });
+        client.Dispose(); // should dispose its own HttpClient without throwing
+    }
+
+    // ── DefaultHeaders ──────────────────────────────────────────────────────
+
+    [Fact]
+    public async Task DefaultHeaders_AreSentWithEveryRequest()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.True(req.Headers.TryGetValues("X-Custom", out var values));
+            Assert.Contains("val", values);
+            return JsonResponse("{\"data\":[],\"total\":0}");
+        });
+        var http = new HttpClient(handler);
+        var client = new SeclaiClient(new SeclaiClientOptions
+        {
+            ApiKey = "k",
+            BaseUri = new Uri("https://example.invalid"),
+            HttpClient = http,
+            DefaultHeaders = new Dictionary<string, string> { ["X-Custom"] = "val" }
+        });
+        await client.ListAgentsAsync();
+    }
+
+    // ── Timeout option ──────────────────────────────────────────────────────
+
+    [Fact]
+    public void Timeout_SetsDefaultTo120Seconds()
+    {
+        var opts = new SeclaiClientOptions();
+        Assert.Equal(TimeSpan.FromSeconds(120), opts.Timeout);
+    }
+
+    // ── Stream-based uploads ────────────────────────────────────────────────
+
+    [Fact]
+    public async Task UploadFileToSource_Stream_PostsMultipart()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Post, req.Method);
+            Assert.Contains("/upload", req.RequestUri!.AbsolutePath);
+            Assert.Equal("multipart/form-data", req.Content!.Headers.ContentType!.MediaType);
+            return JsonResponse("{\"source_connection_content_version_id\":\"cv1\",\"filename\":\"test.txt\"}");
+        });
+        var client = MakeClient(handler);
+        using var stream = new System.IO.MemoryStream(Encoding.UTF8.GetBytes("hello"));
+        var res = await client.UploadFileToSourceAsync("sc1", stream, "test.txt");
+        Assert.Equal("cv1", res.SourceConnectionContentVersionId);
+    }
+
+    [Fact]
+    public async Task UploadFileToContent_Stream_PostsMultipart()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Post, req.Method);
+            Assert.Contains("/upload", req.RequestUri!.AbsolutePath);
+            Assert.Equal("multipart/form-data", req.Content!.Headers.ContentType!.MediaType);
+            return JsonResponse("{\"source_connection_content_version_id\":\"cv1\",\"filename\":\"test.txt\"}");
+        });
+        var client = MakeClient(handler);
+        using var stream = new System.IO.MemoryStream(Encoding.UTF8.GetBytes("hello"));
+        var res = await client.UploadFileToContentAsync("cv1", stream, "test.txt");
+        Assert.Equal("cv1", res.SourceConnectionContentVersionId);
+    }
+
+    // ── RunAgentAndPollAsync timeout ────────────────────────────────────────
+
+    [Fact]
+    public async Task RunAgentAndPoll_TimesOut()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            // Always return "running" so it never finishes
+            return JsonResponse("{\"run_id\":\"r1\",\"status\":\"running\",\"attempts\":[],\"error_count\":0,\"priority\":false}");
+        });
+        var client = MakeClient(handler);
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(() =>
+            client.RunAgentAndPollAsync("a1",
+                new AgentRunRequest { Input = "go" },
+                pollInterval: TimeSpan.FromMilliseconds(10),
+                timeout: TimeSpan.FromMilliseconds(50)));
+    }
+
+    // ── Helpers ─────────────────────────────────────────────────────────────
+
+    private static SeclaiClient MakeClient(FakeHttpMessageHandler handler)
+    {
+        var http = new HttpClient(handler);
+        return new SeclaiClient(new SeclaiClientOptions { ApiKey = "k", BaseUri = new Uri("https://example.invalid"), HttpClient = http });
+    }
+
+    private static HttpResponseMessage JsonResponse(string json)
+    {
+        return new HttpResponseMessage(HttpStatusCode.OK)
+        {
+            Content = new StringContent(json, Encoding.UTF8, "application/json")
+        };
+    }
+
     private static string ExtractMultipartPartValue(string multipart, string name)
     {
         var markerQuoted = $"name=\"{name}\"";

@@ -14,7 +14,12 @@ using Seclai.Models;
 
 namespace Seclai;
 
-public sealed class SeclaiClient
+/// <summary>
+/// HTTP client for the Seclai REST API. Provides strongly-typed async methods for
+/// agents, knowledge bases, memory banks, sources, content, evaluations, solutions,
+/// governance, alerts, search, and AI assistants.
+/// </summary>
+public sealed class SeclaiClient : IDisposable
 {
     private static readonly JsonSerializerOptions JsonOptions = new()
     {
@@ -24,10 +29,14 @@ public sealed class SeclaiClient
     private static readonly HttpMethod HttpPatch = new("PATCH");
 
     private readonly HttpClient _http;
+    private readonly bool _ownsHttp;
     private readonly Uri _baseUri;
     private readonly string _apiKey;
     private readonly string _apiKeyHeader;
+    private readonly Dictionary<string, string>? _defaultHeaders;
 
+    /// <summary>Creates a new <see cref="SeclaiClient"/> from the given options.</summary>
+    /// <exception cref="ConfigurationException">Thrown when no API key is provided.</exception>
     public SeclaiClient(SeclaiClientOptions options)
     {
         if (options is null) throw new ArgumentNullException(nameof(options));
@@ -44,10 +53,29 @@ public sealed class SeclaiClient
 
         _apiKey = apiKeyRaw.Trim();
         _apiKeyHeader = string.IsNullOrWhiteSpace(options.ApiKeyHeader) ? "x-api-key" : options.ApiKeyHeader;
-        _http = options.HttpClient ?? new HttpClient();
+        _defaultHeaders = options.DefaultHeaders;
+
+        if (options.HttpClient is not null)
+        {
+            _http = options.HttpClient;
+            _ownsHttp = false;
+        }
+        else
+        {
+            _http = new HttpClient { Timeout = options.Timeout };
+            _ownsHttp = true;
+        }
+
         _baseUri = EnsureTrailingSlash(baseUrl);
     }
 
+    /// <summary>Disposes the underlying <see cref="HttpClient"/> if it was created by this client.</summary>
+    public void Dispose()
+    {
+        if (_ownsHttp) _http.Dispose();
+    }
+
+    /// <summary>Lists source connections with optional pagination and sorting.</summary>
     public async Task<SourceListResponse> ListSourcesAsync(
         int? page = null,
         int? limit = null,
@@ -69,12 +97,21 @@ public sealed class SeclaiClient
         return await SendJsonAsync<SourceListResponse>(HttpMethod.Get, "/sources/", query, body: null, cancellationToken);
     }
 
+    /// <summary>Starts a new synchronous agent run.</summary>
     public async Task<AgentRunResponse> RunAgentAsync(string agentId, AgentRunRequest body, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(agentId)) throw new ArgumentException("agentId is required", nameof(agentId));
         return await SendJsonAsync<AgentRunResponse>(HttpMethod.Post, $"/agents/{Uri.EscapeDataString(agentId)}/runs", query: null, body, cancellationToken);
     }
 
+    /// <summary>
+    /// Starts an agent run via SSE streaming and blocks until the final <c>done</c> event.
+    /// </summary>
+    /// <param name="agentId">The agent identifier.</param>
+    /// <param name="body">The run request payload.</param>
+    /// <param name="timeout">Maximum time to wait for completion (default: 60 s).</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <exception cref="StreamingException">Thrown on timeout or if the stream ends without a <c>done</c> event.</exception>
     public async Task<AgentRunResponse> RunStreamingAgentAndWaitAsync(
         string agentId,
         AgentRunStreamRequest body,
@@ -89,6 +126,7 @@ public sealed class SeclaiClient
         req.Headers.TryAddWithoutValidation(_apiKeyHeader, _apiKey);
         req.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("text/event-stream"));
         req.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+        ApplyDefaultHeaders(req);
 
         var json = JsonSerializer.Serialize(body, JsonOptions);
         req.Content = new StringContent(json, Encoding.UTF8, "application/json");
@@ -214,6 +252,7 @@ public sealed class SeclaiClient
         }
     }
 
+    /// <summary>Lists runs for an agent with optional pagination.</summary>
     public async Task<AgentRunListResponse> ListAgentRunsAsync(string agentId, int? page = null, int? limit = null, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(agentId)) throw new ArgumentException("agentId is required", nameof(agentId));
@@ -227,12 +266,14 @@ public sealed class SeclaiClient
         return await SendJsonAsync<AgentRunListResponse>(HttpMethod.Get, $"/agents/{Uri.EscapeDataString(agentId)}/runs", query, body: null, cancellationToken);
     }
 
+    /// <summary>Gets an agent run by its run ID (without step outputs).</summary>
     public Task<AgentRunResponse> GetAgentRunAsync(string runId, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(runId)) throw new ArgumentException("runId is required", nameof(runId));
         return GetAgentRunAsync(runId, includeStepOutputs: false, cancellationToken);
     }
 
+    /// <summary>Gets an agent run by its run ID, optionally including step outputs.</summary>
     public async Task<AgentRunResponse> GetAgentRunAsync(string runId, bool includeStepOutputs, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(runId)) throw new ArgumentException("runId is required", nameof(runId));
@@ -254,12 +295,14 @@ public sealed class SeclaiClient
             cancellationToken);
     }
 
+    /// <summary>Deletes an agent run.</summary>
     public Task<AgentRunResponse> DeleteAgentRunAsync(string runId, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(runId)) throw new ArgumentException("runId is required", nameof(runId));
         return SendJsonAsync<AgentRunResponse>(HttpMethod.Delete, $"/agents/runs/{Uri.EscapeDataString(runId)}", query: null, body: null, cancellationToken);
     }
 
+    /// <summary>Gets content details with optional text range pagination.</summary>
     public async Task<ContentDetailResponse> GetContentDetailAsync(
         string sourceConnectionContentVersion,
         int? start = null,
@@ -280,6 +323,7 @@ public sealed class SeclaiClient
         return await SendJsonAsync<ContentDetailResponse>(HttpMethod.Get, $"/contents/{Uri.EscapeDataString(sourceConnectionContentVersion)}", query, body: null, cancellationToken);
     }
 
+    /// <summary>Deletes a content version.</summary>
     public async Task DeleteContentAsync(string sourceConnectionContentVersion, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(sourceConnectionContentVersion))
@@ -290,6 +334,7 @@ public sealed class SeclaiClient
         await SendJsonAsync<object>(HttpMethod.Delete, $"/contents/{Uri.EscapeDataString(sourceConnectionContentVersion)}", query: null, body: null, cancellationToken, expectBody: false);
     }
 
+    /// <summary>Lists embeddings for a content version with pagination.</summary>
     public async Task<ContentEmbeddingsListResponse> ListContentEmbeddingsAsync(
         string sourceConnectionContentVersion,
         int? page = null,
@@ -378,6 +423,43 @@ public sealed class SeclaiClient
         using var req = new HttpRequestMessage(HttpMethod.Post, url) { Content = content };
         req.Headers.TryAddWithoutValidation(_apiKeyHeader, _apiKey);
         req.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+        ApplyDefaultHeaders(req);
+
+        using var resp = await _http.SendAsync(req, cancellationToken).ConfigureAwait(false);
+        var responseBody = await ReadBodyAsync(resp).ConfigureAwait(false);
+
+        if (!resp.IsSuccessStatusCode)
+        {
+            ThrowApiError(resp.StatusCode, req.Method.Method, url, responseBody);
+        }
+
+        var parsed = JsonSerializer.Deserialize<FileUploadResponse>(responseBody ?? string.Empty, JsonOptions);
+        return parsed ?? new FileUploadResponse();
+    }
+
+    /// <summary>
+    /// Uploads a file from a <see cref="Stream"/> to a source connection, avoiding loading the full file into memory.
+    /// </summary>
+    public async Task<FileUploadResponse> UploadFileToSourceAsync(
+        string sourceConnectionId,
+        Stream fileStream,
+        string fileName,
+        string? title = null,
+        IReadOnlyDictionary<string, object?>? metadata = null,
+        string? mimeType = null,
+        CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(sourceConnectionId)) throw new ArgumentException("sourceConnectionId is required", nameof(sourceConnectionId));
+        if (fileStream is null) throw new ArgumentNullException(nameof(fileStream));
+        if (string.IsNullOrWhiteSpace(fileName)) throw new ArgumentException("fileName is required", nameof(fileName));
+
+        var url = BuildUri($"/sources/{Uri.EscapeDataString(sourceConnectionId)}/upload", query: null);
+
+        using var content = BuildMultipartContent(fileStream, fileName, title, metadata, mimeType);
+        using var req = new HttpRequestMessage(HttpMethod.Post, url) { Content = content };
+        req.Headers.TryAddWithoutValidation(_apiKeyHeader, _apiKey);
+        req.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+        ApplyDefaultHeaders(req);
 
         using var resp = await _http.SendAsync(req, cancellationToken).ConfigureAwait(false);
         var responseBody = await ReadBodyAsync(resp).ConfigureAwait(false);
@@ -397,7 +479,7 @@ public sealed class SeclaiClient
     /// <remarks>
     /// <para>
     /// This uploads a new file to <c>/contents/{source_connection_content_version}/upload</c>.
-    /// It behaves like <see cref="UploadFileToSourceAsync"/>, but targets an existing content version ID.
+    /// It behaves like <c>UploadFileToSourceAsync</c>, but targets an existing content version ID.
     /// </para>
     /// </remarks>
     public async Task<FileUploadResponse> UploadFileToContentAsync(
@@ -439,6 +521,43 @@ public sealed class SeclaiClient
         using var req = new HttpRequestMessage(HttpMethod.Post, url) { Content = content };
         req.Headers.TryAddWithoutValidation(_apiKeyHeader, _apiKey);
         req.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+        ApplyDefaultHeaders(req);
+
+        using var resp = await _http.SendAsync(req, cancellationToken).ConfigureAwait(false);
+        var responseBody = await ReadBodyAsync(resp).ConfigureAwait(false);
+
+        if (!resp.IsSuccessStatusCode)
+        {
+            ThrowApiError(resp.StatusCode, req.Method.Method, url, responseBody);
+        }
+
+        var parsed = JsonSerializer.Deserialize<FileUploadResponse>(responseBody ?? string.Empty, JsonOptions);
+        return parsed ?? new FileUploadResponse();
+    }
+
+    /// <summary>
+    /// Uploads a file from a <see cref="Stream"/> and replaces the content backing an existing content version.
+    /// </summary>
+    public async Task<FileUploadResponse> UploadFileToContentAsync(
+        string sourceConnectionContentVersionId,
+        Stream fileStream,
+        string fileName,
+        string? title = null,
+        IReadOnlyDictionary<string, object?>? metadata = null,
+        string? mimeType = null,
+        CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(sourceConnectionContentVersionId)) throw new ArgumentException("sourceConnectionContentVersionId is required", nameof(sourceConnectionContentVersionId));
+        if (fileStream is null) throw new ArgumentNullException(nameof(fileStream));
+        if (string.IsNullOrWhiteSpace(fileName)) throw new ArgumentException("fileName is required", nameof(fileName));
+
+        var url = BuildUri($"/contents/{Uri.EscapeDataString(sourceConnectionContentVersionId)}/upload", query: null);
+
+        using var content = BuildMultipartContent(fileStream, fileName, title, metadata, mimeType);
+        using var req = new HttpRequestMessage(HttpMethod.Post, url) { Content = content };
+        req.Headers.TryAddWithoutValidation(_apiKeyHeader, _apiKey);
+        req.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+        ApplyDefaultHeaders(req);
 
         using var resp = await _http.SendAsync(req, cancellationToken).ConfigureAwait(false);
         var responseBody = await ReadBodyAsync(resp).ConfigureAwait(false);
@@ -500,6 +619,37 @@ public sealed class SeclaiClient
         };
     }
 
+    private MultipartFormDataContent BuildMultipartContent(
+        Stream fileStream,
+        string fileName,
+        string? title,
+        IReadOnlyDictionary<string, object?>? metadata,
+        string? mimeType)
+    {
+        var content = new MultipartFormDataContent();
+        if (!string.IsNullOrWhiteSpace(title))
+        {
+            content.Add(new StringContent(title!, Encoding.UTF8), "title");
+        }
+
+        if (metadata is not null && metadata.Count > 0)
+        {
+            var metadataJson = JsonSerializer.Serialize(metadata, JsonOptions);
+            content.Add(new StringContent(metadataJson, Encoding.UTF8, "text/plain"), "metadata");
+        }
+
+        var inferredMimeType = string.IsNullOrWhiteSpace(mimeType)
+            ? TryInferMimeTypeFromFileName(fileName)
+            : mimeType;
+
+        var streamContent = new StreamContent(fileStream);
+        streamContent.Headers.ContentType = new MediaTypeHeaderValue(
+            string.IsNullOrWhiteSpace(inferredMimeType) ? "application/octet-stream" : inferredMimeType!);
+        content.Add(streamContent, "file", fileName);
+
+        return content;
+    }
+
     private async Task<T> SendJsonAsync<T>(HttpMethod method, string path, Dictionary<string, string?>? query, object? body, CancellationToken cancellationToken, bool expectBody = true)
     {
         var url = BuildUri(path, query);
@@ -507,6 +657,7 @@ public sealed class SeclaiClient
 
         req.Headers.TryAddWithoutValidation(_apiKeyHeader, _apiKey);
         req.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+        ApplyDefaultHeaders(req);
 
         if (body is not null)
         {
@@ -542,6 +693,7 @@ public sealed class SeclaiClient
 
         req.Headers.TryAddWithoutValidation(_apiKeyHeader, _apiKey);
         req.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+        ApplyDefaultHeaders(req);
 
         if (body is not null)
         {
@@ -565,6 +717,7 @@ public sealed class SeclaiClient
 
         req.Headers.TryAddWithoutValidation(_apiKeyHeader, _apiKey);
         req.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+        ApplyDefaultHeaders(req);
 
         if (body is not null)
         {
@@ -633,6 +786,15 @@ public sealed class SeclaiClient
     {
         if (response.Content is null) return null;
         return await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+    }
+
+    private void ApplyDefaultHeaders(HttpRequestMessage req)
+    {
+        if (_defaultHeaders is null) return;
+        foreach (var kv in _defaultHeaders)
+        {
+            req.Headers.TryAddWithoutValidation(kv.Key, kv.Value);
+        }
     }
 
     private static Uri? TryGetEnvUri(string envVar)
@@ -1163,6 +1325,7 @@ public sealed class SeclaiClient
         var url = BuildUri($"/sources/{Uri.EscapeDataString(sourceId)}/exports/{Uri.EscapeDataString(exportId)}/download", query: null);
         using var req = new HttpRequestMessage(HttpMethod.Get, url);
         req.Headers.TryAddWithoutValidation(_apiKeyHeader, _apiKey);
+        ApplyDefaultHeaders(req);
 
         var resp = await _http.SendAsync(req, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
 
@@ -1626,6 +1789,7 @@ public sealed class SeclaiClient
         req.Headers.TryAddWithoutValidation(_apiKeyHeader, _apiKey);
         req.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("text/event-stream"));
         req.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+        ApplyDefaultHeaders(req);
 
         var json = JsonSerializer.Serialize(body, JsonOptions);
         req.Content = new StringContent(json, Encoding.UTF8, "application/json");
@@ -1714,6 +1878,7 @@ public sealed class SeclaiClient
         string agentId,
         AgentRunRequest body,
         TimeSpan? pollInterval = null,
+        TimeSpan? timeout = null,
         bool includeStepOutputs = false,
         CancellationToken cancellationToken = default)
     {
@@ -1721,6 +1886,12 @@ public sealed class SeclaiClient
 
         var run = await RunAgentAsync(agentId, body, cancellationToken);
         var interval = pollInterval ?? TimeSpan.FromSeconds(2);
+
+        using var cts = timeout.HasValue
+            ? CancellationTokenSource.CreateLinkedTokenSource(cancellationToken)
+            : null;
+        if (cts is not null) cts.CancelAfter(timeout!.Value);
+        var ct = cts?.Token ?? cancellationToken;
 
         while (true)
         {
@@ -1731,8 +1902,8 @@ public sealed class SeclaiClient
                     return run;
             }
 
-            await Task.Delay(interval, cancellationToken).ConfigureAwait(false);
-            run = await GetAgentRunAsync(run.RunId!, includeStepOutputs, cancellationToken);
+            await Task.Delay(interval, ct).ConfigureAwait(false);
+            run = await GetAgentRunAsync(run.RunId!, includeStepOutputs, ct);
         }
     }
 
@@ -1773,6 +1944,7 @@ public sealed class SeclaiClient
         using var req = new HttpRequestMessage(HttpMethod.Post, url) { Content = content };
         req.Headers.TryAddWithoutValidation(_apiKeyHeader, _apiKey);
         req.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+        ApplyDefaultHeaders(req);
 
         using var resp = await _http.SendAsync(req, cancellationToken).ConfigureAwait(false);
         var responseBody = await ReadBodyAsync(resp).ConfigureAwait(false);
