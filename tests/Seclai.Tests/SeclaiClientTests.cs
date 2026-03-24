@@ -1461,13 +1461,15 @@ public sealed class SeclaiClientTests
     // ── IDisposable ───────────────────────────────────────────────────────
 
     [Fact]
-    public void Dispose_DoesNotThrow_WhenUsingExternalHttpClient()
+    public async Task Dispose_DoesNotThrow_WhenUsingExternalHttpClient()
     {
-        var http = new HttpClient(new FakeHttpMessageHandler(_ => JsonResponse("{}")));
+        var handler = new FakeHttpMessageHandler(_ => JsonResponse("{}"));
+        var http = new HttpClient(handler);
         var client = new SeclaiClient(new SeclaiClientOptions { ApiKey = "k", BaseUri = new Uri("https://example.invalid"), HttpClient = http });
         client.Dispose(); // should NOT dispose the external HttpClient
-        // Prove the external HttpClient is still usable
-        Assert.NotNull(http.BaseAddress ?? new Uri("https://ok"));
+        // Prove the external HttpClient is still usable by making a request
+        var resp = await http.GetAsync("https://example.invalid");
+        Assert.Equal(System.Net.HttpStatusCode.OK, resp.StatusCode);
     }
 
     [Fact]

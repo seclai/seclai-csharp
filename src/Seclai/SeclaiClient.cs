@@ -53,7 +53,9 @@ public sealed class SeclaiClient : IDisposable
 
         _apiKey = apiKeyRaw.Trim();
         _apiKeyHeader = string.IsNullOrWhiteSpace(options.ApiKeyHeader) ? "x-api-key" : options.ApiKeyHeader;
-        _defaultHeaders = options.DefaultHeaders;
+        _defaultHeaders = options.DefaultHeaders is not null
+            ? new Dictionary<string, string>(options.DefaultHeaders)
+            : null;
 
         if (options.HttpClient is not null)
         {
@@ -512,7 +514,7 @@ public sealed class SeclaiClient : IDisposable
         IReadOnlyDictionary<string, object?>? metadata,
         string? mimeType)
     {
-        var content = BuildMultipartShell(fileName, title, metadata, mimeType);
+        var content = BuildMultipartShell(title, metadata);
         var fileContent = new ByteArrayContent(fileBytes);
         fileContent.Headers.ContentType = new MediaTypeHeaderValue(
             ResolveContentType(fileName, mimeType));
@@ -520,6 +522,13 @@ public sealed class SeclaiClient : IDisposable
         return content;
     }
 
+    /// <remarks>
+    /// Disposing the returned <see cref="MultipartFormDataContent"/> (or the
+    /// <see cref="HttpRequestMessage"/> that carries it) will dispose the
+    /// underlying <see cref="StreamContent"/> and, consequently, the supplied
+    /// <paramref name="fileStream"/>. Callers should <b>not</b> attempt to
+    /// reuse the stream after the upload completes.
+    /// </remarks>
     private MultipartFormDataContent BuildMultipartContent(
         Stream fileStream,
         string fileName,
@@ -527,7 +536,7 @@ public sealed class SeclaiClient : IDisposable
         IReadOnlyDictionary<string, object?>? metadata,
         string? mimeType)
     {
-        var content = BuildMultipartShell(fileName, title, metadata, mimeType);
+        var content = BuildMultipartShell(title, metadata);
         var streamContent = new StreamContent(fileStream);
         streamContent.Headers.ContentType = new MediaTypeHeaderValue(
             ResolveContentType(fileName, mimeType));
@@ -536,10 +545,8 @@ public sealed class SeclaiClient : IDisposable
     }
 
     private MultipartFormDataContent BuildMultipartShell(
-        string fileName,
         string? title,
-        IReadOnlyDictionary<string, object?>? metadata,
-        string? mimeType)
+        IReadOnlyDictionary<string, object?>? metadata)
     {
         var content = new MultipartFormDataContent();
         if (!string.IsNullOrWhiteSpace(title))
@@ -1750,7 +1757,7 @@ public sealed class SeclaiClient : IDisposable
     {
         if (string.IsNullOrWhiteSpace(agentId)) throw new ArgumentException("agentId is required", nameof(agentId));
 
-        var run = await RunAgentAsync(agentId, body, cancellationToken);
+        var run = await RunAgentAsync(agentId, body, cancellationToken).ConfigureAwait(false);
         var interval = pollInterval ?? TimeSpan.FromSeconds(2);
 
         using var cts = timeout.HasValue
@@ -1769,7 +1776,7 @@ public sealed class SeclaiClient : IDisposable
             }
 
             await Task.Delay(interval, ct).ConfigureAwait(false);
-            run = await GetAgentRunAsync(run.RunId!, includeStepOutputs, ct);
+            run = await GetAgentRunAsync(run.RunId!, includeStepOutputs, ct).ConfigureAwait(false);
         }
     }
 

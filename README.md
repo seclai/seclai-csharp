@@ -24,7 +24,7 @@ var client = new SeclaiClient(new SeclaiClientOptions
 
 // Run an agent
 var run = await client.RunAgentAsync("sc_ag_123", new AgentRunRequest { Input = "hello" });
-Console.WriteLine($"Run {run.Id}: {run.Status}");
+Console.WriteLine($"Run {run.RunId}: {run.Status}");
 ```
 
 ## Configuration
@@ -199,13 +199,14 @@ var sol = await client.CreateSolutionAsync(new CreateSolutionRequest { Name = "M
 
 // Link/unlink resources
 await client.LinkAgentsToSolutionAsync(sol.Id, new LinkResourcesRequest { Ids = new List<string> { "ag1" } });
-await client.LinkSourcesToSolutionAsync(sol.Id, new LinkResourcesRequest { Ids = new List<string> { "s1" } });
+await client.LinkSourceConnectionsToSolutionAsync(sol.Id, new LinkResourcesRequest { Ids = new List<string> { "s1" } });
 await client.LinkKnowledgeBasesToSolutionAsync(sol.Id, new LinkResourcesRequest { Ids = new List<string> { "kb1" } });
 
 // AI-assisted solution planning
 var plan = await client.GenerateSolutionAiPlanAsync(sol.Id,
     new AiAssistantGenerateRequest { UserInput = "add a FAQ bot" });
-var accepted = await client.AcceptSolutionAiPlanAsync(sol.Id, plan.ConversationId);
+var accepted = await client.AcceptSolutionAiPlanAsync(
+    sol.Id, plan.ConversationId!, new AiAssistantAcceptRequest());
 ```
 
 ### Governance
@@ -214,7 +215,6 @@ var accepted = await client.AcceptSolutionAiPlanAsync(sol.Id, plan.ConversationI
 // AI-assisted governance
 var gov = await client.GenerateGovernanceAiPlanAsync(
     new GovernanceAiAssistantRequest { UserInput = "create a content safety policy" });
-var result = await client.AcceptGovernanceAiPlanAsync(gov.ConversationId!);
 var conversations = await client.ListGovernanceAiConversationsAsync();
 ```
 
@@ -224,7 +224,7 @@ var conversations = await client.ListGovernanceAiConversationsAsync();
 var alerts = await client.ListAlertsAsync(status: "active");           // JsonElement
 var alert = await client.GetAlertAsync("al1");                         // JsonElement
 await client.ChangeAlertStatusAsync("al1", new ChangeStatusRequest { Status = "resolved" });
-await client.AddAlertCommentAsync("al1", new AddCommentRequest { Comment = "Fixed" });
+await client.AddAlertCommentAsync("al1", new AddCommentRequest { Body = "Fixed" });
 
 // Alert configs
 var configs = await client.ListAlertConfigsAsync();                    // JsonElement
@@ -255,12 +255,12 @@ var results = await client.SearchAsync(query: "my bot", entityType: "agent");  /
 // Knowledge base assistant
 var plan = await client.AiAssistantKnowledgeBaseAsync(
     new AiAssistantGenerateRequest { UserInput = "create a docs knowledge base" });
-await client.AcceptAiAssistantPlanAsync(plan.ConversationId);
+await client.AcceptAiAssistantPlanAsync(
+    plan.ConversationId!, new AiAssistantAcceptRequest());
 
-// Source, memory bank, and agent assistants
+// Source and memory bank assistants
 await client.AiAssistantSourceAsync(new AiAssistantGenerateRequest { UserInput = "plan" });
-await client.AiAssistantMemoryBankAsync(new AiAssistantGenerateRequest { UserInput = "plan" });
-await client.AiAssistantAgentAsync(new AiAssistantGenerateRequest { UserInput = "plan" });
+await client.AiAssistantMemoryBankAsync(new MemoryBankAiAssistantRequest { UserInput = "plan" });
 
 // Feedback
 await client.SubmitAiFeedbackAsync(new AiAssistantFeedbackRequest
