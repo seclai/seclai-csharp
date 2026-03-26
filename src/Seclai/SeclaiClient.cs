@@ -61,7 +61,6 @@ public sealed class SeclaiClient : IDisposable
             _ownsHttp = true;
         }
 
-        _auth.HttpClient = _http;
         _baseUri = EnsureTrailingSlash(baseUrl);
     }
 
@@ -712,7 +711,7 @@ public sealed class SeclaiClient : IDisposable
 
     private async Task ApplyAuthAsync(HttpRequestMessage req, CancellationToken cancellationToken)
     {
-        await SeclaiAuth.ApplyAuthHeadersAsync(req.Headers, _auth, _http, cancellationToken).ConfigureAwait(false);
+        await SeclaiAuth.ApplyAuthHeadersAsync(req.Headers, _auth, null, cancellationToken).ConfigureAwait(false);
     }
 
     private static Dictionary<string, string?> PaginationQuery(

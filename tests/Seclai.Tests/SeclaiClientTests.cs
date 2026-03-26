@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -18,6 +19,8 @@ public sealed class SeclaiClientTests
     [Fact]
     public void Constructor_UsesEnvApiKey()
     {
+        var originalApiKey = Environment.GetEnvironmentVariable("SECLAI_API_KEY");
+        var originalConfigDir = Environment.GetEnvironmentVariable("SECLAI_CONFIG_DIR");
         Environment.SetEnvironmentVariable("SECLAI_API_KEY", "k");
         try
         {
@@ -26,15 +29,18 @@ public sealed class SeclaiClientTests
         }
         finally
         {
-            Environment.SetEnvironmentVariable("SECLAI_API_KEY", null);
+            Environment.SetEnvironmentVariable("SECLAI_API_KEY", originalApiKey);
+            Environment.SetEnvironmentVariable("SECLAI_CONFIG_DIR", originalConfigDir);
         }
     }
 
     [Fact]
     public void Constructor_ThrowsWhenNoCredentials()
     {
+        var originalApiKey = Environment.GetEnvironmentVariable("SECLAI_API_KEY");
+        var originalConfigDir = Environment.GetEnvironmentVariable("SECLAI_CONFIG_DIR");
         Environment.SetEnvironmentVariable("SECLAI_API_KEY", null);
-        Environment.SetEnvironmentVariable("SECLAI_CONFIG_DIR", "/nonexistent-seclai-dir");
+        Environment.SetEnvironmentVariable("SECLAI_CONFIG_DIR", Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString()));
         try
         {
             Assert.Throws<ConfigurationException>(() =>
@@ -42,7 +48,8 @@ public sealed class SeclaiClientTests
         }
         finally
         {
-            Environment.SetEnvironmentVariable("SECLAI_CONFIG_DIR", null);
+            Environment.SetEnvironmentVariable("SECLAI_API_KEY", originalApiKey);
+            Environment.SetEnvironmentVariable("SECLAI_CONFIG_DIR", originalConfigDir);
         }
     }
 

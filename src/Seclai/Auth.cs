@@ -100,8 +100,6 @@ internal sealed class AuthState
     public string? ConfigDir { get; set; }
     /// <summary>Whether to auto-refresh expired SSO tokens.</summary>
     public bool AutoRefresh { get; set; } = true;
-    /// <summary>Optional HTTP client for token refresh requests.</summary>
-    public HttpClient? HttpClient { get; set; }
     /// <summary>Lock to prevent concurrent SSO token refresh attempts.</summary>
     internal readonly SemaphoreSlim RefreshLock = new SemaphoreSlim(1, 1);
 }
@@ -273,13 +271,17 @@ public static class SeclaiAuth
             var json = File.ReadAllText(cachePath);
             return JsonSerializer.Deserialize<SsoCacheEntry>(json, CacheJsonOptions);
         }
-        catch (Exception ex) when (ex is JsonException or IOException)
+        catch (JsonException)
+        {
+            return null;
+        }
+        catch (IOException)
         {
             return null;
         }
     }
 
-    /// <summary>Atomically writes a cache entry to disk.</summary>
+    /// <summary>Writes a cache entry to disk, replacing any existing file.</summary>
     /// <param name="configDir">Resolved config directory path.</param>
     /// <param name="profile">SSO profile used to derive the cache filename.</param>
     /// <param name="entry">Token data to persist.</param>
@@ -295,8 +297,10 @@ public static class SeclaiAuth
         File.WriteAllText(tmpPath, json);
         try
         {
-            if (File.Exists(cachePath)) File.Delete(cachePath);
-            File.Move(tmpPath, cachePath);
+            if (File.Exists(cachePath))
+                File.Replace(tmpPath, cachePath, null);
+            else
+                File.Move(tmpPath, cachePath);
         }
         catch
         {

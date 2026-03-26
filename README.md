@@ -77,9 +77,9 @@ using var client = new SeclaiClient(new SeclaiClientOptions
 // SSO profile (uses cached tokens, auto-refreshes)
 using var client = new SeclaiClient(new SeclaiClientOptions { Profile = "my-profile" });
 
-// Environment variable (no options needed)
+// Environment variable
 // set SECLAI_API_KEY=sk-...
-using var client = new SeclaiClient();
+using var client = new SeclaiClient(new SeclaiClientOptions());
 ```
 
 To set up SSO authentication, install the [Seclai CLI](https://www.npmjs.com/package/seclai) and run:
