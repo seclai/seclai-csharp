@@ -31,11 +31,17 @@ Console.WriteLine($"Run {run.RunId}: {run.Status}");
 
 | Option | Default | Description |
 |--------|---------|-------------|
-| `ApiKey` | `SECLAI_API_KEY` env var | API key for authentication. Falls back to `SECLAI_API_KEY` env var. |
+| `ApiKey` | `SECLAI_API_KEY` env var | API key for `x-api-key` header authentication. |
+| `AccessToken` | — | Static OAuth2 bearer token. |
+| `AccessTokenProvider` | — | Async function called per request: `Func<CancellationToken, Task<string>>`. |
+| `Profile` | `SECLAI_PROFILE` / `"default"` | SSO profile name from `~/.seclai/config`. |
+| `ConfigDir` | `SECLAI_CONFIG_DIR` / `~/.seclai` | Config/cache directory path. |
+| `AutoRefresh` | `true` | Auto-refresh expired SSO tokens using the cached refresh token. |
+| `AccountId` | — | Account ID sent as `X-Account-Id` header. |
 | `BaseUri` | `https://seclai.com` | API base URL. Falls back to `SECLAI_API_URL` env var. |
-| `HttpClient` | internal | Bring your own `HttpClient` (useful for DI or testing) |
+| `HttpClient` | internal | Bring your own `HttpClient` (useful for DI or testing). |
 | `Timeout` | 120 s | HTTP request timeout. Ignored when a custom `HttpClient` is provided. |
-| `DefaultHeaders` | none | Extra headers appended to every request (e.g. tracing / tenant IDs). |
+| `DefaultHeaders` | none | Extra headers appended to every request. |
 
 `SeclaiClient` implements `IDisposable`. When you let it create its own `HttpClient`, wrap it in a `using` statement so the client is disposed properly:
 
@@ -44,6 +50,44 @@ using var client = new SeclaiClient(new SeclaiClientOptions { ApiKey = "sk_..." 
 ```
 
 If you supply your own `HttpClient`, the client does **not** dispose it — you manage its lifetime.
+
+### Authentication
+
+Credentials are resolved via a chain (first match wins):
+
+1. Explicit `ApiKey` option
+2. Explicit `AccessToken` option (static string)
+3. Explicit `AccessTokenProvider` option (async delegate, called per request)
+4. `SECLAI_API_KEY` environment variable
+5. SSO profile from `~/.seclai/config` with cached tokens in `~/.seclai/sso/cache/`
+
+```csharp
+// API key
+using var client = new SeclaiClient(new SeclaiClientOptions { ApiKey = "sk-..." });
+
+// Static bearer token
+using var client = new SeclaiClient(new SeclaiClientOptions { AccessToken = "eyJhbGciOi..." });
+
+// Dynamic bearer token provider (called per request)
+using var client = new SeclaiClient(new SeclaiClientOptions
+{
+    AccessTokenProvider = async ct => await GetTokenFromVaultAsync(ct)
+});
+
+// SSO profile (uses cached tokens, auto-refreshes)
+using var client = new SeclaiClient(new SeclaiClientOptions { Profile = "my-profile" });
+
+// Environment variable
+// set SECLAI_API_KEY=sk-...
+using var client = new SeclaiClient(new SeclaiClientOptions());
+```
+
+To set up SSO authentication, install the [Seclai CLI](https://www.npmjs.com/package/seclai) and run:
+
+```bash
+seclai configure sso    # set up an SSO profile
+seclai auth login       # authenticate via browser
+```
 
 ## API Coverage
 

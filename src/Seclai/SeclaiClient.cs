@@ -31,28 +31,21 @@ public sealed class SeclaiClient : IDisposable
     private readonly HttpClient _http;
     private readonly bool _ownsHttp;
     private readonly Uri _baseUri;
-    private readonly string _apiKey;
-    private readonly string _apiKeyHeader;
+    private readonly AuthState _auth;
     private readonly Dictionary<string, string>? _defaultHeaders;
 
     /// <summary>Creates a new <see cref="SeclaiClient"/> from the given options.</summary>
-    /// <exception cref="ConfigurationException">Thrown when no API key is provided.</exception>
+    /// <exception cref="ConfigurationException">Thrown when no credentials are provided or options conflict.</exception>
     public SeclaiClient(SeclaiClientOptions options)
     {
         if (options is null) throw new ArgumentNullException(nameof(options));
 
-        var apiKeyRaw = options.ApiKey ?? Environment.GetEnvironmentVariable("SECLAI_API_KEY");
-        if (string.IsNullOrWhiteSpace(apiKeyRaw))
-        {
-            throw new ConfigurationException("missing API key: provide SeclaiClientOptions.ApiKey or set SECLAI_API_KEY");
-        }
+        _auth = SeclaiAuth.ResolveCredentialChain(options);
 
         var baseUrl = options.BaseUri
             ?? TryGetEnvUri("SECLAI_API_URL")
             ?? SeclaiClientOptions.DefaultBaseUri;
 
-        _apiKey = apiKeyRaw.Trim();
-        _apiKeyHeader = string.IsNullOrWhiteSpace(options.ApiKeyHeader) ? "x-api-key" : options.ApiKeyHeader;
         _defaultHeaders = options.DefaultHeaders is not null
             ? new Dictionary<string, string>(options.DefaultHeaders)
             : null;
@@ -119,7 +112,7 @@ public sealed class SeclaiClient : IDisposable
         var url = BuildUri($"/agents/{Uri.EscapeDataString(agentId)}/runs/stream", query: null);
 
         using var req = new HttpRequestMessage(HttpMethod.Post, url);
-        req.Headers.TryAddWithoutValidation(_apiKeyHeader, _apiKey);
+        await ApplyAuthAsync(req, cancellationToken).ConfigureAwait(false);
         req.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("text/event-stream"));
         req.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         ApplyDefaultHeaders(req);
@@ -574,7 +567,7 @@ public sealed class SeclaiClient : IDisposable
         var url = BuildUri(path, query);
         using var req = new HttpRequestMessage(method, url);
 
-        req.Headers.TryAddWithoutValidation(_apiKeyHeader, _apiKey);
+        await ApplyAuthAsync(req, cancellationToken).ConfigureAwait(false);
         req.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         ApplyDefaultHeaders(req);
 
@@ -610,7 +603,7 @@ public sealed class SeclaiClient : IDisposable
         var url = BuildUri(path, query);
         using var req = new HttpRequestMessage(method, url);
 
-        req.Headers.TryAddWithoutValidation(_apiKeyHeader, _apiKey);
+        await ApplyAuthAsync(req, cancellationToken).ConfigureAwait(false);
         req.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         ApplyDefaultHeaders(req);
 
@@ -634,7 +627,7 @@ public sealed class SeclaiClient : IDisposable
         var url = BuildUri(path, query);
         using var req = new HttpRequestMessage(method, url);
 
-        req.Headers.TryAddWithoutValidation(_apiKeyHeader, _apiKey);
+        await ApplyAuthAsync(req, cancellationToken).ConfigureAwait(false);
         req.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         ApplyDefaultHeaders(req);
 
@@ -714,6 +707,11 @@ public sealed class SeclaiClient : IDisposable
         {
             req.Headers.TryAddWithoutValidation(kv.Key, kv.Value);
         }
+    }
+
+    private async Task ApplyAuthAsync(HttpRequestMessage req, CancellationToken cancellationToken)
+    {
+        await SeclaiAuth.ApplyAuthHeadersAsync(req.Headers, _auth, null, cancellationToken).ConfigureAwait(false);
     }
 
     private static Dictionary<string, string?> PaginationQuery(
@@ -1215,7 +1213,7 @@ public sealed class SeclaiClient : IDisposable
 
         var url = BuildUri($"/sources/{Uri.EscapeDataString(sourceId)}/exports/{Uri.EscapeDataString(exportId)}/download", query: null);
         using var req = new HttpRequestMessage(HttpMethod.Get, url);
-        req.Headers.TryAddWithoutValidation(_apiKeyHeader, _apiKey);
+        await ApplyAuthAsync(req, cancellationToken).ConfigureAwait(false);
         ApplyDefaultHeaders(req);
 
         var resp = await _http.SendAsync(req, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
@@ -1659,7 +1657,7 @@ public sealed class SeclaiClient : IDisposable
         var url = BuildUri($"/agents/{Uri.EscapeDataString(agentId)}/runs/stream", query: null);
 
         using var req = new HttpRequestMessage(HttpMethod.Post, url);
-        req.Headers.TryAddWithoutValidation(_apiKeyHeader, _apiKey);
+        await ApplyAuthAsync(req, cancellationToken).ConfigureAwait(false);
         req.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("text/event-stream"));
         req.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         ApplyDefaultHeaders(req);
@@ -1790,7 +1788,7 @@ public sealed class SeclaiClient : IDisposable
         var url = BuildUri(path, query: null);
 
         using var req = new HttpRequestMessage(HttpMethod.Post, url) { Content = content };
-        req.Headers.TryAddWithoutValidation(_apiKeyHeader, _apiKey);
+        await ApplyAuthAsync(req, cancellationToken).ConfigureAwait(false);
         req.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         ApplyDefaultHeaders(req);
 

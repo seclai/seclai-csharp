@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Seclai;
 
@@ -11,6 +13,26 @@ public sealed class SeclaiClientOptions
 {
     /// <summary>API key for authentication. Falls back to the <c>SECLAI_API_KEY</c> environment variable.</summary>
     public string? ApiKey { get; set; }
+
+    /// <summary>Static bearer token (mutually exclusive with <see cref="ApiKey"/>).</summary>
+    public string? AccessToken { get; set; }
+
+    /// <summary>
+    /// Async provider that returns a bearer token per request (mutually exclusive with <see cref="ApiKey"/>).
+    /// </summary>
+    public Func<CancellationToken, Task<string>>? AccessTokenProvider { get; set; }
+
+    /// <summary>SSO profile name from the config file. Falls back to <c>SECLAI_PROFILE</c>, then "default".</summary>
+    public string? Profile { get; set; }
+
+    /// <summary>Config directory override. Falls back to <c>SECLAI_CONFIG_DIR</c>, then <c>~/.seclai</c>.</summary>
+    public string? ConfigDir { get; set; }
+
+    /// <summary>Whether to auto-refresh expired SSO tokens. Defaults to <c>true</c>.</summary>
+    public bool? AutoRefresh { get; set; }
+
+    /// <summary>Account ID sent as the <c>X-Account-Id</c> header for multi-org targeting.</summary>
+    public string? AccountId { get; set; }
 
     /// <summary>API base URL. Falls back to the <c>SECLAI_API_URL</c> environment variable, then <see cref="DefaultBaseUri"/>.</summary>
     public Uri? BaseUri { get; set; }

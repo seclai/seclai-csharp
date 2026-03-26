@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
@@ -17,6 +19,8 @@ public sealed class SeclaiClientTests
     [Fact]
     public void Constructor_UsesEnvApiKey()
     {
+        var originalApiKey = Environment.GetEnvironmentVariable("SECLAI_API_KEY");
+        var originalConfigDir = Environment.GetEnvironmentVariable("SECLAI_CONFIG_DIR");
         Environment.SetEnvironmentVariable("SECLAI_API_KEY", "k");
         try
         {
@@ -25,8 +29,146 @@ public sealed class SeclaiClientTests
         }
         finally
         {
-            Environment.SetEnvironmentVariable("SECLAI_API_KEY", null);
+            Environment.SetEnvironmentVariable("SECLAI_API_KEY", originalApiKey);
+            Environment.SetEnvironmentVariable("SECLAI_CONFIG_DIR", originalConfigDir);
         }
+    }
+
+    [Fact]
+    public void Constructor_ThrowsWhenNoCredentials()
+    {
+        var originalApiKey = Environment.GetEnvironmentVariable("SECLAI_API_KEY");
+        var originalConfigDir = Environment.GetEnvironmentVariable("SECLAI_CONFIG_DIR");
+        Environment.SetEnvironmentVariable("SECLAI_API_KEY", null);
+        Environment.SetEnvironmentVariable("SECLAI_CONFIG_DIR", Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString()));
+        try
+        {
+            Assert.Throws<ConfigurationException>(() =>
+                new SeclaiClient(new SeclaiClientOptions()));
+        }
+        finally
+        {
+            Environment.SetEnvironmentVariable("SECLAI_API_KEY", originalApiKey);
+            Environment.SetEnvironmentVariable("SECLAI_CONFIG_DIR", originalConfigDir);
+        }
+    }
+
+    [Fact]
+    public void Constructor_ThrowsWhenBothApiKeyAndAccessToken()
+    {
+        Assert.Throws<ConfigurationException>(() =>
+            new SeclaiClient(new SeclaiClientOptions { ApiKey = "k", AccessToken = "tok" }));
+    }
+
+    [Fact]
+    public async Task BearerStaticToken_SetsAuthorizationHeader()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.True(req.Headers.Authorization is not null);
+            Assert.Equal("Bearer", req.Headers.Authorization!.Scheme);
+            Assert.Equal("my-jwt", req.Headers.Authorization.Parameter);
+            // Should NOT have x-api-key
+            Assert.False(req.Headers.Contains("x-api-key"));
+
+            var body = "{\"data\":[],\"pagination\":{\"has_next\":false,\"has_prev\":false,\"limit\":20,\"page\":1,\"pages\":1,\"total\":0}}";
+            return new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StringContent(body, Encoding.UTF8, "application/json")
+            };
+        });
+
+        var client = new SeclaiClient(new SeclaiClientOptions
+        {
+            AccessToken = "my-jwt",
+            BaseUri = new Uri("https://example.invalid"),
+            HttpClient = new HttpClient(handler)
+        });
+
+        var res = await client.ListSourcesAsync();
+        Assert.NotNull(res);
+    }
+
+    [Fact]
+    public async Task BearerProvider_CalledPerRequest()
+    {
+        var callCount = 0;
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.True(req.Headers.Authorization is not null);
+            Assert.Equal("Bearer", req.Headers.Authorization!.Scheme);
+
+            var body = "{\"data\":[],\"pagination\":{\"has_next\":false,\"has_prev\":false,\"limit\":20,\"page\":1,\"pages\":1,\"total\":0}}";
+            return new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StringContent(body, Encoding.UTF8, "application/json")
+            };
+        });
+
+        var client = new SeclaiClient(new SeclaiClientOptions
+        {
+            AccessTokenProvider = ct =>
+            {
+                callCount++;
+                return Task.FromResult("tok-" + callCount);
+            },
+            BaseUri = new Uri("https://example.invalid"),
+            HttpClient = new HttpClient(handler)
+        });
+
+        await client.ListSourcesAsync();
+        await client.ListSourcesAsync();
+        Assert.Equal(2, callCount);
+    }
+
+    [Fact]
+    public async Task AccountId_SetsHeader()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.True(req.Headers.Contains("X-Account-Id"));
+            Assert.Equal("acct-123", req.Headers.GetValues("X-Account-Id").First());
+
+            var body = "{\"data\":[],\"pagination\":{\"has_next\":false,\"has_prev\":false,\"limit\":20,\"page\":1,\"pages\":1,\"total\":0}}";
+            return new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StringContent(body, Encoding.UTF8, "application/json")
+            };
+        });
+
+        var client = new SeclaiClient(new SeclaiClientOptions
+        {
+            AccessToken = "tok",
+            AccountId = "acct-123",
+            BaseUri = new Uri("https://example.invalid"),
+            HttpClient = new HttpClient(handler)
+        });
+
+        var res = await client.ListSourcesAsync();
+        Assert.NotNull(res);
+    }
+
+    [Fact]
+    public void ParseIni_ParsesSections()
+    {
+        var input = "[default]\nsso_region = us-east-1\n\n[profile dev]\nsso_account_id = 123\n";
+        using var reader = new System.IO.StringReader(input);
+        var sections = SeclaiAuth.ParseIni(reader);
+
+        Assert.Equal("us-east-1", sections["default"]["sso_region"]);
+        Assert.Equal("123", sections["dev"]["sso_account_id"]);
+    }
+
+    [Fact]
+    public void IsTokenValid_ChecksExpiry()
+    {
+        var future = new SsoCacheEntry { ExpiresAt = DateTimeOffset.UtcNow.AddHours(1).ToString("o") };
+        var past = new SsoCacheEntry { ExpiresAt = DateTimeOffset.UtcNow.AddHours(-1).ToString("o") };
+        var nearExpiry = new SsoCacheEntry { ExpiresAt = DateTimeOffset.UtcNow.AddSeconds(20).ToString("o") };
+
+        Assert.True(SeclaiAuth.IsTokenValid(future));
+        Assert.False(SeclaiAuth.IsTokenValid(past));
+        Assert.False(SeclaiAuth.IsTokenValid(nearExpiry));
     }
 
     [Fact]
