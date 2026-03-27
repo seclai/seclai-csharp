@@ -302,6 +302,10 @@ public static class SeclaiAuth
         {
             return null;
         }
+        catch (UnauthorizedAccessException)
+        {
+            return null;
+        }
     }
 
     /// <summary>Writes a cache entry to disk, replacing any existing file.</summary>
@@ -569,7 +573,7 @@ public static class SeclaiAuth
         if (cached != null && IsTokenValid(cached))
             return cached.AccessToken;
 
-        if (cached?.RefreshToken != null && state.AutoRefresh)
+        if (!string.IsNullOrWhiteSpace(cached?.RefreshToken) && state.AutoRefresh)
         {
             await state.RefreshLock.WaitAsync(cancellationToken).ConfigureAwait(false);
             try
@@ -579,9 +583,9 @@ public static class SeclaiAuth
                 if (cached != null && IsTokenValid(cached))
                     return cached.AccessToken;
 
-                if (cached?.RefreshToken != null)
+                if (!string.IsNullOrWhiteSpace(cached?.RefreshToken))
                 {
-                    var refreshed = await RefreshTokenAsync(state.SsoProfile!, cached.RefreshToken, httpClient, cancellationToken).ConfigureAwait(false);
+                    var refreshed = await RefreshTokenAsync(state.SsoProfile!, cached!.RefreshToken!, httpClient, cancellationToken).ConfigureAwait(false);
                     WriteSsoCache(state.ConfigDir!, state.SsoProfile!, refreshed);
                     return refreshed.AccessToken;
                 }
@@ -592,6 +596,6 @@ public static class SeclaiAuth
             }
         }
 
-        throw new ConfigurationException("SSO token expired. Run `seclai auth login` to re-authenticate.");
+        throw new ConfigurationException("SSO token is missing or has expired. Run `seclai auth login` to authenticate or re-authenticate.");
     }
 }

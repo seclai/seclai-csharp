@@ -14,6 +14,7 @@ using Xunit;
 
 namespace Seclai.Tests;
 
+[Collection("Sequential")]
 public sealed class SeclaiClientTests
 {
     [Fact]

@@ -35,7 +35,7 @@ public sealed class SeclaiClient : IDisposable
     private readonly Dictionary<string, string>? _defaultHeaders;
 
     /// <summary>Creates a new <see cref="SeclaiClient"/> from the given options.</summary>
-    /// <exception cref="ConfigurationException">Thrown when no credentials are provided or options conflict.</exception>
+    /// <exception cref="ConfigurationException">Thrown when credential options conflict (e.g. both API key and access token).</exception>
     public SeclaiClient(SeclaiClientOptions options)
     {
         if (options is null) throw new ArgumentNullException(nameof(options));
