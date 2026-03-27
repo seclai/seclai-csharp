@@ -18,8 +18,8 @@ namespace Seclai;
 /// </summary>
 public sealed class SsoProfile
 {
-    /// <summary>Account ID from the SSO profile.</summary>
-    public string SsoAccountId { get; set; } = "";
+    /// <summary>Account ID (resolved after login via /me). May be null before first login.</summary>
+    public string? SsoAccountId { get; set; }
     /// <summary>AWS region from the SSO profile.</summary>
     public string SsoRegion { get; set; } = "";
     /// <summary>OAuth client ID from the SSO profile.</summary>
@@ -114,6 +114,13 @@ public static class SeclaiAuth
     private const string SsoCacheDir = "sso/cache";
     private const int ExpiryBufferSeconds = 30;
 
+    /// <summary>Default SSO domain (production Cognito). Override with SECLAI_SSO_DOMAIN or config file.</summary>
+    public const string DefaultSsoDomain = "auth.seclai.com";
+    /// <summary>Default SSO client ID (production public client). Override with SECLAI_SSO_CLIENT_ID or config file.</summary>
+    public const string DefaultSsoClientId = "4bgf8v9qmc5puivbaqon9n5lmr";
+    /// <summary>Default SSO region. Override with SECLAI_SSO_REGION or config file.</summary>
+    public const string DefaultSsoRegion = "us-west-2";
+
     private static readonly JsonSerializerOptions CacheJsonOptions = new()
     {
         PropertyNameCaseInsensitive = true,
@@ -196,54 +203,70 @@ public static class SeclaiAuth
         return sections;
     }
 
-    /// <summary>Loads an SSO profile from the config directory.</summary>
+    /// <summary>Loads an SSO profile from the config directory.
+    /// Always returns a valid profile using built-in defaults and environment variable overrides
+    /// (SECLAI_SSO_DOMAIN, SECLAI_SSO_CLIENT_ID, SECLAI_SSO_REGION).</summary>
     /// <param name="configDir">Resolved config directory path.</param>
     /// <param name="profileName">Profile name ("default" or a named profile).</param>
-    /// <returns>The resolved profile, or <c>null</c> if not found or incomplete.</returns>
-    public static SsoProfile? LoadSsoProfile(string configDir, string profileName)
+    /// <returns>The resolved profile with defaults applied.</returns>
+    public static SsoProfile LoadSsoProfile(string configDir, string profileName)
     {
         var configPath = Path.Combine(configDir, SsoConfigFile);
-        if (!File.Exists(configPath))
-            return null;
 
-        Dictionary<string, Dictionary<string, string>> sections;
-        using (var reader = new StreamReader(configPath))
+        var merged = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+
+        if (File.Exists(configPath))
         {
-            sections = ParseIni(reader);
+            Dictionary<string, Dictionary<string, string>> sections;
+            using (var reader = new StreamReader(configPath))
+            {
+                sections = ParseIni(reader);
+            }
+
+            if (!sections.TryGetValue("default", out var defaultSection))
+                defaultSection = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+
+            if (string.Equals(profileName, "default", StringComparison.OrdinalIgnoreCase))
+            {
+                merged = defaultSection;
+            }
+            else
+            {
+                if (sections.TryGetValue(profileName, out var section) && section != null)
+                {
+                    // Inherit from default
+                    foreach (var kv in defaultSection)
+                        merged[kv.Key] = kv.Value;
+                    foreach (var kv in section)
+                        merged[kv.Key] = kv.Value;
+                }
+            }
         }
 
-        if (!sections.TryGetValue("default", out var defaultSection))
-            defaultSection = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        // Environment variables override config file values
+        var domain = Environment.GetEnvironmentVariable("SECLAI_SSO_DOMAIN");
+        if (string.IsNullOrWhiteSpace(domain))
+            merged.TryGetValue("sso_domain", out domain);
+        if (string.IsNullOrWhiteSpace(domain))
+            domain = DefaultSsoDomain;
 
-        Dictionary<string, string>? section;
-        if (string.Equals(profileName, "default", StringComparison.OrdinalIgnoreCase))
-        {
-            section = defaultSection;
-        }
-        else
-        {
-            if (!sections.TryGetValue(profileName, out section) || section == null)
-                return null;
+        var clientId = Environment.GetEnvironmentVariable("SECLAI_SSO_CLIENT_ID");
+        if (string.IsNullOrWhiteSpace(clientId))
+            merged.TryGetValue("sso_client_id", out clientId);
+        if (string.IsNullOrWhiteSpace(clientId))
+            clientId = DefaultSsoClientId;
 
-            // Inherit from default
-            var merged = new Dictionary<string, string>(defaultSection, StringComparer.OrdinalIgnoreCase);
-            foreach (var kv in section)
-                merged[kv.Key] = kv.Value;
-            section = merged;
-        }
+        var region = Environment.GetEnvironmentVariable("SECLAI_SSO_REGION");
+        if (string.IsNullOrWhiteSpace(region))
+            merged.TryGetValue("sso_region", out region);
+        if (string.IsNullOrWhiteSpace(region))
+            region = DefaultSsoRegion;
 
-        section.TryGetValue("sso_account_id", out var accountId);
-        section.TryGetValue("sso_region", out var region);
-        section.TryGetValue("sso_client_id", out var clientId);
-        section.TryGetValue("sso_domain", out var domain);
-
-        if (string.IsNullOrWhiteSpace(accountId) || string.IsNullOrWhiteSpace(region) ||
-            string.IsNullOrWhiteSpace(clientId) || string.IsNullOrWhiteSpace(domain))
-            return null;
+        merged.TryGetValue("sso_account_id", out var accountId);
 
         return new SsoProfile
         {
-            SsoAccountId = accountId!,
+            SsoAccountId = string.IsNullOrWhiteSpace(accountId) ? null : accountId,
             SsoRegion = region!,
             SsoClientId = clientId!,
             SsoDomain = domain!
@@ -276,6 +299,10 @@ public static class SeclaiAuth
             return null;
         }
         catch (IOException)
+        {
+            return null;
+        }
+        catch (UnauthorizedAccessException)
         {
             return null;
         }
@@ -466,7 +493,7 @@ public static class SeclaiAuth
             };
         }
 
-        // 5. SSO profile
+        // 5. SSO profile (always available via built-in defaults)
         var configDir = ResolveConfigDir(options.ConfigDir);
         if (!string.IsNullOrEmpty(configDir))
         {
@@ -477,25 +504,23 @@ public static class SeclaiAuth
                 profileName = "default";
 
             var ssoProfile = LoadSsoProfile(configDir, profileName!);
-            if (ssoProfile != null)
-            {
-                var acctId = options.AccountId;
-                if (string.IsNullOrWhiteSpace(acctId))
-                    acctId = ssoProfile.SsoAccountId;
 
-                return new AuthState
-                {
-                    Mode = AuthMode.Sso,
-                    ApiKeyHeader = header,
-                    AccountId = acctId,
-                    SsoProfile = ssoProfile,
-                    ConfigDir = configDir,
-                    AutoRefresh = options.AutoRefresh ?? true
-                };
-            }
+            var acctId = options.AccountId;
+            if (string.IsNullOrWhiteSpace(acctId))
+                acctId = ssoProfile.SsoAccountId;
+
+            return new AuthState
+            {
+                Mode = AuthMode.Sso,
+                ApiKeyHeader = header,
+                AccountId = acctId,
+                SsoProfile = ssoProfile,
+                ConfigDir = configDir,
+                AutoRefresh = options.AutoRefresh ?? true
+            };
         }
 
-        // 6. Nothing
+        // 6. Nothing (home directory cannot be determined)
         throw new ConfigurationException(
             "Missing credentials: provide ApiKey, AccessToken, set SECLAI_API_KEY, or run `seclai auth login`.");
     }
@@ -548,7 +573,7 @@ public static class SeclaiAuth
         if (cached != null && IsTokenValid(cached))
             return cached.AccessToken;
 
-        if (cached?.RefreshToken != null && state.AutoRefresh)
+        if (!string.IsNullOrWhiteSpace(cached?.RefreshToken) && state.AutoRefresh)
         {
             await state.RefreshLock.WaitAsync(cancellationToken).ConfigureAwait(false);
             try
@@ -558,9 +583,9 @@ public static class SeclaiAuth
                 if (cached != null && IsTokenValid(cached))
                     return cached.AccessToken;
 
-                if (cached?.RefreshToken != null)
+                if (!string.IsNullOrWhiteSpace(cached?.RefreshToken))
                 {
-                    var refreshed = await RefreshTokenAsync(state.SsoProfile!, cached.RefreshToken, httpClient, cancellationToken).ConfigureAwait(false);
+                    var refreshed = await RefreshTokenAsync(state.SsoProfile!, cached!.RefreshToken!, httpClient, cancellationToken).ConfigureAwait(false);
                     WriteSsoCache(state.ConfigDir!, state.SsoProfile!, refreshed);
                     return refreshed.AccessToken;
                 }
@@ -571,6 +596,6 @@ public static class SeclaiAuth
             }
         }
 
-        throw new ConfigurationException("SSO token expired. Run `seclai auth login` to re-authenticate.");
+        throw new ConfigurationException("SSO token is missing or has expired. Run `seclai auth login` to authenticate or re-authenticate.");
     }
 }

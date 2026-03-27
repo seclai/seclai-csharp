@@ -14,11 +14,14 @@ public sealed class SeclaiClientOptions
     /// <summary>API key for authentication. Falls back to the <c>SECLAI_API_KEY</c> environment variable.</summary>
     public string? ApiKey { get; set; }
 
-    /// <summary>Static bearer token (mutually exclusive with <see cref="ApiKey"/>).</summary>
+    /// <summary>
+    /// Static bearer token (mutually exclusive with <see cref="ApiKey"/> and <see cref="AccessTokenProvider"/>).
+    /// </summary>
     public string? AccessToken { get; set; }
 
     /// <summary>
-    /// Async provider that returns a bearer token per request (mutually exclusive with <see cref="ApiKey"/>).
+    /// Async provider that returns a bearer token per request
+    /// (mutually exclusive with <see cref="ApiKey"/> and <see cref="AccessToken"/>).
     /// </summary>
     public Func<CancellationToken, Task<string>>? AccessTokenProvider { get; set; }
 

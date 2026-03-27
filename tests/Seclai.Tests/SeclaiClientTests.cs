@@ -14,6 +14,7 @@ using Xunit;
 
 namespace Seclai.Tests;
 
+[Collection("Sequential")]
 public sealed class SeclaiClientTests
 {
     [Fact]
@@ -35,7 +36,7 @@ public sealed class SeclaiClientTests
     }
 
     [Fact]
-    public void Constructor_ThrowsWhenNoCredentials()
+    public void Constructor_FallsBackToSsoWhenNoCredentials()
     {
         var originalApiKey = Environment.GetEnvironmentVariable("SECLAI_API_KEY");
         var originalConfigDir = Environment.GetEnvironmentVariable("SECLAI_CONFIG_DIR");
@@ -43,8 +44,9 @@ public sealed class SeclaiClientTests
         Environment.SetEnvironmentVariable("SECLAI_CONFIG_DIR", Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString()));
         try
         {
-            Assert.Throws<ConfigurationException>(() =>
-                new SeclaiClient(new SeclaiClientOptions()));
+            // With built-in SSO defaults, client succeeds and falls back to SSO mode
+            using var client = new SeclaiClient(new SeclaiClientOptions());
+            Assert.NotNull(client);
         }
         finally
         {
