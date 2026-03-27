@@ -5,11 +5,11 @@
   <head>
     <meta charset="utf-8">
       <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-      <title>Class SsoProfile | Seclai C# SDK </title>
+      <title>Class TestCompactionRequest | Seclai C# SDK </title>
       <meta name="viewport" content="width=device-width">
-      <meta name="title" content="Class SsoProfile | Seclai C# SDK ">
+      <meta name="title" content="Class TestCompactionRequest | Seclai C# SDK ">
     
-    <meta name="description" content="Resolved SSO profile settings from the config file.">
+    
       <link rel="shortcut icon" href="../favicon.ico">
       <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
       <link rel="stylesheet" href="../styles/docfx.css">
@@ -76,18 +76,17 @@
         </div>
         <div class="article row grid-right">
           <div class="col-md-10">
-            <article class="content wrap" id="_content" data-uid="Seclai.SsoProfile">
+            <article class="content wrap" id="_content" data-uid="Seclai.Models.TestCompactionRequest">
 
 
 
-  <h1 id="Seclai_SsoProfile" data-uid="Seclai.SsoProfile" class="text-break">Class SsoProfile</h1>
-  <div class="markdown level0 summary"><p>Resolved SSO profile settings from the config file.</p>
-</div>
+  <h1 id="Seclai_Models_TestCompactionRequest" data-uid="Seclai.Models.TestCompactionRequest" class="text-break">Class TestCompactionRequest</h1>
+  <div class="markdown level0 summary"></div>
   <div class="markdown level0 conceptual"></div>
   <div class="inheritance">
     <h5>Inheritance</h5>
     <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
-    <div class="level1"><span class="xref">SsoProfile</span></div>
+    <div class="level1"><span class="xref">TestCompactionRequest</span></div>
   </div>
   <div class="inheritedMembers">
     <h5>Inherited Members</h5>
@@ -110,24 +109,24 @@
       <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
     </div>
   </div>
-  <h6><strong>Namespace</strong>: <a class="xref" href="Seclai.html">Seclai</a></h6>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Seclai.html">Seclai</a>.<a class="xref" href="Seclai.Models.html">Models</a></h6>
   <h6><strong>Assembly</strong>: Seclai.dll</h6>
-  <h5 id="Seclai_SsoProfile_syntax">Syntax</h5>
+  <h5 id="Seclai_Models_TestCompactionRequest_syntax">Syntax</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public sealed class SsoProfile</code></pre>
+    <pre><code class="lang-csharp hljs">public sealed class TestCompactionRequest</code></pre>
   </div>
   <h3 id="properties">Properties
 </h3>
 
 
-  <a id="Seclai_SsoProfile_SsoAccountId_" data-uid="Seclai.SsoProfile.SsoAccountId*"></a>
-  <h4 id="Seclai_SsoProfile_SsoAccountId" data-uid="Seclai.SsoProfile.SsoAccountId">SsoAccountId</h4>
-  <div class="markdown level1 summary"><p>Account ID (resolved after login via /me). May be null before first login.</p>
-</div>
+  <a id="Seclai_Models_TestCompactionRequest_CompactionPrompt_" data-uid="Seclai.Models.TestCompactionRequest.CompactionPrompt*"></a>
+  <h4 id="Seclai_Models_TestCompactionRequest_CompactionPrompt" data-uid="Seclai.Models.TestCompactionRequest.CompactionPrompt">CompactionPrompt</h4>
+  <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="declaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public string? SsoAccountId { get; set; }</code></pre>
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;compaction_prompt&quot;)]
+public string? CompactionPrompt { get; set; }</code></pre>
   </div>
   <h5 class="propertyValue">Property Value</h5>
   <table class="table table-bordered table-condensed">
@@ -146,14 +145,40 @@
   </table>
 
 
-  <a id="Seclai_SsoProfile_SsoClientId_" data-uid="Seclai.SsoProfile.SsoClientId*"></a>
-  <h4 id="Seclai_SsoProfile_SsoClientId" data-uid="Seclai.SsoProfile.SsoClientId">SsoClientId</h4>
-  <div class="markdown level1 summary"><p>OAuth client ID from the SSO profile.</p>
-</div>
+  <a id="Seclai_Models_TestCompactionRequest_EntryCount_" data-uid="Seclai.Models.TestCompactionRequest.EntryCount*"></a>
+  <h4 id="Seclai_Models_TestCompactionRequest_EntryCount" data-uid="Seclai.Models.TestCompactionRequest.EntryCount">EntryCount</h4>
+  <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="declaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public string SsoClientId { get; set; }</code></pre>
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;entry_count&quot;)]
+public int? EntryCount { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>?</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_Models_TestCompactionRequest_GenerateDirection_" data-uid="Seclai.Models.TestCompactionRequest.GenerateDirection*"></a>
+  <h4 id="Seclai_Models_TestCompactionRequest_GenerateDirection" data-uid="Seclai.Models.TestCompactionRequest.GenerateDirection">GenerateDirection</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;generate_direction&quot;)]
+public string? GenerateDirection { get; set; }</code></pre>
   </div>
   <h5 class="propertyValue">Property Value</h5>
   <table class="table table-bordered table-condensed">
@@ -172,14 +197,14 @@
   </table>
 
 
-  <a id="Seclai_SsoProfile_SsoDomain_" data-uid="Seclai.SsoProfile.SsoDomain*"></a>
-  <h4 id="Seclai_SsoProfile_SsoDomain" data-uid="Seclai.SsoProfile.SsoDomain">SsoDomain</h4>
-  <div class="markdown level1 summary"><p>Cognito domain from the SSO profile.</p>
-</div>
+  <a id="Seclai_Models_TestCompactionRequest_SampleEntries_" data-uid="Seclai.Models.TestCompactionRequest.SampleEntries*"></a>
+  <h4 id="Seclai_Models_TestCompactionRequest_SampleEntries" data-uid="Seclai.Models.TestCompactionRequest.SampleEntries">SampleEntries</h4>
+  <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="declaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public string SsoDomain { get; set; }</code></pre>
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;sample_entries&quot;)]
+public List&lt;string&gt;? SampleEntries { get; set; }</code></pre>
   </div>
   <h5 class="propertyValue">Property Value</h5>
   <table class="table table-bordered table-condensed">
@@ -191,33 +216,7 @@
     </thead>
     <tbody>
       <tr>
-        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
-        <td></td>
-      </tr>
-    </tbody>
-  </table>
-
-
-  <a id="Seclai_SsoProfile_SsoRegion_" data-uid="Seclai.SsoProfile.SsoRegion*"></a>
-  <h4 id="Seclai_SsoProfile_SsoRegion" data-uid="Seclai.SsoProfile.SsoRegion">SsoRegion</h4>
-  <div class="markdown level1 summary"><p>AWS region from the SSO profile.</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-  <h5 class="declaration">Declaration</h5>
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public string SsoRegion { get; set; }</code></pre>
-  </div>
-  <h5 class="propertyValue">Property Value</h5>
-  <table class="table table-bordered table-condensed">
-    <thead>
-      <tr>
-        <th>Type</th>
-        <th>Description</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.list-1">List</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</td>
         <td></td>
       </tr>
     </tbody>

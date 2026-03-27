@@ -1,0 +1,1647 @@
+{
+  "source_base_path": "/home/runner/work/seclai-csharp/seclai-csharp",
+  "xrefmap": "xrefmap.yml",
+  "files": [
+    {
+      "type": "Resource",
+      "output": {
+        "resource": {
+          "relative_path": "index.json"
+        }
+      }
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "api/index.md",
+      "output": {
+        ".html": {
+          "relative_path": "api/index.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Exceptions.ApiException.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Exceptions.ApiException.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Exceptions.ApiException",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Exceptions.ApiException.yml\" sourcestartlinenumber=\"1\">Thrown when the Seclai API returns a non-success HTTP status code.\nContains the status code, HTTP method, request URL, and raw response body.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Exceptions.ApiValidationException.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Exceptions.ApiValidationException.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Exceptions.ApiValidationException",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Exceptions.ApiValidationException.yml\" sourcestartlinenumber=\"1\">Thrown when the API returns HTTP 422 (Unprocessable Entity) with structured validation errors.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Exceptions.ConfigurationException.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Exceptions.ConfigurationException.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Exceptions.ConfigurationException",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Exceptions.ConfigurationException.yml\" sourcestartlinenumber=\"1\">Thrown when the <xref href=\"Seclai.SeclaiClient\" data-throw-if-not-resolved=\"false\"></xref> cannot be constructed due to missing\nor invalid configuration (e.g. no API key).</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Exceptions.StreamingException.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Exceptions.StreamingException.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Exceptions.StreamingException",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Exceptions.StreamingException.yml\" sourcestartlinenumber=\"1\">Thrown when an SSE streaming agent run encounters an error, such as a timeout\nor an unexpected end of stream.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Exceptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Exceptions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Exceptions",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.AddCommentRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.AddCommentRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.AddCommentRequest",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.AddConversationTurnRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.AddConversationTurnRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.AddConversationTurnRequest",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.AgentDefinitionResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.AgentDefinitionResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.AgentDefinitionResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.AgentListResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.AgentListResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.AgentListResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.AgentRunAttemptResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.AgentRunAttemptResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.AgentRunAttemptResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.AgentRunEvent.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.AgentRunEvent.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.AgentRunEvent",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.AgentRunEvent.yml\" sourcestartlinenumber=\"1\">Represents a single event from an SSE agent run stream.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.AgentRunListResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.AgentRunListResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.AgentRunListResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.AgentRunRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.AgentRunRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.AgentRunRequest",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.AgentRunResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.AgentRunResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.AgentRunResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.AgentRunStepResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.AgentRunStepResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.AgentRunStepResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.AgentRunStreamRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.AgentRunStreamRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.AgentRunStreamRequest",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.AgentSummaryResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.AgentSummaryResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.AgentSummaryResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.AgentTraceSearchRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.AgentTraceSearchRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.AgentTraceSearchRequest",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.AgentTraceSearchResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.AgentTraceSearchResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.AgentTraceSearchResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.AiAssistantAcceptRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.AiAssistantAcceptRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.AiAssistantAcceptRequest",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.AiAssistantAcceptResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.AiAssistantAcceptResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.AiAssistantAcceptResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.AiAssistantFeedbackRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.AiAssistantFeedbackRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.AiAssistantFeedbackRequest",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.AiAssistantFeedbackResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.AiAssistantFeedbackResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.AiAssistantFeedbackResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.AiAssistantGenerateRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.AiAssistantGenerateRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.AiAssistantGenerateRequest",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.AiAssistantGenerateResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.AiAssistantGenerateResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.AiAssistantGenerateResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.AiConversationHistoryResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.AiConversationHistoryResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.AiConversationHistoryResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.AiConversationTurnResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.AiConversationTurnResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.AiConversationTurnResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.ChangeStatusRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.ChangeStatusRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.ChangeStatusRequest",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.CompactionEvaluationModel.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.CompactionEvaluationModel.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.CompactionEvaluationModel",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.CompactionTestResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.CompactionTestResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.CompactionTestResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.CompatibleRunListResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.CompatibleRunListResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.CompatibleRunListResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.ContentDetailResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.ContentDetailResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.ContentDetailResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.ContentEmbeddingResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.ContentEmbeddingResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.ContentEmbeddingResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.ContentEmbeddingsListResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.ContentEmbeddingsListResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.ContentEmbeddingsListResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.ContentFileUploadResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.ContentFileUploadResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.ContentFileUploadResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.CreateAgentRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.CreateAgentRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.CreateAgentRequest",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.CreateAlertConfigRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.CreateAlertConfigRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.CreateAlertConfigRequest",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.CreateEvaluationCriteriaRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.CreateEvaluationCriteriaRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.CreateEvaluationCriteriaRequest",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.CreateEvaluationResultRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.CreateEvaluationResultRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.CreateEvaluationResultRequest",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.CreateExportRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.CreateExportRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.CreateExportRequest",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.CreateKnowledgeBaseRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.CreateKnowledgeBaseRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.CreateKnowledgeBaseRequest",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.CreateMemoryBankRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.CreateMemoryBankRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.CreateMemoryBankRequest",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.CreateSolutionRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.CreateSolutionRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.CreateSolutionRequest",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.CreateSourceRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.CreateSourceRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.CreateSourceRequest",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.EstimateExportRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.EstimateExportRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.EstimateExportRequest",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.EstimateExportResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.EstimateExportResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.EstimateExportResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.EvaluationCriteriaResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.EvaluationCriteriaResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.EvaluationCriteriaResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.EvaluationResultListResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.EvaluationResultListResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.EvaluationResultListResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.EvaluationResultResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.EvaluationResultResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.EvaluationResultResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.EvaluationResultSummaryResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.EvaluationResultSummaryResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.EvaluationResultSummaryResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.EvaluationResultWithCriteriaListResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.EvaluationResultWithCriteriaListResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.EvaluationResultWithCriteriaListResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.EvaluationRunSummaryListResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.EvaluationRunSummaryListResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.EvaluationRunSummaryListResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.ExamplePrompt.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.ExamplePrompt.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.ExamplePrompt",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.ExportListResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.ExportListResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.ExportListResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.ExportResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.ExportResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.ExportResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.FileUploadResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.FileUploadResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.FileUploadResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.GenerateAgentStepsRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.GenerateAgentStepsRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.GenerateAgentStepsRequest",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.GenerateAgentStepsResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.GenerateAgentStepsResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.GenerateAgentStepsResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.GenerateStepConfigRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.GenerateStepConfigRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.GenerateStepConfigRequest",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.GenerateStepConfigResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.GenerateStepConfigResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.GenerateStepConfigResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.GovernanceAiAcceptResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.GovernanceAiAcceptResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.GovernanceAiAcceptResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.GovernanceAiAssistantRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.GovernanceAiAssistantRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.GovernanceAiAssistantRequest",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.GovernanceAiAssistantResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.GovernanceAiAssistantResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.GovernanceAiAssistantResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.GovernanceConversationResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.GovernanceConversationResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.GovernanceConversationResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.HttpValidationError.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.HttpValidationError.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.HttpValidationError",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.InlineTextReplaceRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.InlineTextReplaceRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.InlineTextReplaceRequest",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.InlineTextUploadRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.InlineTextUploadRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.InlineTextUploadRequest",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.KnowledgeBaseListResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.KnowledgeBaseListResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.KnowledgeBaseListResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.KnowledgeBaseResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.KnowledgeBaseResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.KnowledgeBaseResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.LinkResourcesRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.LinkResourcesRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.LinkResourcesRequest",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.MarkAiSuggestionRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.MarkAiSuggestionRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.MarkAiSuggestionRequest",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.MarkConversationTurnRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.MarkConversationTurnRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.MarkConversationTurnRequest",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.MemoryBankAcceptRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.MemoryBankAcceptRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.MemoryBankAcceptRequest",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.MemoryBankAiAssistantRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.MemoryBankAiAssistantRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.MemoryBankAiAssistantRequest",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.MemoryBankAiAssistantResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.MemoryBankAiAssistantResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.MemoryBankAiAssistantResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.MemoryBankConversationTurnResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.MemoryBankConversationTurnResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.MemoryBankConversationTurnResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.MemoryBankLastConversationResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.MemoryBankLastConversationResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.MemoryBankLastConversationResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.MemoryBankListResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.MemoryBankListResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.MemoryBankListResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.MemoryBankResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.MemoryBankResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.MemoryBankResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.NonManualEvaluationSummaryResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.NonManualEvaluationSummaryResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.NonManualEvaluationSummaryResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.OrganizationAlertPreferenceListResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.OrganizationAlertPreferenceListResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.OrganizationAlertPreferenceListResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.PaginationResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.PaginationResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.PaginationResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.ProposedActionResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.ProposedActionResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.ProposedActionResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.SolutionConversationResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.SolutionConversationResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.SolutionConversationResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.SolutionListResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.SolutionListResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.SolutionListResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.SolutionResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.SolutionResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.SolutionResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.SourceEmbeddingMigrationResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.SourceEmbeddingMigrationResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.SourceEmbeddingMigrationResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.SourceListResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.SourceListResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.SourceListResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.SourceResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.SourceResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.SourceResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.StandaloneTestCompactionRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.StandaloneTestCompactionRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.StandaloneTestCompactionRequest",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.StartSourceEmbeddingMigrationRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.StartSourceEmbeddingMigrationRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.StartSourceEmbeddingMigrationRequest",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.TestCompactionRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.TestCompactionRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.TestCompactionRequest",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.TestDraftEvaluationRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.TestDraftEvaluationRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.TestDraftEvaluationRequest",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.TestDraftEvaluationResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.TestDraftEvaluationResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.TestDraftEvaluationResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.UnlinkResourcesRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.UnlinkResourcesRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.UnlinkResourcesRequest",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.UpdateAgentDefinitionRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.UpdateAgentDefinitionRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.UpdateAgentDefinitionRequest",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.UpdateAgentRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.UpdateAgentRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.UpdateAgentRequest",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.UpdateAlertConfigRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.UpdateAlertConfigRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.UpdateAlertConfigRequest",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.UpdateEvaluationCriteriaRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.UpdateEvaluationCriteriaRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.UpdateEvaluationCriteriaRequest",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.UpdateKnowledgeBaseRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.UpdateKnowledgeBaseRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.UpdateKnowledgeBaseRequest",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.UpdateMemoryBankRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.UpdateMemoryBankRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.UpdateMemoryBankRequest",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.UpdateOrganizationAlertPreferenceRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.UpdateOrganizationAlertPreferenceRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.UpdateOrganizationAlertPreferenceRequest",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.UpdateSolutionRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.UpdateSolutionRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.UpdateSolutionRequest",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.UpdateSourceRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.UpdateSourceRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.UpdateSourceRequest",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.UploadAgentInputResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.UploadAgentInputResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.UploadAgentInputResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.ValidationError.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.ValidationError.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.ValidationError",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.SeclaiAuth.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.SeclaiAuth.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.SeclaiAuth",
+      "Summary": "<p sourcefile=\"build/api/Seclai.SeclaiAuth.yml\" sourcestartlinenumber=\"1\">Credential chain resolver and SSO cache utilities.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.SeclaiClient.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.SeclaiClient.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.SeclaiClient",
+      "Summary": "<p sourcefile=\"build/api/Seclai.SeclaiClient.yml\" sourcestartlinenumber=\"1\">HTTP client for the Seclai REST API. Provides strongly-typed async methods for\nagents, knowledge bases, memory banks, sources, content, evaluations, solutions,\ngovernance, alerts, search, and AI assistants.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.SeclaiClientOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.SeclaiClientOptions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.SeclaiClientOptions",
+      "Summary": "<p sourcefile=\"build/api/Seclai.SeclaiClientOptions.yml\" sourcestartlinenumber=\"1\">Configuration options for <xref href=\"Seclai.SeclaiClient\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.SsoCacheEntry.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.SsoCacheEntry.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.SsoCacheEntry",
+      "Summary": "<p sourcefile=\"build/api/Seclai.SsoCacheEntry.yml\" sourcestartlinenumber=\"1\">Cached SSO token entry on disk.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.SsoProfile.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.SsoProfile.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.SsoProfile",
+      "Summary": "<p sourcefile=\"build/api/Seclai.SsoProfile.yml\" sourcestartlinenumber=\"1\">Resolved SSO profile settings from the config file.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai",
+      "Summary": null
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "build/api/toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/toc.html"
+        },
+        ".json": {
+          "relative_path": "api/toc.json"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "docs/index.md",
+      "output": {
+        ".html": {
+          "relative_path": "index.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "docs/toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "toc.html"
+        },
+        ".json": {
+          "relative_path": "toc.json"
+        }
+      },
+      "version": ""
+    }
+  ],
+  "groups": [
+    {
+      "xrefmap": "xrefmap.yml"
+    }
+  ]
+}
