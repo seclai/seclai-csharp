@@ -545,6 +545,37 @@ public sealed class SeclaiClientTests
         await client.DeleteAgentAsync("a1"); // should not throw
     }
 
+    // ── Agent Export ────────────────────────────────────────────────────────
+
+    [Fact]
+    public async Task ExportAgent_GetsPathWithDownloadTrue()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Get, req.Method);
+            Assert.Equal("/agents/a1/export", req.RequestUri!.AbsolutePath);
+            var query = System.Web.HttpUtility.ParseQueryString(req.RequestUri.Query);
+            Assert.Equal("true", query["download"]);
+            return JsonResponse("{\"export_version\":\"2\",\"exported_at\":\"2026-01-01T00:00:00Z\",\"software_version\":\"1.0.0\",\"agent\":{}}");
+        });
+        var client = MakeClient(handler);
+        var res = await client.ExportAgentAsync("a1");
+        Assert.Equal("2", res.ExportVersion);
+    }
+
+    [Fact]
+    public async Task ExportAgent_PassesDownloadFalse()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            var query = System.Web.HttpUtility.ParseQueryString(req.RequestUri!.Query);
+            Assert.Equal("false", query["download"]);
+            return JsonResponse("{\"export_version\":\"2\",\"exported_at\":\"2026-01-01T00:00:00Z\",\"software_version\":\"1.0.0\",\"agent\":{}}");
+        });
+        var client = MakeClient(handler);
+        await client.ExportAgentAsync("a1", download: false);
+    }
+
     // ── Agent Definitions ───────────────────────────────────────────────────
 
     [Fact]

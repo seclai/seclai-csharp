@@ -783,6 +783,16 @@ public sealed class SeclaiClient : IDisposable
         await SendNoContentAsync(HttpMethod.Delete, $"/agents/{Uri.EscapeDataString(agentId)}", query: null, body: null, cancellationToken).ConfigureAwait(false);
     }
 
+    // ── Agent Export ──────────────────────────────────────────────────────
+
+    /// <summary>Exports an agent definition as a portable JSON snapshot.</summary>
+    public async Task<AgentExportResponse> ExportAgentAsync(string agentId, bool download = true, CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(agentId)) throw new ArgumentException("agentId is required", nameof(agentId));
+        var query = new Dictionary<string, string?> { ["download"] = download.ToString().ToLowerInvariant() };
+        return await SendJsonAsync<AgentExportResponse>(HttpMethod.Get, $"/agents/{Uri.EscapeDataString(agentId)}/export", query, body: null, cancellationToken).ConfigureAwait(false);
+    }
+
     // ── Agent Definitions ───────────────────────────────────────────────────
 
     /// <summary>Retrieves the definition (step configuration) for an agent.</summary>
