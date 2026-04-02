@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Class SeclaiAuth | Seclai C# SDK </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Class SeclaiAuth | Seclai C# SDK ">
+    
+    <meta name="description" content="Credential chain resolver and SSO cache utilities.">
+      <link rel="shortcut icon" href="../favicon.ico">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Seclai.SeclaiAuth">
+
+
+
+  <h1 id="Seclai_SeclaiAuth" data-uid="Seclai.SeclaiAuth" class="text-break">Class SeclaiAuth</h1>
+  <div class="markdown level0 summary"><p>Credential chain resolver and SSO cache utilities.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+    <div class="level1"><span class="xref">SeclaiAuth</span></div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.memberwiseclone">object.MemberwiseClone()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Seclai.html">Seclai</a></h6>
+  <h6><strong>Assembly</strong>: Seclai.dll</h6>
+  <h5 id="Seclai_SeclaiAuth_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static class SeclaiAuth</code></pre>
+  </div>
+  <h3 id="fields">Fields
+</h3>
+
+
+  <h4 id="Seclai_SeclaiAuth_DefaultSsoClientId" data-uid="Seclai.SeclaiAuth.DefaultSsoClientId">DefaultSsoClientId</h4>
+  <div class="markdown level1 summary"><p>Default SSO client ID (production public client). Override with SECLAI_SSO_CLIENT_ID or config file.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string DefaultSsoClientId = &quot;4bgf8v9qmc5puivbaqon9n5lmr&quot;</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <h4 id="Seclai_SeclaiAuth_DefaultSsoDomain" data-uid="Seclai.SeclaiAuth.DefaultSsoDomain">DefaultSsoDomain</h4>
+  <div class="markdown level1 summary"><p>Default SSO domain (production Cognito). Override with SECLAI_SSO_DOMAIN or config file.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string DefaultSsoDomain = &quot;auth.seclai.com&quot;</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <h4 id="Seclai_SeclaiAuth_DefaultSsoRegion" data-uid="Seclai.SeclaiAuth.DefaultSsoRegion">DefaultSsoRegion</h4>
+  <div class="markdown level1 summary"><p>Default SSO region. Override with SECLAI_SSO_REGION or config file.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public const string DefaultSsoRegion = &quot;us-west-2&quot;</code></pre>
+  </div>
+  <h5 class="fieldValue">Field Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="methods">Methods
+</h3>
+
+
+  <a id="Seclai_SeclaiAuth_CacheFileName_" data-uid="Seclai.SeclaiAuth.CacheFileName*"></a>
+  <h4 id="Seclai_SeclaiAuth_CacheFileName_System_String_System_String_" data-uid="Seclai.SeclaiAuth.CacheFileName(System.String,System.String)">CacheFileName(string, string)</h4>
+  <div class="markdown level1 summary"><p>Computes the SHA-1 hex hash of &quot;domain|clientId&quot;.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static string CacheFileName(string domain, string clientId)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
+        <td><span class="parametername">domain</span></td>
+        <td><p>The Cognito domain.</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
+        <td><span class="parametername">clientId</span></td>
+        <td><p>The Cognito app client ID.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
+        <td><p>Hex-encoded SHA-1 hash string.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_SeclaiAuth_DeleteSsoCache_" data-uid="Seclai.SeclaiAuth.DeleteSsoCache*"></a>
+  <h4 id="Seclai_SeclaiAuth_DeleteSsoCache_System_String_Seclai_SsoProfile_" data-uid="Seclai.SeclaiAuth.DeleteSsoCache(System.String,Seclai.SsoProfile)">DeleteSsoCache(string, SsoProfile)</h4>
+  <div class="markdown level1 summary"><p>Deletes a cached SSO token file.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static void DeleteSsoCache(string configDir, SsoProfile profile)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
+        <td><span class="parametername">configDir</span></td>
+        <td><p>Resolved config directory path.</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="Seclai.SsoProfile.html">SsoProfile</a></td>
+        <td><span class="parametername">profile</span></td>
+        <td><p>SSO profile used to derive the cache filename.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_SeclaiAuth_IsTokenValid_" data-uid="Seclai.SeclaiAuth.IsTokenValid*"></a>
+  <h4 id="Seclai_SeclaiAuth_IsTokenValid_Seclai_SsoCacheEntry_" data-uid="Seclai.SeclaiAuth.IsTokenValid(Seclai.SsoCacheEntry)">IsTokenValid(SsoCacheEntry)</h4>
+  <div class="markdown level1 summary"><p>Checks if a cached token is still valid (with 30s buffer).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static bool IsTokenValid(SsoCacheEntry entry)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Seclai.SsoCacheEntry.html">SsoCacheEntry</a></td>
+        <td><span class="parametername">entry</span></td>
+        <td><p>The cached token entry to check.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></td>
+        <td><p><code>true</code> if the token expires more than 30 seconds in the future.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_SeclaiAuth_LoadSsoProfile_" data-uid="Seclai.SeclaiAuth.LoadSsoProfile*"></a>
+  <h4 id="Seclai_SeclaiAuth_LoadSsoProfile_System_String_System_String_" data-uid="Seclai.SeclaiAuth.LoadSsoProfile(System.String,System.String)">LoadSsoProfile(string, string)</h4>
+  <div class="markdown level1 summary"><p>Loads an SSO profile from the config directory.
+Always returns a valid profile using built-in defaults and environment variable overrides
+(SECLAI_SSO_DOMAIN, SECLAI_SSO_CLIENT_ID, SECLAI_SSO_REGION).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static SsoProfile LoadSsoProfile(string configDir, string profileName)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
+        <td><span class="parametername">configDir</span></td>
+        <td><p>Resolved config directory path.</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
+        <td><span class="parametername">profileName</span></td>
+        <td><p>Profile name (&quot;default&quot; or a named profile).</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Seclai.SsoProfile.html">SsoProfile</a></td>
+        <td><p>The resolved profile with defaults applied.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_SeclaiAuth_ParseIni_" data-uid="Seclai.SeclaiAuth.ParseIni*"></a>
+  <h4 id="Seclai_SeclaiAuth_ParseIni_System_IO_TextReader_" data-uid="Seclai.SeclaiAuth.ParseIni(System.IO.TextReader)">ParseIni(TextReader)</h4>
+  <div class="markdown level1 summary"><p>Parses an AWS-style INI config file into sections.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Dictionary&lt;string, Dictionary&lt;string, string&gt;&gt; ParseIni(TextReader reader)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.io.textreader">TextReader</a></td>
+        <td><span class="parametername">reader</span></td>
+        <td><p>Text reader for the INI content.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.dictionary-2">Dictionary</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.dictionary-2">Dictionary</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;&gt;</td>
+        <td><p>Dictionary of section names to key-value pairs.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_SeclaiAuth_ReadSsoCache_" data-uid="Seclai.SeclaiAuth.ReadSsoCache*"></a>
+  <h4 id="Seclai_SeclaiAuth_ReadSsoCache_System_String_Seclai_SsoProfile_" data-uid="Seclai.SeclaiAuth.ReadSsoCache(System.String,Seclai.SsoProfile)">ReadSsoCache(string, SsoProfile)</h4>
+  <div class="markdown level1 summary"><p>Reads a cached SSO token from disk.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static SsoCacheEntry? ReadSsoCache(string configDir, SsoProfile profile)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
+        <td><span class="parametername">configDir</span></td>
+        <td><p>Resolved config directory path.</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="Seclai.SsoProfile.html">SsoProfile</a></td>
+        <td><span class="parametername">profile</span></td>
+        <td><p>SSO profile used to derive the cache filename.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Seclai.SsoCacheEntry.html">SsoCacheEntry</a></td>
+        <td><p>The cached entry, or <code>null</code> if not found or unreadable.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_SeclaiAuth_RefreshTokenAsync_" data-uid="Seclai.SeclaiAuth.RefreshTokenAsync*"></a>
+  <h4 id="Seclai_SeclaiAuth_RefreshTokenAsync_Seclai_SsoProfile_System_String_System_Net_Http_HttpClient_System_Threading_CancellationToken_" data-uid="Seclai.SeclaiAuth.RefreshTokenAsync(Seclai.SsoProfile,System.String,System.Net.Http.HttpClient,System.Threading.CancellationToken)">RefreshTokenAsync(SsoProfile, string, HttpClient?, CancellationToken)</h4>
+  <div class="markdown level1 summary"><p>Refreshes an SSO token via the Cognito token endpoint.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;SsoCacheEntry&gt; RefreshTokenAsync(SsoProfile profile, string refreshToken, HttpClient? httpClient = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Seclai.SsoProfile.html">SsoProfile</a></td>
+        <td><span class="parametername">profile</span></td>
+        <td><p>SSO profile with Cognito domain and client ID.</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
+        <td><span class="parametername">refreshToken</span></td>
+        <td><p>The refresh token to exchange.</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.net.http.httpclient">HttpClient</a></td>
+        <td><span class="parametername">httpClient</span></td>
+        <td><p>Optional pre-configured HTTP client.</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></td>
+        <td><span class="parametername">cancellationToken</span></td>
+        <td><p>Cancellation token.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Seclai.SsoCacheEntry.html">SsoCacheEntry</a>&gt;</td>
+        <td><p>A fresh <a class="xref" href="Seclai.SsoCacheEntry.html">SsoCacheEntry</a> with the new tokens.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="exceptions">Exceptions</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Condition</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Seclai.Exceptions.ConfigurationException.html">ConfigurationException</a></td>
+        <td><p>If the Cognito token endpoint returns a non-success status.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_SeclaiAuth_WriteSsoCache_" data-uid="Seclai.SeclaiAuth.WriteSsoCache*"></a>
+  <h4 id="Seclai_SeclaiAuth_WriteSsoCache_System_String_Seclai_SsoProfile_Seclai_SsoCacheEntry_" data-uid="Seclai.SeclaiAuth.WriteSsoCache(System.String,Seclai.SsoProfile,Seclai.SsoCacheEntry)">WriteSsoCache(string, SsoProfile, SsoCacheEntry)</h4>
+  <div class="markdown level1 summary"><p>Writes a cache entry to disk, replacing any existing file.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static void WriteSsoCache(string configDir, SsoProfile profile, SsoCacheEntry entry)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
+        <td><span class="parametername">configDir</span></td>
+        <td><p>Resolved config directory path.</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="Seclai.SsoProfile.html">SsoProfile</a></td>
+        <td><span class="parametername">profile</span></td>
+        <td><p>SSO profile used to derive the cache filename.</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="Seclai.SsoCacheEntry.html">SsoCacheEntry</a></td>
+        <td><span class="parametername">entry</span></td>
+        <td><p>Token data to persist.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      
+      <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>
