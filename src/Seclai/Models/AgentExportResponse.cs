@@ -8,16 +8,16 @@ namespace Seclai.Models;
 public sealed class AgentExportResponse
 {
     [JsonPropertyName("export_version")]
-    public string ExportVersion { get; set; } = "";
+    public string? ExportVersion { get; set; }
 
     [JsonPropertyName("exported_at")]
-    public string ExportedAt { get; set; } = "";
+    public string? ExportedAt { get; set; }
 
     [JsonPropertyName("software_version")]
-    public string SoftwareVersion { get; set; } = "";
+    public string? SoftwareVersion { get; set; }
 
     [JsonPropertyName("agent")]
-    public Dictionary<string, JsonElement> Agent { get; set; } = new();
+    public Dictionary<string, JsonElement>? Agent { get; set; }
 
     [JsonPropertyName("trigger")]
     public Dictionary<string, JsonElement>? Trigger { get; set; }
