@@ -1579,6 +1579,61 @@ public sealed class SeclaiClient : IDisposable
         return await SendRawAsync(HttpMethod.Get, $"/models/{Uri.EscapeDataString(modelId)}/recommendations", query: null, body: null, cancellationToken).ConfigureAwait(false);
     }
 
+    /// <summary>Lists all enabled LLM models grouped by provider.</summary>
+    public async Task<JsonElement> ListModelsAsync(string? provider = null, bool? supportsToolUse = null, bool? supportsThinking = null, CancellationToken cancellationToken = default)
+    {
+        var query = new Dictionary<string, string?>
+        {
+            ["provider"] = string.IsNullOrWhiteSpace(provider) ? null : provider,
+            ["supports_tool_use"] = supportsToolUse?.ToString().ToLowerInvariant(),
+            ["supports_thinking"] = supportsThinking?.ToString().ToLowerInvariant(),
+        };
+        return await SendRawAsync(HttpMethod.Get, "/models", query, body: null, cancellationToken).ConfigureAwait(false);
+    }
+
+    /// <summary>Retrieves full details for a specific model.</summary>
+    public async Task<JsonElement> GetModelAsync(string modelId, CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(modelId)) throw new ArgumentException("modelId is required", nameof(modelId));
+        return await SendRawAsync(HttpMethod.Get, $"/models/{Uri.EscapeDataString(modelId)}/details", query: null, body: null, cancellationToken).ConfigureAwait(false);
+    }
+
+    // ── Model Playground Experiments ────────────────────────────────────────
+
+    /// <summary>Lists model playground experiments.</summary>
+    public async Task<JsonElement> ListExperimentsAsync(int? days = null, string? startDate = null, string? endDate = null, int? limit = null, int? offset = null, CancellationToken cancellationToken = default)
+    {
+        var query = new Dictionary<string, string?>
+        {
+            ["days"] = days is > 0 ? days.Value.ToString() : null,
+            ["start_date"] = string.IsNullOrWhiteSpace(startDate) ? null : startDate,
+            ["end_date"] = string.IsNullOrWhiteSpace(endDate) ? null : endDate,
+            ["limit"] = limit is > 0 ? limit.Value.ToString() : null,
+            ["offset"] = offset is > 0 ? offset.Value.ToString() : null,
+        };
+        return await SendRawAsync(HttpMethod.Get, "/models/playground/experiments", query, body: null, cancellationToken).ConfigureAwait(false);
+    }
+
+    /// <summary>Creates a model playground experiment.</summary>
+    public async Task<JsonElement> CreateExperimentAsync(PlaygroundCreateRequest body, CancellationToken cancellationToken = default)
+    {
+        return await SendRawAsync(HttpMethod.Post, "/models/playground/experiments", query: null, body, cancellationToken).ConfigureAwait(false);
+    }
+
+    /// <summary>Retrieves a model playground experiment by ID.</summary>
+    public async Task<JsonElement> GetExperimentAsync(string experimentId, CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(experimentId)) throw new ArgumentException("experimentId is required", nameof(experimentId));
+        return await SendRawAsync(HttpMethod.Get, $"/models/playground/experiments/{Uri.EscapeDataString(experimentId)}", query: null, body: null, cancellationToken).ConfigureAwait(false);
+    }
+
+    /// <summary>Cancels a running model playground experiment.</summary>
+    public async Task<JsonElement> CancelExperimentAsync(string experimentId, CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(experimentId)) throw new ArgumentException("experimentId is required", nameof(experimentId));
+        return await SendRawAsync(HttpMethod.Post, $"/models/playground/experiments/{Uri.EscapeDataString(experimentId)}/cancel", query: null, body: null, cancellationToken).ConfigureAwait(false);
+    }
+
     // ── General Search ──────────────────────────────────────────────────────
 
     /// <summary>Performs a general search across resources.</summary>
