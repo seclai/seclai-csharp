@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
 namespace Seclai.Models;
@@ -8,7 +9,7 @@ public sealed class PlaygroundCreateRequest
     public string? Prompt { get; set; }
 
     [JsonPropertyName("model_ids")]
-    public List<string> ModelIds { get; set; } = new();
+    public List<string>? ModelIds { get; set; }
 
     [JsonPropertyName("system_prompt")]
     public string? SystemPrompt { get; set; }

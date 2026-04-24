@@ -1609,7 +1609,7 @@ public sealed class SeclaiClient : IDisposable
             ["start_date"] = string.IsNullOrWhiteSpace(startDate) ? null : startDate,
             ["end_date"] = string.IsNullOrWhiteSpace(endDate) ? null : endDate,
             ["limit"] = limit is > 0 ? limit.Value.ToString() : null,
-            ["offset"] = offset is > 0 ? offset.Value.ToString() : null,
+            ["offset"] = offset is >= 0 ? offset.Value.ToString() : null,
         };
         return await SendRawAsync(HttpMethod.Get, "/models/playground/experiments", query, body: null, cancellationToken).ConfigureAwait(false);
     }
