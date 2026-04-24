@@ -1514,6 +1514,103 @@ public sealed class SeclaiClientTests
         Assert.Equal(JsonValueKind.Object, res.ValueKind);
     }
 
+    [Fact]
+    public async Task ListModels_GetsPath()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Get, req.Method);
+            Assert.Equal("/models", req.RequestUri!.AbsolutePath);
+            return JsonResponse("[{\"provider\":\"openai\",\"models\":[]}]");
+        });
+        var client = MakeClient(handler);
+        var res = await client.ListModelsAsync();
+        Assert.Equal(JsonValueKind.Array, res.ValueKind);
+    }
+
+    [Fact]
+    public async Task ListModels_SetsQueryParams()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Contains("provider=anthropic", req.RequestUri!.Query);
+            Assert.Contains("supports_tool_use=true", req.RequestUri!.Query);
+            return JsonResponse("[]");
+        });
+        var client = MakeClient(handler);
+        await client.ListModelsAsync(provider: "anthropic", supportsToolUse: true);
+    }
+
+    [Fact]
+    public async Task GetModel_GetsPath()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Get, req.Method);
+            Assert.Equal("/models/m1/details", req.RequestUri!.AbsolutePath);
+            return JsonResponse("{\"id\":\"m1\"}");
+        });
+        var client = MakeClient(handler);
+        var res = await client.GetModelAsync("m1");
+        Assert.Equal(JsonValueKind.Object, res.ValueKind);
+    }
+
+    [Fact]
+    public async Task ListExperiments_GetsPath()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Get, req.Method);
+            Assert.Equal("/models/playground/experiments", req.RequestUri!.AbsolutePath);
+            return JsonResponse("{\"data\":[],\"total\":0}");
+        });
+        var client = MakeClient(handler);
+        var res = await client.ListExperimentsAsync();
+        Assert.Equal(JsonValueKind.Object, res.ValueKind);
+    }
+
+    [Fact]
+    public async Task CreateExperiment_PostsBody()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Post, req.Method);
+            Assert.Equal("/models/playground/experiments", req.RequestUri!.AbsolutePath);
+            return JsonResponse("{\"id\":\"exp1\"}");
+        });
+        var client = MakeClient(handler);
+        var res = await client.CreateExperimentAsync(new PlaygroundCreateRequest { Prompt = "test", ModelIds = new List<string> { "m1" } });
+        Assert.Equal(JsonValueKind.Object, res.ValueKind);
+    }
+
+    [Fact]
+    public async Task GetExperiment_GetsPath()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Get, req.Method);
+            Assert.Equal("/models/playground/experiments/exp1", req.RequestUri!.AbsolutePath);
+            return JsonResponse("{\"id\":\"exp1\"}");
+        });
+        var client = MakeClient(handler);
+        var res = await client.GetExperimentAsync("exp1");
+        Assert.Equal(JsonValueKind.Object, res.ValueKind);
+    }
+
+    [Fact]
+    public async Task CancelExperiment_PostsPath()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Post, req.Method);
+            Assert.Equal("/models/playground/experiments/exp1/cancel", req.RequestUri!.AbsolutePath);
+            return JsonResponse("{\"status\":\"cancelled\"}");
+        });
+        var client = MakeClient(handler);
+        var res = await client.CancelExperimentAsync("exp1");
+        Assert.Equal(JsonValueKind.Object, res.ValueKind);
+    }
+
     // ── Search ──────────────────────────────────────────────────────────────
 
     [Fact]
