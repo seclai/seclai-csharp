@@ -583,6 +583,11 @@ public sealed class SeclaiClientTests
         {
             Assert.Equal(HttpMethod.Post, req.Method);
             Assert.Equal("/agents/preview-import", req.RequestUri!.AbsolutePath);
+            var json = req.Content!.ReadAsStringAsync().GetAwaiter().GetResult();
+            using var doc = JsonDocument.Parse(json);
+            Assert.Equal(
+                "n",
+                doc.RootElement.GetProperty("agent_definition").GetProperty("agent").GetProperty("name").GetString());
             return JsonResponse("{\"ok\":true,\"agent_name\":\"n\",\"description\":null,\"step_count\":0,\"schedules\":0,\"alert_configs\":0,\"evaluation_criteria\":0,\"governance_policies\":0}");
         });
         var client = MakeClient(handler);
@@ -590,7 +595,7 @@ public sealed class SeclaiClientTests
         {
             AgentDefinition = new Dictionary<string, JsonElement>
             {
-                ["agent"] = JsonDocument.Parse("{\"name\":\"n\"}").RootElement.Clone(),
+                ["agent"] = JsonSerializer.Deserialize<JsonElement>("{\"name\":\"n\"}"),
             },
         };
         var res = await client.PreviewImportAgentAsync(body);
