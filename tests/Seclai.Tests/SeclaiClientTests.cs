@@ -576,6 +576,59 @@ public sealed class SeclaiClientTests
         await client.ExportAgentAsync("a1", download: false);
     }
 
+    [Fact]
+    public async Task PreviewImportAgent_PostsBodyAndDeserializes()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Post, req.Method);
+            Assert.Equal("/agents/preview-import", req.RequestUri!.AbsolutePath);
+            var json = req.Content!.ReadAsStringAsync().GetAwaiter().GetResult();
+            using var doc = JsonDocument.Parse(json);
+            Assert.Equal(
+                "n",
+                doc.RootElement.GetProperty("agent_definition").GetProperty("agent").GetProperty("name").GetString());
+            return JsonResponse("{\"ok\":true,\"agent_name\":\"n\",\"description\":null,\"step_count\":0,\"schedules\":0,\"alert_configs\":0,\"evaluation_criteria\":0,\"governance_policies\":0}");
+        });
+        var client = MakeClient(handler);
+        var body = new AgentImportPreviewRequest
+        {
+            AgentDefinition = new Dictionary<string, JsonElement>
+            {
+                ["agent"] = JsonSerializer.Deserialize<JsonElement>("{\"name\":\"n\"}"),
+            },
+        };
+        var res = await client.PreviewImportAgentAsync(body);
+        Assert.True(res.Ok);
+        Assert.Equal("n", res.AgentName);
+    }
+
+    [Fact]
+    public async Task PreviewImportAgent_422_SurfacesImportErrorBody()
+    {
+        const string errBody = "{\"error\":\"invalid_agent_definition\",\"message\":\"missing required field\",\"errors\":[{\"line\":3,\"column\":5,\"path\":\"agent.name\",\"message\":\"required\"}],\"source\":\"{\\n  \\\"agent\\\": {}\\n}\"}";
+        var handler = new FakeHttpMessageHandler(_ =>
+            new HttpResponseMessage((HttpStatusCode)422)
+            {
+                Content = new StringContent(errBody, Encoding.UTF8, "application/json"),
+            });
+        var client = MakeClient(handler);
+        var ex = await Assert.ThrowsAsync<ApiValidationException>(() =>
+            client.PreviewImportAgentAsync(new AgentImportPreviewRequest { AgentDefinition = new() }));
+
+        // 422 body is AgentDefinitionImportErrorResponse, not HttpValidationError —
+        // Validation should be null so callers can decode ResponseBody themselves.
+        Assert.Null(ex.Validation);
+        Assert.Equal(errBody, ex.ResponseBody);
+
+        var imp = JsonSerializer.Deserialize<AgentDefinitionImportErrorResponse>(ex.ResponseBody!);
+        Assert.NotNull(imp);
+        Assert.Equal("missing required field", imp!.Message);
+        Assert.Single(imp.Errors);
+        Assert.Equal(3, imp.Errors[0].Line);
+        Assert.Equal(5, imp.Errors[0].Column);
+    }
+
     // ── Agent Definitions ───────────────────────────────────────────────────
 
     [Fact]

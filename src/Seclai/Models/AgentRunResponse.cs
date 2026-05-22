@@ -31,4 +31,28 @@ public sealed class AgentRunResponse
 
     [JsonPropertyName("steps")]
     public List<AgentRunStepResponse>? Steps { get; set; }
+
+    /// <summary>Governance policies that produced at least one BLOCK verdict during this run.</summary>
+    [JsonPropertyName("blocked_policies")]
+    public List<GovernancePolicyRefResponse>? BlockedPolicies { get; set; }
+
+    /// <summary>Governance policies that produced at least one FLAG verdict during this run.</summary>
+    [JsonPropertyName("flagged_policies")]
+    public List<GovernancePolicyRefResponse>? FlaggedPolicies { get; set; }
+
+    /// <summary>Result of the prompt injection scan: safe, unsafe, skipped, timed_out, or error.</summary>
+    [JsonPropertyName("input_scan_status")]
+    public string? InputScanStatus { get; set; }
+
+    /// <summary>Milliseconds spent waiting for prompt injection scan.</summary>
+    [JsonPropertyName("scan_wait_ms")]
+    public int? ScanWaitMs { get; set; }
+
+    /// <summary>Result of the governance input evaluation: safe, blocked, skipped, or timed_out.</summary>
+    [JsonPropertyName("governance_input_status")]
+    public string? GovernanceInputStatus { get; set; }
+
+    /// <summary>Milliseconds spent waiting for governance input evaluation.</summary>
+    [JsonPropertyName("governance_input_wait_ms")]
+    public int? GovernanceInputWaitMs { get; set; }
 }

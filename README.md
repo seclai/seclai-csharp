@@ -118,6 +118,35 @@ await client.UpdateAgentDefinitionAsync(agent.Id, new UpdateAgentDefinitionReque
 {
     ExpectedChangeId = def.ChangeId
 });
+
+// Export / import an agent
+var exported = await client.ExportAgentAsync(agent.Id, download: false);
+
+// Round-trip the export through a Dictionary so the import endpoints can accept it.
+var payloadJson = JsonSerializer.Serialize(exported);
+var payload = JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(payloadJson)!;
+
+// Validate the payload first to surface unresolved entity refs in this account.
+var preview = await client.PreviewImportAgentAsync(new AgentImportPreviewRequest { AgentDefinition = payload });
+var entityRemap = new Dictionary<string, string>();
+foreach (var refEntry in preview.UnresolvedRefs ?? new())
+{
+    if (refEntry.TryGetValue("ref_id", out var refId) && refId.ValueKind == JsonValueKind.String)
+    {
+        // Replace "<target-uuid>" with an id from refEntry["alternatives"]
+        // before calling CreateAgentAsync; empty values are rejected.
+        entityRemap[refId.GetString()!] = "<target-uuid>";
+    }
+}
+
+// Commit — EntityRemap substitutes workflow refs before save.
+var imported = await client.CreateAgentAsync(new CreateAgentRequest
+{
+    Name = "Imported",
+    AgentDefinition = payload,
+    EntityRemap = entityRemap,
+});
+// imported.ImportWarnings lists any items that couldn't be applied.
 ```
 
 ### Agent Runs

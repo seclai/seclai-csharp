@@ -663,7 +663,16 @@ public sealed class SeclaiClient : IDisposable
             {
                 if (!string.IsNullOrWhiteSpace(responseBody))
                 {
-                    validation = JsonSerializer.Deserialize<HttpValidationError>(responseBody!, JsonOptions);
+                    var parsed = JsonSerializer.Deserialize<HttpValidationError>(responseBody!, JsonOptions);
+                    // Only attach when the body is actually an HttpValidationError. The agent
+                    // import endpoints return AgentDefinitionImportErrorResponse on 422, which
+                    // deserializes successfully into HttpValidationError but with Detail == null
+                    // (because it doesn't carry a `detail` field). Leaving Validation null in
+                    // that case lets callers decode ResponseBody into the correct type.
+                    if (parsed?.Detail is not null)
+                    {
+                        validation = parsed;
+                    }
                 }
             }
             catch
@@ -783,7 +792,7 @@ public sealed class SeclaiClient : IDisposable
         await SendNoContentAsync(HttpMethod.Delete, $"/agents/{Uri.EscapeDataString(agentId)}", query: null, body: null, cancellationToken).ConfigureAwait(false);
     }
 
-    // ── Agent Export ──────────────────────────────────────────────────────
+    // ── Agent Export / Import ─────────────────────────────────────────────
 
     /// <summary>Exports an agent definition as a portable JSON snapshot.</summary>
     public async Task<AgentExportResponse> ExportAgentAsync(string agentId, bool download = true, CancellationToken cancellationToken = default)
@@ -791,6 +800,27 @@ public sealed class SeclaiClient : IDisposable
         if (string.IsNullOrWhiteSpace(agentId)) throw new ArgumentException("agentId is required", nameof(agentId));
         var query = new Dictionary<string, string?> { ["download"] = download.ToString().ToLowerInvariant() };
         return await SendJsonAsync<AgentExportResponse>(HttpMethod.Get, $"/agents/{Uri.EscapeDataString(agentId)}/export", query, body: null, cancellationToken).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Validates an <c>agent_definition</c> payload (same shape as <see cref="ExportAgentAsync"/>'s
+    /// response) without creating or modifying any agent.
+    ///
+    /// Use this before <see cref="CreateAgentAsync"/> or <see cref="UpdateAgentAsync"/> with an
+    /// <c>agent_definition</c> to surface <see cref="AgentImportPreviewResponse.UnresolvedRefs"/>
+    /// — workflow references to knowledge bases, memory banks, source connections, or sub-agents
+    /// that don't exist in the target account. Pass the returned ids back in
+    /// <c>EntityRemap</c> on the commit call to substitute them.
+    ///
+    /// On HTTP 422 the response body is an <see cref="AgentDefinitionImportErrorResponse"/>
+    /// listing each field error with a 1-indexed line/column anchored to a canonical
+    /// <c>source</c> echo. It is delivered as <see cref="ApiValidationException"/> with the
+    /// raw body in <see cref="ApiException.ResponseBody"/>; deserialize that into
+    /// <see cref="AgentDefinitionImportErrorResponse"/> to read the structured fields.
+    /// </summary>
+    public async Task<AgentImportPreviewResponse> PreviewImportAgentAsync(AgentImportPreviewRequest body, CancellationToken cancellationToken = default)
+    {
+        return await SendJsonAsync<AgentImportPreviewResponse>(HttpMethod.Post, "/agents/preview-import", query: null, body, cancellationToken).ConfigureAwait(false);
     }
 
     // ── Agent Definitions ───────────────────────────────────────────────────
