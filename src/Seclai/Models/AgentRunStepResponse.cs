@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
 namespace Seclai.Models;
@@ -30,4 +31,8 @@ public sealed class AgentRunStepResponse
 
     [JsonPropertyName("credits_used")]
     public float CreditsUsed { get; set; }
+
+    /// <summary>LLM tool calls made during this step (prompt_call steps only), ordered by execution.</summary>
+    [JsonPropertyName("tool_calls")]
+    public List<AgentRunToolCallResponse>? ToolCalls { get; set; }
 }
