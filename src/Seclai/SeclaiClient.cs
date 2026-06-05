@@ -884,6 +884,19 @@ public sealed class SeclaiClient : IDisposable
         return await SendJsonAsync<UploadAgentInputResponse>(HttpMethod.Get, $"/agents/{Uri.EscapeDataString(agentId)}/input-uploads/{Uri.EscapeDataString(uploadId)}", query: null, body: null, cancellationToken).ConfigureAwait(false);
     }
 
+    /// <summary>
+    /// Gets the static attachment-reference contract for an agent — what files (if any)
+    /// its definition expects on a run. Call this before staging uploads to learn whether
+    /// the agent accepts files at all (<see cref="AgentAttachmentRefsApiResponse.RequiresUploads"/>)
+    /// and which specific filenames, indexes, or glob patterns its templates reference.
+    /// A run-time upload batch that does not satisfy every declared selector is rejected with HTTP 400.
+    /// </summary>
+    public async Task<AgentAttachmentRefsApiResponse> GetAgentAttachmentReferencesAsync(string agentId, CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(agentId)) throw new ArgumentException("agentId is required", nameof(agentId));
+        return await SendJsonAsync<AgentAttachmentRefsApiResponse>(HttpMethod.Get, $"/agents/{Uri.EscapeDataString(agentId)}/attachment-references", query: null, body: null, cancellationToken).ConfigureAwait(false);
+    }
+
     // ── Agent AI Assistant ──────────────────────────────────────────────────
 
     /// <summary>Uses the AI assistant to generate step configurations for an agent.</summary>
@@ -1252,6 +1265,43 @@ public sealed class SeclaiClient : IDisposable
         if (string.IsNullOrWhiteSpace(exportId)) throw new ArgumentException("exportId is required", nameof(exportId));
 
         var url = BuildUri($"/sources/{Uri.EscapeDataString(sourceId)}/exports/{Uri.EscapeDataString(exportId)}/download", query: null);
+        using var req = new HttpRequestMessage(HttpMethod.Get, url);
+        await ApplyAuthAsync(req, cancellationToken).ConfigureAwait(false);
+        ApplyDefaultHeaders(req);
+
+        var resp = await _http.SendAsync(req, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+
+        if (!resp.IsSuccessStatusCode)
+        {
+            var responseBody = await ReadBodyAsync(resp).ConfigureAwait(false);
+            resp.Dispose();
+            ThrowApiError(resp.StatusCode, req.Method.Method, url, responseBody);
+        }
+
+        return resp;
+    }
+
+    /// <summary>
+    /// Downloads a file attachment emitted by a step in an agent run. Returns the raw HTTP
+    /// response so the caller can stream the body. The caller must dispose the returned
+    /// <see cref="HttpResponseMessage"/>.
+    /// </summary>
+    /// <param name="runId">Run identifier.</param>
+    /// <param name="attachmentId">
+    /// URL-safe-base64-encoded storage_key of the attachment (as surfaced in run output
+    /// manifests and webhook/email payloads).
+    /// </param>
+    /// <param name="downloadName">Optional filename hint for the download disposition.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    public async Task<HttpResponseMessage> DownloadAgentRunAttachmentAsync(string runId, string attachmentId, string? downloadName = null, CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(runId)) throw new ArgumentException("runId is required", nameof(runId));
+        if (string.IsNullOrWhiteSpace(attachmentId)) throw new ArgumentException("attachmentId is required", nameof(attachmentId));
+
+        var query = string.IsNullOrWhiteSpace(downloadName)
+            ? null
+            : new Dictionary<string, string?> { ["download_name"] = downloadName };
+        var url = BuildUri($"/v2/agent-runs/{Uri.EscapeDataString(runId)}/attachments/{Uri.EscapeDataString(attachmentId)}", query);
         using var req = new HttpRequestMessage(HttpMethod.Get, url);
         await ApplyAuthAsync(req, cancellationToken).ConfigureAwait(false);
         ApplyDefaultHeaders(req);
@@ -1662,6 +1712,16 @@ public sealed class SeclaiClient : IDisposable
     {
         if (string.IsNullOrWhiteSpace(experimentId)) throw new ArgumentException("experimentId is required", nameof(experimentId));
         return await SendRawAsync(HttpMethod.Post, $"/models/playground/experiments/{Uri.EscapeDataString(experimentId)}/cancel", query: null, body: null, cancellationToken).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Soft-deletes a model playground experiment, removing it from list/detail views
+    /// while preserving audit history.
+    /// </summary>
+    public async Task DeleteExperimentAsync(string experimentId, CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(experimentId)) throw new ArgumentException("experimentId is required", nameof(experimentId));
+        await SendNoContentAsync(HttpMethod.Delete, $"/models/playground/experiments/{Uri.EscapeDataString(experimentId)}", query: null, body: null, cancellationToken).ConfigureAwait(false);
     }
 
     // ── General Search ──────────────────────────────────────────────────────

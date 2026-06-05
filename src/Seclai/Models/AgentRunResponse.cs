@@ -20,6 +20,14 @@ public sealed class AgentRunResponse
     [JsonPropertyName("output")]
     public string? Output { get; set; }
 
+    /// <summary>
+    /// MIME type of <see cref="Output"/> — mirrors the terminal step's output_content_type.
+    /// For example <c>application/vnd.seclai.manifest+json</c> is a multi-asset manifest,
+    /// <c>text/*</c> is free-form text, and <c>application/json</c> is a JSON document.
+    /// </summary>
+    [JsonPropertyName("output_content_type")]
+    public string? OutputContentType { get; set; }
+
     [JsonPropertyName("priority")]
     public bool Priority { get; set; }
 
@@ -55,4 +63,12 @@ public sealed class AgentRunResponse
     /// <summary>Milliseconds spent waiting for governance input evaluation.</summary>
     [JsonPropertyName("governance_input_wait_ms")]
     public int? GovernanceInputWaitMs { get; set; }
+
+    /// <summary>
+    /// Cumulative milliseconds the run was parked waiting for a human decision on a
+    /// human_in_the_loop step. Subtracted from active duration in run-detail and
+    /// duration-stats responses.
+    /// </summary>
+    [JsonPropertyName("hitl_wait_ms")]
+    public int? HitlWaitMs { get; set; }
 }

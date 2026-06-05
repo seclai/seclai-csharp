@@ -163,6 +163,15 @@ await client.DeleteAgentRunAsync("run1");
 
 // Search across runs
 var results = await client.SearchAgentRunsAsync(new AgentTraceSearchRequest { Query = "error" });
+
+// Discover which files (if any) an agent expects before staging uploads
+var refs = await client.GetAgentAttachmentReferencesAsync("ag1");
+// refs.RequiresUploads reports whether the agent accepts files; refs.Agent lists the
+// exact names / indexes / glob patterns a run-time upload batch must satisfy.
+
+// Download a file attachment emitted by a step in a run (raw HttpResponseMessage).
+// attachmentId is the URL-safe-base64 storage_key from run output manifests / webhooks.
+using var attachment = await client.DownloadAgentRunAttachmentAsync("run1", "attachment_id");
 ```
 
 ### Streaming
@@ -325,6 +334,14 @@ var alerts = await client.ListModelAlertsAsync();                      // JsonEl
 await client.MarkModelAlertReadAsync("ma1");
 await client.MarkAllModelAlertsReadAsync();
 var recs = await client.GetModelRecommendationsAsync("model1");        // JsonElement
+
+// Model playground experiments
+var experiment = await client.CreateExperimentAsync(
+    new PlaygroundCreateRequest { Prompt = "...", ModelIds = new List<string> { "model1" } });
+var experiments = await client.ListExperimentsAsync();                 // JsonElement
+var detail = await client.GetExperimentAsync("exp1");                  // JsonElement
+await client.CancelExperimentAsync("exp1");
+await client.DeleteExperimentAsync("exp1");  // soft-delete, preserves audit history
 ```
 
 ### Search

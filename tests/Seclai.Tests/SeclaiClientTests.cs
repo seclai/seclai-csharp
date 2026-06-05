@@ -720,6 +720,41 @@ public sealed class SeclaiClientTests
         Assert.Equal("completed", res.Status);
     }
 
+    [Fact]
+    public async Task GetAgentAttachmentReferences_GetsPathAndDeserializes()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Get, req.Method);
+            Assert.Equal("/agents/a1/attachment-references", req.RequestUri!.AbsolutePath);
+            return JsonResponse("{\"requires_uploads\":true,\"agent\":{\"exact_names\":[\"report.pdf\"],\"indexes_max\":2}}");
+        });
+        var client = MakeClient(handler);
+        var res = await client.GetAgentAttachmentReferencesAsync("a1");
+        Assert.True(res.RequiresUploads);
+        Assert.Equal("report.pdf", res.Agent!.ExactNames![0]);
+        Assert.Equal(2, res.Agent!.IndexesMax);
+    }
+
+    [Fact]
+    public async Task DownloadAgentRunAttachment_GetsRawResponseWithDownloadName()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Get, req.Method);
+            Assert.Equal("/v2/agent-runs/run1/attachments/att1", req.RequestUri!.AbsolutePath);
+            var query = System.Web.HttpUtility.ParseQueryString(req.RequestUri.Query);
+            Assert.Equal("report.pdf", query["download_name"]);
+            return new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new ByteArrayContent(Encoding.UTF8.GetBytes("file-bytes")),
+            };
+        });
+        var client = MakeClient(handler);
+        using var res = await client.DownloadAgentRunAttachmentAsync("run1", "att1", "report.pdf");
+        Assert.Equal("file-bytes", await res.Content.ReadAsStringAsync());
+    }
+
     // ── Agent AI Assistant ──────────────────────────────────────────────────
 
     [Fact]
@@ -1662,6 +1697,19 @@ public sealed class SeclaiClientTests
         var client = MakeClient(handler);
         var res = await client.CancelExperimentAsync("exp1");
         Assert.Equal(JsonValueKind.Object, res.ValueKind);
+    }
+
+    [Fact]
+    public async Task DeleteExperiment_SendsDelete()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Delete, req.Method);
+            Assert.Equal("/models/playground/experiments/exp1", req.RequestUri!.AbsolutePath);
+            return new HttpResponseMessage(HttpStatusCode.NoContent);
+        });
+        var client = MakeClient(handler);
+        await client.DeleteExperimentAsync("exp1"); // should not throw
     }
 
     // ── Search ──────────────────────────────────────────────────────────────
