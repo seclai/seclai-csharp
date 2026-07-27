@@ -2325,6 +2325,8 @@ public sealed class SeclaiClientTests
         string? body = null;
         var handler = new FakeHttpMessageHandler(req =>
         {
+            Assert.Equal(HttpMethod.Put, req.Method);
+            Assert.Equal("/agents/a1/triggers/t1/email-config", req.RequestUri!.AbsolutePath);
             body = req.Content!.ReadAsStringAsync().GetAwaiter().GetResult();
             return JsonResponse("{\"trigger_id\":\"3f1a0d6e-0000-4000-8000-000000000003\",\"agent_id\":\"3f1a0d6e-0000-4000-8000-000000000004\",\"trigger_type\":\"EMAIL_RECEIVED\"}");
         });
@@ -2343,6 +2345,8 @@ public sealed class SeclaiClientTests
         string? body = null;
         var handler = new FakeHttpMessageHandler(req =>
         {
+            Assert.Equal(HttpMethod.Put, req.Method);
+            Assert.Equal("/agents/a1/triggers/t1/email-config", req.RequestUri!.AbsolutePath);
             body = req.Content!.ReadAsStringAsync().GetAwaiter().GetResult();
             return JsonResponse("{\"trigger_id\":\"3f1a0d6e-0000-4000-8000-000000000003\",\"agent_id\":\"3f1a0d6e-0000-4000-8000-000000000004\",\"trigger_type\":\"EMAIL_RECEIVED\"}");
         });
