@@ -27,6 +27,7 @@
   <ItemGroup>
     <!-- Pack the repository README into the .nupkg root as README.md. -->
     <None Include="..\..\README.md" Pack="true" PackagePath="\" Link="README.md" />
+    <None Include="..\..\CHANGELOG.md" Pack="true" PackagePath="\" Link="CHANGELOG.md" />
   </ItemGroup>
 
   <ItemGroup>

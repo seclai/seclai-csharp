@@ -335,7 +335,9 @@ public sealed class SeclaiClientTests
 
         var client = MakeClient(handler);
 
+#pragma warning disable CS0618 // deprecated alias kept for compatibility; still covered
         var deleted = await client.DeleteAgentRunAsync("run_1");
+#pragma warning restore CS0618
         Assert.Equal("run_1", deleted.RunId);
     }
 
@@ -676,12 +678,15 @@ public sealed class SeclaiClientTests
     }
 
     [Fact]
-    public async Task CancelAgentRun_PostsToCancel()
+    public async Task CancelAgentRun_DeletesTheRunResource()
     {
         var handler = new FakeHttpMessageHandler(req =>
         {
-            Assert.Equal(HttpMethod.Post, req.Method);
-            Assert.Equal("/agents/runs/r1/cancel", req.RequestUri!.AbsolutePath);
+            // Cancellation is DELETE on the run resource. This asserted
+            // POST /agents/runs/{id}/cancel, a path the API has never had, so it
+            // confirmed a 404-ing method rather than catching it.
+            Assert.Equal(HttpMethod.Delete, req.Method);
+            Assert.Equal("/agents/runs/r1", req.RequestUri!.AbsolutePath);
             return JsonResponse("{\"run_id\":\"r1\",\"status\":\"cancelled\",\"attempts\":[],\"error_count\":0,\"priority\":false}");
         });
         var client = MakeClient(handler);
@@ -1721,7 +1726,10 @@ public sealed class SeclaiClientTests
         {
             Assert.Equal(HttpMethod.Get, req.Method);
             Assert.Equal("/search", req.RequestUri!.AbsolutePath);
-            Assert.Contains("query=test", req.RequestUri!.Query);
+            // The spec names this `q` and marks it required. This test asserted
+            // `query=` for four months, locking in a search that always 422'd.
+            Assert.Contains("q=test", req.RequestUri!.Query);
+            Assert.DoesNotContain("query=test", req.RequestUri!.Query);
             Assert.Contains("entity_type=agent", req.RequestUri!.Query);
             return JsonResponse("{\"results\":[]}");
         });
@@ -1936,6 +1944,373 @@ public sealed class SeclaiClientTests
     }
 
     // ── Helpers ─────────────────────────────────────────────────────────────
+
+    // ── New in the 2026-07 sync: identity, agent pause, email governance,
+    // email domains, generation tiers, docs search ──────────────────────────
+
+    [Fact]
+    public async Task GetMe_ReturnsIdentity()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Get, req.Method);
+            Assert.Equal("/me", req.RequestUri!.AbsolutePath);
+            return JsonResponse("{\"account_id\":\"3f1a0d6e-0000-4000-8000-000000000001\",\"organizations\":[]}");
+        });
+        var client = MakeClient(handler);
+        var res = await client.GetMeAsync();
+        Assert.NotEmpty(res.AccountId);
+    }
+
+    [Fact]
+    public async Task DisableAgent_PostsToDisable()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Post, req.Method);
+            Assert.Equal("/agents/a1/disable", req.RequestUri!.AbsolutePath);
+            return JsonResponse("{\"id\":\"a1\",\"name\":\"x\",\"disabled\":true}");
+        });
+        var client = MakeClient(handler);
+        var res = await client.DisableAgentAsync("a1");
+        Assert.NotNull(res);
+    }
+
+    [Fact]
+    public async Task EnableAgent_PostsToEnable()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Post, req.Method);
+            Assert.Equal("/agents/a1/enable", req.RequestUri!.AbsolutePath);
+            return JsonResponse("{\"id\":\"a1\",\"name\":\"x\",\"disabled\":false}");
+        });
+        var client = MakeClient(handler);
+        var res = await client.EnableAgentAsync("a1");
+        Assert.NotNull(res);
+    }
+
+    [Fact]
+    public async Task GetAgentCallers_ReturnsCallers()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Get, req.Method);
+            Assert.Equal("/agents/a1/callers", req.RequestUri!.AbsolutePath);
+            return JsonResponse("[{\"id\":\"3f1a0d6e-0000-4000-8000-000000000002\",\"name\":\"Caller\",\"disabled\":false}]");
+        });
+        var client = MakeClient(handler);
+        var res = await client.GetAgentCallersAsync("a1");
+        Assert.Single(res);
+        Assert.Equal("Caller", res[0].Name);
+    }
+
+    [Fact]
+    public async Task SetEmailTriggerConfig_PutsConfig()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Put, req.Method);
+            Assert.Equal("/agents/a1/triggers/t1/email-config", req.RequestUri!.AbsolutePath);
+            return JsonResponse("{\"trigger_id\":\"3f1a0d6e-0000-4000-8000-000000000003\",\"agent_id\":\"3f1a0d6e-0000-4000-8000-000000000004\",\"trigger_type\":\"EMAIL_RECEIVED\",\"email_addresses\":[\"support@agent.seclai.com\"]}");
+        });
+        var client = MakeClient(handler);
+        var res = await client.SetEmailTriggerConfigAsync("a1", "t1", new SetEmailTriggerConfigRequest { Alias = "support" });
+        Assert.NotNull(res.EmailAddresses);
+        Assert.Single(res.EmailAddresses!);
+    }
+
+    [Fact]
+    public async Task ListAgentEmailOptOuts_SetsQueryParams()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Get, req.Method);
+            Assert.Equal("/agents/agent-email-optouts", req.RequestUri!.AbsolutePath);
+            Assert.Contains("agent_id=a1", req.RequestUri!.Query);
+            Assert.Contains("limit=25", req.RequestUri!.Query);
+            Assert.Contains("offset=50", req.RequestUri!.Query);
+            return JsonResponse("{\"items\":[],\"total\":0}");
+        });
+        var client = MakeClient(handler);
+        var res = await client.ListAgentEmailOptOutsAsync(agentId: "a1", limit: 25, offset: 50);
+        Assert.Equal(0, res.Total);
+    }
+
+    [Fact]
+    public async Task RemoveAgentEmailOptOut_Deletes()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Delete, req.Method);
+            Assert.Equal("/agents/agent-email-optouts/oo1", req.RequestUri!.AbsolutePath);
+            return new HttpResponseMessage(HttpStatusCode.NoContent);
+        });
+        var client = MakeClient(handler);
+        await client.RemoveAgentEmailOptOutAsync("oo1"); // should not throw
+    }
+
+    [Fact]
+    public async Task ListBlockedEmailSenders_UsesLimitOffset()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Get, req.Method);
+            Assert.Equal("/agents/blocked-email-senders", req.RequestUri!.AbsolutePath);
+            Assert.Contains("limit=10", req.RequestUri!.Query);
+            Assert.Contains("offset=20", req.RequestUri!.Query);
+            Assert.DoesNotContain("page=", req.RequestUri!.Query);
+            return JsonResponse("{\"items\":[],\"total\":0,\"auto_block_mode\":\"disabled\"}");
+        });
+        var client = MakeClient(handler);
+        var res = await client.ListBlockedEmailSendersAsync(limit: 10, offset: 20);
+        Assert.Equal("disabled", res.AutoBlockMode);
+    }
+
+    [Fact]
+    public async Task BlockEmailSender_PostsBody()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Post, req.Method);
+            Assert.Equal("/agents/blocked-email-senders", req.RequestUri!.AbsolutePath);
+            return JsonResponse("{\"id\":\"3f1a0d6e-0000-4000-8000-000000000005\",\"created_at\":\"2026-07-01\",\"sender_email\":\"spam@example.com\",\"match_type\":\"domain\",\"source\":\"manual\"}");
+        });
+        var client = MakeClient(handler);
+        var res = await client.BlockEmailSenderAsync(new BlockEmailSenderRequest { SenderEmail = "spam@example.com", MatchType = "domain" });
+        Assert.Equal("spam@example.com", res.SenderEmail);
+    }
+
+    [Fact]
+    public async Task UnblockEmailSender_Deletes()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Delete, req.Method);
+            Assert.Equal("/agents/blocked-email-senders/b1", req.RequestUri!.AbsolutePath);
+            return new HttpResponseMessage(HttpStatusCode.NoContent);
+        });
+        var client = MakeClient(handler);
+        await client.UnblockEmailSenderAsync("b1"); // should not throw
+    }
+
+    [Fact]
+    public async Task SetAutoBlockMode_PutsMode()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Put, req.Method);
+            Assert.Equal("/agents/blocked-email-senders/mode", req.RequestUri!.AbsolutePath);
+            return JsonResponse("{\"items\":[],\"total\":0,\"auto_block_mode\":\"input_and_output\"}");
+        });
+        var client = MakeClient(handler);
+        var res = await client.SetAutoBlockModeAsync(new SetAutoBlockModeRequest { Mode = "input_and_output" });
+        Assert.Equal("input_and_output", res.AutoBlockMode);
+    }
+
+    [Fact]
+    public async Task ListInboundEmailRejections_SetsQueryParams()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Get, req.Method);
+            Assert.Equal("/agents/inbound-email-rejections", req.RequestUri!.AbsolutePath);
+            Assert.Contains("agent_id=a1", req.RequestUri!.Query);
+            Assert.Contains("limit=5", req.RequestUri!.Query);
+            return JsonResponse("[{\"id\":\"3f1a0d6e-0000-4000-8000-000000000006\",\"created_at\":\"2026-07-01\",\"recipient\":\"x@y\",\"sender\":\"s@y\",\"reason\":\"unauthorized_sender\"}]");
+        });
+        var client = MakeClient(handler);
+        var res = await client.ListInboundEmailRejectionsAsync(agentId: "a1", limit: 5);
+        Assert.Single(res);
+        Assert.Equal("unauthorized_sender", res[0].Reason);
+    }
+
+    [Fact]
+    public async Task GetInboundEmailStatus_ReturnsStatus()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Get, req.Method);
+            Assert.Equal("/agents/inbound-email-status", req.RequestUri!.AbsolutePath);
+            return JsonResponse("{\"paused\":true,\"queued_backlog\":42}");
+        });
+        var client = MakeClient(handler);
+        var res = await client.GetInboundEmailStatusAsync();
+        Assert.True(res.Paused);
+        Assert.Equal(42, res.QueuedBacklog);
+    }
+
+    [Fact]
+    public async Task CancelQueuedEmailRuns_ReturnsCount()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Post, req.Method);
+            Assert.Equal("/agents/inbound-email-status/cancel-queued", req.RequestUri!.AbsolutePath);
+            return JsonResponse("{\"cancelled\":7}");
+        });
+        var client = MakeClient(handler);
+        var res = await client.CancelQueuedEmailRunsAsync();
+        Assert.Equal(7, res.Cancelled);
+    }
+
+    [Fact]
+    public async Task ResumeInboundEmail_ReturnsResumed()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Post, req.Method);
+            Assert.Equal("/agents/inbound-email-status/resume", req.RequestUri!.AbsolutePath);
+            return JsonResponse("{\"resumed\":true}");
+        });
+        var client = MakeClient(handler);
+        var res = await client.ResumeInboundEmailAsync();
+        Assert.True(res.Resumed);
+    }
+
+    [Fact]
+    public async Task ListEmailDomains_ReturnsListing()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Get, req.Method);
+            Assert.Equal("/email-domains", req.RequestUri!.AbsolutePath);
+            return JsonResponse("{\"domains\":[],\"can_add_vanity\":true}");
+        });
+        var client = MakeClient(handler);
+        var res = await client.ListEmailDomainsAsync();
+        Assert.NotNull(res);
+    }
+
+    [Fact]
+    public async Task AddEmailDomain_PostsBody()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Post, req.Method);
+            Assert.Equal("/email-domains", req.RequestUri!.AbsolutePath);
+            return JsonResponse("{\"id\":\"3f1a0d6e-0000-4000-8000-000000000007\",\"domain\":\"acme.seclai.com\",\"kind\":\"vanity\",\"status\":\"pending\",\"is_primary\":false}");
+        });
+        var client = MakeClient(handler);
+        var res = await client.AddEmailDomainAsync(new AddEmailDomainRequest { Kind = "vanity", Value = "acme" });
+        Assert.Equal("vanity", res.Kind);
+    }
+
+    [Fact]
+    public async Task RemoveEmailDomain_ReturnsCleanupNote()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Delete, req.Method);
+            Assert.Equal("/email-domains/d1", req.RequestUri!.AbsolutePath);
+            return JsonResponse("{\"removed\":true,\"cleanup_note\":\"Delete the NS record\"}");
+        });
+        var client = MakeClient(handler);
+        var res = await client.RemoveEmailDomainAsync("d1");
+        Assert.False(string.IsNullOrEmpty(res.CleanupNote));
+    }
+
+    [Fact]
+    public async Task VerifyEmailDomain_ReturnsStatus()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Post, req.Method);
+            Assert.Equal("/email-domains/d1/verify", req.RequestUri!.AbsolutePath);
+            return JsonResponse("{\"id\":\"3f1a0d6e-0000-4000-8000-000000000008\",\"domain\":\"a.b\",\"kind\":\"custom\",\"status\":\"verified\",\"is_primary\":false}");
+        });
+        var client = MakeClient(handler);
+        var res = await client.VerifyEmailDomainAsync("d1");
+        Assert.Equal("verified", res.Status);
+    }
+
+    [Fact]
+    public async Task SetPrimaryEmailDomain_ReturnsPrimary()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Post, req.Method);
+            Assert.Equal("/email-domains/d1/primary", req.RequestUri!.AbsolutePath);
+            return JsonResponse("{\"id\":\"3f1a0d6e-0000-4000-8000-000000000009\",\"domain\":\"a.b\",\"kind\":\"custom\",\"status\":\"verified\",\"is_primary\":true}");
+        });
+        var client = MakeClient(handler);
+        var res = await client.SetPrimaryEmailDomainAsync("d1");
+        Assert.True(res.IsPrimary);
+    }
+
+    [Fact]
+    public async Task UseSharedEmailDomain_Posts()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Post, req.Method);
+            Assert.Equal("/email-domains/use-shared-domain", req.RequestUri!.AbsolutePath);
+            return new HttpResponseMessage(HttpStatusCode.NoContent);
+        });
+        var client = MakeClient(handler);
+        await client.UseSharedEmailDomainAsync(); // should not throw
+    }
+
+    [Fact]
+    public async Task SendEmailDomainTestEmail_ReturnsSent()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Post, req.Method);
+            Assert.Equal("/email-domains/d1/test-email", req.RequestUri!.AbsolutePath);
+            return JsonResponse("{\"sent\":true}");
+        });
+        var client = MakeClient(handler);
+        var res = await client.SendEmailDomainTestEmailAsync("d1");
+        Assert.True(res.Sent);
+    }
+
+    [Fact]
+    public async Task GetDmarcSummary_SetsWindowParams()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Get, req.Method);
+            Assert.Equal("/email-domains/d1/dmarc", req.RequestUri!.AbsolutePath);
+            Assert.Contains("days=7", req.RequestUri!.Query);
+            Assert.Contains("top_sources=3", req.RequestUri!.Query);
+            return JsonResponse("{\"window_days\":7,\"report_count\":2,\"total_messages\":100,\"passed_messages\":99,\"failed_messages\":1}");
+        });
+        var client = MakeClient(handler);
+        var res = await client.GetDmarcSummaryAsync("d1", days: 7, topSources: 3);
+        Assert.Equal(7, res.WindowDays);
+    }
+
+    [Fact]
+    public async Task GetGenerationTiers_ReturnsRawJson()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Get, req.Method);
+            Assert.Equal("/models/generation-tiers", req.RequestUri!.AbsolutePath);
+            return JsonResponse("{\"image\":{\"fast\":{}}}");
+        });
+        var client = MakeClient(handler);
+        var res = await client.GetGenerationTiersAsync();
+        Assert.Equal(JsonValueKind.Object, res.ValueKind);
+    }
+
+    [Fact]
+    public async Task SearchDocs_SetsQueryParams()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Get, req.Method);
+            Assert.Equal("/docs-search", req.RequestUri!.AbsolutePath);
+            Assert.Contains("q=email", req.RequestUri!.Query);
+            Assert.Contains("mode=semantic", req.RequestUri!.Query);
+            Assert.Contains("limit=3", req.RequestUri!.Query);
+            return JsonResponse("{\"results\":[]}");
+        });
+        var client = MakeClient(handler);
+        var res = await client.SearchDocsAsync("email triggers", mode: "semantic", limit: 3);
+        Assert.Equal(JsonValueKind.Object, res.ValueKind);
+    }
 
     private static SeclaiClient MakeClient(FakeHttpMessageHandler handler)
     {

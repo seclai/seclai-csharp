@@ -280,12 +280,10 @@ public sealed class SeclaiClient : IDisposable
             cancellationToken).ConfigureAwait(false);
     }
 
-    /// <summary>Deletes an agent run.</summary>
+    /// <summary>Cancels an agent run.</summary>
+    [Obsolete("This never deleted anything - the endpoint it calls is documented as \"Cancel an agent run\", and the API has no delete-a-run operation. Use CancelAgentRunAsync instead.")]
     public Task<AgentRunResponse> DeleteAgentRunAsync(string runId, CancellationToken cancellationToken = default)
-    {
-        if (string.IsNullOrWhiteSpace(runId)) throw new ArgumentException("runId is required", nameof(runId));
-        return SendJsonAsync<AgentRunResponse>(HttpMethod.Delete, $"/agents/runs/{Uri.EscapeDataString(runId)}", query: null, body: null, cancellationToken);
-    }
+        => CancelAgentRunAsync(runId, cancellationToken);
 
     /// <summary>Gets content details with optional text range pagination.</summary>
     public async Task<ContentDetailResponse> GetContentDetailAsync(
@@ -848,10 +846,15 @@ public sealed class SeclaiClient : IDisposable
     }
 
     /// <summary>Cancels an in-progress agent run.</summary>
+    /// <remarks>
+    /// Cancellation is DELETE on the run resource — the API exposes no
+    /// POST .../cancel route, and no operation that deletes a run. Rejected when
+    /// the run has already reached a terminal state.
+    /// </remarks>
     public async Task<AgentRunResponse> CancelAgentRunAsync(string runId, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(runId)) throw new ArgumentException("runId is required", nameof(runId));
-        return await SendJsonAsync<AgentRunResponse>(HttpMethod.Post, $"/agents/runs/{Uri.EscapeDataString(runId)}/cancel", query: null, body: null, cancellationToken).ConfigureAwait(false);
+        return await SendJsonAsync<AgentRunResponse>(HttpMethod.Delete, $"/agents/runs/{Uri.EscapeDataString(runId)}", query: null, body: null, cancellationToken).ConfigureAwait(false);
     }
 
     // ── Agent Input Uploads ─────────────────────────────────────────────────
@@ -1731,7 +1734,8 @@ public sealed class SeclaiClient : IDisposable
     {
         var q = new Dictionary<string, string?>
         {
-            ["query"] = string.IsNullOrWhiteSpace(query) ? null : query,
+            // The spec names this `q` and marks it required.
+            ["q"] = string.IsNullOrWhiteSpace(query) ? null : query,
             ["limit"] = limit is > 0 ? limit.Value.ToString() : null,
             ["entity_type"] = string.IsNullOrWhiteSpace(entityType) ? null : entityType,
         };
@@ -1797,6 +1801,197 @@ public sealed class SeclaiClient : IDisposable
         return await SendRawAsync(HttpPatch, $"/ai-assistant/memory-bank/{Uri.EscapeDataString(conversationId)}", query: null, body, cancellationToken).ConfigureAwait(false);
     }
 
+    // ── Identity ──────────────────────────────────────────────────────────────
+
+    /// <summary>Gets the authenticated user's personal account ID and the organizations they belong to.</summary>
+    public async Task<MeResponse> GetMeAsync(CancellationToken cancellationToken = default)
+    {
+        return await SendJsonAsync<MeResponse>(HttpMethod.Get, "/me", null, null, cancellationToken).ConfigureAwait(false);
+    }
+    /// <summary>Pauses an agent so it stops firing from every trigger path. Returns 409 when other live agents still call this one via a call_agent step.</summary>
+    public async Task<AgentSummaryResponse> DisableAgentAsync(string agentId, CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(agentId)) throw new ArgumentException("agentId is required", nameof(agentId));
+        return await SendJsonAsync<AgentSummaryResponse>(HttpMethod.Post, $"/agents/{Uri.EscapeDataString(agentId)}/disable", null, null, cancellationToken).ConfigureAwait(false);
+    }
+
+    /// <summary>Resumes a paused agent, whether paused manually or by the inbound-email overload safeguard.</summary>
+    public async Task<AgentSummaryResponse> EnableAgentAsync(string agentId, CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(agentId)) throw new ArgumentException("agentId is required", nameof(agentId));
+        return await SendJsonAsync<AgentSummaryResponse>(HttpMethod.Post, $"/agents/{Uri.EscapeDataString(agentId)}/enable", null, null, cancellationToken).ConfigureAwait(false);
+    }
+
+    /// <summary>Lists the live agents that call this agent via a call_agent step. They must be disabled before this agent can be paused.</summary>
+    public async Task<List<AgentCallerApiResponse>> GetAgentCallersAsync(string agentId, CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(agentId)) throw new ArgumentException("agentId is required", nameof(agentId));
+        return await SendJsonAsync<List<AgentCallerApiResponse>>(HttpMethod.Get, $"/agents/{Uri.EscapeDataString(agentId)}/callers", null, null, cancellationToken).ConfigureAwait(false);
+    }
+    // ── Agent Email Triggers ──────────────────────────────────────────────────
+
+    /// <summary>Sets the alias, sender allowlist and inbound-handling flags on an agent's EMAIL_RECEIVED trigger. A null property is left unchanged.</summary>
+    public async Task<EmailTriggerConfigResponse> SetEmailTriggerConfigAsync(string agentId, string triggerId, SetEmailTriggerConfigRequest body, CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(agentId)) throw new ArgumentException("agentId is required", nameof(agentId));
+        if (string.IsNullOrWhiteSpace(triggerId)) throw new ArgumentException("triggerId is required", nameof(triggerId));
+        return await SendJsonAsync<EmailTriggerConfigResponse>(HttpMethod.Put, $"/agents/{Uri.EscapeDataString(agentId)}/triggers/{Uri.EscapeDataString(triggerId)}/email-config", null, body, cancellationToken).ConfigureAwait(false);
+    }
+    // ── Agent Email Governance ────────────────────────────────────────────────
+
+    /// <summary>Lists recipients who have opted out of this account's agent emails. Account-wide opt-outs always apply.</summary>
+    public async Task<AgentEmailOptOutListResponse> ListAgentEmailOptOutsAsync(string? agentId = null, int? limit = null, int? offset = null, CancellationToken cancellationToken = default)
+    {
+        var query = new Dictionary<string, string?>
+        {
+            ["agent_id"] = string.IsNullOrWhiteSpace(agentId) ? null : agentId,
+            ["limit"] = limit is > 0 ? limit.Value.ToString() : null,
+            ["offset"] = offset is >= 0 ? offset.Value.ToString() : null,
+        };
+        return await SendJsonAsync<AgentEmailOptOutListResponse>(HttpMethod.Get, "/agents/agent-email-optouts", query, null, cancellationToken).ConfigureAwait(false);
+    }
+
+    /// <summary>Revokes an opt-out, opting the recipient back in to agent emails.</summary>
+    public async Task RemoveAgentEmailOptOutAsync(string optoutId, CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(optoutId)) throw new ArgumentException("optoutId is required", nameof(optoutId));
+        await SendNoContentAsync(HttpMethod.Delete, $"/agents/agent-email-optouts/{Uri.EscapeDataString(optoutId)}", null, null, cancellationToken).ConfigureAwait(false);
+    }
+
+    /// <summary>Lists the account's blocked inbound email senders plus the governance auto-block mode. Paginates by limit/offset.</summary>
+    public async Task<BlockedEmailSenderListResponse> ListBlockedEmailSendersAsync(int? limit = null, int? offset = null, CancellationToken cancellationToken = default)
+    {
+        var query = new Dictionary<string, string?>
+        {
+            ["limit"] = limit is > 0 ? limit.Value.ToString() : null,
+            ["offset"] = offset is >= 0 ? offset.Value.ToString() : null,
+        };
+        return await SendJsonAsync<BlockedEmailSenderListResponse>(HttpMethod.Get, "/agents/blocked-email-senders", query, null, cancellationToken).ConfigureAwait(false);
+    }
+
+    /// <summary>Adds a sender address or a whole domain to the account blocklist. Idempotent. Requires an account owner or admin.</summary>
+    public async Task<BlockedEmailSenderResponse> BlockEmailSenderAsync(BlockEmailSenderRequest body, CancellationToken cancellationToken = default)
+    {
+        return await SendJsonAsync<BlockedEmailSenderResponse>(HttpMethod.Post, "/agents/blocked-email-senders", null, body, cancellationToken).ConfigureAwait(false);
+    }
+
+    /// <summary>Removes a blocked sender by ID. Requires an account owner or admin.</summary>
+    public async Task UnblockEmailSenderAsync(string blockedId, CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(blockedId)) throw new ArgumentException("blockedId is required", nameof(blockedId));
+        await SendNoContentAsync(HttpMethod.Delete, $"/agents/blocked-email-senders/{Uri.EscapeDataString(blockedId)}", null, null, cancellationToken).ConfigureAwait(false);
+    }
+
+    /// <summary>Sets whether a governance BLOCK on an authenticated inbound sender auto-adds them to the blocklist. Requires an account owner or admin.</summary>
+    public async Task<BlockedEmailSenderListResponse> SetAutoBlockModeAsync(SetAutoBlockModeRequest body, CancellationToken cancellationToken = default)
+    {
+        return await SendJsonAsync<BlockedEmailSenderListResponse>(HttpMethod.Put, "/agents/blocked-email-senders/mode", null, body, cancellationToken).ConfigureAwait(false);
+    }
+
+    /// <summary>Lists recent inbound emails discarded before running an agent — unauthorized sender, unknown alias, spam or flood-shed.</summary>
+    public async Task<List<InboundEmailRejectionResponse>> ListInboundEmailRejectionsAsync(string? agentId = null, int? limit = null, CancellationToken cancellationToken = default)
+    {
+        var query = new Dictionary<string, string?>
+        {
+            ["agent_id"] = string.IsNullOrWhiteSpace(agentId) ? null : agentId,
+            ["limit"] = limit is > 0 ? limit.Value.ToString() : null,
+        };
+        return await SendJsonAsync<List<InboundEmailRejectionResponse>>(HttpMethod.Get, "/agents/inbound-email-rejections", query, null, cancellationToken).ConfigureAwait(false);
+    }
+
+    /// <summary>Reports whether the account-wide overload circuit breaker has paused inbound email, plus the queued backlog size.</summary>
+    public async Task<InboundEmailStatusResponse> GetInboundEmailStatusAsync(CancellationToken cancellationToken = default)
+    {
+        return await SendJsonAsync<InboundEmailStatusResponse>(HttpMethod.Get, "/agents/inbound-email-status", null, null, cancellationToken).ConfigureAwait(false);
+    }
+
+    /// <summary>Fails all of the account's QUEUED (over-quota parked) inbound-email runs. Requires an account owner or admin.</summary>
+    public async Task<CancelQueuedRunsResponse> CancelQueuedEmailRunsAsync(CancellationToken cancellationToken = default)
+    {
+        return await SendJsonAsync<CancelQueuedRunsResponse>(HttpMethod.Post, "/agents/inbound-email-status/cancel-queued", null, null, cancellationToken).ConfigureAwait(false);
+    }
+
+    /// <summary>Manually lifts the account-wide inbound-email pause. One-shot: the breaker re-arms if the backlog is still above the ceiling.</summary>
+    public async Task<ResumeInboundResponse> ResumeInboundEmailAsync(CancellationToken cancellationToken = default)
+    {
+        return await SendJsonAsync<ResumeInboundResponse>(HttpMethod.Post, "/agents/inbound-email-status/resume", null, null, cancellationToken).ConfigureAwait(false);
+    }
+    // ── Email Domains ─────────────────────────────────────────────────────────
+
+    /// <summary>Lists the account's vanity and custom agent-email domains with verification status, required DNS records and plan capabilities.</summary>
+    public async Task<EmailDomainsListResponse> ListEmailDomainsAsync(CancellationToken cancellationToken = default)
+    {
+        return await SendJsonAsync<EmailDomainsListResponse>(HttpMethod.Get, "/email-domains", null, null, cancellationToken).ConfigureAwait(false);
+    }
+
+    /// <summary>Adds and provisions a vanity subdomain or a custom domain, standing up the SES identity and DNS. Requires an account owner or admin.</summary>
+    public async Task<EmailDomainResponse> AddEmailDomainAsync(AddEmailDomainRequest body, CancellationToken cancellationToken = default)
+    {
+        return await SendJsonAsync<EmailDomainResponse>(HttpMethod.Post, "/email-domains", null, body, cancellationToken).ConfigureAwait(false);
+    }
+
+    /// <summary>Removes a domain and tears down its SES identity and DNS. Returns a cleanup note when the domain was Seclai-managed.</summary>
+    public async Task<RemoveEmailDomainResponse> RemoveEmailDomainAsync(string domainId, CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(domainId)) throw new ArgumentException("domainId is required", nameof(domainId));
+        return await SendJsonAsync<RemoveEmailDomainResponse>(HttpMethod.Delete, $"/email-domains/{Uri.EscapeDataString(domainId)}", null, null, cancellationToken).ConfigureAwait(false);
+    }
+
+    /// <summary>Re-polls SES and DNS for this domain now instead of waiting for the background sweep.</summary>
+    public async Task<EmailDomainResponse> VerifyEmailDomainAsync(string domainId, CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(domainId)) throw new ArgumentException("domainId is required", nameof(domainId));
+        return await SendJsonAsync<EmailDomainResponse>(HttpMethod.Post, $"/email-domains/{Uri.EscapeDataString(domainId)}/verify", null, null, cancellationToken).ConfigureAwait(false);
+    }
+
+    /// <summary>Promotes a verified domain to the account's primary domain, so agent email sends from and receives on it.</summary>
+    public async Task<EmailDomainResponse> SetPrimaryEmailDomainAsync(string domainId, CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(domainId)) throw new ArgumentException("domainId is required", nameof(domainId));
+        return await SendJsonAsync<EmailDomainResponse>(HttpMethod.Post, $"/email-domains/{Uri.EscapeDataString(domainId)}/primary", null, null, cancellationToken).ConfigureAwait(false);
+    }
+
+    /// <summary>Reverts to the shared agent.seclai.com domain without removing configured domains — they stay verified and can be promoted again.</summary>
+    public async Task UseSharedEmailDomainAsync(CancellationToken cancellationToken = default)
+    {
+        await SendNoContentAsync(HttpMethod.Post, "/email-domains/use-shared-domain", null, null, cancellationToken).ConfigureAwait(false);
+    }
+
+    /// <summary>Sends a test message from a verified domain to the account owner's address. Never sends anywhere else.</summary>
+    public async Task<SendTestEmailResponse> SendEmailDomainTestEmailAsync(string domainId, CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(domainId)) throw new ArgumentException("domainId is required", nameof(domainId));
+        return await SendJsonAsync<SendTestEmailResponse>(HttpMethod.Post, $"/email-domains/{Uri.EscapeDataString(domainId)}/test-email", null, null, cancellationToken).ConfigureAwait(false);
+    }
+
+    /// <summary>Returns pass rate, disposition breakdown and top failing source IPs from the DMARC aggregate reports.</summary>
+    public async Task<DmarcSummaryResponse> GetDmarcSummaryAsync(string domainId, int? days = null, int? topSources = null, CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(domainId)) throw new ArgumentException("domainId is required", nameof(domainId));
+        var query = new Dictionary<string, string?>
+        {
+            ["days"] = days is > 0 ? days.Value.ToString() : null,
+            ["top_sources"] = topSources is > 0 ? topSources.Value.ToString() : null,
+        };
+        return await SendJsonAsync<DmarcSummaryResponse>(HttpMethod.Get, $"/email-domains/{Uri.EscapeDataString(domainId)}/dmarc", query, null, cancellationToken).ConfigureAwait(false);
+    }
+    /// <summary>Lists the media-generation quality tiers and the model and cost each resolves to. Global routing and pricing; read-only.</summary>
+    public async Task<JsonElement> GetGenerationTiersAsync(CancellationToken cancellationToken = default)
+    {
+        return await SendRawAsync(HttpMethod.Get, "/models/generation-tiers", null, null, cancellationToken).ConfigureAwait(false);
+    }
+    /// <summary>Searches the Seclai documentation by content. Mode is keyword (default) or semantic. Results are global, not account-scoped.</summary>
+    public async Task<JsonElement> SearchDocsAsync(string query, string? mode = null, int? limit = null, CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(query)) throw new ArgumentException("query is required", nameof(query));
+        var query_ = new Dictionary<string, string?>
+        {
+            ["q"] = string.IsNullOrWhiteSpace(query) ? null : query,
+            ["mode"] = string.IsNullOrWhiteSpace(mode) ? null : mode,
+            ["limit"] = limit is > 0 ? limit.Value.ToString() : null,
+        };
+        return await SendRawAsync(HttpMethod.Get, "/docs-search", query_, null, cancellationToken).ConfigureAwait(false);
+    }
     // ── High-Level Abstractions ─────────────────────────────────────────────
 
     /// <summary>

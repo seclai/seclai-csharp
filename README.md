@@ -102,12 +102,27 @@ or set environment variables:
 
 ## API Coverage
 
+### Identity
+
+```csharp
+var me = await client.GetMeAsync();
+foreach (var org in me.Organizations)
+    Console.WriteLine($"{org.Name} {org.AccountId}");
+
+// Act as an organization: new SeclaiClientOptions { AccountId = org.AccountId }
+```
+
 ### Agents
 
 ```csharp
 // CRUD
 var agents = await client.ListAgentsAsync(page: 1, limit: 20);
 var agent = await client.CreateAgentAsync(new CreateAgentRequest { Name = "Bot" });
+
+// Pause / resume — a disabled agent stops firing from every trigger path
+var callers = await client.GetAgentCallersAsync("a1");  // live agents calling this one
+await client.DisableAgentAsync("a1");                   // 409 if a caller is still live
+await client.EnableAgentAsync("a1");
 var fetched = await client.GetAgentAsync(agent.Id);
 var updated = await client.UpdateAgentAsync(agent.Id, new UpdateAgentRequest { Name = "Updated" });
 await client.DeleteAgentAsync(agent.Id);
@@ -327,9 +342,78 @@ await client.DeleteAlertConfigAsync("ac1");
 var prefs = await client.ListOrganizationAlertPreferencesAsync();
 ```
 
+### Agent Email Triggers
+
+```csharp
+// Null properties are left unchanged; set one to clear it.
+var cfg = await client.SetEmailTriggerConfigAsync("a1", "t1",
+    new SetEmailTriggerConfigRequest
+    {
+        Alias = "support",
+        AllowedSenders = new List<string> { "example.com" },
+        RequireSenderAuth = true,
+    });
+Console.WriteLine(string.Join(", ", cfg.EmailAddresses ?? new List<string>()));
+```
+
+### Agent Email Governance
+
+```csharp
+// Recipients who opted out of this account's agent emails
+var optOuts = await client.ListAgentEmailOptOutsAsync(agentId: "a1", limit: 50);
+await client.RemoveAgentEmailOptOutAsync("oo1");   // opt them back in
+
+// Blocked inbound senders (owner/admin only); paginates by limit/offset
+var blocked = await client.ListBlockedEmailSendersAsync(limit: 50, offset: 0);
+await client.BlockEmailSenderAsync(
+    new BlockEmailSenderRequest { SenderEmail = "spam.example.com", MatchType = "domain" });
+await client.UnblockEmailSenderAsync("b1");
+
+// "disabled" | "input" | "input_and_output"
+await client.SetAutoBlockModeAsync(new SetAutoBlockModeRequest { Mode = "input_and_output" });
+
+// Inbound mail discarded before running an agent
+var rejections = await client.ListInboundEmailRejectionsAsync(agentId: "a1");
+
+// Account-wide overload circuit breaker
+var status = await client.GetInboundEmailStatusAsync();
+await client.CancelQueuedEmailRunsAsync();   // fail all QUEUED (over-quota parked) runs
+await client.ResumeInboundEmailAsync();      // one-shot; re-arms if still overloaded
+```
+
+### Email Domains
+
+Send and receive agent email on your own domain instead of the shared
+`agent.seclai.com`. Requires a user-bound credential; mutations require an
+account owner/admin.
+
+```csharp
+var listing = await client.ListEmailDomainsAsync();
+
+var vanity = await client.AddEmailDomainAsync(
+    new AddEmailDomainRequest { Kind = "vanity", Value = "acme" });
+var custom = await client.AddEmailDomainAsync(
+    new AddEmailDomainRequest { Kind = "custom", Value = "agent.mycompany.com" });
+
+// Publish custom.DnsRecords, then check without waiting for the background sweep
+await client.VerifyEmailDomainAsync(custom.Id);
+
+await client.SetPrimaryEmailDomainAsync(custom.Id);
+await client.UseSharedEmailDomainAsync();  // revert; domains stay configured & verified
+
+await client.SendEmailDomainTestEmailAsync(custom.Id);  // always to the account owner
+var dmarc = await client.GetDmarcSummaryAsync(custom.Id, days: 30, topSources: 10);
+
+var removed = await client.RemoveEmailDomainAsync(custom.Id);
+// removed.CleanupNote is set when the domain was Seclai-managed
+```
+
 ### Models & Model Alerts
 
 ```csharp
+// Media-generation quality tiers (fast/balanced/thorough) and what each resolves to
+var tiers = await client.GetGenerationTiersAsync();                    // JsonElement
+
 var alerts = await client.ListModelAlertsAsync();                      // JsonElement
 await client.MarkModelAlertReadAsync("ma1");
 await client.MarkAllModelAlertsReadAsync();
@@ -348,6 +432,17 @@ await client.DeleteExperimentAsync("exp1");  // soft-delete, preserves audit his
 
 ```csharp
 var results = await client.SearchAsync(query: "my bot", entityType: "agent");  // JsonElement
+```
+
+### Documentation Search
+
+Results are global (not account-scoped); each carries a `doc_slug` plus an optional
+`anchor` for building a `https://seclai.com/docs/<doc_slug>[#<anchor>]` link.
+
+```csharp
+var hits = await client.SearchDocsAsync("email triggers");                       // JsonElement
+var deep = await client.SearchDocsAsync("how do I stop auto-reply loops",
+                                        mode: "semantic", limit: 5);
 ```
 
 ### AI Assistant (Top-Level)
