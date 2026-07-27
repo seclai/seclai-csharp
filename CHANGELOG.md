@@ -61,10 +61,6 @@
 
 - Default the SSO domain, client ID, and region so a profile only needs `sso_account_id` ([#5](https://github.com/seclai/seclai-csharp/pull/5))
 
-### Added
-
-- Add `GET /me` to the supported surface; the corresponding `GetMeAsync` client method arrived in 1.4.0 ([#5](https://github.com/seclai/seclai-csharp/pull/5))
-
 ## [1.1.1] - 2026-03-26
 
 ### Added
