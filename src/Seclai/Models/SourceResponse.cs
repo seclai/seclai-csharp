@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System;
 using System.Text.Json.Serialization;
 
@@ -85,4 +86,8 @@ public sealed class SourceResponse
 
     [JsonPropertyName("url")]
     public string? Url { get; set; }
+
+    /// <summary>Media kinds extracted from indexed content and embedded as multi-modal KB chunks (subset of ['images', 'video']). Empty = text-only.</summary>
+    [JsonPropertyName("media_types")]
+    public List<string>? MediaTypes { get; set; }
 }

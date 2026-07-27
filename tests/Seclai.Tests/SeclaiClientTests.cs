@@ -1969,11 +1969,14 @@ public sealed class SeclaiClientTests
         {
             Assert.Equal(HttpMethod.Post, req.Method);
             Assert.Equal("/agents/a1/disable", req.RequestUri!.AbsolutePath);
-            return JsonResponse("{\"id\":\"a1\",\"name\":\"x\",\"disabled\":true}");
+            return JsonResponse("{\"id\":\"a1\",\"name\":\"x\",\"disabled\":true,\"disabled_reason\":\"manual\"}");
         });
         var client = MakeClient(handler);
         var res = await client.DisableAgentAsync("a1");
-        Assert.NotNull(res);
+        // The whole point of pause/resume is observing the state, so the
+        // response must surface it rather than discarding it.
+        Assert.Equal(true, res.Disabled);
+        Assert.Equal("manual", res.DisabledReason);
     }
 
     [Fact]
@@ -1987,7 +1990,7 @@ public sealed class SeclaiClientTests
         });
         var client = MakeClient(handler);
         var res = await client.EnableAgentAsync("a1");
-        Assert.NotNull(res);
+        Assert.Equal(false, res.Disabled);
     }
 
     [Fact]
