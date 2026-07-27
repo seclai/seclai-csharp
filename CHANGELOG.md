@@ -4,9 +4,10 @@
 
 ### Changed
 
+- **Breaking:** make `query` required on `SearchAsync`, changing it from `string?` with a default to `string`, and throw `ArgumentException` when it is blank. The spec marks `q` required, so omitting it only deferred the failure to a 422. Callers passing `query:` by name are unaffected; a no-argument `SearchAsync()` no longer compiles
 - Sync to the current OpenAPI spec, adding 22 paths and 24 model classes
 - Deprecate `DeleteAgentRunAsync`. It never deleted anything — the endpoint it calls is documented as "Cancel an agent run", and the API has no delete-a-run operation. Use `CancelAgentRunAsync`
-- Make `query` required on `SearchAsync` and throw `ArgumentException` when it is blank. The spec marks `q` required, so omitting it only deferred the failure to a 422
+- Omit unset properties on `SetEmailTriggerConfigRequest` instead of serialising them as `null`. The API reads an explicit null as "clear this field", so setting only the alias silently wiped the sender allowlist and reset the inbound-handling flags
 
 ### Added
 

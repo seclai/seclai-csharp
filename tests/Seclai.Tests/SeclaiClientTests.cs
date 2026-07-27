@@ -2262,7 +2262,9 @@ public sealed class SeclaiClientTests
         });
         var client = MakeClient(handler);
         var res = await client.SendEmailDomainTestEmailAsync("d1");
-        Assert.True(res.Sent);
+        // `sent` is not in the schema's `required` list, so the model keeps it
+        // nullable; assert the value rather than mere truthiness.
+        Assert.Equal(true, res.Sent);
     }
 
     [Fact]
@@ -2310,6 +2312,44 @@ public sealed class SeclaiClientTests
         var client = MakeClient(handler);
         var res = await client.SearchDocsAsync("email triggers", mode: "semantic", limit: 3);
         Assert.Equal(JsonValueKind.Object, res.ValueKind);
+    }
+
+    [Fact]
+    public async Task SetEmailTriggerConfig_OmitsUnsetPropertiesRatherThanSendingNull()
+    {
+        // The API treats an explicit null as "clear this field", so a request
+        // setting only the alias must not wipe the allowlist and the flags.
+        string? body = null;
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            body = req.Content!.ReadAsStringAsync().GetAwaiter().GetResult();
+            return JsonResponse("{\"trigger_id\":\"3f1a0d6e-0000-4000-8000-000000000003\",\"agent_id\":\"3f1a0d6e-0000-4000-8000-000000000004\",\"trigger_type\":\"EMAIL_RECEIVED\"}");
+        });
+        var client = MakeClient(handler);
+
+        await client.SetEmailTriggerConfigAsync("a1", "t1",
+            new SetEmailTriggerConfigRequest { Alias = "support" });
+
+        Assert.Equal("{\"alias\":\"support\"}", body);
+        Assert.DoesNotContain("null", body);
+    }
+
+    [Fact]
+    public async Task SetEmailTriggerConfig_SendsEmptyValuesToClear()
+    {
+        string? body = null;
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            body = req.Content!.ReadAsStringAsync().GetAwaiter().GetResult();
+            return JsonResponse("{\"trigger_id\":\"3f1a0d6e-0000-4000-8000-000000000003\",\"agent_id\":\"3f1a0d6e-0000-4000-8000-000000000004\",\"trigger_type\":\"EMAIL_RECEIVED\"}");
+        });
+        var client = MakeClient(handler);
+
+        await client.SetEmailTriggerConfigAsync("a1", "t1",
+            new SetEmailTriggerConfigRequest { Alias = "", AllowedSenders = new List<string>() });
+
+        Assert.Contains("\"alias\":\"\"", body);
+        Assert.Contains("\"allowed_senders\":[]", body);
     }
 
     private static SeclaiClient MakeClient(FakeHttpMessageHandler handler)
