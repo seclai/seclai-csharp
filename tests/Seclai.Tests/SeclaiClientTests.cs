@@ -678,7 +678,7 @@ public sealed class SeclaiClientTests
     }
 
     [Fact]
-    public async Task CancelAgentRun_DeletesTheRunResource()
+    public async Task CancelAgentRun_UsesDeleteOnTheRunResource()
     {
         var handler = new FakeHttpMessageHandler(req =>
         {

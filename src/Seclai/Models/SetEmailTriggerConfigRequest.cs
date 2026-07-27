@@ -3,10 +3,10 @@ using System.Text.Json.Serialization;
 
 namespace Seclai.Models;
 
-/// <summary>Alias and/or sender allowlist for an EMAIL_RECEIVED trigger. A field omitted is left unchanged; passing ``null`` (or ``""`` for ``alias``) clears it.</summary>
+/// <summary>Alias and/or sender allowlist for an EMAIL_RECEIVED trigger. A field omitted is left unchanged; passing <c>null</c> (or <c>""</c> for <c>alias</c>) clears it.</summary>
 public sealed class SetEmailTriggerConfigRequest
 {
-    /// <summary>Custom alias for the address `&lt;alias&gt;.&lt;accountID&gt;@agent.seclai.com` (alphanumeric plus '+', '.', '-'; 1–32 chars; not starting/ending with '+', '.', '-'; not UUID-shaped). Pass null/empty to clear.</summary>
+    /// <summary>Custom alias for the address <c>&lt;alias&gt;.&lt;accountID&gt;@agent.seclai.com</c> (alphanumeric plus '+', '.', '-'; 1–32 chars; not starting/ending with '+', '.', '-'; not UUID-shaped). Pass null/empty to clear.</summary>
     [JsonPropertyName("alias")]
     public string? Alias { get; set; }
 

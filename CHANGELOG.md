@@ -6,6 +6,7 @@
 
 - Sync to the current OpenAPI spec, adding 22 paths and 24 model classes
 - Deprecate `DeleteAgentRunAsync`. It never deleted anything — the endpoint it calls is documented as "Cancel an agent run", and the API has no delete-a-run operation. Use `CancelAgentRunAsync`
+- Make `query` required on `SearchAsync` and throw `ArgumentException` when it is blank. The spec marks `q` required, so omitting it only deferred the failure to a 422
 
 ### Added
 

@@ -1730,12 +1730,14 @@ public sealed class SeclaiClient : IDisposable
     // ── General Search ──────────────────────────────────────────────────────
 
     /// <summary>Performs a general search across resources.</summary>
-    public async Task<JsonElement> SearchAsync(string? query = null, int? limit = null, string? entityType = null, CancellationToken cancellationToken = default)
+    public async Task<JsonElement> SearchAsync(string query, int? limit = null, string? entityType = null, CancellationToken cancellationToken = default)
     {
+        // The spec names this `q` and marks it required. Allowing it to be
+        // omitted only defers the failure to a 422 at the server.
+        if (string.IsNullOrWhiteSpace(query)) throw new ArgumentException("query is required", nameof(query));
         var q = new Dictionary<string, string?>
         {
-            // The spec names this `q` and marks it required.
-            ["q"] = string.IsNullOrWhiteSpace(query) ? null : query,
+            ["q"] = query,
             ["limit"] = limit is > 0 ? limit.Value.ToString() : null,
             ["entity_type"] = string.IsNullOrWhiteSpace(entityType) ? null : entityType,
         };
@@ -1986,7 +1988,7 @@ public sealed class SeclaiClient : IDisposable
         if (string.IsNullOrWhiteSpace(query)) throw new ArgumentException("query is required", nameof(query));
         var query_ = new Dictionary<string, string?>
         {
-            ["q"] = string.IsNullOrWhiteSpace(query) ? null : query,
+            ["q"] = query,
             ["mode"] = string.IsNullOrWhiteSpace(mode) ? null : mode,
             ["limit"] = limit is > 0 ? limit.Value.ToString() : null,
         };
