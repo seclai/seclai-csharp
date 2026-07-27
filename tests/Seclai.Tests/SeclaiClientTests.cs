@@ -826,11 +826,17 @@ public sealed class SeclaiClientTests
         {
             Assert.Equal(HttpMethod.Get, req.Method);
             Assert.Equal("/agents/a1/evaluation-criteria", req.RequestUri!.AbsolutePath);
-            return JsonResponse("[{\"id\":\"ec1\",\"name\":\"Accuracy\",\"description\":\"test\"}]");
+            Assert.Contains("page=2", req.RequestUri!.Query);
+            Assert.Contains("limit=25", req.RequestUri!.Query);
+            return JsonResponse("{\"data\":[{\"id\":\"ec1\",\"name\":\"Accuracy\",\"description\":\"test\"}],\"total\":7,\"page\":2,\"limit\":25}");
         });
         var client = MakeClient(handler);
-        var res = await client.ListEvaluationCriteriaAsync("a1");
-        Assert.Single(res);
+        var res = await client.ListEvaluationCriteriaAsync("a1", page: 2, limit: 25);
+        Assert.Single(res.Data!);
+        Assert.Equal("ec1", res.Data![0].Id);
+        Assert.Equal(7, res.Total);
+        Assert.Equal(2, res.Page);
+        Assert.Equal(25, res.Limit);
     }
 
     [Fact]

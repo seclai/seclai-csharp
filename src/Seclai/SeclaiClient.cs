@@ -933,12 +933,12 @@ public sealed class SeclaiClient : IDisposable
 
     // ── Agent Evaluations ───────────────────────────────────────────────────
 
-    /// <summary>Lists evaluation criteria for an agent.</summary>
-    public async Task<List<EvaluationCriteriaResponse>> ListEvaluationCriteriaAsync(string agentId, int? page = null, int? limit = null, CancellationToken cancellationToken = default)
+    /// <summary>Lists evaluation criteria for an agent, paginated.</summary>
+    public async Task<EvaluationCriteriaListResponse> ListEvaluationCriteriaAsync(string agentId, int? page = null, int? limit = null, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(agentId)) throw new ArgumentException("agentId is required", nameof(agentId));
         var query = PaginationQuery(page, limit);
-        return await SendJsonAsync<List<EvaluationCriteriaResponse>>(HttpMethod.Get, $"/agents/{Uri.EscapeDataString(agentId)}/evaluation-criteria", query, body: null, cancellationToken).ConfigureAwait(false);
+        return await SendJsonAsync<EvaluationCriteriaListResponse>(HttpMethod.Get, $"/agents/{Uri.EscapeDataString(agentId)}/evaluation-criteria", query, body: null, cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>Creates new evaluation criteria for an agent.</summary>

@@ -4,6 +4,7 @@
 
 ### Changed
 
+- **Breaking:** return `EvaluationCriteriaListResponse` from `ListEvaluationCriteriaAsync` instead of `List<EvaluationCriteriaResponse>`. The endpoint now returns a paginated envelope, so the previous return type could no longer deserialize — read the criteria from `.Data` and the page metadata from `.Total`, `.Page` and `.Limit`
 - **Breaking:** make `query` required on `SearchAsync`, changing it from `string?` with a default to `string`, and throw `ArgumentException` when it is blank. The spec marks `q` required, so omitting it only deferred the failure to a 422. Callers passing `query:` by name are unaffected; a no-argument `SearchAsync()` no longer compiles
 - Sync to the current OpenAPI spec, adding 22 paths and 24 model classes
 - Deprecate `DeleteAgentRunAsync`. It never deleted anything — the endpoint it calls is documented as "Cancel an agent run", and the API has no delete-a-run operation. Use `CancelAgentRunAsync`

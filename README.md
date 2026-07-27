@@ -284,7 +284,8 @@ var config = await client.GenerateMemoryBankConfigAsync(
 
 ```csharp
 // Criteria
-var criteria = await client.ListEvaluationCriteriaAsync("ag1");
+var criteria = await client.ListEvaluationCriteriaAsync("ag1", page: 1, limit: 50);
+foreach (var c in criteria.Data!) Console.WriteLine($"{c.Id} {c.Name}");
 var created = await client.CreateEvaluationCriteriaAsync("ag1",
     new CreateEvaluationCriteriaRequest { StepId = "s1" });
 var summary = await client.GetEvaluationCriteriaSummaryAsync(created.Id);
