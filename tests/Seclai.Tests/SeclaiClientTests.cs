@@ -174,11 +174,11 @@ public sealed class SeclaiClientTests
     }
 
     [Fact]
-    public async System.Threading.Tasks.Task ListSources_MatchesTrailingSlashPathAndSetsAuth()
+    public async System.Threading.Tasks.Task ListSources_MatchesPathAndSetsAuth()
     {
         var handler = new FakeHttpMessageHandler(req =>
         {
-            Assert.Equal("/sources/", req.RequestUri!.AbsolutePath);
+            Assert.Equal("/sources", req.RequestUri!.AbsolutePath);
             Assert.True(req.Headers.TryGetValues("x-api-key", out var values));
             Assert.Contains("k", values);
             var body = "{\"data\":[],\"pagination\":{\"has_next\":false,\"has_prev\":false,\"limit\":20,\"page\":1,\"pages\":1,\"total\":0}}";
@@ -832,8 +832,32 @@ public sealed class SeclaiClientTests
         });
         var client = MakeClient(handler);
         var res = await client.ListEvaluationCriteriaAsync("a1", page: 2, limit: 25);
+        Assert.Single(res);
+        Assert.Equal("ec1", res[0].Id);
+    }
+
+    [Fact]
+    public async Task ListEvaluationCriteria_AcceptsABareArrayToo()
+    {
+        // The endpoint answered with a bare array before 2026-07 and the change
+        // is not deployed yet, so both shapes are live realities. Pinning the
+        // client to either one breaks it the day the other ships.
+        var handler = new FakeHttpMessageHandler(req =>
+            JsonResponse("[{\"id\":\"ec1\",\"description\":\"test\"}]"));
+        var client = MakeClient(handler);
+        var res = await client.ListEvaluationCriteriaAsync("a1");
+        Assert.Single(res);
+        Assert.Equal("ec1", res[0].Id);
+    }
+
+    [Fact]
+    public async Task ListEvaluationCriteriaPage_ExposesPaginationMetadata()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+            JsonResponse("{\"data\":[{\"id\":\"ec1\"}],\"total\":7,\"page\":2,\"limit\":25}"));
+        var client = MakeClient(handler);
+        var res = await client.ListEvaluationCriteriaPageAsync("a1", page: 2, limit: 25);
         Assert.Single(res.Data!);
-        Assert.Equal("ec1", res.Data![0].Id);
         Assert.Equal(7, res.Total);
         Assert.Equal(2, res.Page);
         Assert.Equal(25, res.Limit);
@@ -2363,6 +2387,88 @@ public sealed class SeclaiClientTests
 
         Assert.Contains("\"alias\":\"\"", body);
         Assert.Contains("\"allowed_senders\":[]", body);
+    }
+
+    [Fact]
+    public async Task ApiVersionHeader_IsOmittedUnlessOptedIn()
+    {
+        // The whole point of the option: upgrading the SDK must not silently
+        // move an account onto a newer API version and change response shapes.
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.False(req.Headers.Contains("Seclai-Version"));
+            return JsonResponse("{\"data\":[]}");
+        });
+        var client = MakeClient(handler);
+        await client.ListAgentsAsync();
+    }
+
+    [Fact]
+    public async Task ApiVersionHeader_IsSentWhenSet()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal("2026-07-27", Assert.Single(req.Headers.GetValues("Seclai-Version")));
+            return JsonResponse("{\"data\":[]}");
+        });
+        var http = new HttpClient(handler);
+        using var client = new SeclaiClient(new SeclaiClientOptions
+        {
+            ApiKey = "k",
+            BaseUri = new Uri("https://example.invalid"),
+            HttpClient = http,
+            ApiVersion = "2026-07-27",
+        });
+        await client.ListAgentsAsync();
+    }
+
+    [Fact]
+    public async Task GetApiVersion_GetsVersion()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Get, req.Method);
+            Assert.Equal("/version", req.RequestUri!.AbsolutePath);
+            return JsonResponse("{\"pinned_version\":null,\"effective_version\":\"2026-01-01\",\"default_version\":\"2026-01-01\",\"latest_version\":\"2026-07-27\",\"known_versions\":[\"2026-01-01\",\"2026-07-27\"]}");
+        });
+        var client = MakeClient(handler);
+        var res = await client.GetApiVersionAsync();
+        Assert.Null(res.PinnedVersion);
+        Assert.Equal("2026-07-27", res.LatestVersion);
+        Assert.Equal(2, res.KnownVersions!.Count);
+    }
+
+    [Fact]
+    public async Task UpdateApiVersion_PutsVersion()
+    {
+        string? body = null;
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Put, req.Method);
+            Assert.Equal("/version", req.RequestUri!.AbsolutePath);
+            body = req.Content!.ReadAsStringAsync().GetAwaiter().GetResult();
+            return JsonResponse("{\"pinned_version\":\"2026-07-27\",\"effective_version\":\"2026-01-01\"}");
+        });
+        var client = MakeClient(handler);
+        var res = await client.UpdateApiVersionAsync("2026-07-27");
+        Assert.Equal("{\"version\":\"2026-07-27\"}", body);
+        Assert.Equal("2026-07-27", res.PinnedVersion);
+    }
+
+    [Fact]
+    public async Task UpdateApiVersion_SendsExplicitNullToClearThePin()
+    {
+        // null is the documented way to clear the pin, so it must reach the wire
+        // rather than being omitted as an unset property.
+        string? body = null;
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            body = req.Content!.ReadAsStringAsync().GetAwaiter().GetResult();
+            return JsonResponse("{\"pinned_version\":null}");
+        });
+        var client = MakeClient(handler);
+        await client.UpdateApiVersionAsync(null);
+        Assert.Equal("{\"version\":null}", body);
     }
 
     private static SeclaiClient MakeClient(FakeHttpMessageHandler handler)

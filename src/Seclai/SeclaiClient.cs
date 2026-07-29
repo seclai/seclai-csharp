@@ -33,6 +33,7 @@ public sealed class SeclaiClient : IDisposable
     private readonly Uri _baseUri;
     private readonly AuthState _auth;
     private readonly Dictionary<string, string>? _defaultHeaders;
+    private readonly string? _apiVersion;
 
     /// <summary>Creates a new <see cref="SeclaiClient"/> from the given options.</summary>
     /// <exception cref="ConfigurationException">Thrown when credential options conflict (e.g. both API key and access token).</exception>
@@ -49,6 +50,8 @@ public sealed class SeclaiClient : IDisposable
         _defaultHeaders = options.DefaultHeaders is not null
             ? new Dictionary<string, string>(options.DefaultHeaders)
             : null;
+
+        _apiVersion = string.IsNullOrWhiteSpace(options.ApiVersion) ? null : options.ApiVersion;
 
         if (options.HttpClient is not null)
         {
@@ -83,7 +86,7 @@ public sealed class SeclaiClient : IDisposable
         query["account_id"] = string.IsNullOrWhiteSpace(accountId) ? null : accountId;
 
         // Note: spec path includes trailing slash.
-        return await SendJsonAsync<SourceListResponse>(HttpMethod.Get, "/sources/", query, body: null, cancellationToken).ConfigureAwait(false);
+        return await SendJsonAsync<SourceListResponse>(HttpMethod.Get, "/sources", query, body: null, cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>Starts a new synchronous agent run.</summary>
@@ -709,6 +712,13 @@ public sealed class SeclaiClient : IDisposable
 
     private void ApplyDefaultHeaders(HttpRequestMessage req)
     {
+        // Omitted unless the caller opts in: with no header the account's pinned
+        // baseline applies and responses keep the shapes this version was built
+        // against, so upgrading the SDK alone never changes the wire contract.
+        if (_apiVersion is not null)
+        {
+            req.Headers.TryAddWithoutValidation("Seclai-Version", _apiVersion);
+        }
         if (_defaultHeaders is null) return;
         foreach (var kv in _defaultHeaders)
         {
@@ -933,12 +943,40 @@ public sealed class SeclaiClient : IDisposable
 
     // ── Agent Evaluations ───────────────────────────────────────────────────
 
-    /// <summary>Lists evaluation criteria for an agent, paginated.</summary>
-    public async Task<EvaluationCriteriaListResponse> ListEvaluationCriteriaAsync(string agentId, int? page = null, int? limit = null, CancellationToken cancellationToken = default)
+    /// <summary>
+    /// Lists evaluation criteria for an agent.
+    /// </summary>
+    /// <remarks>
+    /// Accepts either wire shape. The endpoint returned a bare array until
+    /// 2026-07 and a paginated envelope after, so a client pinned to one of them
+    /// breaks whenever the other is deployed. Use
+    /// <see cref="ListEvaluationCriteriaPageAsync"/> for the page metadata.
+    /// </remarks>
+    public async Task<List<EvaluationCriteriaResponse>> ListEvaluationCriteriaAsync(string agentId, int? page = null, int? limit = null, CancellationToken cancellationToken = default)
+    {
+        return (await ListEvaluationCriteriaPageAsync(agentId, page, limit, cancellationToken).ConfigureAwait(false)).Data
+               ?? new List<EvaluationCriteriaResponse>();
+    }
+
+    /// <summary>Lists evaluation criteria for an agent with pagination metadata.</summary>
+    /// <remarks>
+    /// <see cref="EvaluationCriteriaListResponse.Total"/>, <c>Page</c> and <c>Limit</c>
+    /// are zero when the endpoint answers with a bare array rather than an envelope.
+    /// </remarks>
+    public async Task<EvaluationCriteriaListResponse> ListEvaluationCriteriaPageAsync(string agentId, int? page = null, int? limit = null, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(agentId)) throw new ArgumentException("agentId is required", nameof(agentId));
         var query = PaginationQuery(page, limit);
-        return await SendJsonAsync<EvaluationCriteriaListResponse>(HttpMethod.Get, $"/agents/{Uri.EscapeDataString(agentId)}/evaluation-criteria", query, body: null, cancellationToken).ConfigureAwait(false);
+        var raw = await SendJsonAsync<JsonElement>(HttpMethod.Get, $"/agents/{Uri.EscapeDataString(agentId)}/evaluation-criteria", query, body: null, cancellationToken).ConfigureAwait(false);
+
+        if (raw.ValueKind == JsonValueKind.Array)
+        {
+            return new EvaluationCriteriaListResponse
+            {
+                Data = raw.Deserialize<List<EvaluationCriteriaResponse>>(JsonOptions) ?? new List<EvaluationCriteriaResponse>(),
+            };
+        }
+        return raw.Deserialize<EvaluationCriteriaListResponse>(JsonOptions) ?? new EvaluationCriteriaListResponse();
     }
 
     /// <summary>Creates new evaluation criteria for an agent.</summary>
@@ -1730,10 +1768,11 @@ public sealed class SeclaiClient : IDisposable
     // ── General Search ──────────────────────────────────────────────────────
 
     /// <summary>Performs a general search across resources.</summary>
-    public async Task<JsonElement> SearchAsync(string query, int? limit = null, string? entityType = null, CancellationToken cancellationToken = default)
+    public async Task<JsonElement> SearchAsync(string? query = null, int? limit = null, string? entityType = null, CancellationToken cancellationToken = default)
     {
-        // The spec names this `q` and marks it required. Allowing it to be
-        // omitted only defers the failure to a 422 at the server.
+        // The spec names this `q` and marks it required. The parameter stays
+        // optional so existing call sites keep compiling; a blank one fails here
+        // with the field name rather than as a 422 naming the wire parameter.
         if (string.IsNullOrWhiteSpace(query)) throw new ArgumentException("query is required", nameof(query));
         var q = new Dictionary<string, string?>
         {
@@ -1839,6 +1878,30 @@ public sealed class SeclaiClient : IDisposable
         if (string.IsNullOrWhiteSpace(triggerId)) throw new ArgumentException("triggerId is required", nameof(triggerId));
         return await SendJsonAsync<EmailTriggerConfigResponse>(HttpMethod.Put, $"/agents/{Uri.EscapeDataString(agentId)}/triggers/{Uri.EscapeDataString(triggerId)}/email-config", null, body, cancellationToken).ConfigureAwait(false);
     }
+    // ── API Version ───────────────────────────────────────────────────────────
+
+    /// <summary>Reads the API version this request resolved to, and the versions available.</summary>
+    /// <remarks>
+    /// <c>EffectiveVersion</c> resolves as header, then account pin, then default —
+    /// so it reflects <see cref="SeclaiClientOptions.ApiVersion"/> when that is set.
+    /// </remarks>
+    public async Task<ApiVersionResponse> GetApiVersionAsync(CancellationToken cancellationToken = default)
+    {
+        return await SendJsonAsync<ApiVersionResponse>(HttpMethod.Get, "/version", query: null, body: null, cancellationToken).ConfigureAwait(false);
+    }
+
+    /// <summary>Pins the account to a dated API version, or clears the pin with <c>null</c>.</summary>
+    /// <remarks>
+    /// Owner/admin only. The new pin applies to later header-less requests; a
+    /// <c>Seclai-Version</c> header still overrides it, so
+    /// <c>EffectiveVersion</c> in the response describes this request rather than
+    /// the pin just written.
+    /// </remarks>
+    public async Task<ApiVersionResponse> UpdateApiVersionAsync(string? version, CancellationToken cancellationToken = default)
+    {
+        return await SendJsonAsync<ApiVersionResponse>(HttpMethod.Put, "/version", query: null, new UpdateApiVersionRequest { Version = version }, cancellationToken).ConfigureAwait(false);
+    }
+
     // ── Agent Email Governance ────────────────────────────────────────────────
 
     /// <summary>Lists recipients who have opted out of this account's agent emails. Account-wide opt-outs always apply.</summary>

@@ -37,6 +37,23 @@ public sealed class SeclaiClientOptions
     /// <summary>Account ID sent as the <c>X-Account-Id</c> header for multi-org targeting.</summary>
     public string? AccountId { get; set; }
 
+    /// <summary>
+    /// Dated API version (<c>YYYY-MM-DD</c>) sent as the <c>Seclai-Version</c> header,
+    /// opting this client into backward-incompatible API changes released on or
+    /// before that date.
+    /// </summary>
+    /// <remarks>
+    /// Left unset the header is omitted and the account's pinned baseline applies,
+    /// so responses keep their current shapes. Pin the account instead with
+    /// <see cref="SeclaiClient.UpdateApiVersionAsync"/>, and read what a request
+    /// resolves to with <see cref="SeclaiClient.GetApiVersionAsync"/>.
+    ///
+    /// From <c>2026-07-27</c> the API rejects undeclared query parameters with a
+    /// 422 rather than ignoring them, and list endpoints return the canonical
+    /// <c>{data, pagination}</c> envelope.
+    /// </remarks>
+    public string? ApiVersion { get; set; }
+
     /// <summary>API base URL. Falls back to the <c>SECLAI_API_URL</c> environment variable, then <see cref="DefaultBaseUri"/>.</summary>
     public Uri? BaseUri { get; set; }
 

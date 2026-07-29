@@ -4,8 +4,8 @@
 
 ### Changed
 
-- **Breaking:** return `EvaluationCriteriaListResponse` from `ListEvaluationCriteriaAsync` instead of `List<EvaluationCriteriaResponse>`. The endpoint now returns a paginated envelope, so the previous return type could no longer deserialize — read the criteria from `.Data` and the page metadata from `.Total`, `.Page` and `.Limit`
-- **Breaking:** make `query` required on `SearchAsync`, changing it from `string?` with a default to `string`, and throw `ArgumentException` when it is blank. The spec marks `q` required, so omitting it only deferred the failure to a 422. Callers passing `query:` by name are unaffected; a no-argument `SearchAsync()` no longer compiles
+- Accept either wire shape from `ListEvaluationCriteriaAsync`. The endpoint is moving from a bare array to a paginated envelope, so the client now reads both and keeps returning `List<EvaluationCriteriaResponse>`
+- Throw `ArgumentException` from `SearchAsync` when `query` is blank, rather than deferring to a 422 that names the wire parameter `q` instead of the field
 - Sync to the current OpenAPI spec, adding 22 paths and 24 model classes
 - Deprecate `DeleteAgentRunAsync`. It never deleted anything — the endpoint it calls is documented as "Cancel an agent run", and the API has no delete-a-run operation. Use `CancelAgentRunAsync`
 - Omit unset properties on `SetEmailTriggerConfigRequest` instead of serialising them as `null`. The API reads an explicit null as "clear this field", so setting only the alias silently wiped the sender allowlist and reset the inbound-handling flags
@@ -21,12 +21,16 @@
 - Add email domain management: `ListEmailDomainsAsync`, `AddEmailDomainAsync`, `RemoveEmailDomainAsync`, `VerifyEmailDomainAsync`, `SetPrimaryEmailDomainAsync`, `UseSharedEmailDomainAsync`, `SendEmailDomainTestEmailAsync`, and `GetDmarcSummaryAsync`
 - Add `GetGenerationTiersAsync` mapping each media-generation modality and tier to its model and cost
 - Add `SearchDocsAsync` for keyword or semantic search over the Seclai documentation
+- Add `ListEvaluationCriteriaPageAsync` for the paginated envelope: the criteria plus `Total`, `Page` and `Limit`
+- Add an `ApiVersion` client option, sent as the `Seclai-Version` header, opting into dated API changes released on or before that date. Omitted by default, so upgrading the SDK alone never changes response shapes
+- Add `GetApiVersionAsync` and `UpdateApiVersionAsync` to read the version a request resolves to and to pin or clear the account's version
 - Add the `disabled`, `disabled_at` and `disabled_reason` fields to `AgentSummaryResponse`, so the paused state set by `DisableAgentAsync` and `EnableAgentAsync` is visible in the response
 - Add `wait_ms` to `AgentRunResponse`, `intent_assessment` to `GenerateAgentStepsResponse`, and `media_types` to `SourceResponse`, `CreateSourceRequest` and `UpdateSourceRequest`
 
 ### Fixed
 
 - Send the `q` query parameter from `SearchAsync` instead of `query`. The API requires `q`, so every search call had been failing validation since 1.1.0
+- Request `GET /sources` rather than `GET /sources/`. The trailing-slash form is no longer declared by the API
 - Point `CancelAgentRunAsync` at `DELETE /agents/runs/{run_id}`. It posted to `/agents/runs/{run_id}/cancel`, a path the API has never exposed, so cancelling a run always failed
 
 ## [1.3.0] - 2026-06-05
