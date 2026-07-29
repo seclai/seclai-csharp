@@ -1058,7 +1058,18 @@ public sealed class SeclaiClient : IDisposable
         if (string.IsNullOrWhiteSpace(agentId)) throw new ArgumentException("agentId is required", nameof(agentId));
         if (string.IsNullOrWhiteSpace(runId)) throw new ArgumentException("runId is required", nameof(runId));
         var query = PaginationQuery(page, limit);
-        return await SendJsonAsync<EvaluationResultWithCriteriaListResponse>(HttpMethod.Get, $"/agents/{Uri.EscapeDataString(agentId)}/runs/{Uri.EscapeDataString(runId)}/evaluation-results", query, body: null, cancellationToken).ConfigureAwait(false);
+        // Either wire shape: the endpoint returns a bare array by default and an
+        // envelope once the caller opts in with SeclaiClientOptions.ApiVersion of
+        // 2026-07-27 or later.
+        var raw = await SendJsonAsync<JsonElement>(HttpMethod.Get, $"/agents/{Uri.EscapeDataString(agentId)}/runs/{Uri.EscapeDataString(runId)}/evaluation-results", query, body: null, cancellationToken).ConfigureAwait(false);
+        if (raw.ValueKind == JsonValueKind.Array)
+        {
+            return new EvaluationResultWithCriteriaListResponse
+            {
+                Data = raw.Deserialize<List<JsonElement>>(JsonOptions) ?? new List<JsonElement>(),
+            };
+        }
+        return raw.Deserialize<EvaluationResultWithCriteriaListResponse>(JsonOptions) ?? new EvaluationResultWithCriteriaListResponse();
     }
 
     /// <summary>Lists evaluation run summaries for an agent.</summary>
