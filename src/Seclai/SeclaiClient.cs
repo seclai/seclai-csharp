@@ -21,6 +21,9 @@ namespace Seclai;
 /// </summary>
 public sealed class SeclaiClient : IDisposable
 {
+    /// <summary>Serializer settings shared with <see cref="SeclaiTypedClient"/>.</summary>
+    internal static JsonSerializerOptions TypedJsonOptions => JsonOptions;
+
     private static readonly JsonSerializerOptions JsonOptions = new()
     {
         PropertyNameCaseInsensitive = true
@@ -52,6 +55,16 @@ public sealed class SeclaiClient : IDisposable
             : null;
 
         _apiVersion = string.IsNullOrWhiteSpace(options.ApiVersion) ? null : options.ApiVersion;
+        if (_apiVersion is not null && !options.AllowUnknownApiVersion
+            && Array.IndexOf(SeclaiApiVersion.Known, _apiVersion) < 0)
+        {
+            throw new ConfigurationException(
+                $"Unknown ApiVersion '{_apiVersion}'. This release was built against "
+                + string.Join(", ", SeclaiApiVersion.Known)
+                + ". A newer API version can change response shapes, which this client "
+                + "would decode incorrectly rather than reject. Upgrade the SDK, or set "
+                + "SeclaiClientOptions.AllowUnknownApiVersion to proceed anyway.");
+        }
 
         if (options.HttpClient is not null)
         {
@@ -66,6 +79,29 @@ public sealed class SeclaiClient : IDisposable
 
         _baseUri = EnsureTrailingSlash(baseUrl);
     }
+
+    /// <summary>
+    /// Typed variants of the methods that otherwise return raw JSON.
+    /// </summary>
+    /// <remarks>
+    /// Opt-in. The methods on the client itself keep returning
+    /// <see cref="JsonElement"/> so existing call sites are unaffected; the same
+    /// endpoints are available here deserialized into models. Both issue exactly
+    /// the same request — only the return type differs.
+    /// <code>
+    /// var raw   = await client.SearchAsync("q");        // JsonElement
+    /// var typed = await client.Typed.SearchAsync("q");  // SearchResponse
+    /// </code>
+    /// </remarks>
+    public SeclaiTypedClient Typed => _typed ??= new SeclaiTypedClient(this);
+
+    private SeclaiTypedClient? _typed;
+
+    internal Task<T> SendTypedAsync<T>(HttpMethod method, string path, Dictionary<string, string?>? query, object? body, CancellationToken cancellationToken)
+        => SendJsonAsync<T>(method, path, query, body, cancellationToken);
+
+    internal Dictionary<string, string?> TypedPaginationQuery(int? page, int? limit, string? sort = null, string? order = null)
+        => PaginationQuery(page, limit, sort, order);
 
     /// <summary>Disposes the underlying <see cref="HttpClient"/> if it was created by this client.</summary>
     public void Dispose()
@@ -927,13 +963,26 @@ public sealed class SeclaiClient : IDisposable
     }
 
     /// <summary>Retrieves AI assistant conversation history for an agent.</summary>
-    /// <param name="stepType">
-    /// Step type to look up. <b>Required by the API</b> — the endpoint answers
-    /// 422 without it. Optional here only so the existing signature keeps
-    /// compiling; every call needs it.
-    /// </param>
-    public async Task<AiConversationHistoryResponse> GetAgentAiConversationHistoryAsync(string agentId, string? stepType = null, string? stepId = null, int? limit = null, int? offset = null, CancellationToken cancellationToken = default)
+    /// <remarks>
+    /// Deprecated: the API requires a <c>step_type</c> query parameter this
+    /// signature cannot supply, so every call answers 422. Use the overload
+    /// taking <see cref="AiConversationHistoryOptions"/>.
+    /// </remarks>
+    [Obsolete("The API requires step_type, which this overload cannot send. Use the AiConversationHistoryOptions overload.")]
+    public Task<AiConversationHistoryResponse> GetAgentAiConversationHistoryAsync(string agentId, CancellationToken cancellationToken = default)
+        => GetAgentAiConversationHistoryAsync(agentId, new AiConversationHistoryOptions(), cancellationToken);
+
+    /// <summary>Gets the AI assistant conversation history for an agent.</summary>
+    /// <remarks>
+    /// <see cref="AiConversationHistoryOptions.StepType"/> is required by the API —
+    /// the endpoint answers 422 without it.
+    /// </remarks>
+    public async Task<AiConversationHistoryResponse> GetAgentAiConversationHistoryAsync(string agentId, AiConversationHistoryOptions options, CancellationToken cancellationToken = default)
     {
+        var stepType = options?.StepType;
+        var stepId = options?.StepId;
+        var limit = options?.Limit;
+        var offset = options?.Offset;
         if (string.IsNullOrWhiteSpace(agentId)) throw new ArgumentException("agentId is required", nameof(agentId));
         var query = new Dictionary<string, string?>
         {
@@ -972,8 +1021,8 @@ public sealed class SeclaiClient : IDisposable
 
     /// <summary>Lists evaluation criteria for an agent with pagination metadata.</summary>
     /// <remarks>
-    /// <see cref="EvaluationCriteriaListResponse.Total"/>, <c>Page</c> and <c>Limit</c>
-    /// are zero when the endpoint answers with a bare array rather than an envelope.
+    /// <see cref="EvaluationCriteriaListResponse.Pagination"/> is <c>null</c> when the
+    /// endpoint answers with a bare array rather than the canonical envelope.
     /// </remarks>
     public async Task<EvaluationCriteriaListResponse> ListEvaluationCriteriaPageAsync(string agentId, int? page = null, int? limit = null, CancellationToken cancellationToken = default)
     {
@@ -1593,12 +1642,13 @@ public sealed class SeclaiClient : IDisposable
     // ── Alerts ──────────────────────────────────────────────────────────────
 
     /// <summary>Lists alerts.</summary>
-    /// <param name="severity">
+    /// <remarks>
+    /// <c>severity</c>:
     /// Deprecated and ignored. The API declares no severity filter on this
     /// endpoint, so it never filtered anything, and sending it is a 422 once
     /// <see cref="SeclaiClientOptions.ApiVersion"/> is <c>2026-07-27</c> or
     /// later. Accepted and dropped so existing call sites keep working.
-    /// </param>
+    /// </remarks>
     public async Task<JsonElement> ListAlertsAsync(int? page = null, int? limit = null, string? status = null, string? severity = null, CancellationToken cancellationToken = default)
     {
         var query = PaginationQuery(page, limit);
@@ -1703,11 +1753,12 @@ public sealed class SeclaiClient : IDisposable
     // ── Models & Alerts ─────────────────────────────────────────────────────
 
     /// <summary>Lists model alerts.</summary>
-    /// <param name="page">
+    /// <remarks>
+    /// <c>page</c>:
     /// 1-indexed page number, translated to the <c>offset</c> the endpoint
     /// actually declares. It does not accept <c>page</c>, so every page after
     /// the first previously returned page 1.
-    /// </param>
+    /// </remarks>
     public async Task<JsonElement> ListModelAlertsAsync(int? page = null, int? limit = null, CancellationToken cancellationToken = default)
     {
         var effectiveLimit = limit is > 0 ? limit.Value : 50;

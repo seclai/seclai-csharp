@@ -54,6 +54,17 @@ public sealed class SeclaiClientOptions
     /// </remarks>
     public string? ApiVersion { get; set; }
 
+    /// <summary>
+    /// Permit an <see cref="ApiVersion"/> this release was not built against.
+    /// </summary>
+    /// <remarks>
+    /// Off by default. A newer API version can change response shapes, and this
+    /// client would decode them incorrectly rather than reject them — a
+    /// request-side mistake answers 422, but a reshaped response just
+    /// mis-decodes, silently. Prefer upgrading the SDK.
+    /// </remarks>
+    public bool AllowUnknownApiVersion { get; set; }
+
     /// <summary>API base URL. Falls back to the <c>SECLAI_API_URL</c> environment variable, then <see cref="DefaultBaseUri"/>.</summary>
     public Uri? BaseUri { get; set; }
 

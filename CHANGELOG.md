@@ -7,15 +7,18 @@
 - Stop sending `severity` from `ListAlertsAsync`. `GET /alerts` declares no such filter, so it never filtered, and it becomes a 422 once `ApiVersion` is `2026-07-27` or later. The argument is still accepted and ignored
 - Accept either wire shape from `ListEvaluationCriteriaAsync`. The endpoint is moving from a bare array to a paginated envelope, so the client now reads both and keeps returning `List<EvaluationCriteriaResponse>`
 - Throw `ArgumentException` from `SearchAsync` when `query` is blank, rather than deferring to a 422 that names the wire parameter `q` instead of the field
-- Sync to the current OpenAPI spec, adding 22 paths and 24 model classes
+- Sync to the current OpenAPI spec, adding 23 paths and dropping the trailing-slash `/sources/` form
 - Deprecate `DeleteAgentRunAsync`. It never deleted anything — the endpoint it calls is documented as "Cancel an agent run", and the API has no delete-a-run operation. Use `CancelAgentRunAsync`
-- Omit unset properties on `SetEmailTriggerConfigRequest` instead of serialising them as `null`. The API reads an explicit null as "clear this field", so setting only the alias silently wiped the sender allowlist and reset the inbound-handling flags
 
 ### Added
 
+- Add `SeclaiApiVersion` with constants for each dated API version, plus `Default`, `Latest` and `Known`. An `ApiVersion` this release was not built against is rejected at construction, since a newer version can reshape responses this client would mis-decode; set `AllowUnknownApiVersion` to override
+- Add `SeclaiClient.Typed`, an opt-in surface carrying typed forms of the 21 methods that return raw JSON — alerts, alert configs, model alerts and recommendations, the model catalog, playground experiments, search, docs search and generation tiers. Each delegates to its raw counterpart and deserializes, so both issue the same request
+- Add an `AiConversationHistoryOptions` overload of `GetAgentAiConversationHistoryAsync` carrying the required `step_type` plus `step_id`, `limit` and `offset`
+- Add 24 response models covering those endpoints, including `AlertResponse`, `AlertDetailResponse`, `AlertConfigResponse`, `ModelAlertResponse`, `ExperimentDetailResponse` and `SearchResponse`
 - Add `GetMeAsync` returning the authenticated user's account ID and organization memberships
 - Add `DisableAgentAsync`, `EnableAgentAsync`, and `GetAgentCallersAsync` to pause and resume an agent across every trigger path
-- Add `SetEmailTriggerConfigAsync` to set the alias, sender allowlist, and inbound-handling flags on an `EMAIL_RECEIVED` trigger
+- Add `SetEmailTriggerConfigAsync` to set the alias, sender allowlist, and inbound-handling flags on an `EMAIL_RECEIVED` trigger. Unset properties are omitted rather than sent as `null`, which the API reads as "clear this field"
 - Add agent-email opt-out methods `ListAgentEmailOptOutsAsync` and `RemoveAgentEmailOptOutAsync`
 - Add inbound sender blocklist methods `ListBlockedEmailSendersAsync`, `BlockEmailSenderAsync`, `UnblockEmailSenderAsync`, and `SetAutoBlockModeAsync`
 - Add inbound-email observability methods `ListInboundEmailRejectionsAsync`, `GetInboundEmailStatusAsync`, `CancelQueuedEmailRunsAsync`, and `ResumeInboundEmailAsync`
@@ -30,9 +33,10 @@
 
 ### Fixed
 
+- Decode either wire shape in `ListRunEvaluationResultsAsync`. The endpoint answers with a bare array, which the declared envelope type could not read, so the method returned nothing; it now also reads the canonical `{data, pagination}` envelope. `ListAgentEvaluationResultsAsync` is genuinely flat and is unaffected
 - Send the `q` query parameter from `SearchAsync` instead of `query`. The API requires `q`, so every search call had been failing validation since 1.1.0
 - Paginate `ListModelAlertsAsync` with the `offset` the endpoint declares instead of `page`, which it does not accept — every page after the first returned page 1
-- Send `step_type` from `GetAgentAiConversationHistoryAsync`, along with `stepId`, `limit` and `offset`. The API marks `step_type` required and the method had no way to supply it, so every call answered 422
+- Send `step_type` from `GetAgentAiConversationHistoryAsync` via the new `AiConversationHistoryOptions` overload. The API marks `step_type` required and the previous signature had no way to supply it, so every call answered 422. That signature is kept and marked `[Obsolete]` so compiled consumers keep working
 - Request `GET /sources` rather than `GET /sources/`. The trailing-slash form is no longer declared by the API
 - Point `CancelAgentRunAsync` at `DELETE /agents/runs/{run_id}`. It posted to `/agents/runs/{run_id}/cancel`, a path the API has never exposed, so cancelling a run always failed
 

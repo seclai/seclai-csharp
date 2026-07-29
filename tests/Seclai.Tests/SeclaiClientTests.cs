@@ -670,7 +670,7 @@ public sealed class SeclaiClientTests
         {
             Assert.Equal(HttpMethod.Post, req.Method);
             Assert.Equal("/agents/runs/search", req.RequestUri!.AbsolutePath);
-            return JsonResponse("{\"results\":[],\"total\":0}");
+            return JsonResponse("{\"results\":[]}");
         });
         var client = MakeClient(handler);
         var res = await client.SearchAgentRunsAsync(new AgentTraceSearchRequest { Query = "test" });
@@ -800,7 +800,10 @@ public sealed class SeclaiClientTests
             return JsonResponse("{\"total\":0,\"turns\":[]}");
         });
         var client = MakeClient(handler);
+        // The pre-1.4.0 overload, kept so compiled consumers keep working.
+#pragma warning disable CS0618
         var res = await client.GetAgentAiConversationHistoryAsync("a1");
+#pragma warning restore CS0618
         Assert.Equal(0, res.Total);
     }
 
@@ -907,7 +910,7 @@ public sealed class SeclaiClientTests
             return JsonResponse("{\"turns\":[]}");
         });
         var client = MakeClient(handler);
-        await client.GetAgentAiConversationHistoryAsync("a1", stepType: "llm");
+        await client.GetAgentAiConversationHistoryAsync("a1", new AiConversationHistoryOptions { StepType = "llm" });
     }
 
     [Fact]
@@ -2516,6 +2519,179 @@ public sealed class SeclaiClientTests
         var client = MakeClient(handler);
         await client.UpdateApiVersionAsync(null);
         Assert.Equal("{\"version\":null}", body);
+    }
+
+    [Fact]
+    public async Task ListRunEvaluationResults_ReadsCanonicalPaginationWhenOptedIn()
+    {
+        // The run-level endpoint is version-gated to {data, pagination}. Reading
+        // only the flat Total/Page/Limit reported 0 for every opted-in caller.
+        var handler = new FakeHttpMessageHandler(req =>
+            JsonResponse("{\"data\":[{\"id\":\"er1\"}],\"pagination\":{\"page\":2,\"limit\":25,\"total\":7,\"pages\":1,\"has_next\":false,\"has_prev\":true}}"));
+        var client = MakeClient(handler);
+        var res = await client.ListRunEvaluationResultsAsync("a1", "r1", page: 2, limit: 25);
+        Assert.Single(res.Data!);
+        Assert.NotNull(res.Pagination);
+        Assert.Equal(7, res.Pagination!.Total);
+    }
+
+    [Fact]
+    public async Task ListAgentEvaluationResults_StillReadsTheFlatShape()
+    {
+        // The agent-level endpoint is not version-gated and stays flat, so the
+        // shared model must keep serving both.
+        var handler = new FakeHttpMessageHandler(req =>
+            JsonResponse("{\"data\":[{\"id\":\"er1\"}],\"total\":7,\"page\":2,\"limit\":25}"));
+        var client = MakeClient(handler);
+        var res = await client.ListAgentEvaluationResultsAsync("a1", page: 2, limit: 25);
+        Assert.Equal(7, res.Total);
+        Assert.Null(res.Pagination);
+    }
+
+    [Fact]
+    public async Task ListAlerts_DecodesTheTypedEnvelope()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+            JsonResponse("{\"data\":[{\"id\":\"al1\",\"title\":\"Disk full\",\"status\":\"triggered\"}],\"pagination\":{\"page\":1,\"limit\":20,\"total\":1,\"pages\":1,\"has_next\":false,\"has_prev\":false}}"));
+        var client = MakeClient(handler);
+        var res = await client.Typed.ListAlertsAsync();
+        Assert.Equal("al1", Assert.Single(res.Data).Id);
+        Assert.Equal(1, res.Pagination!.Total);
+    }
+
+    [Fact]
+    public async Task ListAlertConfigs_ReadsEitherTopLevelKey()
+    {
+        // `configs` by default, `data` once opted in. Items papers over the flip.
+        var legacy = new FakeHttpMessageHandler(req =>
+            JsonResponse("{\"configs\":[{\"id\":\"c1\"}],\"total\":1}"));
+        var res = await MakeClient(legacy).Typed.ListAlertConfigsAsync();
+        Assert.Equal("c1", Assert.Single(res.Items).Id);
+        Assert.Equal(1, res.Total);
+
+        var canonical = new FakeHttpMessageHandler(req =>
+            JsonResponse("{\"data\":[{\"id\":\"c1\"}],\"pagination\":{\"page\":1,\"limit\":20,\"total\":1,\"pages\":1,\"has_next\":false,\"has_prev\":false}}"));
+        var res2 = await MakeClient(canonical).Typed.ListAlertConfigsAsync();
+        Assert.Equal("c1", Assert.Single(res2.Items).Id);
+        Assert.Equal(1, res2.Pagination!.Total);
+    }
+
+    [Fact]
+    public async Task ListModelAlerts_ReadsEitherTopLevelKey()
+    {
+        // `alerts` by default, `data` once opted in.
+        var legacy = new FakeHttpMessageHandler(req =>
+            JsonResponse("{\"alerts\":[{\"id\":\"m1\",\"model_name\":\"gpt\"}],\"total\":1}"));
+        var res = await MakeClient(legacy).Typed.ListModelAlertsAsync();
+        Assert.Equal("m1", Assert.Single(res.Items).Id);
+
+        var canonical = new FakeHttpMessageHandler(req =>
+            JsonResponse("{\"data\":[{\"id\":\"m1\",\"model_name\":\"gpt\"}],\"pagination\":{\"page\":1,\"limit\":20,\"total\":1,\"pages\":1,\"has_next\":false,\"has_prev\":false}}"));
+        var res2 = await MakeClient(canonical).Typed.ListModelAlertsAsync();
+        Assert.Equal("m1", Assert.Single(res2.Items).Id);
+        Assert.Equal(1, res2.Pagination!.Total);
+    }
+
+    [Fact]
+    public async Task Typed_IssuesTheSameRequestAsTheRawMethod()
+    {
+        // The façade delegates rather than rebuilding the request, so the two
+        // surfaces cannot drift. This pins that.
+        var seen = new List<string>();
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            seen.Add($"{req.Method} {req.RequestUri!.PathAndQuery}");
+            return JsonResponse("{\"results\":[]}");
+        });
+        var client = MakeClient(handler);
+        await client.SearchAsync("hello", limit: 5);
+        await client.Typed.SearchAsync("hello", limit: 5);
+        Assert.Equal(2, seen.Count);
+        Assert.Equal(seen[0], seen[1]);
+    }
+
+    [Fact]
+    public async Task Typed_SearchDeserializesTheEnvelope()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+            JsonResponse("{\"results\":[{\"entity_type\":\"agent\",\"name\":\"Support\"}]}"));
+        var client = MakeClient(handler);
+        var res = await client.Typed.SearchAsync("support");
+        // Deliberately not paginated — the spec carves this shape out to match
+        // the MCP search_resources tool.
+        Assert.Equal("Support", Assert.Single(res.Results).Name);
+    }
+
+    [Fact]
+    public async Task Typed_RawSurfaceIsUnchanged()
+    {
+        // The whole point of the façade: the existing methods still hand back
+        // JsonElement, so no call site had to change.
+        var handler = new FakeHttpMessageHandler(req => JsonResponse("{\"results\":[]}"));
+        var client = MakeClient(handler);
+        JsonElement raw = await client.SearchAsync("hello");
+        Assert.Equal(JsonValueKind.Object, raw.ValueKind);
+    }
+
+    [Fact]
+    public void ApiVersionConstants_TrackTheSpec()
+    {
+        var specPath = Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "..", "..",
+            "..", "seclai-python", "openapi", "seclai.openapi.json");
+        if (!File.Exists(specPath)) return;   // spec is not bundled in this repo
+        using var doc = JsonDocument.Parse(File.ReadAllText(specPath));
+        var v = doc.RootElement.GetProperty("x-seclai-versions");
+        Assert.Equal(v.GetProperty("default").GetString(), SeclaiApiVersion.Default);
+        Assert.Equal(v.GetProperty("latest").GetString(), SeclaiApiVersion.Latest);
+        var known = v.GetProperty("known").EnumerateArray().Select(e => e.GetString()).ToArray();
+        Assert.Equal(new[] { SeclaiApiVersion.V2026_07_01, SeclaiApiVersion.V2026_07_27 }, known);
+    }
+
+    [Fact]
+    public void ApiVersion_UnknownIsRejected()
+    {
+        // A newer server version can reshape responses, and this client would
+        // mis-decode them silently rather than error. Fail closed at construction.
+        var ex = Assert.Throws<ConfigurationException>(() => new SeclaiClient(new SeclaiClientOptions
+        {
+            ApiKey = "k",
+            BaseUri = new Uri("https://example.invalid"),
+            ApiVersion = "2099-01-01",
+        }));
+        Assert.Contains("2099-01-01", ex.Message);
+        Assert.Contains("AllowUnknownApiVersion", ex.Message);
+    }
+
+    [Fact]
+    public async Task ApiVersion_UnknownIsAllowedWhenAsked()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal("2099-01-01", Assert.Single(req.Headers.GetValues("Seclai-Version")));
+            return JsonResponse("{\"data\":[]}");
+        });
+        var http = new HttpClient(handler);
+        using var client = new SeclaiClient(new SeclaiClientOptions
+        {
+            ApiKey = "k",
+            BaseUri = new Uri("https://example.invalid"),
+            HttpClient = http,
+            ApiVersion = "2099-01-01",
+            AllowUnknownApiVersion = true,
+        });
+        await client.ListAgentsAsync();
+    }
+
+    [Fact]
+    public void ApiVersion_KnownNeedsNoEscapeHatch()
+    {
+        using var client = new SeclaiClient(new SeclaiClientOptions
+        {
+            ApiKey = "k",
+            BaseUri = new Uri("https://example.invalid"),
+            ApiVersion = SeclaiApiVersion.Latest,
+        });
+        Assert.NotNull(client);
     }
 
     private static SeclaiClient MakeClient(FakeHttpMessageHandler handler)
