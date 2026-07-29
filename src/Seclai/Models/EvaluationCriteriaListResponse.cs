@@ -3,18 +3,18 @@ using System.Text.Json.Serialization;
 
 namespace Seclai.Models;
 
-/// <summary>Paginated list of evaluation criteria.</summary>
+/// <summary>A page of evaluation criteria.</summary>
+/// <remarks>
+/// The endpoint returns a bare array by default and only emits the canonical
+/// <c>{data, pagination}</c> envelope once the caller opts in with
+/// <see cref="SeclaiClientOptions.ApiVersion"/> of <c>2026-07-27</c> or later, so
+/// <see cref="Pagination"/> is <c>null</c> unless opted in.
+/// </remarks>
 public sealed class EvaluationCriteriaListResponse
 {
     [JsonPropertyName("data")]
     public List<EvaluationCriteriaResponse>? Data { get; set; }
 
-    [JsonPropertyName("total")]
-    public int Total { get; set; }
-
-    [JsonPropertyName("page")]
-    public int Page { get; set; }
-
-    [JsonPropertyName("limit")]
-    public int Limit { get; set; }
+    [JsonPropertyName("pagination")]
+    public PaginationResponse? Pagination { get; set; }
 }

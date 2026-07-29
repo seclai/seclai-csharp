@@ -853,14 +853,61 @@ public sealed class SeclaiClientTests
     [Fact]
     public async Task ListEvaluationCriteriaPage_ExposesPaginationMetadata()
     {
+        // The canonical envelope nests metadata under `pagination`; the flat
+        // {data, total, page, limit} form this once asserted never shipped.
         var handler = new FakeHttpMessageHandler(req =>
-            JsonResponse("{\"data\":[{\"id\":\"ec1\"}],\"total\":7,\"page\":2,\"limit\":25}"));
+            JsonResponse("{\"data\":[{\"id\":\"ec1\"}],\"pagination\":{\"page\":2,\"limit\":25,\"total\":7,\"pages\":1,\"has_next\":false,\"has_prev\":true}}"));
         var client = MakeClient(handler);
         var res = await client.ListEvaluationCriteriaPageAsync("a1", page: 2, limit: 25);
         Assert.Single(res.Data!);
-        Assert.Equal(7, res.Total);
-        Assert.Equal(2, res.Page);
-        Assert.Equal(25, res.Limit);
+        Assert.NotNull(res.Pagination);
+        Assert.Equal(7, res.Pagination!.Total);
+        Assert.Equal(2, res.Pagination.Page);
+        Assert.Equal(25, res.Pagination.Limit);
+    }
+
+    [Fact]
+    public async Task ListAlerts_DoesNotSendSeverity()
+    {
+        // GET /alerts declares no severity filter: it never filtered anything,
+        // and sending it is a 422 once ApiVersion is 2026-07-27 or later.
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.DoesNotContain("severity", req.RequestUri!.Query);
+            return JsonResponse("{\"data\":[]}");
+        });
+        var client = MakeClient(handler);
+        await client.ListAlertsAsync(severity: "high");
+    }
+
+    [Fact]
+    public async Task ListModelAlerts_TranslatesPageToOffset()
+    {
+        // /models/alerts declares limit/offset, not page, so page 2 used to
+        // return page 1.
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Contains("offset=50", req.RequestUri!.Query);
+            Assert.Contains("limit=25", req.RequestUri!.Query);
+            Assert.DoesNotContain("page=", req.RequestUri!.Query);
+            return JsonResponse("{\"data\":[]}");
+        });
+        var client = MakeClient(handler);
+        await client.ListModelAlertsAsync(page: 3, limit: 25);
+    }
+
+    [Fact]
+    public async Task GetAgentAiConversationHistory_SendsStepType()
+    {
+        // step_type is required by the API and the method had no way to send it,
+        // so every call answered 422.
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Contains("step_type=llm", req.RequestUri!.Query);
+            return JsonResponse("{\"turns\":[]}");
+        });
+        var client = MakeClient(handler);
+        await client.GetAgentAiConversationHistoryAsync("a1", stepType: "llm");
     }
 
     [Fact]

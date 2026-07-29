@@ -927,10 +927,22 @@ public sealed class SeclaiClient : IDisposable
     }
 
     /// <summary>Retrieves AI assistant conversation history for an agent.</summary>
-    public async Task<AiConversationHistoryResponse> GetAgentAiConversationHistoryAsync(string agentId, CancellationToken cancellationToken = default)
+    /// <param name="stepType">
+    /// Step type to look up. <b>Required by the API</b> — the endpoint answers
+    /// 422 without it. Optional here only so the existing signature keeps
+    /// compiling; every call needs it.
+    /// </param>
+    public async Task<AiConversationHistoryResponse> GetAgentAiConversationHistoryAsync(string agentId, string? stepType = null, string? stepId = null, int? limit = null, int? offset = null, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(agentId)) throw new ArgumentException("agentId is required", nameof(agentId));
-        return await SendJsonAsync<AiConversationHistoryResponse>(HttpMethod.Get, $"/agents/{Uri.EscapeDataString(agentId)}/ai-assistant/conversations", query: null, body: null, cancellationToken).ConfigureAwait(false);
+        var query = new Dictionary<string, string?>
+        {
+            ["step_type"] = string.IsNullOrWhiteSpace(stepType) ? null : stepType,
+            ["step_id"] = string.IsNullOrWhiteSpace(stepId) ? null : stepId,
+            ["limit"] = limit is > 0 ? limit.Value.ToString() : null,
+            ["offset"] = offset is > 0 ? offset.Value.ToString() : null,
+        };
+        return await SendJsonAsync<AiConversationHistoryResponse>(HttpMethod.Get, $"/agents/{Uri.EscapeDataString(agentId)}/ai-assistant/conversations", query, body: null, cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>Marks an AI assistant suggestion as accepted or rejected.</summary>
@@ -1581,11 +1593,16 @@ public sealed class SeclaiClient : IDisposable
     // ── Alerts ──────────────────────────────────────────────────────────────
 
     /// <summary>Lists alerts.</summary>
+    /// <param name="severity">
+    /// Deprecated and ignored. The API declares no severity filter on this
+    /// endpoint, so it never filtered anything, and sending it is a 422 once
+    /// <see cref="SeclaiClientOptions.ApiVersion"/> is <c>2026-07-27</c> or
+    /// later. Accepted and dropped so existing call sites keep working.
+    /// </param>
     public async Task<JsonElement> ListAlertsAsync(int? page = null, int? limit = null, string? status = null, string? severity = null, CancellationToken cancellationToken = default)
     {
         var query = PaginationQuery(page, limit);
         query["status"] = string.IsNullOrWhiteSpace(status) ? null : status;
-        query["severity"] = string.IsNullOrWhiteSpace(severity) ? null : severity;
         return await SendRawAsync(HttpMethod.Get, "/alerts", query, body: null, cancellationToken).ConfigureAwait(false);
     }
 
@@ -1627,6 +1644,13 @@ public sealed class SeclaiClient : IDisposable
     // ── Alert Configs ───────────────────────────────────────────────────────
 
     /// <summary>Lists alert configurations.</summary>
+    /// <remarks>
+    /// The configurations arrive under <c>configs</c> alongside <c>total</c> by
+    /// default. Once the caller opts in with
+    /// <see cref="SeclaiClientOptions.ApiVersion"/> of <c>2026-07-27</c> or later
+    /// the endpoint returns the canonical <c>{data, pagination}</c> envelope
+    /// instead, so the top-level key changes.
+    /// </remarks>
     public async Task<JsonElement> ListAlertConfigsAsync(int? page = null, int? limit = null, CancellationToken cancellationToken = default)
     {
         var query = PaginationQuery(page, limit);
@@ -1679,9 +1703,19 @@ public sealed class SeclaiClient : IDisposable
     // ── Models & Alerts ─────────────────────────────────────────────────────
 
     /// <summary>Lists model alerts.</summary>
+    /// <param name="page">
+    /// 1-indexed page number, translated to the <c>offset</c> the endpoint
+    /// actually declares. It does not accept <c>page</c>, so every page after
+    /// the first previously returned page 1.
+    /// </param>
     public async Task<JsonElement> ListModelAlertsAsync(int? page = null, int? limit = null, CancellationToken cancellationToken = default)
     {
-        var query = PaginationQuery(page, limit);
+        var effectiveLimit = limit is > 0 ? limit.Value : 50;
+        var query = new Dictionary<string, string?>
+        {
+            ["offset"] = page is > 1 ? ((page.Value - 1) * effectiveLimit).ToString() : null,
+            ["limit"] = limit is > 0 ? limit.Value.ToString() : null,
+        };
         return await SendRawAsync(HttpMethod.Get, "/models/alerts", query, body: null, cancellationToken).ConfigureAwait(false);
     }
 

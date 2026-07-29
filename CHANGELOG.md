@@ -4,6 +4,7 @@
 
 ### Changed
 
+- Stop sending `severity` from `ListAlertsAsync`. `GET /alerts` declares no such filter, so it never filtered, and it becomes a 422 once `ApiVersion` is `2026-07-27` or later. The argument is still accepted and ignored
 - Accept either wire shape from `ListEvaluationCriteriaAsync`. The endpoint is moving from a bare array to a paginated envelope, so the client now reads both and keeps returning `List<EvaluationCriteriaResponse>`
 - Throw `ArgumentException` from `SearchAsync` when `query` is blank, rather than deferring to a 422 that names the wire parameter `q` instead of the field
 - Sync to the current OpenAPI spec, adding 22 paths and 24 model classes
@@ -21,7 +22,7 @@
 - Add email domain management: `ListEmailDomainsAsync`, `AddEmailDomainAsync`, `RemoveEmailDomainAsync`, `VerifyEmailDomainAsync`, `SetPrimaryEmailDomainAsync`, `UseSharedEmailDomainAsync`, `SendEmailDomainTestEmailAsync`, and `GetDmarcSummaryAsync`
 - Add `GetGenerationTiersAsync` mapping each media-generation modality and tier to its model and cost
 - Add `SearchDocsAsync` for keyword or semantic search over the Seclai documentation
-- Add `ListEvaluationCriteriaPageAsync` for the paginated envelope: the criteria plus `Total`, `Page` and `Limit`
+- Add `ListEvaluationCriteriaPageAsync` for the canonical `{data, pagination}` envelope, which the endpoint emits once `ApiVersion` is `2026-07-27` or later
 - Add an `ApiVersion` client option, sent as the `Seclai-Version` header, opting into dated API changes released on or before that date. Omitted by default, so upgrading the SDK alone never changes response shapes
 - Add `GetApiVersionAsync` and `UpdateApiVersionAsync` to read the version a request resolves to and to pin or clear the account's version
 - Add the `disabled`, `disabled_at` and `disabled_reason` fields to `AgentSummaryResponse`, so the paused state set by `DisableAgentAsync` and `EnableAgentAsync` is visible in the response
@@ -30,6 +31,8 @@
 ### Fixed
 
 - Send the `q` query parameter from `SearchAsync` instead of `query`. The API requires `q`, so every search call had been failing validation since 1.1.0
+- Paginate `ListModelAlertsAsync` with the `offset` the endpoint declares instead of `page`, which it does not accept — every page after the first returned page 1
+- Send `step_type` from `GetAgentAiConversationHistoryAsync`, along with `stepId`, `limit` and `offset`. The API marks `step_type` required and the method had no way to supply it, so every call answered 422
 - Request `GET /sources` rather than `GET /sources/`. The trailing-slash form is no longer declared by the API
 - Point `CancelAgentRunAsync` at `DELETE /agents/runs/{run_id}`. It posted to `/agents/runs/{run_id}/cancel`, a path the API has never exposed, so cancelling a run always failed
 
