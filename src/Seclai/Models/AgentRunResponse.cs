@@ -71,4 +71,8 @@ public sealed class AgentRunResponse
     /// </summary>
     [JsonPropertyName("hitl_wait_ms")]
     public int? HitlWaitMs { get; set; }
+
+    /// <summary>Cumulative milliseconds the run was parked on standard-mode wait steps. Subtracted from active duration in run-detail and duration-stats responses, exactly like hitl_wait_ms. Priority waits block inline and are not counted here.</summary>
+    [JsonPropertyName("wait_ms")]
+    public int? WaitMs { get; set; }
 }

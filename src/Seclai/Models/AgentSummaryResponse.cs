@@ -37,4 +37,16 @@ public sealed class AgentSummaryResponse
     /// </summary>
     [JsonPropertyName("import_warnings")]
     public List<ImportSkipResponse>? ImportWarnings { get; set; }
+
+    /// <summary>Whether the agent is paused (disabled).</summary>
+    [JsonPropertyName("disabled")]
+    public bool? Disabled { get; set; }
+
+    /// <summary>ISO 8601 timestamp the agent was paused.</summary>
+    [JsonPropertyName("disabled_at")]
+    public string? DisabledAt { get; set; }
+
+    /// <summary>Why the agent is paused: 'manual' or 'email_overload'.</summary>
+    [JsonPropertyName("disabled_reason")]
+    public string? DisabledReason { get; set; }
 }

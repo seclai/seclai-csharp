@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
 namespace Seclai.Models;
@@ -39,4 +40,8 @@ public sealed class CreateSourceRequest
 
     [JsonPropertyName("url_id")]
     public string? UrlId { get; set; }
+
+    /// <summary>Media kinds to extract from indexed content and embed as multi-modal KB chunks. Subset of ['images', 'video']. Only kinds the source's embedder can index are honored; unsupported values are dropped. Omit / [] for text-only.</summary>
+    [JsonPropertyName("media_types")]
+    public List<string>? MediaTypes { get; set; }
 }

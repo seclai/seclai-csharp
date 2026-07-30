@@ -37,6 +37,34 @@ public sealed class SeclaiClientOptions
     /// <summary>Account ID sent as the <c>X-Account-Id</c> header for multi-org targeting.</summary>
     public string? AccountId { get; set; }
 
+    /// <summary>
+    /// Dated API version (<c>YYYY-MM-DD</c>) sent as the <c>Seclai-Version</c> header,
+    /// opting this client into backward-incompatible API changes released on or
+    /// before that date.
+    /// </summary>
+    /// <remarks>
+    /// Left unset the header is omitted and the account's pinned baseline applies,
+    /// so responses keep their current shapes. Pin the account instead with
+    /// <see cref="SeclaiClient.UpdateApiVersionAsync"/>, and read what a request
+    /// resolves to with <see cref="SeclaiClient.GetApiVersionAsync"/>.
+    ///
+    /// From <c>2026-07-27</c> the API rejects undeclared query parameters with a
+    /// 422 rather than ignoring them, and list endpoints return the canonical
+    /// <c>{data, pagination}</c> envelope.
+    /// </remarks>
+    public string? ApiVersion { get; set; }
+
+    /// <summary>
+    /// Permit an <see cref="ApiVersion"/> this release was not built against.
+    /// </summary>
+    /// <remarks>
+    /// Off by default. A newer API version can change response shapes, and this
+    /// client would decode them incorrectly rather than reject them — a
+    /// request-side mistake answers 422, but a reshaped response just
+    /// mis-decodes, silently. Prefer upgrading the SDK.
+    /// </remarks>
+    public bool AllowUnknownApiVersion { get; set; }
+
     /// <summary>API base URL. Falls back to the <c>SECLAI_API_URL</c> environment variable, then <see cref="DefaultBaseUri"/>.</summary>
     public Uri? BaseUri { get; set; }
 

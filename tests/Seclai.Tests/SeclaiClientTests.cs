@@ -174,11 +174,11 @@ public sealed class SeclaiClientTests
     }
 
     [Fact]
-    public async System.Threading.Tasks.Task ListSources_MatchesTrailingSlashPathAndSetsAuth()
+    public async System.Threading.Tasks.Task ListSources_MatchesPathAndSetsAuth()
     {
         var handler = new FakeHttpMessageHandler(req =>
         {
-            Assert.Equal("/sources/", req.RequestUri!.AbsolutePath);
+            Assert.Equal("/sources", req.RequestUri!.AbsolutePath);
             Assert.True(req.Headers.TryGetValues("x-api-key", out var values));
             Assert.Contains("k", values);
             var body = "{\"data\":[],\"pagination\":{\"has_next\":false,\"has_prev\":false,\"limit\":20,\"page\":1,\"pages\":1,\"total\":0}}";
@@ -335,7 +335,9 @@ public sealed class SeclaiClientTests
 
         var client = MakeClient(handler);
 
+#pragma warning disable CS0618 // deprecated alias kept for compatibility; still covered
         var deleted = await client.DeleteAgentRunAsync("run_1");
+#pragma warning restore CS0618
         Assert.Equal("run_1", deleted.RunId);
     }
 
@@ -668,7 +670,7 @@ public sealed class SeclaiClientTests
         {
             Assert.Equal(HttpMethod.Post, req.Method);
             Assert.Equal("/agents/runs/search", req.RequestUri!.AbsolutePath);
-            return JsonResponse("{\"results\":[],\"total\":0}");
+            return JsonResponse("{\"results\":[]}");
         });
         var client = MakeClient(handler);
         var res = await client.SearchAgentRunsAsync(new AgentTraceSearchRequest { Query = "test" });
@@ -676,12 +678,15 @@ public sealed class SeclaiClientTests
     }
 
     [Fact]
-    public async Task CancelAgentRun_PostsToCancel()
+    public async Task CancelAgentRun_UsesDeleteOnTheRunResource()
     {
         var handler = new FakeHttpMessageHandler(req =>
         {
-            Assert.Equal(HttpMethod.Post, req.Method);
-            Assert.Equal("/agents/runs/r1/cancel", req.RequestUri!.AbsolutePath);
+            // Cancellation is DELETE on the run resource. This asserted
+            // POST /agents/runs/{id}/cancel, a path the API has never had, so it
+            // confirmed a 404-ing method rather than catching it.
+            Assert.Equal(HttpMethod.Delete, req.Method);
+            Assert.Equal("/agents/runs/r1", req.RequestUri!.AbsolutePath);
             return JsonResponse("{\"run_id\":\"r1\",\"status\":\"cancelled\",\"attempts\":[],\"error_count\":0,\"priority\":false}");
         });
         var client = MakeClient(handler);
@@ -795,8 +800,24 @@ public sealed class SeclaiClientTests
             return JsonResponse("{\"total\":0,\"turns\":[]}");
         });
         var client = MakeClient(handler);
-        var res = await client.GetAgentAiConversationHistoryAsync("a1");
+        var res = await client.GetAgentAiConversationHistoryAsync(
+            "a1", new AiConversationHistoryOptions { StepType = "llm" });
         Assert.Equal(0, res.Total);
+    }
+
+    [Fact]
+    public async Task GetAgentAiConversationHistory_DeprecatedOverloadCannotSucceed()
+    {
+        // The pre-1.4.0 signature is kept so compiled consumers keep linking, but
+        // it cannot supply the step_type the API requires. It now fails locally
+        // naming the field rather than issuing a request that 422s on the wire.
+        var client = MakeClient(new FakeHttpMessageHandler(req =>
+            JsonResponse("{\"total\":0,\"turns\":[]}")));
+#pragma warning disable CS0618
+        var ex = await Assert.ThrowsAsync<ArgumentException>(
+            () => client.GetAgentAiConversationHistoryAsync("a1"));
+#pragma warning restore CS0618
+        Assert.Contains("StepType", ex.Message);
     }
 
     [Fact]
@@ -821,11 +842,88 @@ public sealed class SeclaiClientTests
         {
             Assert.Equal(HttpMethod.Get, req.Method);
             Assert.Equal("/agents/a1/evaluation-criteria", req.RequestUri!.AbsolutePath);
-            return JsonResponse("[{\"id\":\"ec1\",\"name\":\"Accuracy\",\"description\":\"test\"}]");
+            Assert.Contains("page=2", req.RequestUri!.Query);
+            Assert.Contains("limit=25", req.RequestUri!.Query);
+            return JsonResponse("{\"data\":[{\"id\":\"ec1\",\"name\":\"Accuracy\",\"description\":\"test\"}],\"total\":7,\"page\":2,\"limit\":25}");
         });
+        var client = MakeClient(handler);
+        var res = await client.ListEvaluationCriteriaAsync("a1", page: 2, limit: 25);
+        Assert.Single(res);
+        Assert.Equal("ec1", res[0].Id);
+    }
+
+    [Fact]
+    public async Task ListEvaluationCriteria_AcceptsABareArrayToo()
+    {
+        // The endpoint answered with a bare array before 2026-07 and the change
+        // is not deployed yet, so both shapes are live realities. Pinning the
+        // client to either one breaks it the day the other ships.
+        var handler = new FakeHttpMessageHandler(req =>
+            JsonResponse("[{\"id\":\"ec1\",\"description\":\"test\"}]"));
         var client = MakeClient(handler);
         var res = await client.ListEvaluationCriteriaAsync("a1");
         Assert.Single(res);
+        Assert.Equal("ec1", res[0].Id);
+    }
+
+    [Fact]
+    public async Task ListEvaluationCriteriaPage_ExposesPaginationMetadata()
+    {
+        // The canonical envelope nests metadata under `pagination`; the flat
+        // {data, total, page, limit} form this once asserted never shipped.
+        var handler = new FakeHttpMessageHandler(req =>
+            JsonResponse("{\"data\":[{\"id\":\"ec1\"}],\"pagination\":{\"page\":2,\"limit\":25,\"total\":7,\"pages\":1,\"has_next\":false,\"has_prev\":true}}"));
+        var client = MakeClient(handler);
+        var res = await client.ListEvaluationCriteriaPageAsync("a1", page: 2, limit: 25);
+        Assert.Single(res.Data!);
+        Assert.NotNull(res.Pagination);
+        Assert.Equal(7, res.Pagination!.Total);
+        Assert.Equal(2, res.Pagination.Page);
+        Assert.Equal(25, res.Pagination.Limit);
+    }
+
+    [Fact]
+    public async Task ListAlerts_DoesNotSendSeverity()
+    {
+        // GET /alerts declares no severity filter: it never filtered anything,
+        // and sending it is a 422 once ApiVersion is 2026-07-27 or later.
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.DoesNotContain("severity", req.RequestUri!.Query);
+            return JsonResponse("{\"data\":[]}");
+        });
+        var client = MakeClient(handler);
+        await client.ListAlertsAsync(severity: "high");
+    }
+
+    [Fact]
+    public async Task ListModelAlerts_TranslatesPageToOffset()
+    {
+        // /models/alerts declares limit/offset, not page, so page 2 used to
+        // return page 1.
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Contains("offset=50", req.RequestUri!.Query);
+            Assert.Contains("limit=25", req.RequestUri!.Query);
+            Assert.DoesNotContain("page=", req.RequestUri!.Query);
+            return JsonResponse("{\"data\":[]}");
+        });
+        var client = MakeClient(handler);
+        await client.ListModelAlertsAsync(page: 3, limit: 25);
+    }
+
+    [Fact]
+    public async Task GetAgentAiConversationHistory_SendsStepType()
+    {
+        // step_type is required by the API and the method had no way to send it,
+        // so every call answered 422.
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Contains("step_type=llm", req.RequestUri!.Query);
+            return JsonResponse("{\"turns\":[]}");
+        });
+        var client = MakeClient(handler);
+        await client.GetAgentAiConversationHistoryAsync("a1", new AiConversationHistoryOptions { StepType = "llm" });
     }
 
     [Fact]
@@ -1721,7 +1819,10 @@ public sealed class SeclaiClientTests
         {
             Assert.Equal(HttpMethod.Get, req.Method);
             Assert.Equal("/search", req.RequestUri!.AbsolutePath);
-            Assert.Contains("query=test", req.RequestUri!.Query);
+            // The spec names this `q` and marks it required. This test asserted
+            // `query=` for four months, locking in a search that always 422'd.
+            Assert.Contains("q=test", req.RequestUri!.Query);
+            Assert.DoesNotContain("query=test", req.RequestUri!.Query);
             Assert.Contains("entity_type=agent", req.RequestUri!.Query);
             return JsonResponse("{\"results\":[]}");
         });
@@ -1936,6 +2037,720 @@ public sealed class SeclaiClientTests
     }
 
     // ── Helpers ─────────────────────────────────────────────────────────────
+
+    // ── New in the 2026-07 sync: identity, agent pause, email governance,
+    // email domains, generation tiers, docs search ──────────────────────────
+
+    [Fact]
+    public async Task GetMe_ReturnsIdentity()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Get, req.Method);
+            Assert.Equal("/me", req.RequestUri!.AbsolutePath);
+            return JsonResponse("{\"account_id\":\"3f1a0d6e-0000-4000-8000-000000000001\",\"organizations\":[]}");
+        });
+        var client = MakeClient(handler);
+        var res = await client.GetMeAsync();
+        Assert.NotEmpty(res.AccountId);
+    }
+
+    [Fact]
+    public async Task DisableAgent_PostsToDisable()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Post, req.Method);
+            Assert.Equal("/agents/a1/disable", req.RequestUri!.AbsolutePath);
+            return JsonResponse("{\"id\":\"a1\",\"name\":\"x\",\"disabled\":true,\"disabled_reason\":\"manual\"}");
+        });
+        var client = MakeClient(handler);
+        var res = await client.DisableAgentAsync("a1");
+        // The whole point of pause/resume is observing the state, so the
+        // response must surface it rather than discarding it.
+        Assert.Equal(true, res.Disabled);
+        Assert.Equal("manual", res.DisabledReason);
+    }
+
+    [Fact]
+    public async Task EnableAgent_PostsToEnable()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Post, req.Method);
+            Assert.Equal("/agents/a1/enable", req.RequestUri!.AbsolutePath);
+            return JsonResponse("{\"id\":\"a1\",\"name\":\"x\",\"disabled\":false}");
+        });
+        var client = MakeClient(handler);
+        var res = await client.EnableAgentAsync("a1");
+        Assert.Equal(false, res.Disabled);
+    }
+
+    [Fact]
+    public async Task GetAgentCallers_ReturnsCallers()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Get, req.Method);
+            Assert.Equal("/agents/a1/callers", req.RequestUri!.AbsolutePath);
+            return JsonResponse("[{\"id\":\"3f1a0d6e-0000-4000-8000-000000000002\",\"name\":\"Caller\",\"disabled\":false}]");
+        });
+        var client = MakeClient(handler);
+        var res = await client.GetAgentCallersAsync("a1");
+        Assert.Single(res);
+        Assert.Equal("Caller", res[0].Name);
+    }
+
+    [Fact]
+    public async Task SetEmailTriggerConfig_PutsConfig()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Put, req.Method);
+            Assert.Equal("/agents/a1/triggers/t1/email-config", req.RequestUri!.AbsolutePath);
+            return JsonResponse("{\"trigger_id\":\"3f1a0d6e-0000-4000-8000-000000000003\",\"agent_id\":\"3f1a0d6e-0000-4000-8000-000000000004\",\"trigger_type\":\"EMAIL_RECEIVED\",\"email_addresses\":[\"support@agent.seclai.com\"]}");
+        });
+        var client = MakeClient(handler);
+        var res = await client.SetEmailTriggerConfigAsync("a1", "t1", new SetEmailTriggerConfigRequest { Alias = "support" });
+        Assert.NotNull(res.EmailAddresses);
+        Assert.Single(res.EmailAddresses!);
+    }
+
+    [Fact]
+    public async Task ListAgentEmailOptOuts_SetsQueryParams()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Get, req.Method);
+            Assert.Equal("/agents/agent-email-optouts", req.RequestUri!.AbsolutePath);
+            Assert.Contains("agent_id=a1", req.RequestUri!.Query);
+            Assert.Contains("limit=25", req.RequestUri!.Query);
+            Assert.Contains("offset=50", req.RequestUri!.Query);
+            return JsonResponse("{\"items\":[],\"total\":0}");
+        });
+        var client = MakeClient(handler);
+        var res = await client.ListAgentEmailOptOutsAsync(agentId: "a1", limit: 25, offset: 50);
+        Assert.Equal(0, res.Total);
+    }
+
+    [Fact]
+    public async Task RemoveAgentEmailOptOut_Deletes()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Delete, req.Method);
+            Assert.Equal("/agents/agent-email-optouts/oo1", req.RequestUri!.AbsolutePath);
+            return new HttpResponseMessage(HttpStatusCode.NoContent);
+        });
+        var client = MakeClient(handler);
+        await client.RemoveAgentEmailOptOutAsync("oo1"); // should not throw
+    }
+
+    [Fact]
+    public async Task ListBlockedEmailSenders_UsesLimitOffset()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Get, req.Method);
+            Assert.Equal("/agents/blocked-email-senders", req.RequestUri!.AbsolutePath);
+            Assert.Contains("limit=10", req.RequestUri!.Query);
+            Assert.Contains("offset=20", req.RequestUri!.Query);
+            Assert.DoesNotContain("page=", req.RequestUri!.Query);
+            return JsonResponse("{\"items\":[],\"total\":0,\"auto_block_mode\":\"disabled\"}");
+        });
+        var client = MakeClient(handler);
+        var res = await client.ListBlockedEmailSendersAsync(limit: 10, offset: 20);
+        Assert.Equal("disabled", res.AutoBlockMode);
+    }
+
+    [Fact]
+    public async Task BlockEmailSender_PostsBody()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Post, req.Method);
+            Assert.Equal("/agents/blocked-email-senders", req.RequestUri!.AbsolutePath);
+            return JsonResponse("{\"id\":\"3f1a0d6e-0000-4000-8000-000000000005\",\"created_at\":\"2026-07-01\",\"sender_email\":\"spam@example.com\",\"match_type\":\"domain\",\"source\":\"manual\"}");
+        });
+        var client = MakeClient(handler);
+        var res = await client.BlockEmailSenderAsync(new BlockEmailSenderRequest { SenderEmail = "spam@example.com", MatchType = "domain" });
+        Assert.Equal("spam@example.com", res.SenderEmail);
+    }
+
+    [Fact]
+    public async Task UnblockEmailSender_Deletes()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Delete, req.Method);
+            Assert.Equal("/agents/blocked-email-senders/b1", req.RequestUri!.AbsolutePath);
+            return new HttpResponseMessage(HttpStatusCode.NoContent);
+        });
+        var client = MakeClient(handler);
+        await client.UnblockEmailSenderAsync("b1"); // should not throw
+    }
+
+    [Fact]
+    public async Task SetAutoBlockMode_PutsMode()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Put, req.Method);
+            Assert.Equal("/agents/blocked-email-senders/mode", req.RequestUri!.AbsolutePath);
+            return JsonResponse("{\"items\":[],\"total\":0,\"auto_block_mode\":\"input_and_output\"}");
+        });
+        var client = MakeClient(handler);
+        var res = await client.SetAutoBlockModeAsync(new SetAutoBlockModeRequest { Mode = "input_and_output" });
+        Assert.Equal("input_and_output", res.AutoBlockMode);
+    }
+
+    [Fact]
+    public async Task ListInboundEmailRejections_SetsQueryParams()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Get, req.Method);
+            Assert.Equal("/agents/inbound-email-rejections", req.RequestUri!.AbsolutePath);
+            Assert.Contains("agent_id=a1", req.RequestUri!.Query);
+            Assert.Contains("limit=5", req.RequestUri!.Query);
+            return JsonResponse("[{\"id\":\"3f1a0d6e-0000-4000-8000-000000000006\",\"created_at\":\"2026-07-01\",\"recipient\":\"x@y\",\"sender\":\"s@y\",\"reason\":\"unauthorized_sender\"}]");
+        });
+        var client = MakeClient(handler);
+        var res = await client.ListInboundEmailRejectionsAsync(agentId: "a1", limit: 5);
+        Assert.Single(res);
+        Assert.Equal("unauthorized_sender", res[0].Reason);
+    }
+
+    [Fact]
+    public async Task GetInboundEmailStatus_ReturnsStatus()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Get, req.Method);
+            Assert.Equal("/agents/inbound-email-status", req.RequestUri!.AbsolutePath);
+            return JsonResponse("{\"paused\":true,\"queued_backlog\":42}");
+        });
+        var client = MakeClient(handler);
+        var res = await client.GetInboundEmailStatusAsync();
+        Assert.True(res.Paused);
+        Assert.Equal(42, res.QueuedBacklog);
+    }
+
+    [Fact]
+    public async Task CancelQueuedEmailRuns_ReturnsCount()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Post, req.Method);
+            Assert.Equal("/agents/inbound-email-status/cancel-queued", req.RequestUri!.AbsolutePath);
+            return JsonResponse("{\"cancelled\":7}");
+        });
+        var client = MakeClient(handler);
+        var res = await client.CancelQueuedEmailRunsAsync();
+        Assert.Equal(7, res.Cancelled);
+    }
+
+    [Fact]
+    public async Task ResumeInboundEmail_ReturnsResumed()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Post, req.Method);
+            Assert.Equal("/agents/inbound-email-status/resume", req.RequestUri!.AbsolutePath);
+            return JsonResponse("{\"resumed\":true}");
+        });
+        var client = MakeClient(handler);
+        var res = await client.ResumeInboundEmailAsync();
+        Assert.True(res.Resumed);
+    }
+
+    [Fact]
+    public async Task ListEmailDomains_ReturnsListing()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Get, req.Method);
+            Assert.Equal("/email-domains", req.RequestUri!.AbsolutePath);
+            return JsonResponse("{\"domains\":[],\"can_add_vanity\":true}");
+        });
+        var client = MakeClient(handler);
+        var res = await client.ListEmailDomainsAsync();
+        Assert.NotNull(res);
+    }
+
+    [Fact]
+    public async Task AddEmailDomain_PostsBody()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Post, req.Method);
+            Assert.Equal("/email-domains", req.RequestUri!.AbsolutePath);
+            return JsonResponse("{\"id\":\"3f1a0d6e-0000-4000-8000-000000000007\",\"domain\":\"acme.seclai.com\",\"kind\":\"vanity\",\"status\":\"pending\",\"is_primary\":false}");
+        });
+        var client = MakeClient(handler);
+        var res = await client.AddEmailDomainAsync(new AddEmailDomainRequest { Kind = "vanity", Value = "acme" });
+        Assert.Equal("vanity", res.Kind);
+    }
+
+    [Fact]
+    public async Task RemoveEmailDomain_ReturnsCleanupNote()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Delete, req.Method);
+            Assert.Equal("/email-domains/d1", req.RequestUri!.AbsolutePath);
+            return JsonResponse("{\"removed\":true,\"cleanup_note\":\"Delete the NS record\"}");
+        });
+        var client = MakeClient(handler);
+        var res = await client.RemoveEmailDomainAsync("d1");
+        Assert.False(string.IsNullOrEmpty(res.CleanupNote));
+    }
+
+    [Fact]
+    public async Task VerifyEmailDomain_ReturnsStatus()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Post, req.Method);
+            Assert.Equal("/email-domains/d1/verify", req.RequestUri!.AbsolutePath);
+            return JsonResponse("{\"id\":\"3f1a0d6e-0000-4000-8000-000000000008\",\"domain\":\"a.b\",\"kind\":\"custom\",\"status\":\"verified\",\"is_primary\":false}");
+        });
+        var client = MakeClient(handler);
+        var res = await client.VerifyEmailDomainAsync("d1");
+        Assert.Equal("verified", res.Status);
+    }
+
+    [Fact]
+    public async Task SetPrimaryEmailDomain_ReturnsPrimary()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Post, req.Method);
+            Assert.Equal("/email-domains/d1/primary", req.RequestUri!.AbsolutePath);
+            return JsonResponse("{\"id\":\"3f1a0d6e-0000-4000-8000-000000000009\",\"domain\":\"a.b\",\"kind\":\"custom\",\"status\":\"verified\",\"is_primary\":true}");
+        });
+        var client = MakeClient(handler);
+        var res = await client.SetPrimaryEmailDomainAsync("d1");
+        Assert.True(res.IsPrimary);
+    }
+
+    [Fact]
+    public async Task UseSharedEmailDomain_Posts()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Post, req.Method);
+            Assert.Equal("/email-domains/use-shared-domain", req.RequestUri!.AbsolutePath);
+            return new HttpResponseMessage(HttpStatusCode.NoContent);
+        });
+        var client = MakeClient(handler);
+        await client.UseSharedEmailDomainAsync(); // should not throw
+    }
+
+    [Fact]
+    public async Task SendEmailDomainTestEmail_ReturnsSent()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Post, req.Method);
+            Assert.Equal("/email-domains/d1/test-email", req.RequestUri!.AbsolutePath);
+            return JsonResponse("{\"sent\":true}");
+        });
+        var client = MakeClient(handler);
+        var res = await client.SendEmailDomainTestEmailAsync("d1");
+        // `sent` is not in the schema's `required` list, so the model keeps it
+        // nullable; assert the value rather than mere truthiness.
+        Assert.Equal(true, res.Sent);
+    }
+
+    [Fact]
+    public async Task GetDmarcSummary_SetsWindowParams()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Get, req.Method);
+            Assert.Equal("/email-domains/d1/dmarc", req.RequestUri!.AbsolutePath);
+            Assert.Contains("days=7", req.RequestUri!.Query);
+            Assert.Contains("top_sources=3", req.RequestUri!.Query);
+            return JsonResponse("{\"window_days\":7,\"report_count\":2,\"total_messages\":100,\"passed_messages\":99,\"failed_messages\":1}");
+        });
+        var client = MakeClient(handler);
+        var res = await client.GetDmarcSummaryAsync("d1", days: 7, topSources: 3);
+        Assert.Equal(7, res.WindowDays);
+    }
+
+    [Fact]
+    public async Task GetGenerationTiers_ReturnsRawJson()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Get, req.Method);
+            Assert.Equal("/models/generation-tiers", req.RequestUri!.AbsolutePath);
+            return JsonResponse("{\"image\":{\"fast\":{}}}");
+        });
+        var client = MakeClient(handler);
+        var res = await client.GetGenerationTiersAsync();
+        Assert.Equal(JsonValueKind.Object, res.ValueKind);
+    }
+
+    [Fact]
+    public async Task SearchDocs_SetsQueryParams()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Get, req.Method);
+            Assert.Equal("/docs-search", req.RequestUri!.AbsolutePath);
+            Assert.Contains("q=email", req.RequestUri!.Query);
+            Assert.Contains("mode=semantic", req.RequestUri!.Query);
+            Assert.Contains("limit=3", req.RequestUri!.Query);
+            return JsonResponse("{\"results\":[]}");
+        });
+        var client = MakeClient(handler);
+        var res = await client.SearchDocsAsync("email triggers", mode: "semantic", limit: 3);
+        Assert.Equal(JsonValueKind.Object, res.ValueKind);
+    }
+
+    [Fact]
+    public async Task SetEmailTriggerConfig_OmitsUnsetPropertiesRatherThanSendingNull()
+    {
+        // The API treats an explicit null as "clear this field", so a request
+        // setting only the alias must not wipe the allowlist and the flags.
+        string? body = null;
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Put, req.Method);
+            Assert.Equal("/agents/a1/triggers/t1/email-config", req.RequestUri!.AbsolutePath);
+            body = req.Content!.ReadAsStringAsync().GetAwaiter().GetResult();
+            return JsonResponse("{\"trigger_id\":\"3f1a0d6e-0000-4000-8000-000000000003\",\"agent_id\":\"3f1a0d6e-0000-4000-8000-000000000004\",\"trigger_type\":\"EMAIL_RECEIVED\"}");
+        });
+        var client = MakeClient(handler);
+
+        await client.SetEmailTriggerConfigAsync("a1", "t1",
+            new SetEmailTriggerConfigRequest { Alias = "support" });
+
+        Assert.Equal("{\"alias\":\"support\"}", body);
+        Assert.DoesNotContain("null", body);
+    }
+
+    [Fact]
+    public async Task SetEmailTriggerConfig_SendsEmptyValuesToClear()
+    {
+        string? body = null;
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Put, req.Method);
+            Assert.Equal("/agents/a1/triggers/t1/email-config", req.RequestUri!.AbsolutePath);
+            body = req.Content!.ReadAsStringAsync().GetAwaiter().GetResult();
+            return JsonResponse("{\"trigger_id\":\"3f1a0d6e-0000-4000-8000-000000000003\",\"agent_id\":\"3f1a0d6e-0000-4000-8000-000000000004\",\"trigger_type\":\"EMAIL_RECEIVED\"}");
+        });
+        var client = MakeClient(handler);
+
+        await client.SetEmailTriggerConfigAsync("a1", "t1",
+            new SetEmailTriggerConfigRequest { Alias = "", AllowedSenders = new List<string>() });
+
+        Assert.Contains("\"alias\":\"\"", body);
+        Assert.Contains("\"allowed_senders\":[]", body);
+    }
+
+    [Fact]
+    public async Task ApiVersionHeader_IsOmittedUnlessOptedIn()
+    {
+        // The whole point of the option: upgrading the SDK must not silently
+        // move an account onto a newer API version and change response shapes.
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.False(req.Headers.Contains("Seclai-Version"));
+            return JsonResponse("{\"data\":[]}");
+        });
+        var client = MakeClient(handler);
+        await client.ListAgentsAsync();
+    }
+
+    [Fact]
+    public async Task ApiVersionHeader_IsSentWhenSet()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal("2026-07-27", Assert.Single(req.Headers.GetValues("Seclai-Version")));
+            return JsonResponse("{\"data\":[]}");
+        });
+        var http = new HttpClient(handler);
+        using var client = new SeclaiClient(new SeclaiClientOptions
+        {
+            ApiKey = "k",
+            BaseUri = new Uri("https://example.invalid"),
+            HttpClient = http,
+            ApiVersion = "2026-07-27",
+        });
+        await client.ListAgentsAsync();
+    }
+
+    [Fact]
+    public async Task GetApiVersion_GetsVersion()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Get, req.Method);
+            Assert.Equal("/version", req.RequestUri!.AbsolutePath);
+            return JsonResponse("{\"pinned_version\":null,\"effective_version\":\"2026-01-01\",\"default_version\":\"2026-01-01\",\"latest_version\":\"2026-07-27\",\"known_versions\":[\"2026-01-01\",\"2026-07-27\"]}");
+        });
+        var client = MakeClient(handler);
+        var res = await client.GetApiVersionAsync();
+        Assert.Null(res.PinnedVersion);
+        Assert.Equal("2026-07-27", res.LatestVersion);
+        Assert.Equal(2, res.KnownVersions!.Count);
+    }
+
+    [Fact]
+    public async Task UpdateApiVersion_PutsVersion()
+    {
+        string? body = null;
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Put, req.Method);
+            Assert.Equal("/version", req.RequestUri!.AbsolutePath);
+            body = req.Content!.ReadAsStringAsync().GetAwaiter().GetResult();
+            return JsonResponse("{\"pinned_version\":\"2026-07-27\",\"effective_version\":\"2026-01-01\"}");
+        });
+        var client = MakeClient(handler);
+        var res = await client.UpdateApiVersionAsync("2026-07-27");
+        Assert.Equal("{\"version\":\"2026-07-27\"}", body);
+        Assert.Equal("2026-07-27", res.PinnedVersion);
+    }
+
+    [Fact]
+    public async Task UpdateApiVersion_SendsExplicitNullToClearThePin()
+    {
+        // null is the documented way to clear the pin, so it must reach the wire
+        // rather than being omitted as an unset property.
+        string? body = null;
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            body = req.Content!.ReadAsStringAsync().GetAwaiter().GetResult();
+            return JsonResponse("{\"pinned_version\":null}");
+        });
+        var client = MakeClient(handler);
+        await client.UpdateApiVersionAsync(null);
+        Assert.Equal("{\"version\":null}", body);
+    }
+
+    [Fact]
+    public async Task ListRunEvaluationResults_ReadsCanonicalPaginationWhenOptedIn()
+    {
+        // The run-level endpoint is version-gated to {data, pagination}. Reading
+        // only the flat Total/Page/Limit reported 0 for every opted-in caller.
+        var handler = new FakeHttpMessageHandler(req =>
+            JsonResponse("{\"data\":[{\"id\":\"er1\"}],\"pagination\":{\"page\":2,\"limit\":25,\"total\":7,\"pages\":1,\"has_next\":false,\"has_prev\":true}}"));
+        var client = MakeClient(handler);
+        var res = await client.ListRunEvaluationResultsAsync("a1", "r1", page: 2, limit: 25);
+        Assert.Single(res.Data!);
+        Assert.NotNull(res.Pagination);
+        Assert.Equal(7, res.Pagination!.Total);
+    }
+
+    [Fact]
+    public async Task ListAgentEvaluationResults_StillReadsTheFlatShape()
+    {
+        // The agent-level endpoint is not version-gated and stays flat, so the
+        // shared model must keep serving both.
+        var handler = new FakeHttpMessageHandler(req =>
+            JsonResponse("{\"data\":[{\"id\":\"er1\"}],\"total\":7,\"page\":2,\"limit\":25}"));
+        var client = MakeClient(handler);
+        var res = await client.ListAgentEvaluationResultsAsync("a1", page: 2, limit: 25);
+        Assert.Equal(7, res.Total);
+        Assert.Null(res.Pagination);
+    }
+
+    [Fact]
+    public async Task ListAlerts_DecodesTheTypedEnvelope()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+            JsonResponse("{\"data\":[{\"id\":\"al1\",\"title\":\"Disk full\",\"status\":\"triggered\"}],\"pagination\":{\"page\":1,\"limit\":20,\"total\":1,\"pages\":1,\"has_next\":false,\"has_prev\":false}}"));
+        var client = MakeClient(handler);
+        var res = await client.Typed.ListAlertsAsync();
+        Assert.Equal("al1", Assert.Single(res.Data).Id);
+        Assert.Equal(1, res.Pagination!.Total);
+    }
+
+    [Fact]
+    public async Task ListAlertConfigs_ReadsEitherTopLevelKey()
+    {
+        // `configs` by default, `data` once opted in. Items papers over the flip.
+        var legacy = new FakeHttpMessageHandler(req =>
+            JsonResponse("{\"configs\":[{\"id\":\"c1\"}],\"total\":1}"));
+        var res = await MakeClient(legacy).Typed.ListAlertConfigsAsync();
+        Assert.Equal("c1", Assert.Single(res.Items).Id);
+        Assert.Equal(1, res.Total);
+
+        var canonical = new FakeHttpMessageHandler(req =>
+            JsonResponse("{\"data\":[{\"id\":\"c1\"}],\"pagination\":{\"page\":1,\"limit\":20,\"total\":1,\"pages\":1,\"has_next\":false,\"has_prev\":false}}"));
+        var res2 = await MakeClient(canonical).Typed.ListAlertConfigsAsync();
+        Assert.Equal("c1", Assert.Single(res2.Items).Id);
+        Assert.Equal(1, res2.Pagination!.Total);
+    }
+
+    [Fact]
+    public async Task ListModelAlerts_ReadsEitherTopLevelKey()
+    {
+        // `alerts` by default, `data` once opted in.
+        var legacy = new FakeHttpMessageHandler(req =>
+            JsonResponse("{\"alerts\":[{\"id\":\"m1\",\"model_name\":\"gpt\"}],\"total\":1}"));
+        var res = await MakeClient(legacy).Typed.ListModelAlertsAsync();
+        Assert.Equal("m1", Assert.Single(res.Items).Id);
+
+        var canonical = new FakeHttpMessageHandler(req =>
+            JsonResponse("{\"data\":[{\"id\":\"m1\",\"model_name\":\"gpt\"}],\"pagination\":{\"page\":1,\"limit\":20,\"total\":1,\"pages\":1,\"has_next\":false,\"has_prev\":false}}"));
+        var res2 = await MakeClient(canonical).Typed.ListModelAlertsAsync();
+        Assert.Equal("m1", Assert.Single(res2.Items).Id);
+        Assert.Equal(1, res2.Pagination!.Total);
+    }
+
+    [Fact]
+    public async Task Typed_IssuesTheSameRequestAsTheRawMethod()
+    {
+        // The façade delegates rather than rebuilding the request, so the two
+        // surfaces cannot drift. This pins that.
+        var seen = new List<string>();
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            seen.Add($"{req.Method} {req.RequestUri!.PathAndQuery}");
+            return JsonResponse("{\"results\":[]}");
+        });
+        var client = MakeClient(handler);
+        await client.SearchAsync("hello", limit: 5);
+        await client.Typed.SearchAsync("hello", limit: 5);
+        Assert.Equal(2, seen.Count);
+        Assert.Equal(seen[0], seen[1]);
+    }
+
+    [Fact]
+    public async Task Typed_SearchDeserializesTheEnvelope()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+            JsonResponse("{\"results\":[{\"entity_type\":\"agent\",\"name\":\"Support\"}]}"));
+        var client = MakeClient(handler);
+        var res = await client.Typed.SearchAsync("support");
+        // Deliberately not paginated — the spec carves this shape out to match
+        // the MCP search_resources tool.
+        Assert.Equal("Support", Assert.Single(res.Results).Name);
+    }
+
+    [Fact]
+    public async Task Typed_RawSurfaceIsUnchanged()
+    {
+        // The whole point of the façade: the existing methods still hand back
+        // JsonElement, so no call site had to change.
+        var handler = new FakeHttpMessageHandler(req => JsonResponse("{\"results\":[]}"));
+        var client = MakeClient(handler);
+        JsonElement raw = await client.SearchAsync("hello");
+        Assert.Equal(JsonValueKind.Object, raw.ValueKind);
+    }
+
+    [Fact]
+    public void ApiVersionConstants_TrackTheSpec()
+    {
+        var specPath = Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "..", "..",
+            "..", "seclai-python", "openapi", "seclai.openapi.json");
+        if (!File.Exists(specPath)) return;   // spec is not bundled in this repo
+        using var doc = JsonDocument.Parse(File.ReadAllText(specPath));
+        var v = doc.RootElement.GetProperty("x-seclai-versions");
+        Assert.Equal(v.GetProperty("default").GetString(), SeclaiApiVersion.Default);
+        Assert.Equal(v.GetProperty("latest").GetString(), SeclaiApiVersion.Latest);
+        var known = v.GetProperty("known").EnumerateArray().Select(e => e.GetString()).ToArray();
+        Assert.Equal(new[] { SeclaiApiVersion.V2026_07_01, SeclaiApiVersion.V2026_07_27 }, known);
+    }
+
+    [Fact]
+    public void ApiVersion_UnknownIsRejected()
+    {
+        // A newer server version can reshape responses, and this client would
+        // mis-decode them silently rather than error. Fail closed at construction.
+        var ex = Assert.Throws<ConfigurationException>(() => new SeclaiClient(new SeclaiClientOptions
+        {
+            ApiKey = "k",
+            BaseUri = new Uri("https://example.invalid"),
+            ApiVersion = "2099-01-01",
+        }));
+        Assert.Contains("2099-01-01", ex.Message);
+        Assert.Contains("AllowUnknownApiVersion", ex.Message);
+    }
+
+    [Fact]
+    public async Task ApiVersion_UnknownIsAllowedWhenAsked()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal("2099-01-01", Assert.Single(req.Headers.GetValues("Seclai-Version")));
+            return JsonResponse("{\"data\":[]}");
+        });
+        var http = new HttpClient(handler);
+        using var client = new SeclaiClient(new SeclaiClientOptions
+        {
+            ApiKey = "k",
+            BaseUri = new Uri("https://example.invalid"),
+            HttpClient = http,
+            ApiVersion = "2099-01-01",
+            AllowUnknownApiVersion = true,
+        });
+        await client.ListAgentsAsync();
+    }
+
+    [Fact]
+    public void ApiVersion_KnownNeedsNoEscapeHatch()
+    {
+        using var client = new SeclaiClient(new SeclaiClientOptions
+        {
+            ApiKey = "k",
+            BaseUri = new Uri("https://example.invalid"),
+            ApiVersion = SeclaiApiVersion.Latest,
+        });
+        Assert.NotNull(client);
+    }
+
+    [Fact]
+    public void ApiVersion_GuardCannotBeBypassedViaDefaultHeaders()
+    {
+        // DefaultHeaders can carry a Seclai-Version of its own. Validating only
+        // the option left the guard one header away from being bypassed.
+        var ex = Assert.Throws<ConfigurationException>(() => new SeclaiClient(new SeclaiClientOptions
+        {
+            ApiKey = "k",
+            BaseUri = new Uri("https://example.invalid"),
+            DefaultHeaders = new Dictionary<string, string> { ["Seclai-Version"] = "2099-01-01" },
+        }));
+        Assert.Contains("2099-01-01", ex.Message);
+        Assert.Contains("DefaultHeaders", ex.Message);
+
+        // Case-insensitively, since header names are.
+        Assert.Throws<ConfigurationException>(() => new SeclaiClient(new SeclaiClientOptions
+        {
+            ApiKey = "k",
+            BaseUri = new Uri("https://example.invalid"),
+            DefaultHeaders = new Dictionary<string, string> { ["seclai-version"] = "2099-01-01" },
+        }));
+    }
+
+    [Fact]
+    public async Task ApiVersion_HeaderFormIsSentOnceAndHonoursTheEscapeHatch()
+    {
+        // HttpHeaders appends rather than replaces, so leaving the caller's entry
+        // in place would put two Seclai-Version values on the request.
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(new[] { "2099-01-01" }, req.Headers.GetValues("Seclai-Version"));
+            return JsonResponse("{\"data\":[]}");
+        });
+        var http = new HttpClient(handler);
+        using var client = new SeclaiClient(new SeclaiClientOptions
+        {
+            ApiKey = "k",
+            BaseUri = new Uri("https://example.invalid"),
+            HttpClient = http,
+            DefaultHeaders = new Dictionary<string, string> { ["Seclai-Version"] = "2099-01-01" },
+            AllowUnknownApiVersion = true,
+        });
+        await client.ListAgentsAsync();
+    }
 
     private static SeclaiClient MakeClient(FakeHttpMessageHandler handler)
     {

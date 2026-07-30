@@ -100,7 +100,80 @@ or set environment variables:
 | `SECLAI_SSO_CLIENT_ID` | Cognito app client ID | `4bgf8v9qmc5puivbaqon9n5lmr` |
 | `SECLAI_SSO_REGION` | AWS region | `us-west-2` |
 
+## API versioning
+
+The API dates its backward-incompatible changes. Nothing changes for you until
+you opt in, either per client or by pinning the account:
+
+```csharp
+var client = new SeclaiClient(new SeclaiClientOptions
+{
+    ApiKey = "...",
+    ApiVersion = SeclaiApiVersion.V2026_07_27,   // sent as the Seclai-Version header
+});
+
+var state = await client.GetApiVersionAsync();   // what this request resolved to
+await client.UpdateApiVersionAsync(SeclaiApiVersion.V2026_07_27); // pin the whole account
+```
+
+Leave `ApiVersion` unset and the header is omitted, so the account's pinned
+baseline applies and responses keep their current shapes. Upgrading this package
+alone never changes the wire contract.
+
+Known versions are on `SeclaiApiVersion` (`V2026_07_01`, `V2026_07_27`, plus
+`Default`, `Latest` and `Known`). A version this release was **not** built
+against is rejected at construction: a newer version can reshape responses, and
+this client would decode them incorrectly rather than reject them. Upgrade the
+package to adopt a new version, or set `AllowUnknownApiVersion` if you have to
+move first and accept that risk.
+
+The guard only covers the header. An account pinned server-side can still be
+newer than this release — `GetApiVersionAsync().EffectiveVersion` is what the
+request actually resolved to, and comparing it against `SeclaiApiVersion.Latest`
+is how you detect the gap.
+
+**What `2026-07-27` changes.** Undeclared query parameters become a 422 instead
+of being ignored, and list endpoints move to the canonical
+`{data, pagination}` envelope. The affected methods read both shapes, so they
+keep working either way — but the metadata moves:
+
+| Method | Before | From 2026-07-27 |
+| --- | --- | --- |
+| `ListEvaluationCriteriaPageAsync` | bare array | `Data` + `Pagination` |
+| `ListRunEvaluationResultsAsync` | bare array | `Data` + `Pagination` |
+| `Typed.ListAlertConfigsAsync` | `Configs` + `Total` | `Data` + `Pagination` |
+| `Typed.ListModelAlertsAsync` | `Alerts` + `Total` | `Data` + `Pagination` |
+
+Read the last two through `Items`, which returns whichever key arrived, and
+prefer `Pagination` over the flat `Total`/`Page`/`Limit` properties. The flat
+properties will be deprecated and then removed once the canonical envelope is
+the default.
+
+## Typed responses
+
+Some methods return `JsonElement` for historical reasons. The same endpoints are
+available deserialized under `client.Typed`, which issues the identical request:
+
+```csharp
+var raw   = await client.SearchAsync("disk");        // JsonElement
+var typed = await client.Typed.SearchAsync("disk");  // SearchResponse
+foreach (var hit in typed.Results) Console.WriteLine(hit.Name);
+```
+
+**Prefer `client.Typed`.** The raw methods are kept only for source
+compatibility; they will be deprecated and then removed in a future major.
+
 ## API Coverage
+
+### Identity
+
+```csharp
+var me = await client.GetMeAsync();
+foreach (var org in me.Organizations)
+    Console.WriteLine($"{org.Name} {org.AccountId}");
+
+// Act as an organization: new SeclaiClientOptions { AccountId = org.AccountId }
+```
 
 ### Agents
 
@@ -108,6 +181,11 @@ or set environment variables:
 // CRUD
 var agents = await client.ListAgentsAsync(page: 1, limit: 20);
 var agent = await client.CreateAgentAsync(new CreateAgentRequest { Name = "Bot" });
+
+// Pause / resume — a disabled agent stops firing from every trigger path
+var callers = await client.GetAgentCallersAsync("a1");  // live agents calling this one
+await client.DisableAgentAsync("a1");                   // 409 if a caller is still live
+await client.EnableAgentAsync("a1");
 var fetched = await client.GetAgentAsync(agent.Id);
 var updated = await client.UpdateAgentAsync(agent.Id, new UpdateAgentRequest { Name = "Updated" });
 await client.DeleteAgentAsync(agent.Id);
@@ -269,7 +347,8 @@ var config = await client.GenerateMemoryBankConfigAsync(
 
 ```csharp
 // Criteria
-var criteria = await client.ListEvaluationCriteriaAsync("ag1");
+var criteria = await client.ListEvaluationCriteriaAsync("ag1", page: 1, limit: 50);
+// ListEvaluationCriteriaPageAsync returns the same criteria plus Total/Page/Limit.
 var created = await client.CreateEvaluationCriteriaAsync("ag1",
     new CreateEvaluationCriteriaRequest { StepId = "s1" });
 var summary = await client.GetEvaluationCriteriaSummaryAsync(created.Id);
@@ -327,9 +406,86 @@ await client.DeleteAlertConfigAsync("ac1");
 var prefs = await client.ListOrganizationAlertPreferencesAsync();
 ```
 
+### Agent Email Triggers
+
+A property left `null` is omitted from the request, so the server leaves that field
+unchanged. To clear a field, send its **empty value** — `""` for `Alias`, an empty
+list for `AllowedSenders`. Setting `null` does not clear anything.
+
+```csharp
+// IgnoreAutoGenerated and QueueOnQuota are left null, so they stay as they are.
+var cfg = await client.SetEmailTriggerConfigAsync("a1", "t1",
+    new SetEmailTriggerConfigRequest
+    {
+        Alias = "support",
+        AllowedSenders = new List<string> { "example.com" },
+        RequireSenderAuth = true,
+    });
+Console.WriteLine(string.Join(", ", cfg.EmailAddresses ?? new List<string>()));
+
+// Clear the alias and open the inbox to any sender.
+await client.SetEmailTriggerConfigAsync("a1", "t1",
+    new SetEmailTriggerConfigRequest { Alias = "", AllowedSenders = new List<string>() });
+```
+
+### Agent Email Governance
+
+```csharp
+// Recipients who opted out of this account's agent emails
+var optOuts = await client.ListAgentEmailOptOutsAsync(agentId: "a1", limit: 50);
+await client.RemoveAgentEmailOptOutAsync("oo1");   // opt them back in
+
+// Blocked inbound senders (owner/admin only); paginates by limit/offset
+var blocked = await client.ListBlockedEmailSendersAsync(limit: 50, offset: 0);
+await client.BlockEmailSenderAsync(
+    new BlockEmailSenderRequest { SenderEmail = "spam.example.com", MatchType = "domain" });
+await client.UnblockEmailSenderAsync("b1");
+
+// "disabled" | "input" | "input_and_output"
+await client.SetAutoBlockModeAsync(new SetAutoBlockModeRequest { Mode = "input_and_output" });
+
+// Inbound mail discarded before running an agent
+var rejections = await client.ListInboundEmailRejectionsAsync(agentId: "a1");
+
+// Account-wide overload circuit breaker
+var status = await client.GetInboundEmailStatusAsync();
+await client.CancelQueuedEmailRunsAsync();   // fail all QUEUED (over-quota parked) runs
+await client.ResumeInboundEmailAsync();      // one-shot; re-arms if still overloaded
+```
+
+### Email Domains
+
+Send and receive agent email on your own domain instead of the shared
+`agent.seclai.com`. Requires a user-bound credential; mutations require an
+account owner/admin.
+
+```csharp
+var listing = await client.ListEmailDomainsAsync();
+
+var vanity = await client.AddEmailDomainAsync(
+    new AddEmailDomainRequest { Kind = "vanity", Value = "acme" });
+var custom = await client.AddEmailDomainAsync(
+    new AddEmailDomainRequest { Kind = "custom", Value = "agent.mycompany.com" });
+
+// Publish custom.DnsRecords, then check without waiting for the background sweep
+await client.VerifyEmailDomainAsync(custom.Id);
+
+await client.SetPrimaryEmailDomainAsync(custom.Id);
+await client.UseSharedEmailDomainAsync();  // revert; domains stay configured & verified
+
+await client.SendEmailDomainTestEmailAsync(custom.Id);  // always to the account owner
+var dmarc = await client.GetDmarcSummaryAsync(custom.Id, days: 30, topSources: 10);
+
+var removed = await client.RemoveEmailDomainAsync(custom.Id);
+// removed.CleanupNote is set when the domain was Seclai-managed
+```
+
 ### Models & Model Alerts
 
 ```csharp
+// Media-generation quality tiers (fast/balanced/thorough) and what each resolves to
+var tiers = await client.GetGenerationTiersAsync();                    // JsonElement
+
 var alerts = await client.ListModelAlertsAsync();                      // JsonElement
 await client.MarkModelAlertReadAsync("ma1");
 await client.MarkAllModelAlertsReadAsync();
@@ -348,6 +504,17 @@ await client.DeleteExperimentAsync("exp1");  // soft-delete, preserves audit his
 
 ```csharp
 var results = await client.SearchAsync(query: "my bot", entityType: "agent");  // JsonElement
+```
+
+### Documentation Search
+
+Results are global (not account-scoped); each carries a `doc_slug` plus an optional
+`anchor` for building a `https://seclai.com/docs/<doc_slug>[#<anchor>]` link.
+
+```csharp
+var hits = await client.SearchDocsAsync("email triggers");                       // JsonElement
+var deep = await client.SearchDocsAsync("how do I stop auto-reply loops",
+                                        mode: "semantic", limit: 5);
 ```
 
 ### AI Assistant (Top-Level)
