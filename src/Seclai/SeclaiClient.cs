@@ -55,11 +55,33 @@ public sealed class SeclaiClient : IDisposable
             : null;
 
         _apiVersion = string.IsNullOrWhiteSpace(options.ApiVersion) ? null : options.ApiVersion;
+
+        // DefaultHeaders can carry a Seclai-Version of its own. Validate whichever
+        // value actually reaches the wire, not just the option — otherwise the
+        // guard is one header away from being bypassed. The matching header is
+        // also removed, because HttpHeaders APPENDS: leaving it would put two
+        // Seclai-Version values on the request and let the server pick one.
+        string? headerVersion = null;
+        if (_defaultHeaders is not null)
+        {
+            foreach (var key in _defaultHeaders.Keys.ToList())
+            {
+                if (!string.Equals(key, "Seclai-Version", StringComparison.OrdinalIgnoreCase)) continue;
+                headerVersion = _defaultHeaders[key];
+                _defaultHeaders.Remove(key);
+            }
+        }
+        if (headerVersion is not null)
+        {
+            _apiVersion = headerVersion;
+        }
+
         if (_apiVersion is not null && !options.AllowUnknownApiVersion
             && Array.IndexOf(SeclaiApiVersion.Known, _apiVersion) < 0)
         {
+            var via = headerVersion is not null ? "DefaultHeaders[\"Seclai-Version\"]" : "ApiVersion";
             throw new ConfigurationException(
-                $"Unknown ApiVersion '{_apiVersion}'. This release was built against "
+                $"Unknown API version '{_apiVersion}' (via {via}). This release was built against "
                 + string.Join(", ", SeclaiApiVersion.Known)
                 + ". A newer API version can change response shapes, which this client "
                 + "would decode incorrectly rather than reject. Upgrade the SDK, or set "
@@ -984,6 +1006,14 @@ public sealed class SeclaiClient : IDisposable
         var limit = options?.Limit;
         var offset = options?.Offset;
         if (string.IsNullOrWhiteSpace(agentId)) throw new ArgumentException("agentId is required", nameof(agentId));
+        // Leaving it unset only omits the parameter and defers to a 422 naming
+        // the wire parameter, which is the failure this overload exists to avoid.
+        if (string.IsNullOrWhiteSpace(stepType))
+        {
+            throw new ArgumentException(
+                "StepType is required by the API; set e.g. new AiConversationHistoryOptions { StepType = \"llm\" }.",
+                nameof(options));
+        }
         var query = new Dictionary<string, string?>
         {
             ["step_type"] = string.IsNullOrWhiteSpace(stepType) ? null : stepType,

@@ -33,6 +33,8 @@
 
 ### Fixed
 
+- Validate a `Seclai-Version` supplied through `DefaultHeaders`, not just the `ApiVersion` option, and send it once. `HttpHeaders` appends rather than replaces, so the caller's entry previously joined ours and left two values on the request for the server to choose between
+- Throw from `GetAgentAiConversationHistoryAsync` when `StepType` is unset, rather than omitting the parameter and deferring to a 422 naming the wire parameter
 - Decode either wire shape in `ListRunEvaluationResultsAsync`. The endpoint answers with a bare array, which the declared envelope type could not read, so the method returned nothing; it now also reads the canonical `{data, pagination}` envelope. `ListAgentEvaluationResultsAsync` is genuinely flat and is unaffected
 - Send the `q` query parameter from `SearchAsync` instead of `query`. The API requires `q`, so every search call had been failing validation since 1.1.0
 - Paginate `ListModelAlertsAsync` with the `offset` the endpoint declares instead of `page`, which it does not accept — every page after the first returned page 1

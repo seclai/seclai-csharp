@@ -800,11 +800,24 @@ public sealed class SeclaiClientTests
             return JsonResponse("{\"total\":0,\"turns\":[]}");
         });
         var client = MakeClient(handler);
-        // The pre-1.4.0 overload, kept so compiled consumers keep working.
-#pragma warning disable CS0618
-        var res = await client.GetAgentAiConversationHistoryAsync("a1");
-#pragma warning restore CS0618
+        var res = await client.GetAgentAiConversationHistoryAsync(
+            "a1", new AiConversationHistoryOptions { StepType = "llm" });
         Assert.Equal(0, res.Total);
+    }
+
+    [Fact]
+    public async Task GetAgentAiConversationHistory_DeprecatedOverloadCannotSucceed()
+    {
+        // The pre-1.4.0 signature is kept so compiled consumers keep linking, but
+        // it cannot supply the step_type the API requires. It now fails locally
+        // naming the field rather than issuing a request that 422s on the wire.
+        var client = MakeClient(new FakeHttpMessageHandler(req =>
+            JsonResponse("{\"total\":0,\"turns\":[]}")));
+#pragma warning disable CS0618
+        var ex = await Assert.ThrowsAsync<ArgumentException>(
+            () => client.GetAgentAiConversationHistoryAsync("a1"));
+#pragma warning restore CS0618
+        Assert.Contains("StepType", ex.Message);
     }
 
     [Fact]
@@ -2692,6 +2705,51 @@ public sealed class SeclaiClientTests
             ApiVersion = SeclaiApiVersion.Latest,
         });
         Assert.NotNull(client);
+    }
+
+    [Fact]
+    public void ApiVersion_GuardCannotBeBypassedViaDefaultHeaders()
+    {
+        // DefaultHeaders can carry a Seclai-Version of its own. Validating only
+        // the option left the guard one header away from being bypassed.
+        var ex = Assert.Throws<ConfigurationException>(() => new SeclaiClient(new SeclaiClientOptions
+        {
+            ApiKey = "k",
+            BaseUri = new Uri("https://example.invalid"),
+            DefaultHeaders = new Dictionary<string, string> { ["Seclai-Version"] = "2099-01-01" },
+        }));
+        Assert.Contains("2099-01-01", ex.Message);
+        Assert.Contains("DefaultHeaders", ex.Message);
+
+        // Case-insensitively, since header names are.
+        Assert.Throws<ConfigurationException>(() => new SeclaiClient(new SeclaiClientOptions
+        {
+            ApiKey = "k",
+            BaseUri = new Uri("https://example.invalid"),
+            DefaultHeaders = new Dictionary<string, string> { ["seclai-version"] = "2099-01-01" },
+        }));
+    }
+
+    [Fact]
+    public async Task ApiVersion_HeaderFormIsSentOnceAndHonoursTheEscapeHatch()
+    {
+        // HttpHeaders appends rather than replaces, so leaving the caller's entry
+        // in place would put two Seclai-Version values on the request.
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(new[] { "2099-01-01" }, req.Headers.GetValues("Seclai-Version"));
+            return JsonResponse("{\"data\":[]}");
+        });
+        var http = new HttpClient(handler);
+        using var client = new SeclaiClient(new SeclaiClientOptions
+        {
+            ApiKey = "k",
+            BaseUri = new Uri("https://example.invalid"),
+            HttpClient = http,
+            DefaultHeaders = new Dictionary<string, string> { ["Seclai-Version"] = "2099-01-01" },
+            AllowUnknownApiVersion = true,
+        });
+        await client.ListAgentsAsync();
     }
 
     private static SeclaiClient MakeClient(FakeHttpMessageHandler handler)
