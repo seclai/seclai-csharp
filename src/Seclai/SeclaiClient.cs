@@ -1384,7 +1384,7 @@ public sealed class SeclaiClient : IDisposable
     /// <param name="sort">Sort field: <c>created_at</c>, <c>title</c> or <c>status</c>.</param>
     /// <param name="order"><c>asc</c> or <c>desc</c>.</param>
     /// <param name="status">Keep only one status: <c>pending</c>, <c>fetching</c>, <c>transcribing</c>, <c>scanning</c>, <c>indexing</c>, <c>completed</c> or <c>failed</c>.</param>
-    /// <param name="contentVersionIds">Keep only these items — the <c>ContentVersionId</c> values the upload methods return — to poll a batch of uploads in one request. At most 500. An empty list matches nothing: an empty page is returned without sending a request.</param>
+    /// <param name="contentVersionIds">Keep only these items — the <c>ContentVersionId</c> values the upload methods return — to poll a batch of uploads in one request. Keep it to about 100: the ids travel in the query string, and a URL over 8,192 bytes is rejected with a 414. The API itself accepts at most 500. An empty list matches nothing: an empty page is returned without sending a request.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     public async Task<SourceContentStatusListResponse> ListSourceContentsAsync(
         string sourceId,
