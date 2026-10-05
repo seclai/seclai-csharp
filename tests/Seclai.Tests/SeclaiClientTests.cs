@@ -670,11 +670,14 @@ public sealed class SeclaiClientTests
         {
             Assert.Equal(HttpMethod.Post, req.Method);
             Assert.Equal("/agents/runs/search", req.RequestUri!.AbsolutePath);
-            return JsonResponse("{\"results\":[]}");
+            return JsonResponse("{\"matches\":[{\"agent_run_id\":\"r1\",\"agent_step_run_id\":\"sr1\",\"agent_id\":\"a1\",\"agent_step_id\":\"s1\",\"agent_step_type\":\"llm\",\"agent_run_status\":\"completed\",\"title\":null,\"text\":\"timeout calling tool\",\"score\":0.91}],\"total\":1}");
         });
         var client = MakeClient(handler);
         var res = await client.SearchAgentRunsAsync(new AgentTraceSearchRequest { Query = "test" });
-        Assert.Equal(0, res.Total);
+        Assert.Equal(1, res.Total);
+        var match = Assert.Single(res.Results!);
+        Assert.Equal("r1", match["agent_run_id"].GetString());
+        Assert.Equal(0.91, match["score"].GetDouble());
     }
 
     [Fact]
@@ -1012,18 +1015,34 @@ public sealed class SeclaiClientTests
     // ── Knowledge Bases ─────────────────────────────────────────────────────
 
     [Fact]
-    public async Task ListKnowledgeBases_SetsQueryParams()
+    public async Task ListKnowledgeBases_SetsQueryParamsAndReadsEitherShape()
     {
-        var handler = new FakeHttpMessageHandler(req =>
+        // The default shape, then the one a caller on 2026-07-27 or later gets.
+        var bodies = new[]
         {
-            Assert.Equal(HttpMethod.Get, req.Method);
-            Assert.Equal("/knowledge_bases", req.RequestUri!.AbsolutePath);
-            Assert.Contains("sort=created_at", req.RequestUri!.Query);
-            return JsonResponse("{\"data\":[],\"total\":0}");
-        });
-        var client = MakeClient(handler);
-        var res = await client.ListKnowledgeBasesAsync(sort: "created_at");
-        Assert.Equal(0, res.Total);
+            "{\"knowledge_bases\":[{\"id\":\"kb1\",\"name\":\"Docs\"}],\"page\":2,\"limit\":5,\"total\":7}",
+            "{\"data\":[{\"id\":\"kb1\",\"name\":\"Docs\"}],\"pagination\":{\"page\":2,\"limit\":5,\"total\":7,\"pages\":2,\"has_next\":false,\"has_prev\":true}}",
+        };
+        foreach (var body in bodies)
+        {
+            var handler = new FakeHttpMessageHandler(req =>
+            {
+                Assert.Equal(HttpMethod.Get, req.Method);
+                Assert.Equal("/knowledge_bases", req.RequestUri!.AbsolutePath);
+                Assert.Contains("sort=created_at", req.RequestUri!.Query);
+                return JsonResponse(body);
+            });
+            var res = await MakeClient(handler).ListKnowledgeBasesAsync(sort: "created_at");
+            Assert.Equal("kb1", Assert.Single(res.Data).Id);
+            Assert.Equal(7, res.Total);
+            Assert.Equal(2, res.Page);
+            Assert.Equal(5, res.Limit);
+        }
+
+        var legacy = await MakeClient(new FakeHttpMessageHandler(req => JsonResponse(bodies[0]))).ListKnowledgeBasesAsync(sort: "created_at");
+        Assert.Null(legacy.Pagination);
+        var canonical = await MakeClient(new FakeHttpMessageHandler(req => JsonResponse(bodies[1]))).ListKnowledgeBasesAsync(sort: "created_at");
+        Assert.True(canonical.Pagination!.HasPrev);
     }
 
     [Fact]
@@ -1056,17 +1075,33 @@ public sealed class SeclaiClientTests
     // ── Memory Banks ────────────────────────────────────────────────────────
 
     [Fact]
-    public async Task ListMemoryBanks_GetsPath()
+    public async Task ListMemoryBanks_GetsPathAndReadsEitherShape()
     {
-        var handler = new FakeHttpMessageHandler(req =>
+        // The default shape, then the one a caller on 2026-07-27 or later gets.
+        var bodies = new[]
         {
-            Assert.Equal(HttpMethod.Get, req.Method);
-            Assert.Equal("/memory_banks", req.RequestUri!.AbsolutePath);
-            return JsonResponse("{\"data\":[],\"total\":0}");
-        });
-        var client = MakeClient(handler);
-        var res = await client.ListMemoryBanksAsync();
-        Assert.Equal(0, res.Total);
+            "{\"memory_banks\":[{\"id\":\"mb1\",\"name\":\"Chat\",\"type\":\"conversation\"}],\"page\":2,\"limit\":5,\"total\":7}",
+            "{\"data\":[{\"id\":\"mb1\",\"name\":\"Chat\",\"type\":\"conversation\"}],\"pagination\":{\"page\":2,\"limit\":5,\"total\":7,\"pages\":2,\"has_next\":false,\"has_prev\":true}}",
+        };
+        foreach (var body in bodies)
+        {
+            var handler = new FakeHttpMessageHandler(req =>
+            {
+                Assert.Equal(HttpMethod.Get, req.Method);
+                Assert.Equal("/memory_banks", req.RequestUri!.AbsolutePath);
+                return JsonResponse(body);
+            });
+            var res = await MakeClient(handler).ListMemoryBanksAsync();
+            Assert.Equal("mb1", Assert.Single(res.Data).Id);
+            Assert.Equal(7, res.Total);
+            Assert.Equal(2, res.Page);
+            Assert.Equal(5, res.Limit);
+        }
+
+        var legacy = await MakeClient(new FakeHttpMessageHandler(req => JsonResponse(bodies[0]))).ListMemoryBanksAsync();
+        Assert.Null(legacy.Pagination);
+        var canonical = await MakeClient(new FakeHttpMessageHandler(req => JsonResponse(bodies[1]))).ListMemoryBanksAsync();
+        Assert.True(canonical.Pagination!.HasPrev);
     }
 
     [Fact]

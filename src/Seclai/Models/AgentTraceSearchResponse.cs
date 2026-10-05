@@ -6,7 +6,8 @@ namespace Seclai.Models;
 
 public sealed class AgentTraceSearchResponse
 {
-    [JsonPropertyName("results")]
+    /// <summary>The matching trace entries, read from the <c>matches</c> key the endpoint returns.</summary>
+    [JsonPropertyName("matches")]
     public List<Dictionary<string, JsonElement>>? Results { get; set; }
 
     [JsonPropertyName("total")]

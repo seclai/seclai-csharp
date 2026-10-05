@@ -19,6 +19,13 @@
 - Add `ChatCapable`, `GenerationCreditsPerVariant` and `Input30mCacheWriteCreditsPer1000Tokens` to `PromptModelResponse`, and the same 30-minute cache rate to `VariantOptionResponse`
 - Add `ExtractedMediaCapped`, `ExtractedMediaCount` and `ExtractedMediaLimit` to `ContentDetailResponse`, `MediaName`, `PageNumber`, `SourceMime` and `SourceUrl` to `ContentEmbeddingResponse`, and `EmbedderWarning` to `FileUploadResponse` and `ContentFileUploadResponse`
 - Add `GovernanceConversationId` to `AiAssistantFeedbackRequest`
+- Add `Page`, `Limit` and `Pagination` to `KnowledgeBaseListResponse` and `MemoryBankListResponse`, plus `KnowledgeBases` and `MemoryBanks` as the default-shape names for `Data`
+
+### Fixed
+
+- Return the knowledge bases from `ListKnowledgeBasesAsync`. The endpoint answers with `knowledge_bases` by default and the model read only `data`, so `Data` was always empty; it is now filled from either key, and `Total` from the flat field or from `pagination`
+- Return the memory banks from `ListMemoryBanksAsync`, which had the same defect with `memory_banks`
+- Return the matches from `SearchAgentRunsAsync`. The endpoint answers with `matches` and the model read `results`, so `Results` was always null
 
 ## [1.4.0] - 2026-07-27
 

@@ -134,8 +134,8 @@ is how you detect the gap.
 
 **What `2026-07-27` changes.** Undeclared query parameters become a 422 instead
 of being ignored, and list endpoints move to the canonical
-`{data, pagination}` envelope. The affected methods read both shapes, so they
-keep working either way — but the metadata moves:
+`{data, pagination}` envelope. These methods read both shapes, so they keep
+working either way — but the metadata moves:
 
 | Method | Before | From 2026-07-27 |
 | --- | --- | --- |
@@ -143,15 +143,31 @@ keep working either way — but the metadata moves:
 | `ListRunEvaluationResultsAsync` | bare array | `Data` + `Pagination` |
 | `Typed.ListAlertConfigsAsync` | `Configs` + `Total` | `Data` + `Pagination` |
 | `Typed.ListModelAlertsAsync` | `Alerts` + `Total` | `Data` + `Pagination` |
+| `ListKnowledgeBasesAsync` | `knowledge_bases` + flat `total`/`page`/`limit` | `data` + `pagination` |
+| `ListMemoryBanksAsync` | `memory_banks` + flat `total`/`page`/`limit` | `data` + `pagination` |
 
-Read the last two through `Items`, which returns whichever key arrived, and
-prefer `Pagination` over the flat `Total`/`Page`/`Limit` properties. The flat
+Read the alert-config and model-alert listings through `Items`, which returns
+whichever key arrived, and prefer `Pagination` over the flat
+`Total`/`Page`/`Limit` properties. The knowledge-base and memory-bank listings
+fill `Data`, `Total`, `Page` and `Limit` from either shape. The flat
 properties will be deprecated and then removed once the canonical envelope is
 the default.
 
 The cloud-drive listings and `ListEmbeddingModelsAsync` /
 `ListRerankerModelsAsync` follow the same rule. The cloud-drive methods return
 the items from either shape; read the two model listings through `Items`.
+
+**Not yet safe with `ApiVersion` `2026-07-27` or later.** These list methods
+still decode only the default shape. Call them from a client that leaves
+`ApiVersion` unset, or use the raw `JsonElement` method where one exists:
+
+- Return an empty list, with no error: `ListOrganizationAlertPreferencesAsync`,
+  `ListAgentEmailOptOutsAsync`, `ListBlockedEmailSendersAsync`,
+  `ListEmailDomainsAsync`, `Typed.ListExperimentsAsync`,
+  `Typed.GetGenerationTiersAsync`
+- Throw `JsonException`: `ListSolutionConversationsAsync`,
+  `ListGovernanceAiConversationsAsync`, `GetAgentCallersAsync`,
+  `ListInboundEmailRejectionsAsync`, `Typed.ListModelsAsync`
 
 **Later versions.** Each is cumulative, and none changes a response shape this
 client decodes:
