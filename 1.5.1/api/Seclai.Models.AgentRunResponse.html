@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Class AgentRunResponse | Seclai C# SDK </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Class AgentRunResponse | Seclai C# SDK ">
+    
+    
+      <link rel="shortcut icon" href="../favicon.ico">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Seclai.Models.AgentRunResponse">
+
+
+
+  <h1 id="Seclai_Models_AgentRunResponse" data-uid="Seclai.Models.AgentRunResponse" class="text-break">Class AgentRunResponse</h1>
+  <div class="markdown level0 summary"></div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+    <div class="level1"><span class="xref">AgentRunResponse</span></div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Seclai.html">Seclai</a>.<a class="xref" href="Seclai.Models.html">Models</a></h6>
+  <h6><strong>Assembly</strong>: Seclai.dll</h6>
+  <h5 id="Seclai_Models_AgentRunResponse_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class AgentRunResponse</code></pre>
+  </div>
+  <h3 id="properties">Properties
+</h3>
+
+
+  <a id="Seclai_Models_AgentRunResponse_Attachments_" data-uid="Seclai.Models.AgentRunResponse.Attachments*"></a>
+  <h4 id="Seclai_Models_AgentRunResponse_Attachments" data-uid="Seclai.Models.AgentRunResponse.Attachments">Attachments</h4>
+  <div class="markdown level1 summary"><p>Files in the run's output, in order. Empty when it produced none, when it ran before files were listed here, and once the run's trace is purged.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;attachments&quot;)]
+public List&lt;AgentRunFileResponse&gt; Attachments { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.list-1">List</a>&lt;<a class="xref" href="Seclai.Models.AgentRunFileResponse.html">AgentRunFileResponse</a>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_Models_AgentRunResponse_Attempts_" data-uid="Seclai.Models.AgentRunResponse.Attempts*"></a>
+  <h4 id="Seclai_Models_AgentRunResponse_Attempts" data-uid="Seclai.Models.AgentRunResponse.Attempts">Attempts</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;attempts&quot;)]
+public List&lt;AgentRunAttemptResponse&gt; Attempts { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.list-1">List</a>&lt;<a class="xref" href="Seclai.Models.AgentRunAttemptResponse.html">AgentRunAttemptResponse</a>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_Models_AgentRunResponse_BlockedPolicies_" data-uid="Seclai.Models.AgentRunResponse.BlockedPolicies*"></a>
+  <h4 id="Seclai_Models_AgentRunResponse_BlockedPolicies" data-uid="Seclai.Models.AgentRunResponse.BlockedPolicies">BlockedPolicies</h4>
+  <div class="markdown level1 summary"><p>Governance policies that produced at least one BLOCK verdict during this run.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;blocked_policies&quot;)]
+public List&lt;GovernancePolicyRefResponse&gt;? BlockedPolicies { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.list-1">List</a>&lt;<a class="xref" href="Seclai.Models.GovernancePolicyRefResponse.html">GovernancePolicyRefResponse</a>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_Models_AgentRunResponse_Credits_" data-uid="Seclai.Models.AgentRunResponse.Credits*"></a>
+  <h4 id="Seclai_Models_AgentRunResponse_Credits" data-uid="Seclai.Models.AgentRunResponse.Credits">Credits</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;credits&quot;)]
+public float? Credits { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.single">float</a>?</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_Models_AgentRunResponse_ErrorCount_" data-uid="Seclai.Models.AgentRunResponse.ErrorCount*"></a>
+  <h4 id="Seclai_Models_AgentRunResponse_ErrorCount" data-uid="Seclai.Models.AgentRunResponse.ErrorCount">ErrorCount</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;error_count&quot;)]
+public int ErrorCount { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_Models_AgentRunResponse_FlaggedPolicies_" data-uid="Seclai.Models.AgentRunResponse.FlaggedPolicies*"></a>
+  <h4 id="Seclai_Models_AgentRunResponse_FlaggedPolicies" data-uid="Seclai.Models.AgentRunResponse.FlaggedPolicies">FlaggedPolicies</h4>
+  <div class="markdown level1 summary"><p>Governance policies that produced at least one FLAG verdict during this run.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;flagged_policies&quot;)]
+public List&lt;GovernancePolicyRefResponse&gt;? FlaggedPolicies { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.list-1">List</a>&lt;<a class="xref" href="Seclai.Models.GovernancePolicyRefResponse.html">GovernancePolicyRefResponse</a>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_Models_AgentRunResponse_GovernanceInputStatus_" data-uid="Seclai.Models.AgentRunResponse.GovernanceInputStatus*"></a>
+  <h4 id="Seclai_Models_AgentRunResponse_GovernanceInputStatus" data-uid="Seclai.Models.AgentRunResponse.GovernanceInputStatus">GovernanceInputStatus</h4>
+  <div class="markdown level1 summary"><p>Result of the governance input evaluation: safe, blocked, skipped, or timed_out.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;governance_input_status&quot;)]
+public string? GovernanceInputStatus { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_Models_AgentRunResponse_GovernanceInputWaitMs_" data-uid="Seclai.Models.AgentRunResponse.GovernanceInputWaitMs*"></a>
+  <h4 id="Seclai_Models_AgentRunResponse_GovernanceInputWaitMs" data-uid="Seclai.Models.AgentRunResponse.GovernanceInputWaitMs">GovernanceInputWaitMs</h4>
+  <div class="markdown level1 summary"><p>Milliseconds spent waiting for governance input evaluation.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;governance_input_wait_ms&quot;)]
+public int? GovernanceInputWaitMs { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>?</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_Models_AgentRunResponse_HitlWaitMs_" data-uid="Seclai.Models.AgentRunResponse.HitlWaitMs*"></a>
+  <h4 id="Seclai_Models_AgentRunResponse_HitlWaitMs" data-uid="Seclai.Models.AgentRunResponse.HitlWaitMs">HitlWaitMs</h4>
+  <div class="markdown level1 summary"><p>Cumulative milliseconds the run was parked waiting for a human decision on a
+human_in_the_loop step. Subtracted from active duration in run-detail and
+duration-stats responses.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;hitl_wait_ms&quot;)]
+public int? HitlWaitMs { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>?</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_Models_AgentRunResponse_Input_" data-uid="Seclai.Models.AgentRunResponse.Input*"></a>
+  <h4 id="Seclai_Models_AgentRunResponse_Input" data-uid="Seclai.Models.AgentRunResponse.Input">Input</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;input&quot;)]
+public string? Input { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_Models_AgentRunResponse_InputScanStatus_" data-uid="Seclai.Models.AgentRunResponse.InputScanStatus*"></a>
+  <h4 id="Seclai_Models_AgentRunResponse_InputScanStatus" data-uid="Seclai.Models.AgentRunResponse.InputScanStatus">InputScanStatus</h4>
+  <div class="markdown level1 summary"><p>Result of the prompt injection scan: safe, unsafe, skipped, timed_out, or error.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;input_scan_status&quot;)]
+public string? InputScanStatus { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_Models_AgentRunResponse_Output_" data-uid="Seclai.Models.AgentRunResponse.Output*"></a>
+  <h4 id="Seclai_Models_AgentRunResponse_Output" data-uid="Seclai.Models.AgentRunResponse.Output">Output</h4>
+  <div class="markdown level1 summary"><p>The run's output text; its files are in <a class="xref" href="Seclai.Models.AgentRunResponse.html#Seclai_Models_AgentRunResponse_Attachments">Attachments</a>. Below
+<code>Seclai-Version: 2026-09-30</code> an output that has files is instead the manifest JSON.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;output&quot;)]
+public string? Output { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_Models_AgentRunResponse_OutputContentType_" data-uid="Seclai.Models.AgentRunResponse.OutputContentType*"></a>
+  <h4 id="Seclai_Models_AgentRunResponse_OutputContentType" data-uid="Seclai.Models.AgentRunResponse.OutputContentType">OutputContentType</h4>
+  <div class="markdown level1 summary"><p>MIME type of <a class="xref" href="Seclai.Models.AgentRunResponse.html#Seclai_Models_AgentRunResponse_Output">Output</a> — mirrors the terminal step's output_content_type.
+<code>text/*</code> is free-form text and <code>application/json</code> is a JSON document. Below
+<code>Seclai-Version: 2026-09-30</code> an output that has files reads
+<code>application/vnd.seclai.manifest+json</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;output_content_type&quot;)]
+public string? OutputContentType { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_Models_AgentRunResponse_Priority_" data-uid="Seclai.Models.AgentRunResponse.Priority*"></a>
+  <h4 id="Seclai_Models_AgentRunResponse_Priority" data-uid="Seclai.Models.AgentRunResponse.Priority">Priority</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;priority&quot;)]
+public bool Priority { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_Models_AgentRunResponse_RunId_" data-uid="Seclai.Models.AgentRunResponse.RunId*"></a>
+  <h4 id="Seclai_Models_AgentRunResponse_RunId" data-uid="Seclai.Models.AgentRunResponse.RunId">RunId</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;run_id&quot;)]
+public string? RunId { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_Models_AgentRunResponse_ScanWaitMs_" data-uid="Seclai.Models.AgentRunResponse.ScanWaitMs*"></a>
+  <h4 id="Seclai_Models_AgentRunResponse_ScanWaitMs" data-uid="Seclai.Models.AgentRunResponse.ScanWaitMs">ScanWaitMs</h4>
+  <div class="markdown level1 summary"><p>Milliseconds spent waiting for prompt injection scan.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;scan_wait_ms&quot;)]
+public int? ScanWaitMs { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>?</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_Models_AgentRunResponse_Status_" data-uid="Seclai.Models.AgentRunResponse.Status*"></a>
+  <h4 id="Seclai_Models_AgentRunResponse_Status" data-uid="Seclai.Models.AgentRunResponse.Status">Status</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;status&quot;)]
+public string? Status { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_Models_AgentRunResponse_Steps_" data-uid="Seclai.Models.AgentRunResponse.Steps*"></a>
+  <h4 id="Seclai_Models_AgentRunResponse_Steps" data-uid="Seclai.Models.AgentRunResponse.Steps">Steps</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;steps&quot;)]
+public List&lt;AgentRunStepResponse&gt;? Steps { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.list-1">List</a>&lt;<a class="xref" href="Seclai.Models.AgentRunStepResponse.html">AgentRunStepResponse</a>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_Models_AgentRunResponse_TracePurgedAt_" data-uid="Seclai.Models.AgentRunResponse.TracePurgedAt*"></a>
+  <h4 id="Seclai_Models_AgentRunResponse_TracePurgedAt" data-uid="Seclai.Models.AgentRunResponse.TracePurgedAt">TracePurgedAt</h4>
+  <div class="markdown level1 summary"><p>When this run's trace content was deleted under the account's agent-trace retention window. Non-null means the run's and every step's input and output are null by design: the run aged out, it did not fail.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;trace_purged_at&quot;)]
+public string? TracePurgedAt { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_Models_AgentRunResponse_WaitMs_" data-uid="Seclai.Models.AgentRunResponse.WaitMs*"></a>
+  <h4 id="Seclai_Models_AgentRunResponse_WaitMs" data-uid="Seclai.Models.AgentRunResponse.WaitMs">WaitMs</h4>
+  <div class="markdown level1 summary"><p>Cumulative milliseconds the run was parked on standard-mode wait steps. Subtracted from active duration in run-detail and duration-stats responses, exactly like hitl_wait_ms. Priority waits block inline and are not counted here.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;wait_ms&quot;)]
+public int? WaitMs { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>?</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      
+      <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>
