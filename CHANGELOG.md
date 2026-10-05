@@ -1,5 +1,27 @@
 # Changelog
 
+## [1.5.1] - 2026-10-05
+
+### Changed
+
+- Throw `ApiException` from the typed list methods of version-gated endpoints when a successful response is not a list — an error-shaped object, text, `null`, or an empty body. It carries the request URL and the response body. Earlier, depending on the method and the body, it was an empty or null result, a `JsonException`, an `InvalidOperationException`, or already an `ApiException`; an empty list reads as "no results". An explicit `"data": null` is an empty list ([#12](https://github.com/seclai/seclai-csharp/issues/12))
+- Send only the SDK's value when `DefaultHeaders` also names the API-key header, `Authorization` under a bearer option, or `X-Account-Id` with `AccountId` set. The value from `ApiKey`, the bearer options or `AccountId` now wins; 1.5.0 sent both, as `k, other`, and left the server to choose ([#13](https://github.com/seclai/seclai-csharp/issues/13))
+- Send one value when `DefaultHeaders` names a header twice in different letter case, or names `Accept` on a method that sets it — every method except `DownloadSourceExportAsync` and `DownloadAgentRunAttachmentAsync`, which set none and still send the `DefaultHeaders` one. Where the SDK sets `Accept`, its value is the one sent; 1.5.0 appended the other ([#13](https://github.com/seclai/seclai-csharp/issues/13))
+- Change the order of the request headers the SDK writes. It was the auth headers, `Accept`, `Seclai-Version`, then `DefaultHeaders`; it is now `DefaultHeaders`, `Accept`, the auth headers, then `Seclai-Version`. The headers and their values are the same when no two layers name the same one ([#13](https://github.com/seclai/seclai-csharp/issues/13))
+
+### Added
+
+- Add `Typed.ListMemoryBankTemplatesAsync` and `Typed.GetAgentsUsingMemoryBankAsync`, returning the list as `List<Dictionary<string, JsonElement>>` on both response shapes. The raw methods of the same name are unchanged and return the response body as sent ([#12](https://github.com/seclai/seclai-csharp/issues/12))
+- Add `Pagination` to `EvaluationResultListResponse`, `EvaluationRunSummaryListResponse`, `CompatibleRunListResponse`, `AgentEmailOptOutListResponse`, `BlockedEmailSenderListResponse`, `OrganizationAlertPreferenceListResponse`, `EmailDomainsListResponse`, `ExperimentListResponse` and `GenerationTierListResponse`, and `Page` and `Limit` to `EvaluationResultListResponse` ([#12](https://github.com/seclai/seclai-csharp/issues/12))
+
+### Fixed
+
+- Return the items, and `Total` where the model has it, from `ListAgentEmailOptOutsAsync`, `ListBlockedEmailSendersAsync`, `SetAutoBlockModeAsync`, `ListOrganizationAlertPreferencesAsync`, `ListEmailDomainsAsync`, `Typed.ListExperimentsAsync` and `Typed.GetGenerationTiersAsync` once `ApiVersion` is `2026-07-27` or later. The API then answers with `{data, pagination}`, and these read only their default key: `Items`, `Experiments` and `Tiers` came back empty, and `Preferences` and `Domains` null, with no error ([#12](https://github.com/seclai/seclai-csharp/issues/12))
+- Return the list from `GetAgentCallersAsync`, `ListInboundEmailRejectionsAsync`, `ListGovernanceAiConversationsAsync`, `ListSolutionConversationsAsync` and `Typed.ListModelsAsync` once `ApiVersion` is `2026-07-27` or later. They threw `JsonException` ([#12](https://github.com/seclai/seclai-csharp/issues/12))
+- Fill `Total`, and `Page` and `Limit` where the model has them, once `ApiVersion` is `2026-07-27` or later, on `ListEvaluationResultsAsync`, `ListAgentEvaluationResultsAsync`, `ListRunEvaluationResultsAsync`, `ListEvaluationRunsAsync`, `ListCompatibleRunsAsync`, `Typed.ListAlertConfigsAsync` and `Typed.ListModelAlertsAsync`. They stayed 0 because the counts arrive inside `pagination` ([#12](https://github.com/seclai/seclai-csharp/issues/12))
+- Reject an unknown or empty `Seclai-Version` set on a supplied `HttpClient`'s `DefaultRequestHeaders` with `ConfigurationException`, at construction and before each request. This is a new rejection: the value was sent unchecked, bypassing the guard on `ApiVersion`, and a caller relying on that must now set `AllowUnknownApiVersion`. Two different values there are rejected even with that option; the same value twice is sent once ([#13](https://github.com/seclai/seclai-csharp/issues/13))
+- Correct the README's API-versioning section: it listed eleven methods as unsafe after opting in, which is no longer true, and it did not say that opting in turns paging on for the evaluation-criteria, run-evaluation-result and alert-config listings ([#12](https://github.com/seclai/seclai-csharp/issues/12))
+
 ## [1.5.0] - 2026-10-04
 
 ### Changed
@@ -168,6 +190,7 @@ _Stable release. Packaging only; no API changes since 0.0.1._
 
 _Initial release._
 
+[1.5.1]: https://github.com/seclai/seclai-csharp/releases/tag/1.5.1
 [1.5.0]: https://github.com/seclai/seclai-csharp/releases/tag/1.5.0
 [1.4.0]: https://github.com/seclai/seclai-csharp/releases/tag/1.4.0
 [1.3.0]: https://github.com/seclai/seclai-csharp/releases/tag/1.3.0

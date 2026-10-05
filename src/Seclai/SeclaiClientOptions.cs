@@ -58,6 +58,11 @@ public sealed class SeclaiClientOptions
     /// Permit an <see cref="ApiVersion"/> this release was not built against.
     /// </summary>
     /// <remarks>
+    /// The guard covers a <c>Seclai-Version</c> however it is supplied: <see cref="ApiVersion"/>,
+    /// <see cref="DefaultHeaders"/>, or the <c>DefaultRequestHeaders</c> of a supplied
+    /// <see cref="HttpClient"/>. An unknown or empty value throws
+    /// <see cref="Seclai.Exceptions.ConfigurationException"/> before anything is sent.
+    ///
     /// Off by default. A newer API version can change response shapes, and this
     /// client would decode them incorrectly rather than reject them — a
     /// request-side mistake answers 422, but a reshaped response just
@@ -75,11 +80,24 @@ public sealed class SeclaiClientOptions
     /// Provide your own <see cref="HttpClient"/> instance (e.g. from IHttpClientFactory).
     /// When supplied, the client will <b>not</b> be disposed by <see cref="SeclaiClient"/>.
     /// </summary>
+    /// <remarks>
+    /// Its <c>DefaultRequestHeaders</c> are the lowest header layer: <see cref="DefaultHeaders"/>
+    /// and the headers the SDK sets replace them. A <c>Seclai-Version</c> among them is held
+    /// to the same guard as <see cref="ApiVersion"/>, at construction and on every request just
+    /// before it is sent. A change made by another thread between that check and the send is not seen.
+    /// </remarks>
     public HttpClient? HttpClient { get; set; }
 
     /// <summary>
     /// Extra headers sent with every request (e.g. User-Agent, X-Correlation-Id).
     /// </summary>
+    /// <remarks>
+    /// One value is sent for each header named here. An entry replaces the supplied <see cref="HttpClient"/>'s
+    /// default for that header, and is itself replaced by a header the SDK sets from its own
+    /// options: <c>Accept</c> (not set on the two download methods), the API-key header,
+    /// <c>Authorization</c> and <c>X-Account-Id</c>.
+    /// A <c>Seclai-Version</c> entry takes precedence over <see cref="ApiVersion"/>.
+    /// </remarks>
     public Dictionary<string, string>? DefaultHeaders { get; set; }
 
     /// <summary>

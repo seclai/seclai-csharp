@@ -11,7 +11,7 @@ namespace Seclai.Models;
 /// <c>pagination</c>. The defaults and pricing sit beside the list on both shapes. Use
 /// <see cref="Items"/> to read whichever arrived.
 /// </remarks>
-public sealed class EmbeddingModelListResponse
+public sealed class EmbeddingModelListResponse : IListPage<EmbeddingModelResponse>
 {
     /// <summary>Dimensions used with the default embedding model</summary>
     [JsonPropertyName("default_dimension")]
@@ -33,7 +33,7 @@ public sealed class EmbeddingModelListResponse
     [JsonPropertyName("data")]
     public List<EmbeddingModelResponse> Data { get; set; } = new();
 
-    /// <summary>Canonical pagination metadata. Null on the legacy shape.</summary>
+    /// <summary>Paging metadata, present once <c>Seclai-Version</c> is <c>2026-07-27</c> or later. Null on the default shape.</summary>
     [JsonPropertyName("pagination")]
     public PaginationResponse? Pagination { get; set; }
 
@@ -44,4 +44,17 @@ public sealed class EmbeddingModelListResponse
     /// <summary>Monthly storage credits per dimension count</summary>
     [JsonPropertyName("storage_credits")]
     public List<EmbeddingStorageCreditsResponse> StorageCredits { get; set; } = new();
+
+    void IListPage<EmbeddingModelResponse>.Fill(List<EmbeddingModelResponse> items, ListShape shape)
+    {
+        if (shape.FromData)
+        {
+            Data = items;
+        }
+        else
+        {
+            Models = items;
+        }
+        Pagination = shape.Pagination;
+    }
 }

@@ -11,7 +11,7 @@ namespace Seclai.Models;
 /// <c>pagination</c>. The default and pricing sit beside the list on both shapes. Use
 /// <see cref="Items"/> to read whichever arrived.
 /// </remarks>
-public sealed class RerankerModelListResponse
+public sealed class RerankerModelListResponse : IListPage<RerankerModelResponse>
 {
     /// <summary>Reranker used when a knowledge base does not choose one</summary>
     [JsonPropertyName("default_model_type")]
@@ -25,7 +25,7 @@ public sealed class RerankerModelListResponse
     [JsonPropertyName("data")]
     public List<RerankerModelResponse> Data { get; set; } = new();
 
-    /// <summary>Canonical pagination metadata. Null on the legacy shape.</summary>
+    /// <summary>Paging metadata, present once <c>Seclai-Version</c> is <c>2026-07-27</c> or later. Null on the default shape.</summary>
     [JsonPropertyName("pagination")]
     public PaginationResponse? Pagination { get; set; }
 
@@ -36,4 +36,17 @@ public sealed class RerankerModelListResponse
     /// <summary>Credits charged for processing a search request</summary>
     [JsonPropertyName("search_processing_credits")]
     public double SearchProcessingCredits { get; set; }
+
+    void IListPage<RerankerModelResponse>.Fill(List<RerankerModelResponse> items, ListShape shape)
+    {
+        if (shape.FromData)
+        {
+            Data = items;
+        }
+        else
+        {
+            Models = items;
+        }
+        Pagination = shape.Pagination;
+    }
 }

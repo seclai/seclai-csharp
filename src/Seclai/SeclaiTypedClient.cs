@@ -79,8 +79,8 @@ public sealed class SeclaiTypedClient
     /// <inheritdoc cref="SeclaiClient.ListAlertConfigsAsync"/>
     public async Task<AlertConfigListResponse> ListAlertConfigsAsync(int? page = null, int? limit = null, CancellationToken cancellationToken = default)
     {
-        var raw = await _client.ListAlertConfigsAsync(page, limit, cancellationToken).ConfigureAwait(false);
-        return Deserialize<AlertConfigListResponse>(raw);
+        var response = await _client.ListAlertConfigsResponseAsync(page, limit, cancellationToken).ConfigureAwait(false);
+        return _client.ReadPage<AlertConfigListResponse, AlertConfigResponse>(response, "configs", "GET");
     }
 
     /// <inheritdoc cref="SeclaiClient.CreateAlertConfigAsync"/>
@@ -100,8 +100,8 @@ public sealed class SeclaiTypedClient
     /// <inheritdoc cref="SeclaiClient.ListModelAlertsAsync"/>
     public async Task<ModelAlertListResponse> ListModelAlertsAsync(int? page = null, int? limit = null, CancellationToken cancellationToken = default)
     {
-        var raw = await _client.ListModelAlertsAsync(page, limit, cancellationToken).ConfigureAwait(false);
-        return Deserialize<ModelAlertListResponse>(raw);
+        var response = await _client.ListModelAlertsResponseAsync(page, limit, cancellationToken).ConfigureAwait(false);
+        return _client.ReadPage<ModelAlertListResponse, ModelAlertResponse>(response, "alerts", "GET");
     }
 
     /// <inheritdoc cref="SeclaiClient.GetUnreadModelAlertCountAsync"/>
@@ -121,8 +121,8 @@ public sealed class SeclaiTypedClient
     /// <inheritdoc cref="SeclaiClient.ListModelsAsync"/>
     public async Task<List<ProviderGroupResponse>> ListModelsAsync(string? provider = null, bool? supportsToolUse = null, bool? supportsThinking = null, CancellationToken cancellationToken = default)
     {
-        var raw = await _client.ListModelsAsync(provider, supportsToolUse, supportsThinking, cancellationToken).ConfigureAwait(false);
-        return Deserialize<List<ProviderGroupResponse>>(raw);
+        var response = await _client.ListModelsResponseAsync(provider, supportsToolUse, supportsThinking, cancellationToken).ConfigureAwait(false);
+        return _client.ReadList<ProviderGroupResponse>(response, legacyKey: null, "GET", out _);
     }
 
     /// <inheritdoc cref="SeclaiClient.GetModelAsync"/>
@@ -135,8 +135,8 @@ public sealed class SeclaiTypedClient
     /// <inheritdoc cref="SeclaiClient.ListExperimentsAsync"/>
     public async Task<ExperimentListResponse> ListExperimentsAsync(int? days = null, string? startDate = null, string? endDate = null, int? limit = null, int? offset = null, CancellationToken cancellationToken = default)
     {
-        var raw = await _client.ListExperimentsAsync(days, startDate, endDate, limit, offset, cancellationToken).ConfigureAwait(false);
-        return Deserialize<ExperimentListResponse>(raw);
+        var response = await _client.ListExperimentsResponseAsync(days, startDate, endDate, limit, offset, cancellationToken).ConfigureAwait(false);
+        return _client.ReadPage<ExperimentListResponse, ExperimentSummaryResponse>(response, "experiments", "GET");
     }
 
     /// <inheritdoc cref="SeclaiClient.CreateExperimentAsync"/>
@@ -170,8 +170,8 @@ public sealed class SeclaiTypedClient
     /// <inheritdoc cref="SeclaiClient.GetGenerationTiersAsync"/>
     public async Task<GenerationTierListResponse> GetGenerationTiersAsync(CancellationToken cancellationToken = default)
     {
-        var raw = await _client.GetGenerationTiersAsync(cancellationToken).ConfigureAwait(false);
-        return Deserialize<GenerationTierListResponse>(raw);
+        var response = await _client.GetGenerationTiersResponseAsync(cancellationToken).ConfigureAwait(false);
+        return _client.ReadPage<GenerationTierListResponse, GenerationTierResponse>(response, "tiers", "GET");
     }
 
     /// <inheritdoc cref="SeclaiClient.SearchDocsAsync"/>
@@ -179,5 +179,21 @@ public sealed class SeclaiTypedClient
     {
         var raw = await _client.SearchDocsAsync(query, mode, limit, cancellationToken).ConfigureAwait(false);
         return Deserialize<DocsSearchResponse>(raw);
+    }
+
+    /// <summary>Lists available memory bank templates, read from either response shape.</summary>
+    /// <remarks>The API declares no schema for a template, so each is its JSON object.</remarks>
+    public async Task<List<Dictionary<string, JsonElement>>> ListMemoryBankTemplatesAsync(CancellationToken cancellationToken = default)
+    {
+        var response = await _client.ListMemoryBankTemplatesResponseAsync(cancellationToken).ConfigureAwait(false);
+        return _client.ReadList<Dictionary<string, JsonElement>>(response, legacyKey: null, "GET", out _);
+    }
+
+    /// <summary>Lists agents that use a memory bank, read from either response shape.</summary>
+    /// <remarks>The API declares no schema for an entry, so each is its JSON object: <c>agent_id</c> and <c>agent_name</c>.</remarks>
+    public async Task<List<Dictionary<string, JsonElement>>> GetAgentsUsingMemoryBankAsync(string memoryBankId, CancellationToken cancellationToken = default)
+    {
+        var response = await _client.GetAgentsUsingMemoryBankResponseAsync(memoryBankId, cancellationToken).ConfigureAwait(false);
+        return _client.ReadList<Dictionary<string, JsonElement>>(response, legacyKey: null, "GET", out _);
     }
 }

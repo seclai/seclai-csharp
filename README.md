@@ -39,9 +39,9 @@ Console.WriteLine($"Run {run.RunId}: {run.Status}");
 | `AutoRefresh` | `true` | Auto-refresh expired SSO tokens using the cached refresh token. |
 | `AccountId` | — | Account ID sent as `X-Account-Id` header. |
 | `BaseUri` | `https://seclai.com` | API base URL. Falls back to `SECLAI_API_URL` env var. |
-| `HttpClient` | internal | Bring your own `HttpClient` (useful for DI or testing). |
+| `HttpClient` | internal | Bring your own `HttpClient` (useful for DI or testing). Its `DefaultRequestHeaders` are the lowest header layer — see [Request headers](#request-headers). |
 | `Timeout` | 120 s | HTTP request timeout. Ignored when a custom `HttpClient` is provided. |
-| `DefaultHeaders` | none | Extra headers appended to every request. |
+| `DefaultHeaders` | none | Extra headers sent with every request. An entry replaces the supplied `HttpClient`'s default for the same header; the SDK's own headers replace both. |
 
 `SeclaiClient` implements `IDisposable`. When you let it create its own `HttpClient`, wrap it in a `using` statement so the client is disposed properly:
 
@@ -50,6 +50,29 @@ using var client = new SeclaiClient(new SeclaiClientOptions { ApiKey = "sk_..." 
 ```
 
 If you supply your own `HttpClient`, the client does **not** dispose it — you manage its lifetime.
+
+### Request headers
+
+Exactly one value is sent for every header the SDK sets and for every request
+header named in `DefaultHeaders`. A content header named there, such as
+`Content-Type`, is not a request header in .NET and is ignored. A header that
+only the supplied `HttpClient` carries is sent as that client holds it, with
+every value it has. From lowest to highest, where a higher layer replaces a
+lower one:
+
+1. the supplied `HttpClient`'s `DefaultRequestHeaders`
+2. `DefaultHeaders`
+3. the headers the SDK sets from its own options: `Accept`, `Seclai-Version`
+   (from `ApiVersion`), the API-key header (from `ApiKey`), `Authorization` (from
+   `AccessToken`, `AccessTokenProvider` or SSO) and `X-Account-Id` (from
+   `AccountId`)
+
+So the credential and the account a request runs as always come from the options
+that exist for them, never from a default header of the same name. A header the
+SDK is not setting passes through from the lower layers: with `ApiKey`
+authentication a default `Authorization` is still sent, and with `AccountId`
+unset a default `X-Account-Id` is too. `Seclai-Version` is the one exception in
+layer 3: a `DefaultHeaders` entry for it takes precedence over `ApiVersion`.
 
 ### Authentication
 
@@ -122,10 +145,25 @@ alone never changes the wire contract.
 
 Known versions are on `SeclaiApiVersion` (`V2026_07_01` through `V2026_10_03`,
 plus `Default`, `Latest` and `Known`). A version this release was **not** built
-against is rejected at construction: a newer version can reshape responses, and
-this client would decode them incorrectly rather than reject them. Upgrade the
-package to adopt a new version, or set `AllowUnknownApiVersion` if you have to
-move first and accept that risk.
+against is rejected with `ConfigurationException`: a newer version can reshape
+responses, and this client would decode them incorrectly rather than reject
+them. Upgrade the package to adopt a new version, or set
+`AllowUnknownApiVersion` if you have to move first and accept that risk.
+
+The guard covers every way a `Seclai-Version` can reach the wire: `ApiVersion`,
+`DefaultHeaders`, and the `DefaultRequestHeaders` of an `HttpClient` you supply.
+The first two are checked at construction. An `HttpClient`'s defaults can change
+afterwards, so they are checked at construction and again on every request,
+after the access token has been fetched and immediately before the request is
+handed to the `HttpClient`: an unknown or empty value throws before anything is
+sent. Two different values there throw even with `AllowUnknownApiVersion`,
+since the client cannot tell which one the server would use; the same value
+twice is sent once.
+
+That check cannot be airtight. `HttpClient` adds its defaults when it sends, so
+another thread that changes a shared `HttpClient`'s `Seclai-Version` between the
+check and the send is not seen. Set the version through `ApiVersion`, which the
+client writes onto each request itself, if the `HttpClient` is shared.
 
 The guard only covers the header. An account pinned server-side can still be
 newer than this release — `GetApiVersionAsync().EffectiveVersion` is what the
@@ -133,41 +171,45 @@ request actually resolved to, and comparing it against `SeclaiApiVersion.Latest`
 is how you detect the gap.
 
 **What `2026-07-27` changes.** Undeclared query parameters become a 422 instead
-of being ignored, and list endpoints move to the canonical
-`{data, pagination}` envelope. These methods read both shapes, so they keep
-working either way — but the metadata moves:
+of being ignored, and 30 list endpoints change shape: by default each answers
+with a bare array or an object keyed per resource (`items`, `domains`,
+`configs`, …), and from `2026-07-27` with `{data, pagination}` plus the same
+extra fields. Every method for those endpoints reads both shapes and returns the
+items where it always has:
 
-| Method | Before | From 2026-07-27 |
+| Returns | Methods | Paging metadata |
 | --- | --- | --- |
-| `ListEvaluationCriteriaPageAsync` | bare array | `Data` + `Pagination` |
-| `ListRunEvaluationResultsAsync` | bare array | `Data` + `Pagination` |
-| `Typed.ListAlertConfigsAsync` | `Configs` + `Total` | `Data` + `Pagination` |
-| `Typed.ListModelAlertsAsync` | `Alerts` + `Total` | `Data` + `Pagination` |
-| `ListKnowledgeBasesAsync` | `knowledge_bases` + flat `total`/`page`/`limit` | `data` + `pagination` |
-| `ListMemoryBanksAsync` | `memory_banks` + flat `total`/`page`/`limit` | `data` + `pagination` |
+| `List<T>` | `ListEvaluationCriteriaAsync`, `GetAgentCallersAsync`, `ListInboundEmailRejectionsAsync`, `ListGovernanceAiConversationsAsync`, `ListSolutionConversationsAsync`, `Typed.ListModelsAsync`, `Typed.ListMemoryBankTemplatesAsync`, `Typed.GetAgentsUsingMemoryBankAsync`, the four cloud-drive listings | not exposed |
+| A model with `Data` | `ListEvaluationCriteriaPageAsync`, `ListRunEvaluationResultsAsync`, `ListAgentEvaluationResultsAsync`, `ListEvaluationResultsAsync`, `ListEvaluationRunsAsync`, `ListCompatibleRunsAsync`, `ListKnowledgeBasesAsync`, `ListMemoryBanksAsync` | `Total`, `Page` and `Limit` where the model has them, filled from either shape that states them — the default bare array of `ListRunEvaluationResultsAsync` states none, so its counters are 0 there; `Pagination` once opted in |
+| A model with its own list property | `ListAgentEmailOptOutsAsync`, `ListBlockedEmailSendersAsync` and `SetAutoBlockModeAsync` (`Items`), `ListOrganizationAlertPreferencesAsync` (`Preferences`), `ListEmailDomainsAsync` (`Domains`), `Typed.ListExperimentsAsync` (`Experiments`), `Typed.GetGenerationTiersAsync` (`Tiers`) | `Total` where the model has it, filled from either shape; `Pagination` once opted in |
+| A model with two list properties | `Typed.ListAlertConfigsAsync` (`Configs`), `Typed.ListModelAlertsAsync` (`Alerts`), `ListEmbeddingModelsAsync` and `ListRerankerModelsAsync` (`Models`) | Read `Items`, which returns whichever arrived: the named property is filled on the default shape and `Data` from 2026-07-27, never both. `Total` where the model has it; `Pagination` once opted in |
 
-Read the alert-config and model-alert listings through `Items`, which returns
-whichever key arrived, and prefer `Pagination` over the flat
-`Total`/`Page`/`Limit` properties. The knowledge-base and memory-bank listings
-fill `Data`, `Total`, `Page` and `Limit` from either shape. The flat
-properties will be deprecated and then removed once the canonical envelope is
-the default.
+`Pagination` is `null` on the default shape. The raw `JsonElement` methods —
+`ListAlertConfigsAsync`, `ListModelAlertsAsync`, `ListExperimentsAsync`,
+`GetGenerationTiersAsync`, `ListModelsAsync`, `ListMemoryBankTemplatesAsync` and
+`GetAgentsUsingMemoryBankAsync` — return the response body exactly as sent, so
+its top-level shape follows the version; use their `client.Typed` forms.
 
-The cloud-drive listings and `ListEmbeddingModelsAsync` /
-`ListRerankerModelsAsync` follow the same rule. The cloud-drive methods return
-the items from either shape; read the two model listings through `Items`.
+A successful response that is not a list in either shape — an error-shaped
+object, text, `null` — throws `ApiException` from every method in the table
+rather than returning an empty list, which would read as "no results". An
+explicit `"data": null` is an empty list.
 
-**Not yet safe with `ApiVersion` `2026-07-27` or later.** These list methods
-still decode only the default shape. Call them from a client that leaves
-`ApiVersion` unset, or use the raw `JsonElement` method where one exists:
+**Opting in turns paging on.** Some endpoints return everything by default and
+one page once the request resolves to `2026-07-27` or later, so the same call
+can return fewer rows:
 
-- Return an empty list, with no error: `ListOrganizationAlertPreferencesAsync`,
-  `ListAgentEmailOptOutsAsync`, `ListBlockedEmailSendersAsync`,
-  `ListEmailDomainsAsync`, `Typed.ListExperimentsAsync`,
-  `Typed.GetGenerationTiersAsync`
-- Throw `JsonException`: `ListSolutionConversationsAsync`,
-  `ListGovernanceAiConversationsAsync`, `GetAgentCallersAsync`,
-  `ListInboundEmailRejectionsAsync`, `Typed.ListModelsAsync`
+| Method | Default | From 2026-07-27 |
+| --- | --- | --- |
+| `ListEvaluationCriteriaAsync`, `ListEvaluationCriteriaPageAsync` | every criterion; `page` and `limit` are ignored | one page, 20 items unless `limit` is passed |
+| `ListRunEvaluationResultsAsync` | every result for the run; `page` and `limit` are ignored | one page, 20 items unless `limit` is passed |
+| `ListAlertConfigsAsync`, `Typed.ListAlertConfigsAsync` | every config; `page` and `limit` are ignored | one page, 50 items unless `limit` is passed |
+| `SetAutoBlockModeAsync` | `Total` is the account's full count of blocked senders | `Total` is the number of rows returned, which is at most 50 |
+
+For the three listings, read `Pagination.HasNext` and request the next page, or
+pass `limit`, before relying on the result being complete. `SetAutoBlockModeAsync`
+cannot tell you: opted in, its `Total` is the row count and `HasNext` is always
+false. To see every blocked sender, page through `ListBlockedEmailSendersAsync`.
 
 **Later versions.** Each is cumulative, and none changes a response shape this
 client decodes:
@@ -395,7 +437,8 @@ var bank = await client.CreateMemoryBankAsync(new CreateMemoryBankRequest
     Name = "Chat Memory", Type = "conversation"
 });
 var stats = await client.GetMemoryBankStatsAsync(bank.Id);          // JsonElement
-var templates = await client.ListMemoryBankTemplatesAsync();         // JsonElement
+var templates = await client.Typed.ListMemoryBankTemplatesAsync();   // List<Dictionary<string, JsonElement>>
+var usedBy = await client.Typed.GetAgentsUsingMemoryBankAsync(bank.Id);
 await client.CompactMemoryBankAsync(bank.Id);
 await client.DeleteMemoryBankAsync(bank.Id);
 

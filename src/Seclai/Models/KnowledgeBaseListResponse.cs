@@ -10,7 +10,7 @@ namespace Seclai.Models;
 /// is <c>2026-07-27</c> or later. <see cref="Data"/>, <see cref="Total"/>,
 /// <see cref="Page"/> and <see cref="Limit"/> are filled from whichever arrived.
 /// </remarks>
-public sealed class KnowledgeBaseListResponse
+public sealed class KnowledgeBaseListResponse : IListPage<KnowledgeBaseResponse>
 {
     private PaginationResponse? _pagination;
 
@@ -47,5 +47,14 @@ public sealed class KnowledgeBaseListResponse
             Page = value.Page;
             Limit = value.Limit;
         }
+    }
+
+    void IListPage<KnowledgeBaseResponse>.Fill(List<KnowledgeBaseResponse> items, ListShape shape)
+    {
+        Data = items;
+        Pagination = shape.Pagination;
+        if (shape.Total is int total) Total = total;
+        if (shape.Page is int page) Page = page;
+        if (shape.Limit is int limit) Limit = limit;
     }
 }

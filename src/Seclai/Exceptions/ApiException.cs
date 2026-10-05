@@ -4,7 +4,8 @@ using System.Net;
 namespace Seclai.Exceptions;
 
 /// <summary>
-/// Thrown when the Seclai API returns a non-success HTTP status code.
+/// Thrown when the Seclai API returns a non-success HTTP status code, or a successful
+/// response whose body is not what the method reads (a list method given a non-list).
 /// Contains the status code, HTTP method, request URL, and raw response body.
 /// </summary>
 public class ApiException : Exception
@@ -12,6 +13,15 @@ public class ApiException : Exception
     /// <summary>Creates an <see cref="ApiException"/> from an API error response.</summary>
     public ApiException(HttpStatusCode statusCode, string method, Uri url, string? responseBody)
         : base(BuildMessage(statusCode, method, url, responseBody))
+    {
+        StatusCode = statusCode;
+        Method = method;
+        Url = url;
+        ResponseBody = responseBody;
+    }
+
+    internal ApiException(string message, HttpStatusCode statusCode, string method, Uri url, string? responseBody)
+        : base(message)
     {
         StatusCode = statusCode;
         Method = method;

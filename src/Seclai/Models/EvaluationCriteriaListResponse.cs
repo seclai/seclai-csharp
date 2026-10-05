@@ -10,11 +10,17 @@ namespace Seclai.Models;
 /// <see cref="SeclaiClientOptions.ApiVersion"/> of <c>2026-07-27</c> or later, so
 /// <see cref="Pagination"/> is <c>null</c> unless opted in.
 /// </remarks>
-public sealed class EvaluationCriteriaListResponse
+public sealed class EvaluationCriteriaListResponse : IListPage<EvaluationCriteriaResponse>
 {
     [JsonPropertyName("data")]
     public List<EvaluationCriteriaResponse>? Data { get; set; }
 
     [JsonPropertyName("pagination")]
     public PaginationResponse? Pagination { get; set; }
+
+    void IListPage<EvaluationCriteriaResponse>.Fill(List<EvaluationCriteriaResponse> items, ListShape shape)
+    {
+        Data = items;
+        Pagination = shape.Pagination;
+    }
 }
