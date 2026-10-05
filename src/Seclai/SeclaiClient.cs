@@ -2068,7 +2068,7 @@ public sealed class SeclaiClient : IDisposable
 
     /// <summary>Lists model playground experiments.</summary>
     /// <remarks>
-    /// Returns the response body as sent: <c>{{experiments, total}}</c> by default, and the canonical
+    /// Returns the response body as sent: <c>{experiments, total}</c> by default, and the canonical
     /// <c>{data, pagination}</c> envelope once <see cref="SeclaiClientOptions.ApiVersion"/> is
     /// <c>2026-07-27</c> or later. The <see cref="Typed"/> form reads both.
     /// </remarks>
@@ -2403,7 +2403,7 @@ public sealed class SeclaiClient : IDisposable
     }
     /// <summary>Lists the media-generation quality tiers and the model and cost each resolves to. Global routing and pricing; read-only.</summary>
     /// <remarks>
-    /// Returns the response body as sent: <c>{{tiers}}</c> by default, and the canonical
+    /// Returns the response body as sent: <c>{tiers}</c> by default, and the canonical
     /// <c>{data, pagination}</c> envelope once <see cref="SeclaiClientOptions.ApiVersion"/> is
     /// <c>2026-07-27</c> or later. The <see cref="Typed"/> form reads both.
     /// </remarks>
