@@ -60,4 +60,8 @@ public sealed class ModelRecommendationResponse
 
     [JsonPropertyName("supports_tool_use")]
     public bool SupportsToolUse { get; set; }
+
+    /// <summary>The reasoning-effort values this model accepts. Null when it takes none.</summary>
+    [JsonPropertyName("effort_options")]
+    public EffortOptionsResponse? EffortOptions { get; set; }
 }

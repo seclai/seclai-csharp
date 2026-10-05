@@ -70,4 +70,16 @@ public sealed class ContentDetailResponse
 
     [JsonPropertyName("title")]
     public string? Title { get; set; }
+
+    /// <summary>True when extraction stopped with media still unread, so the item references more media than was indexed.</summary>
+    [JsonPropertyName("extracted_media_capped")]
+    public bool ExtractedMediaCapped { get; set; }
+
+    /// <summary>Number of embedded images and videos extracted from inside this item and indexed as their own chunks. Null when there is no media record for the item.</summary>
+    [JsonPropertyName("extracted_media_count")]
+    public int? ExtractedMediaCount { get; set; }
+
+    /// <summary>The bound that was reached when <c>extracted_media_capped</c> is true and the stop was a bound. Null otherwise.</summary>
+    [JsonPropertyName("extracted_media_limit")]
+    public int? ExtractedMediaLimit { get; set; }
 }

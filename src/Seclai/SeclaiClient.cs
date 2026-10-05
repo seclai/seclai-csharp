@@ -621,9 +621,9 @@ public sealed class SeclaiClient : IDisposable
         return TryInferMimeTypeFromFileName(fileName) ?? "application/octet-stream";
     }
 
-    private async Task<T> SendJsonAsync<T>(HttpMethod method, string path, Dictionary<string, string?>? query, object? body, CancellationToken cancellationToken, bool expectBody = true)
+    private async Task<T> SendJsonAsync<T>(HttpMethod method, string path, Dictionary<string, string?>? query, object? body, CancellationToken cancellationToken, bool expectBody = true, Dictionary<string, IEnumerable<string>?>? repeatedQuery = null)
     {
-        var url = BuildUri(path, query);
+        var url = BuildUri(path, query, repeatedQuery);
         using var req = new HttpRequestMessage(method, url);
 
         await ApplyAuthAsync(req, cancellationToken).ConfigureAwait(false);
@@ -655,6 +655,18 @@ public sealed class SeclaiClient : IDisposable
             throw new ApiException(resp.StatusCode, method.Method, url, responseBody);
         }
         return parsed;
+    }
+
+    // A bare array by default; {data, pagination} once ApiVersion is 2026-07-27 or later.
+    private async Task<List<T>> SendListAsync<T>(HttpMethod method, string path, Dictionary<string, string?>? query, CancellationToken cancellationToken)
+    {
+        var raw = await SendJsonAsync<JsonElement>(method, path, query, body: null, cancellationToken).ConfigureAwait(false);
+        var items = raw;
+        if (raw.ValueKind == JsonValueKind.Object && !raw.TryGetProperty("data", out items))
+        {
+            return new List<T>();
+        }
+        return items.Deserialize<List<T>>(JsonOptions) ?? new List<T>();
     }
 
     private async Task SendNoContentAsync(HttpMethod method, string path, Dictionary<string, string?>? query, object? body, CancellationToken cancellationToken)
@@ -743,19 +755,27 @@ public sealed class SeclaiClient : IDisposable
         throw new ApiException(statusCode, method, url, responseBody);
     }
 
-    private Uri BuildUri(string path, Dictionary<string, string?>? query)
+    private Uri BuildUri(string path, Dictionary<string, string?>? query, Dictionary<string, IEnumerable<string>?>? repeatedQuery = null)
     {
         if (string.IsNullOrWhiteSpace(path)) throw new ArgumentException("path is required", nameof(path));
         var builder = new UriBuilder(new Uri(_baseUri, path));
 
-        if (query is not null)
+        var parts = new List<string>();
+        foreach (var kv in query ?? new Dictionary<string, string?>())
         {
-            var parts = new List<string>();
-            foreach (var kv in query)
+            if (string.IsNullOrWhiteSpace(kv.Key) || string.IsNullOrWhiteSpace(kv.Value)) continue;
+            parts.Add($"{Uri.EscapeDataString(kv.Key)}={Uri.EscapeDataString(kv.Value!)}");
+        }
+        foreach (var kv in repeatedQuery ?? new Dictionary<string, IEnumerable<string>?>())
+        {
+            foreach (var value in kv.Value ?? Enumerable.Empty<string>())
             {
-                if (string.IsNullOrWhiteSpace(kv.Key) || string.IsNullOrWhiteSpace(kv.Value)) continue;
-                parts.Add($"{Uri.EscapeDataString(kv.Key)}={Uri.EscapeDataString(kv.Value!)}");
+                if (string.IsNullOrWhiteSpace(value)) continue;
+                parts.Add($"{Uri.EscapeDataString(kv.Key)}={Uri.EscapeDataString(value)}");
             }
+        }
+        if (query is not null || repeatedQuery is not null)
+        {
             builder.Query = string.Join("&", parts);
         }
 
@@ -1357,6 +1377,50 @@ public sealed class SeclaiClient : IDisposable
         return await SendJsonAsync<FileUploadResponse>(HttpMethod.Post, $"/sources/{Uri.EscapeDataString(sourceConnectionId)}", query: null, body, cancellationToken).ConfigureAwait(false);
     }
 
+    /// <summary>Lists a source's content items and their indexing status.</summary>
+    /// <param name="sourceId">Source identifier.</param>
+    /// <param name="page">Page number (1-indexed, default 1).</param>
+    /// <param name="limit">Items per page (1-100, default 20).</param>
+    /// <param name="sort">Sort field: <c>created_at</c>, <c>title</c> or <c>status</c>.</param>
+    /// <param name="order"><c>asc</c> or <c>desc</c>.</param>
+    /// <param name="status">Keep only one status: <c>pending</c>, <c>fetching</c>, <c>transcribing</c>, <c>scanning</c>, <c>indexing</c>, <c>completed</c> or <c>failed</c>.</param>
+    /// <param name="contentVersionIds">Keep only these items — the <c>ContentVersionId</c> values the upload methods return — to poll a batch of uploads in one request. At most 500. An empty list matches nothing: an empty page is returned without sending a request.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    public async Task<SourceContentStatusListResponse> ListSourceContentsAsync(
+        string sourceId,
+        int? page = null,
+        int? limit = null,
+        string? sort = null,
+        string? order = null,
+        string? status = null,
+        IEnumerable<string>? contentVersionIds = null,
+        CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(sourceId)) throw new ArgumentException("sourceId is required", nameof(sourceId));
+        var query = PaginationQuery(page, limit, sort, order);
+        query["status"] = string.IsNullOrWhiteSpace(status) ? null : status;
+        // An empty filter encodes as no parameter, which the API reads as "list everything".
+        var ids = contentVersionIds?.Where(id => !string.IsNullOrWhiteSpace(id)).ToList();
+        if (ids is { Count: 0 })
+        {
+            return new SourceContentStatusListResponse
+            {
+                Pagination = new PaginationResponse { Page = page is > 0 ? page.Value : 1, Limit = limit is > 0 ? limit.Value : 20 },
+            };
+        }
+        var repeated = new Dictionary<string, IEnumerable<string>?>();
+        repeated["content_version_id"] = ids;
+        return await SendJsonAsync<SourceContentStatusListResponse>(HttpMethod.Get, $"/sources/{Uri.EscapeDataString(sourceId)}/contents", query, body: null, cancellationToken, repeatedQuery: repeated).ConfigureAwait(false);
+    }
+
+    /// <summary>Gets one content item's indexing status, by the <c>ContentVersionId</c> an upload returned.</summary>
+    public async Task<SourceContentStatusResponse> GetSourceContentStatusAsync(string sourceId, string contentVersionId, CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(sourceId)) throw new ArgumentException("sourceId is required", nameof(sourceId));
+        if (string.IsNullOrWhiteSpace(contentVersionId)) throw new ArgumentException("contentVersionId is required", nameof(contentVersionId));
+        return await SendJsonAsync<SourceContentStatusResponse>(HttpMethod.Get, $"/sources/{Uri.EscapeDataString(sourceId)}/contents/{Uri.EscapeDataString(contentVersionId)}", query: null, body: null, cancellationToken).ConfigureAwait(false);
+    }
+
     // ── Source Exports ──────────────────────────────────────────────────────
 
     /// <summary>Lists exports for a source.</summary>
@@ -1431,8 +1495,8 @@ public sealed class SeclaiClient : IDisposable
     /// </summary>
     /// <param name="runId">Run identifier.</param>
     /// <param name="attachmentId">
-    /// URL-safe-base64-encoded storage_key of the attachment (as surfaced in run output
-    /// manifests and webhook/email payloads).
+    /// The <c>Id</c> of an entry in the run's or a step's <c>Attachments</c>, or the
+    /// URL-safe-base64-encoded storage key that webhook and email links carry.
     /// </param>
     /// <param name="downloadName">Optional filename hint for the download disposition.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
@@ -1845,6 +1909,26 @@ public sealed class SeclaiClient : IDisposable
         return await SendRawAsync(HttpMethod.Get, $"/models/{Uri.EscapeDataString(modelId)}/details", query: null, body: null, cancellationToken).ConfigureAwait(false);
     }
 
+    /// <summary>Lists the embedding models a source can index with, and their pricing.</summary>
+    /// <param name="supportsInputMedia">Keep only embedders that can index this input modality — a coarse kind (<c>text</c>, <c>image</c>, <c>video</c>, <c>audio</c>) or a full MIME type.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <remarks>Read the models through <see cref="EmbeddingModelListResponse.Items"/>; the key they arrive under depends on <see cref="SeclaiClientOptions.ApiVersion"/>.</remarks>
+    public async Task<EmbeddingModelListResponse> ListEmbeddingModelsAsync(string? supportsInputMedia = null, CancellationToken cancellationToken = default)
+    {
+        var query = new Dictionary<string, string?>
+        {
+            ["supports_input_media"] = string.IsNullOrWhiteSpace(supportsInputMedia) ? null : supportsInputMedia,
+        };
+        return await SendJsonAsync<EmbeddingModelListResponse>(HttpMethod.Get, "/models/embedders", query, body: null, cancellationToken).ConfigureAwait(false);
+    }
+
+    /// <summary>Lists the reranker models a knowledge base can use, and their pricing.</summary>
+    /// <remarks>Read the models through <see cref="RerankerModelListResponse.Items"/>; the key they arrive under depends on <see cref="SeclaiClientOptions.ApiVersion"/>.</remarks>
+    public async Task<RerankerModelListResponse> ListRerankerModelsAsync(CancellationToken cancellationToken = default)
+    {
+        return await SendJsonAsync<RerankerModelListResponse>(HttpMethod.Get, "/models/rerankers", query: null, body: null, cancellationToken).ConfigureAwait(false);
+    }
+
     // ── Model Playground Experiments ────────────────────────────────────────
 
     /// <summary>Lists model playground experiments.</summary>
@@ -2183,6 +2267,69 @@ public sealed class SeclaiClient : IDisposable
         };
         return await SendRawAsync(HttpMethod.Get, "/docs-search", query_, null, cancellationToken).ConfigureAwait(false);
     }
+    // ── Cloud Drives ──────────────────────────────────────────────────────────
+
+    /// <summary>Lists the cloud-drive providers this deployment has configured.</summary>
+    public async Task<List<CloudDriveProviderResponse>> ListCloudDriveProvidersAsync(CancellationToken cancellationToken = default)
+    {
+        return await SendListAsync<CloudDriveProviderResponse>(HttpMethod.Get, "/cloud-drives/providers", query: null, cancellationToken).ConfigureAwait(false);
+    }
+
+    /// <summary>Lists the account's cloud-drive connections.</summary>
+    public async Task<List<CloudDriveResponse>> ListCloudDrivesAsync(CancellationToken cancellationToken = default)
+    {
+        return await SendListAsync<CloudDriveResponse>(HttpMethod.Get, "/cloud-drives", query: null, cancellationToken).ConfigureAwait(false);
+    }
+
+    /// <summary>Gets a cloud-drive connection.</summary>
+    public async Task<CloudDriveResponse> GetCloudDriveAsync(string connectionId, CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(connectionId)) throw new ArgumentException("connectionId is required", nameof(connectionId));
+        return await SendJsonAsync<CloudDriveResponse>(HttpMethod.Get, $"/cloud-drives/{Uri.EscapeDataString(connectionId)}", query: null, body: null, cancellationToken).ConfigureAwait(false);
+    }
+
+    /// <summary>Renames a cloud-drive connection or changes the folder it watches. A null property is left unchanged.</summary>
+    public async Task<CloudDriveResponse> UpdateCloudDriveAsync(string connectionId, CloudDriveUpdateRequest body, CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(connectionId)) throw new ArgumentException("connectionId is required", nameof(connectionId));
+        return await SendJsonAsync<CloudDriveResponse>(HttpPatch, $"/cloud-drives/{Uri.EscapeDataString(connectionId)}", query: null, body, cancellationToken).ConfigureAwait(false);
+    }
+
+    /// <summary>Disconnects a cloud-drive connection, keeping the connection itself. Returns it in its disconnected state.</summary>
+    public async Task<CloudDriveResponse> DisconnectCloudDriveAsync(string connectionId, CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(connectionId)) throw new ArgumentException("connectionId is required", nameof(connectionId));
+        return await SendJsonAsync<CloudDriveResponse>(HttpMethod.Post, $"/cloud-drives/{Uri.EscapeDataString(connectionId)}/disconnect", query: null, body: null, cancellationToken).ConfigureAwait(false);
+    }
+
+    /// <summary>Deletes a cloud-drive connection.</summary>
+    public async Task DeleteCloudDriveAsync(string connectionId, CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(connectionId)) throw new ArgumentException("connectionId is required", nameof(connectionId));
+        await SendNoContentAsync(HttpMethod.Delete, $"/cloud-drives/{Uri.EscapeDataString(connectionId)}", query: null, body: null, cancellationToken).ConfigureAwait(false);
+    }
+
+    /// <summary>Lists the agents that use a cloud-drive connection.</summary>
+    public async Task<List<AgentUsingCloudDriveResponse>> GetAgentsUsingCloudDriveAsync(string connectionId, CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(connectionId)) throw new ArgumentException("connectionId is required", nameof(connectionId));
+        return await SendListAsync<AgentUsingCloudDriveResponse>(HttpMethod.Get, $"/cloud-drives/{Uri.EscapeDataString(connectionId)}/agents", query: null, cancellationToken).ConfigureAwait(false);
+    }
+
+    /// <summary>Lists the files a cloud-drive connection skipped, newest first. A skipped file fires no trigger, so this is where to look when an agent did not run for a file.</summary>
+    /// <param name="connectionId">Cloud-drive connection identifier.</param>
+    /// <param name="limit">Maximum number of rejections (1-200, default 50).</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    public async Task<List<CloudDriveRejectionResponse>> ListCloudDriveRejectionsAsync(string connectionId, int? limit = null, CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(connectionId)) throw new ArgumentException("connectionId is required", nameof(connectionId));
+        var query = new Dictionary<string, string?>
+        {
+            ["limit"] = limit is > 0 ? limit.Value.ToString() : null,
+        };
+        return await SendListAsync<CloudDriveRejectionResponse>(HttpMethod.Get, $"/cloud-drives/{Uri.EscapeDataString(connectionId)}/rejections", query, cancellationToken).ConfigureAwait(false);
+    }
+
     // ── High-Level Abstractions ─────────────────────────────────────────────
 
     /// <summary>

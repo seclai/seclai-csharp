@@ -26,4 +26,9 @@ public sealed class AiAssistantFeedbackRequest
 
     [JsonPropertyName("prompt_call_id")]
     public string? PromptCallId { get; set; }
+
+    /// <summary>Governance conversation ID, if applicable.</summary>
+    [JsonPropertyName("governance_conversation_id")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public string? GovernanceConversationId { get; set; }
 }

@@ -15,4 +15,8 @@ public sealed class FileUploadResponse
 
     [JsonPropertyName("status")]
     public string? Status { get; set; }
+
+    /// <summary>Set when the file's type is not embedded directly on this source, so indexing relies on extracted text. Content with none (e.g. a photograph) will be marked FAILED.</summary>
+    [JsonPropertyName("embedder_warning")]
+    public string? EmbedderWarning { get; set; }
 }

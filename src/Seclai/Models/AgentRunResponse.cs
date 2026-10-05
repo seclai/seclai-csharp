@@ -17,13 +17,18 @@ public sealed class AgentRunResponse
     [JsonPropertyName("input")]
     public string? Input { get; set; }
 
+    /// <summary>
+    /// The run's output text; its files are in <see cref="Attachments"/>. Below
+    /// <c>Seclai-Version: 2026-09-30</c> an output that has files is instead the manifest JSON.
+    /// </summary>
     [JsonPropertyName("output")]
     public string? Output { get; set; }
 
     /// <summary>
     /// MIME type of <see cref="Output"/> — mirrors the terminal step's output_content_type.
-    /// For example <c>application/vnd.seclai.manifest+json</c> is a multi-asset manifest,
-    /// <c>text/*</c> is free-form text, and <c>application/json</c> is a JSON document.
+    /// <c>text/*</c> is free-form text and <c>application/json</c> is a JSON document. Below
+    /// <c>Seclai-Version: 2026-09-30</c> an output that has files reads
+    /// <c>application/vnd.seclai.manifest+json</c>.
     /// </summary>
     [JsonPropertyName("output_content_type")]
     public string? OutputContentType { get; set; }
@@ -75,4 +80,12 @@ public sealed class AgentRunResponse
     /// <summary>Cumulative milliseconds the run was parked on standard-mode wait steps. Subtracted from active duration in run-detail and duration-stats responses, exactly like hitl_wait_ms. Priority waits block inline and are not counted here.</summary>
     [JsonPropertyName("wait_ms")]
     public int? WaitMs { get; set; }
+
+    /// <summary>Files in the run's output, in order. Empty when it produced none, when it ran before files were listed here, and once the run's trace is purged.</summary>
+    [JsonPropertyName("attachments")]
+    public List<AgentRunFileResponse> Attachments { get; set; } = new();
+
+    /// <summary>When this run's trace content was deleted under the account's agent-trace retention window. Non-null means the run's and every step's input and output are null by design: the run aged out, it did not fail.</summary>
+    [JsonPropertyName("trace_purged_at")]
+    public string? TracePurgedAt { get; set; }
 }

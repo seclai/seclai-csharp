@@ -167,4 +167,20 @@ public sealed class PromptModelResponse
 
     [JsonPropertyName("variants")]
     public List<VariantCategoryResponse>? Variants { get; set; }
+
+    /// <summary>Whether this model can serve a chat request. False for a dedicated media generator, which has no chat interface.</summary>
+    [JsonPropertyName("chat_capable")]
+    public bool? ChatCapable { get; set; }
+
+    /// <summary>The reasoning-effort values a step may set as <c>effort</c> with this model. Null when the model takes none.</summary>
+    [JsonPropertyName("effort_options")]
+    public EffortOptionsResponse? EffortOptions { get; set; }
+
+    /// <summary>Per-unit credit cost keyed by the value of the option named in <c>generation_params.price_varies_by</c>. Null for a model with a single rate.</summary>
+    [JsonPropertyName("generation_credits_per_variant")]
+    public Dictionary<string, double>? GenerationCreditsPerVariant { get; set; }
+
+    /// <summary>Credits per 1,000 input tokens written to a 30-minute prompt cache.</summary>
+    [JsonPropertyName("input_30m_cache_write_credits_per_1000_tokens")]
+    public double? Input30mCacheWriteCreditsPer1000Tokens { get; set; }
 }

@@ -1,5 +1,25 @@
 # Changelog
 
+## [1.5.0] - 2026-10-04
+
+### Changed
+
+- Move `SeclaiApiVersion.Latest` from `2026-07-27` to `2026-10-03`. It is a `const`, so code compiled against an earlier release keeps the old value until it is rebuilt
+
+### Added
+
+- Add cloud-drive connection management: `ListCloudDriveProvidersAsync`, `ListCloudDrivesAsync`, `GetCloudDriveAsync`, `UpdateCloudDriveAsync`, `DisconnectCloudDriveAsync`, `DeleteCloudDriveAsync`, `GetAgentsUsingCloudDriveAsync`, and `ListCloudDriveRejectionsAsync` for the files a connection skipped. The list methods return the items from either wire shape, and `CloudDriveUpdateRequest` omits unset properties rather than sending `null`
+- Add `ListSourceContentsAsync` and `GetSourceContentStatusAsync` to read the indexing status of a source's content, filtered by status or by the `ContentVersionId` values the upload methods return. An empty id list matches nothing and returns an empty page without sending a request
+- Add `ListEmbeddingModelsAsync` and `ListRerankerModelsAsync` for the embedder and reranker catalogs with their pricing. Read the models through `Items`, since they arrive under `models` by default and under `data` once `ApiVersion` is `2026-07-27` or later
+- Add `SeclaiApiVersion` constants `V2026_08_03`, `V2026_08_21`, `V2026_09_28`, `V2026_09_30` and `V2026_10_03`, so those versions are accepted as `ApiVersion`
+- Add `Attachments` to `AgentRunResponse` and `AgentRunStepResponse`, listing the files a run or step produced as `AgentRunFileResponse` on every API version. Each `Id` is accepted by `DownloadAgentRunAttachmentAsync`
+- Add `TracePurgedAt` to `AgentRunResponse` and `Warnings` to `AgentRunStepResponse`
+- Add `StripQuotedReplyChains` to `CreateMemoryBankRequest`, `UpdateMemoryBankRequest` and `MemoryBankResponse`
+- Add reasoning-effort support: `Effort` on `PlaygroundCreateRequest` and `ExperimentDetailResponse`, and `EffortOptions` on `PromptModelResponse` and `ModelRecommendationResponse`
+- Add `ChatCapable`, `GenerationCreditsPerVariant` and `Input30mCacheWriteCreditsPer1000Tokens` to `PromptModelResponse`, and the same 30-minute cache rate to `VariantOptionResponse`
+- Add `ExtractedMediaCapped`, `ExtractedMediaCount` and `ExtractedMediaLimit` to `ContentDetailResponse`, `MediaName`, `PageNumber`, `SourceMime` and `SourceUrl` to `ContentEmbeddingResponse`, and `EmbedderWarning` to `FileUploadResponse` and `ContentFileUploadResponse`
+- Add `GovernanceConversationId` to `AiAssistantFeedbackRequest`
+
 ## [1.4.0] - 2026-07-27
 
 ### Changed
@@ -141,6 +161,7 @@ _Stable release. Packaging only; no API changes since 0.0.1._
 
 _Initial release._
 
+[1.5.0]: https://github.com/seclai/seclai-csharp/releases/tag/1.5.0
 [1.4.0]: https://github.com/seclai/seclai-csharp/releases/tag/1.4.0
 [1.3.0]: https://github.com/seclai/seclai-csharp/releases/tag/1.3.0
 [1.2.0]: https://github.com/seclai/seclai-csharp/releases/tag/1.2.0

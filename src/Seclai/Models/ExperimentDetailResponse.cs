@@ -62,4 +62,8 @@ public sealed class ExperimentDetailResponse
 
     [JsonPropertyName("system_prompt")]
     public string SystemPrompt { get; set; } = string.Empty;
+
+    /// <summary>The reasoning effort each model was run at, by model ID.</summary>
+    [JsonPropertyName("effort")]
+    public Dictionary<string, string>? Effort { get; set; }
 }
