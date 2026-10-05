@@ -2586,8 +2586,7 @@ public sealed class SeclaiClientTests
     [Fact]
     public async Task ListAgentEvaluationResults_StillReadsTheFlatShape()
     {
-        // The agent-level endpoint is not version-gated and stays flat, so the
-        // shared model must keep serving both.
+        // The default shape is flat: no pagination object, counters at the top level.
         var handler = new FakeHttpMessageHandler(req =>
             JsonResponse("{\"data\":[{\"id\":\"er1\"}],\"total\":7,\"page\":2,\"limit\":25}"));
         var client = MakeClient(handler);

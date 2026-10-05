@@ -37,6 +37,7 @@ public sealed class SeclaiClient : IDisposable
     private readonly AuthState _auth;
     private readonly Dictionary<string, string>? _defaultHeaders;
     private readonly string? _apiVersion;
+    private readonly bool _allowUnknownApiVersion;
 
     /// <summary>Creates a new <see cref="SeclaiClient"/> from the given options.</summary>
     /// <exception cref="ConfigurationException">Thrown when credential options conflict (e.g. both API key and access token).</exception>
@@ -76,22 +77,17 @@ public sealed class SeclaiClient : IDisposable
             _apiVersion = headerVersion;
         }
 
-        if (_apiVersion is not null && !options.AllowUnknownApiVersion
-            && Array.IndexOf(SeclaiApiVersion.Known, _apiVersion) < 0)
+        _allowUnknownApiVersion = options.AllowUnknownApiVersion;
+        if (_apiVersion is not null)
         {
-            var via = headerVersion is not null ? "DefaultHeaders[\"Seclai-Version\"]" : "ApiVersion";
-            throw new ConfigurationException(
-                $"Unknown API version '{_apiVersion}' (via {via}). This release was built against "
-                + string.Join(", ", SeclaiApiVersion.Known)
-                + ". A newer API version can change response shapes, which this client "
-                + "would decode incorrectly rather than reject. Upgrade the SDK, or set "
-                + "SeclaiClientOptions.AllowUnknownApiVersion to proceed anyway.");
+            CheckApiVersion(_apiVersion, headerVersion is not null ? "DefaultHeaders[\"Seclai-Version\"]" : "ApiVersion");
         }
 
         if (options.HttpClient is not null)
         {
             _http = options.HttpClient;
             _ownsHttp = false;
+            ResolveApiVersion();
         }
         else
         {
@@ -173,10 +169,7 @@ public sealed class SeclaiClient : IDisposable
         var url = BuildUri($"/agents/{Uri.EscapeDataString(agentId)}/runs/stream", query: null);
 
         using var req = new HttpRequestMessage(HttpMethod.Post, url);
-        await ApplyAuthAsync(req, cancellationToken).ConfigureAwait(false);
-        req.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("text/event-stream"));
-        req.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-        ApplyDefaultHeaders(req);
+        await ApplyHeadersAsync(req, cancellationToken, "text/event-stream", "application/json").ConfigureAwait(false);
 
         var json = JsonSerializer.Serialize(body, JsonOptions);
         req.Content = new StringContent(json, Encoding.UTF8, "application/json");
@@ -626,9 +619,7 @@ public sealed class SeclaiClient : IDisposable
         var url = BuildUri(path, query, repeatedQuery);
         using var req = new HttpRequestMessage(method, url);
 
-        await ApplyAuthAsync(req, cancellationToken).ConfigureAwait(false);
-        req.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-        ApplyDefaultHeaders(req);
+        await ApplyHeadersAsync(req, cancellationToken, "application/json").ConfigureAwait(false);
 
         if (body is not null)
         {
@@ -657,16 +648,103 @@ public sealed class SeclaiClient : IDisposable
         return parsed;
     }
 
-    // A bare array by default; {data, pagination} once ApiVersion is 2026-07-27 or later.
+    // ── Version-gated lists ─────────────────────────────────────────────────
+    // A gated endpoint answers a bare array or a keyed object by default, and
+    // {data, pagination, ...extras} once the request resolves to 2026-07-27 or later.
+
     private async Task<List<T>> SendListAsync<T>(HttpMethod method, string path, Dictionary<string, string?>? query, CancellationToken cancellationToken)
     {
-        var raw = await SendJsonAsync<JsonElement>(method, path, query, body: null, cancellationToken).ConfigureAwait(false);
-        var items = raw;
-        if (raw.ValueKind == JsonValueKind.Object && !raw.TryGetProperty("data", out items))
+        var response = await SendRawResponseAsync(method, path, query, body: null, cancellationToken).ConfigureAwait(false);
+        return ReadList<T>(response, legacyKey: null, method.Method, out _);
+    }
+
+    private async Task<TPage> SendPageAsync<TPage, TItem>(HttpMethod method, string path, Dictionary<string, string?>? query, object? body, string? legacyKey, CancellationToken cancellationToken)
+        where TPage : class, IListPage<TItem>, new()
+    {
+        var response = await SendRawResponseAsync(method, path, query, body, cancellationToken).ConfigureAwait(false);
+        return ReadPage<TPage, TItem>(response, legacyKey, method.Method);
+    }
+
+    internal TPage ReadPage<TPage, TItem>(RawResponse response, string? legacyKey, string method)
+        where TPage : class, IListPage<TItem>, new()
+    {
+        var items = ReadList<TItem>(response, legacyKey, method, out var shape, out var raw);
+        var page = new TPage();
+        if (raw.ValueKind == JsonValueKind.Object)
         {
-            return new List<T>();
+            // The reader owns the list keys: a `data` that is not an array must not fail the model.
+            var rest = System.Text.Json.Nodes.JsonObject.Create(raw)!;
+            rest.Remove("data");
+            if (legacyKey is not null) rest.Remove(legacyKey);
+            page = rest.Deserialize<TPage>(JsonOptions) ?? page;
         }
-        return items.Deserialize<List<T>>(JsonOptions) ?? new List<T>();
+        page.Fill(items, shape);
+        return page;
+    }
+
+    internal List<TItem> ReadList<TItem>(RawResponse response, string? legacyKey, string method, out ListShape shape)
+        => ReadList<TItem>(response, legacyKey, method, out shape, out _);
+
+    private static List<TItem> ReadList<TItem>(RawResponse response, string? legacyKey, string method, out ListShape shape, out JsonElement raw)
+    {
+        try
+        {
+            raw = response.ToJson();
+        }
+        catch (JsonException)
+        {
+            throw NotAList(method, response.Url, response.Text);
+        }
+        var items = ListElement(raw, legacyKey, method, response, out shape);
+        return items.Deserialize<List<TItem>>(JsonOptions) ?? new List<TItem>();
+    }
+
+    // The item array of either shape. Anything else throws: an empty list would read as "no results".
+    private static JsonElement ListElement(JsonElement raw, string? legacyKey, string method, RawResponse response, out ListShape shape)
+    {
+        shape = new ListShape();
+        if (raw.ValueKind == JsonValueKind.Array) return raw;
+        if (raw.ValueKind != JsonValueKind.Object) throw NotAList(method, response.Url, response.Text);
+
+        var hasPaging = raw.TryGetProperty("pagination", out var paging) && paging.ValueKind == JsonValueKind.Object;
+        if (hasPaging) shape.Pagination = paging.Deserialize<PaginationResponse>(JsonOptions);
+        shape.Total = Counter(raw, paging, hasPaging, "total");
+        shape.Page = Counter(raw, paging, hasPaging, "page");
+        shape.Limit = Counter(raw, paging, hasPaging, "limit");
+
+        var hasData = raw.TryGetProperty("data", out var data);
+        if (hasData && data.ValueKind == JsonValueKind.Array)
+        {
+            shape.FromData = true;
+            return data;
+        }
+        if (legacyKey is not null && raw.TryGetProperty(legacyKey, out var keyed) && keyed.ValueKind == JsonValueKind.Array)
+        {
+            return keyed;
+        }
+        if (hasData && data.ValueKind == JsonValueKind.Null)
+        {
+            shape.FromData = true;
+            return EmptyArray;
+        }
+        throw NotAList(method, response.Url, response.Text);
+    }
+
+    private static readonly JsonElement EmptyArray = JsonDocument.Parse("[]").RootElement.Clone();
+
+    // A counter from `pagination` when it states one there, else the flat field.
+    private static int? Counter(JsonElement raw, JsonElement paging, bool hasPaging, string name)
+    {
+        if (hasPaging && paging.TryGetProperty(name, out var nested) && nested.ValueKind == JsonValueKind.Number && nested.TryGetInt32(out var inner)) return inner;
+        if (raw.TryGetProperty(name, out var flat) && flat.ValueKind == JsonValueKind.Number && flat.TryGetInt32(out var outer)) return outer;
+        return null;
+    }
+
+    private static ApiException NotAList(string method, Uri url, string? responseBody)
+    {
+        var message = $"seclai: expected a list from {method} {url}: an array, or an object carrying the items under `data` or the endpoint's own key."
+            + (string.IsNullOrWhiteSpace(responseBody) ? " The response body was empty." : $" Got: {responseBody}");
+        return new ApiException(message, HttpStatusCode.OK, method, url, responseBody);
     }
 
     private async Task SendNoContentAsync(HttpMethod method, string path, Dictionary<string, string?>? query, object? body, CancellationToken cancellationToken)
@@ -674,9 +752,7 @@ public sealed class SeclaiClient : IDisposable
         var url = BuildUri(path, query);
         using var req = new HttpRequestMessage(method, url);
 
-        await ApplyAuthAsync(req, cancellationToken).ConfigureAwait(false);
-        req.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-        ApplyDefaultHeaders(req);
+        await ApplyHeadersAsync(req, cancellationToken, "application/json").ConfigureAwait(false);
 
         if (body is not null)
         {
@@ -695,12 +771,15 @@ public sealed class SeclaiClient : IDisposable
 
     private async Task<JsonElement> SendRawAsync(HttpMethod method, string path, Dictionary<string, string?>? query, object? body, CancellationToken cancellationToken)
     {
+        return (await SendRawResponseAsync(method, path, query, body, cancellationToken).ConfigureAwait(false)).ToJson();
+    }
+
+    private async Task<RawResponse> SendRawResponseAsync(HttpMethod method, string path, Dictionary<string, string?>? query, object? body, CancellationToken cancellationToken)
+    {
         var url = BuildUri(path, query);
         using var req = new HttpRequestMessage(method, url);
 
-        await ApplyAuthAsync(req, cancellationToken).ConfigureAwait(false);
-        req.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-        ApplyDefaultHeaders(req);
+        await ApplyHeadersAsync(req, cancellationToken, "application/json").ConfigureAwait(false);
 
         if (body is not null)
         {
@@ -716,13 +795,7 @@ public sealed class SeclaiClient : IDisposable
             ThrowApiError(resp.StatusCode, method.Method, url, responseBody);
         }
 
-        if (string.IsNullOrWhiteSpace(responseBody))
-        {
-            return default;
-        }
-
-        using var doc = JsonDocument.Parse(responseBody!);
-        return doc.RootElement.Clone();
+        return new RawResponse(url, responseBody);
     }
 
     private void ThrowApiError(HttpStatusCode statusCode, string method, Uri url, string? responseBody)
@@ -788,25 +861,54 @@ public sealed class SeclaiClient : IDisposable
         return await response.Content.ReadAsStringAsync().ConfigureAwait(false);
     }
 
-    private void ApplyDefaultHeaders(HttpRequestMessage req)
+    // DefaultHeaders first, then the headers the SDK sets, each replacing what is there,
+    // so one value is sent for every header the SDK sets.
+    private async Task ApplyHeadersAsync(HttpRequestMessage req, CancellationToken cancellationToken, params string[] accept)
     {
-        // Omitted unless the caller opts in: with no header the account's pinned
-        // baseline applies and responses keep the shapes this version was built
-        // against, so upgrading the SDK alone never changes the wire contract.
-        if (_apiVersion is not null)
+        foreach (var kv in _defaultHeaders ?? new Dictionary<string, string>())
         {
-            req.Headers.TryAddWithoutValidation("Seclai-Version", _apiVersion);
+            SeclaiAuth.SetHeader(req.Headers, kv.Key, kv.Value);
         }
-        if (_defaultHeaders is null) return;
-        foreach (var kv in _defaultHeaders)
+        if (accept.Length > 0)
         {
-            req.Headers.TryAddWithoutValidation(kv.Key, kv.Value);
+            SeclaiAuth.SetHeader(req.Headers, "Accept", string.Join(", ", accept));
+        }
+        await SeclaiAuth.ApplyAuthHeadersAsync(req.Headers, _auth, null, cancellationToken).ConfigureAwait(false);
+
+        // Last, after every await: the supplied HttpClient's defaults can change while a token is fetched.
+        // Omitted unless the caller opts in, so upgrading the SDK alone never changes the wire contract.
+        var version = ResolveApiVersion();
+        if (version is not null)
+        {
+            SeclaiAuth.SetHeader(req.Headers, "Seclai-Version", version);
         }
     }
 
-    private async Task ApplyAuthAsync(HttpRequestMessage req, CancellationToken cancellationToken)
+    // The version this request will carry. A supplied HttpClient's defaults can change after
+    // construction, so they are read and checked on every request.
+    private string? ResolveApiVersion()
     {
-        await SeclaiAuth.ApplyAuthHeadersAsync(req.Headers, _auth, null, cancellationToken).ConfigureAwait(false);
+        if (_apiVersion is not null || _ownsHttp) return _apiVersion;
+        if (!_http.DefaultRequestHeaders.TryGetValues("Seclai-Version", out var values)) return null;
+        var distinct = values.Distinct().ToList();
+        if (distinct.Count != 1)
+        {
+            throw new ConfigurationException(
+                $"HttpClient.DefaultRequestHeaders carries {distinct.Count} Seclai-Version values; set exactly one, or use SeclaiClientOptions.ApiVersion.");
+        }
+        CheckApiVersion(distinct[0], "HttpClient.DefaultRequestHeaders[\"Seclai-Version\"]");
+        return distinct[0];
+    }
+
+    private void CheckApiVersion(string version, string via)
+    {
+        if (_allowUnknownApiVersion || Array.IndexOf(SeclaiApiVersion.Known, version) >= 0) return;
+        throw new ConfigurationException(
+            $"Unknown API version '{version}' (via {via}). This release was built against "
+            + string.Join(", ", SeclaiApiVersion.Known)
+            + ". A newer API version can change response shapes, which this client "
+            + "would decode incorrectly rather than reject. Upgrade the SDK, or set "
+            + "SeclaiClientOptions.AllowUnknownApiVersion to proceed anyway.");
     }
 
     private static Dictionary<string, string?> PaginationQuery(
@@ -1058,9 +1160,9 @@ public sealed class SeclaiClient : IDisposable
     /// Lists evaluation criteria for an agent.
     /// </summary>
     /// <remarks>
-    /// Accepts either wire shape. The endpoint returned a bare array until
-    /// 2026-07 and a paginated envelope after, so a client pinned to one of them
-    /// breaks whenever the other is deployed. Use
+    /// By default the endpoint returns every criterion and ignores <c>page</c> and
+    /// <c>limit</c>. Once <see cref="SeclaiClientOptions.ApiVersion"/> is <c>2026-07-27</c>
+    /// or later it returns one page, 20 items unless <c>limit</c> is passed. Use
     /// <see cref="ListEvaluationCriteriaPageAsync"/> for the page metadata.
     /// </remarks>
     public async Task<List<EvaluationCriteriaResponse>> ListEvaluationCriteriaAsync(string agentId, int? page = null, int? limit = null, CancellationToken cancellationToken = default)
@@ -1078,16 +1180,7 @@ public sealed class SeclaiClient : IDisposable
     {
         if (string.IsNullOrWhiteSpace(agentId)) throw new ArgumentException("agentId is required", nameof(agentId));
         var query = PaginationQuery(page, limit);
-        var raw = await SendJsonAsync<JsonElement>(HttpMethod.Get, $"/agents/{Uri.EscapeDataString(agentId)}/evaluation-criteria", query, body: null, cancellationToken).ConfigureAwait(false);
-
-        if (raw.ValueKind == JsonValueKind.Array)
-        {
-            return new EvaluationCriteriaListResponse
-            {
-                Data = raw.Deserialize<List<EvaluationCriteriaResponse>>(JsonOptions) ?? new List<EvaluationCriteriaResponse>(),
-            };
-        }
-        return raw.Deserialize<EvaluationCriteriaListResponse>(JsonOptions) ?? new EvaluationCriteriaListResponse();
+        return await SendPageAsync<EvaluationCriteriaListResponse, EvaluationCriteriaResponse>(HttpMethod.Get, $"/agents/{Uri.EscapeDataString(agentId)}/evaluation-criteria", query, body: null, legacyKey: null, cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>Creates new evaluation criteria for an agent.</summary>
@@ -1130,7 +1223,7 @@ public sealed class SeclaiClient : IDisposable
     {
         if (string.IsNullOrWhiteSpace(criteriaId)) throw new ArgumentException("criteriaId is required", nameof(criteriaId));
         var query = PaginationQuery(page, limit);
-        return await SendJsonAsync<EvaluationResultListResponse>(HttpMethod.Get, $"/agents/evaluation-criteria/{Uri.EscapeDataString(criteriaId)}/results", query, body: null, cancellationToken).ConfigureAwait(false);
+        return await SendPageAsync<EvaluationResultListResponse, EvaluationResultResponse>(HttpMethod.Get, $"/agents/evaluation-criteria/{Uri.EscapeDataString(criteriaId)}/results", query, body: null, "data", cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>Creates a new evaluation result for criteria.</summary>
@@ -1145,7 +1238,7 @@ public sealed class SeclaiClient : IDisposable
     {
         if (string.IsNullOrWhiteSpace(criteriaId)) throw new ArgumentException("criteriaId is required", nameof(criteriaId));
         var query = PaginationQuery(page, limit);
-        return await SendJsonAsync<CompatibleRunListResponse>(HttpMethod.Get, $"/agents/evaluation-criteria/{Uri.EscapeDataString(criteriaId)}/compatible-runs", query, body: null, cancellationToken).ConfigureAwait(false);
+        return await SendPageAsync<CompatibleRunListResponse, JsonElement>(HttpMethod.Get, $"/agents/evaluation-criteria/{Uri.EscapeDataString(criteriaId)}/compatible-runs", query, body: null, "data", cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>Tests a draft evaluation criteria without persisting.</summary>
@@ -1160,27 +1253,21 @@ public sealed class SeclaiClient : IDisposable
     {
         if (string.IsNullOrWhiteSpace(agentId)) throw new ArgumentException("agentId is required", nameof(agentId));
         var query = PaginationQuery(page, limit);
-        return await SendJsonAsync<EvaluationResultWithCriteriaListResponse>(HttpMethod.Get, $"/agents/{Uri.EscapeDataString(agentId)}/evaluation-results", query, body: null, cancellationToken).ConfigureAwait(false);
+        return await SendPageAsync<EvaluationResultWithCriteriaListResponse, JsonElement>(HttpMethod.Get, $"/agents/{Uri.EscapeDataString(agentId)}/evaluation-results", query, body: null, "data", cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>Lists evaluation results for a specific run.</summary>
+    /// <remarks>
+    /// By default the endpoint returns every result and ignores <c>page</c> and <c>limit</c>.
+    /// Once <see cref="SeclaiClientOptions.ApiVersion"/> is <c>2026-07-27</c> or later it
+    /// returns one page, 20 items unless <c>limit</c> is passed.
+    /// </remarks>
     public async Task<EvaluationResultWithCriteriaListResponse> ListRunEvaluationResultsAsync(string agentId, string runId, int? page = null, int? limit = null, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(agentId)) throw new ArgumentException("agentId is required", nameof(agentId));
         if (string.IsNullOrWhiteSpace(runId)) throw new ArgumentException("runId is required", nameof(runId));
         var query = PaginationQuery(page, limit);
-        // Either wire shape: the endpoint returns a bare array by default and an
-        // envelope once the caller opts in with SeclaiClientOptions.ApiVersion of
-        // 2026-07-27 or later.
-        var raw = await SendJsonAsync<JsonElement>(HttpMethod.Get, $"/agents/{Uri.EscapeDataString(agentId)}/runs/{Uri.EscapeDataString(runId)}/evaluation-results", query, body: null, cancellationToken).ConfigureAwait(false);
-        if (raw.ValueKind == JsonValueKind.Array)
-        {
-            return new EvaluationResultWithCriteriaListResponse
-            {
-                Data = raw.Deserialize<List<JsonElement>>(JsonOptions) ?? new List<JsonElement>(),
-            };
-        }
-        return raw.Deserialize<EvaluationResultWithCriteriaListResponse>(JsonOptions) ?? new EvaluationResultWithCriteriaListResponse();
+        return await SendPageAsync<EvaluationResultWithCriteriaListResponse, JsonElement>(HttpMethod.Get, $"/agents/{Uri.EscapeDataString(agentId)}/runs/{Uri.EscapeDataString(runId)}/evaluation-results", query, body: null, legacyKey: null, cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>Lists evaluation run summaries for an agent.</summary>
@@ -1188,7 +1275,7 @@ public sealed class SeclaiClient : IDisposable
     {
         if (string.IsNullOrWhiteSpace(agentId)) throw new ArgumentException("agentId is required", nameof(agentId));
         var query = PaginationQuery(page, limit);
-        return await SendJsonAsync<EvaluationRunSummaryListResponse>(HttpMethod.Get, $"/agents/{Uri.EscapeDataString(agentId)}/evaluation-runs", query, body: null, cancellationToken).ConfigureAwait(false);
+        return await SendPageAsync<EvaluationRunSummaryListResponse, JsonElement>(HttpMethod.Get, $"/agents/{Uri.EscapeDataString(agentId)}/evaluation-runs", query, body: null, "data", cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>Retrieves a summary of non-manual evaluation results.</summary>
@@ -1207,7 +1294,7 @@ public sealed class SeclaiClient : IDisposable
     public async Task<KnowledgeBaseListResponse> ListKnowledgeBasesAsync(int? page = null, int? limit = null, string? sort = null, string? order = null, CancellationToken cancellationToken = default)
     {
         var query = PaginationQuery(page, limit, sort, order);
-        return await SendJsonAsync<KnowledgeBaseListResponse>(HttpMethod.Get, "/knowledge_bases", query, body: null, cancellationToken).ConfigureAwait(false);
+        return await SendPageAsync<KnowledgeBaseListResponse, KnowledgeBaseResponse>(HttpMethod.Get, "/knowledge_bases", query, body: null, "knowledge_bases", cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>Creates a new knowledge base.</summary>
@@ -1243,7 +1330,7 @@ public sealed class SeclaiClient : IDisposable
     public async Task<MemoryBankListResponse> ListMemoryBanksAsync(int? page = null, int? limit = null, string? sort = null, string? order = null, CancellationToken cancellationToken = default)
     {
         var query = PaginationQuery(page, limit, sort, order);
-        return await SendJsonAsync<MemoryBankListResponse>(HttpMethod.Get, "/memory_banks", query, body: null, cancellationToken).ConfigureAwait(false);
+        return await SendPageAsync<MemoryBankListResponse, MemoryBankResponse>(HttpMethod.Get, "/memory_banks", query, body: null, "memory_banks", cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>Creates a new memory bank.</summary>
@@ -1274,10 +1361,21 @@ public sealed class SeclaiClient : IDisposable
     }
 
     /// <summary>Lists agents that use a memory bank.</summary>
+    /// <remarks>
+    /// Returns the response body as sent: a bare array by default, and the canonical
+    /// <c>{data, pagination}</c> envelope once <see cref="SeclaiClientOptions.ApiVersion"/> is
+    /// <c>2026-07-27</c> or later. The <see cref="Typed"/> form reads both.
+    /// </remarks>
     public async Task<JsonElement> GetAgentsUsingMemoryBankAsync(string memoryBankId, CancellationToken cancellationToken = default)
     {
+        return (await GetAgentsUsingMemoryBankResponseAsync(memoryBankId, cancellationToken).ConfigureAwait(false)).ToJson();
+    }
+
+    // The one definition of this request; the Typed form reads the same response.
+    internal async Task<RawResponse> GetAgentsUsingMemoryBankResponseAsync(string memoryBankId, CancellationToken cancellationToken)
+    {
         if (string.IsNullOrWhiteSpace(memoryBankId)) throw new ArgumentException("memoryBankId is required", nameof(memoryBankId));
-        return await SendRawAsync(HttpMethod.Get, $"/memory_banks/{Uri.EscapeDataString(memoryBankId)}/agents", query: null, body: null, cancellationToken).ConfigureAwait(false);
+        return await SendRawResponseAsync(HttpMethod.Get, $"/memory_banks/{Uri.EscapeDataString(memoryBankId)}/agents", query: null, body: null, cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>Retrieves statistics for a memory bank.</summary>
@@ -1315,9 +1413,20 @@ public sealed class SeclaiClient : IDisposable
     }
 
     /// <summary>Lists available memory bank templates.</summary>
+    /// <remarks>
+    /// Returns the response body as sent: a bare array by default, and the canonical
+    /// <c>{data, pagination}</c> envelope once <see cref="SeclaiClientOptions.ApiVersion"/> is
+    /// <c>2026-07-27</c> or later. The <see cref="Typed"/> form reads both.
+    /// </remarks>
     public async Task<JsonElement> ListMemoryBankTemplatesAsync(CancellationToken cancellationToken = default)
     {
-        return await SendRawAsync(HttpMethod.Get, "/memory_banks/templates", query: null, body: null, cancellationToken).ConfigureAwait(false);
+        return (await ListMemoryBankTemplatesResponseAsync(cancellationToken).ConfigureAwait(false)).ToJson();
+    }
+
+    // The one definition of this request; the Typed form reads the same response.
+    internal async Task<RawResponse> ListMemoryBankTemplatesResponseAsync(CancellationToken cancellationToken)
+    {
+        return await SendRawResponseAsync(HttpMethod.Get, "/memory_banks/templates", query: null, body: null, cancellationToken).ConfigureAwait(false);
     }
 
     // ── Memory Bank AI Assistant ────────────────────────────────────────────
@@ -1473,8 +1582,7 @@ public sealed class SeclaiClient : IDisposable
 
         var url = BuildUri($"/sources/{Uri.EscapeDataString(sourceId)}/exports/{Uri.EscapeDataString(exportId)}/download", query: null);
         using var req = new HttpRequestMessage(HttpMethod.Get, url);
-        await ApplyAuthAsync(req, cancellationToken).ConfigureAwait(false);
-        ApplyDefaultHeaders(req);
+        await ApplyHeadersAsync(req, cancellationToken).ConfigureAwait(false);
 
         var resp = await _http.SendAsync(req, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
 
@@ -1510,8 +1618,7 @@ public sealed class SeclaiClient : IDisposable
             : new Dictionary<string, string?> { ["download_name"] = downloadName };
         var url = BuildUri($"/v2/agent-runs/{Uri.EscapeDataString(runId)}/attachments/{Uri.EscapeDataString(attachmentId)}", query);
         using var req = new HttpRequestMessage(HttpMethod.Get, url);
-        await ApplyAuthAsync(req, cancellationToken).ConfigureAwait(false);
-        ApplyDefaultHeaders(req);
+        await ApplyHeadersAsync(req, cancellationToken).ConfigureAwait(false);
 
         var resp = await _http.SendAsync(req, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
 
@@ -1648,7 +1755,7 @@ public sealed class SeclaiClient : IDisposable
     public async Task<List<SolutionConversationResponse>> ListSolutionConversationsAsync(string solutionId, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(solutionId)) throw new ArgumentException("solutionId is required", nameof(solutionId));
-        return await SendJsonAsync<List<SolutionConversationResponse>>(HttpMethod.Get, $"/solutions/{Uri.EscapeDataString(solutionId)}/conversations", query: null, body: null, cancellationToken).ConfigureAwait(false);
+        return await SendListAsync<SolutionConversationResponse>(HttpMethod.Get, $"/solutions/{Uri.EscapeDataString(solutionId)}/conversations", query: null, cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>Adds a conversation turn to a solution.</summary>
@@ -1716,7 +1823,7 @@ public sealed class SeclaiClient : IDisposable
     /// <summary>Lists governance AI assistant conversations.</summary>
     public async Task<List<GovernanceConversationResponse>> ListGovernanceAiConversationsAsync(CancellationToken cancellationToken = default)
     {
-        return await SendJsonAsync<List<GovernanceConversationResponse>>(HttpMethod.Get, "/governance/ai-assistant/conversations", query: null, body: null, cancellationToken).ConfigureAwait(false);
+        return await SendListAsync<GovernanceConversationResponse>(HttpMethod.Get, "/governance/ai-assistant/conversations", query: null, cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>Accepts a governance AI plan.</summary>
@@ -1793,12 +1900,19 @@ public sealed class SeclaiClient : IDisposable
     /// default. Once the caller opts in with
     /// <see cref="SeclaiClientOptions.ApiVersion"/> of <c>2026-07-27</c> or later
     /// the endpoint returns the canonical <c>{data, pagination}</c> envelope
-    /// instead, so the top-level key changes.
+    /// instead, so the top-level key changes — and it returns one page, 50 items
+    /// unless <c>limit</c> is passed, where the default returns every configuration.
     /// </remarks>
     public async Task<JsonElement> ListAlertConfigsAsync(int? page = null, int? limit = null, CancellationToken cancellationToken = default)
     {
+        return (await ListAlertConfigsResponseAsync(page, limit, cancellationToken).ConfigureAwait(false)).ToJson();
+    }
+
+    // The one definition of this request; the Typed form reads the same response.
+    internal async Task<RawResponse> ListAlertConfigsResponseAsync(int? page, int? limit, CancellationToken cancellationToken)
+    {
         var query = PaginationQuery(page, limit);
-        return await SendRawAsync(HttpMethod.Get, "/alerts/configs", query, body: null, cancellationToken).ConfigureAwait(false);
+        return await SendRawResponseAsync(HttpMethod.Get, "/alerts/configs", query, body: null, cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>Creates a new alert configuration.</summary>
@@ -1833,7 +1947,7 @@ public sealed class SeclaiClient : IDisposable
     /// <summary>Lists organization alert preferences.</summary>
     public async Task<OrganizationAlertPreferenceListResponse> ListOrganizationAlertPreferencesAsync(CancellationToken cancellationToken = default)
     {
-        return await SendJsonAsync<OrganizationAlertPreferenceListResponse>(HttpMethod.Get, "/alerts/organization-preferences/list", query: null, body: null, cancellationToken).ConfigureAwait(false);
+        return await SendPageAsync<OrganizationAlertPreferenceListResponse, JsonElement>(HttpMethod.Get, "/alerts/organization-preferences/list", query: null, body: null, "preferences", cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>Updates an organization alert preference.</summary>
@@ -1852,8 +1966,18 @@ public sealed class SeclaiClient : IDisposable
     /// 1-indexed page number, translated to the <c>offset</c> the endpoint
     /// actually declares. It does not accept <c>page</c>, so every page after
     /// the first previously returned page 1.
+    ///
+    /// Returns the response body as sent: <c>{alerts, total}</c> by default, and the canonical
+    /// <c>{data, pagination}</c> envelope once <see cref="SeclaiClientOptions.ApiVersion"/> is
+    /// <c>2026-07-27</c> or later. The <see cref="Typed"/> form reads both.
     /// </remarks>
     public async Task<JsonElement> ListModelAlertsAsync(int? page = null, int? limit = null, CancellationToken cancellationToken = default)
+    {
+        return (await ListModelAlertsResponseAsync(page, limit, cancellationToken).ConfigureAwait(false)).ToJson();
+    }
+
+    // The one definition of this request; the Typed form reads the same response.
+    internal async Task<RawResponse> ListModelAlertsResponseAsync(int? page, int? limit, CancellationToken cancellationToken)
     {
         var effectiveLimit = limit is > 0 ? limit.Value : 50;
         var query = new Dictionary<string, string?>
@@ -1861,7 +1985,7 @@ public sealed class SeclaiClient : IDisposable
             ["offset"] = page is > 1 ? ((page.Value - 1) * effectiveLimit).ToString() : null,
             ["limit"] = limit is > 0 ? limit.Value.ToString() : null,
         };
-        return await SendRawAsync(HttpMethod.Get, "/models/alerts", query, body: null, cancellationToken).ConfigureAwait(false);
+        return await SendRawResponseAsync(HttpMethod.Get, "/models/alerts", query, body: null, cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>Marks all model alerts as read.</summary>
@@ -1891,7 +2015,18 @@ public sealed class SeclaiClient : IDisposable
     }
 
     /// <summary>Lists all enabled LLM models grouped by provider.</summary>
+    /// <remarks>
+    /// Returns the response body as sent: a bare array by default, and the canonical
+    /// <c>{data, pagination}</c> envelope once <see cref="SeclaiClientOptions.ApiVersion"/> is
+    /// <c>2026-07-27</c> or later. The <see cref="Typed"/> form reads both.
+    /// </remarks>
     public async Task<JsonElement> ListModelsAsync(string? provider = null, bool? supportsToolUse = null, bool? supportsThinking = null, CancellationToken cancellationToken = default)
+    {
+        return (await ListModelsResponseAsync(provider, supportsToolUse, supportsThinking, cancellationToken).ConfigureAwait(false)).ToJson();
+    }
+
+    // The one definition of this request; the Typed form reads the same response.
+    internal async Task<RawResponse> ListModelsResponseAsync(string? provider, bool? supportsToolUse, bool? supportsThinking, CancellationToken cancellationToken)
     {
         var query = new Dictionary<string, string?>
         {
@@ -1899,7 +2034,7 @@ public sealed class SeclaiClient : IDisposable
             ["supports_tool_use"] = supportsToolUse?.ToString().ToLowerInvariant(),
             ["supports_thinking"] = supportsThinking?.ToString().ToLowerInvariant(),
         };
-        return await SendRawAsync(HttpMethod.Get, "/models", query, body: null, cancellationToken).ConfigureAwait(false);
+        return await SendRawResponseAsync(HttpMethod.Get, "/models", query, body: null, cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>Retrieves full details for a specific model.</summary>
@@ -1919,20 +2054,31 @@ public sealed class SeclaiClient : IDisposable
         {
             ["supports_input_media"] = string.IsNullOrWhiteSpace(supportsInputMedia) ? null : supportsInputMedia,
         };
-        return await SendJsonAsync<EmbeddingModelListResponse>(HttpMethod.Get, "/models/embedders", query, body: null, cancellationToken).ConfigureAwait(false);
+        return await SendPageAsync<EmbeddingModelListResponse, EmbeddingModelResponse>(HttpMethod.Get, "/models/embedders", query, body: null, "models", cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>Lists the reranker models a knowledge base can use, and their pricing.</summary>
     /// <remarks>Read the models through <see cref="RerankerModelListResponse.Items"/>; the key they arrive under depends on <see cref="SeclaiClientOptions.ApiVersion"/>.</remarks>
     public async Task<RerankerModelListResponse> ListRerankerModelsAsync(CancellationToken cancellationToken = default)
     {
-        return await SendJsonAsync<RerankerModelListResponse>(HttpMethod.Get, "/models/rerankers", query: null, body: null, cancellationToken).ConfigureAwait(false);
+        return await SendPageAsync<RerankerModelListResponse, RerankerModelResponse>(HttpMethod.Get, "/models/rerankers", query: null, body: null, "models", cancellationToken).ConfigureAwait(false);
     }
 
     // ── Model Playground Experiments ────────────────────────────────────────
 
     /// <summary>Lists model playground experiments.</summary>
+    /// <remarks>
+    /// Returns the response body as sent: <c>{experiments, total}</c> by default, and the canonical
+    /// <c>{data, pagination}</c> envelope once <see cref="SeclaiClientOptions.ApiVersion"/> is
+    /// <c>2026-07-27</c> or later. The <see cref="Typed"/> form reads both.
+    /// </remarks>
     public async Task<JsonElement> ListExperimentsAsync(int? days = null, string? startDate = null, string? endDate = null, int? limit = null, int? offset = null, CancellationToken cancellationToken = default)
+    {
+        return (await ListExperimentsResponseAsync(days, startDate, endDate, limit, offset, cancellationToken).ConfigureAwait(false)).ToJson();
+    }
+
+    // The one definition of this request; the Typed form reads the same response.
+    internal async Task<RawResponse> ListExperimentsResponseAsync(int? days, string? startDate, string? endDate, int? limit, int? offset, CancellationToken cancellationToken)
     {
         var query = new Dictionary<string, string?>
         {
@@ -1942,7 +2088,7 @@ public sealed class SeclaiClient : IDisposable
             ["limit"] = limit is > 0 ? limit.Value.ToString() : null,
             ["offset"] = offset is >= 0 ? offset.Value.ToString() : null,
         };
-        return await SendRawAsync(HttpMethod.Get, "/models/playground/experiments", query, body: null, cancellationToken).ConfigureAwait(false);
+        return await SendRawResponseAsync(HttpMethod.Get, "/models/playground/experiments", query, body: null, cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>Creates a model playground experiment.</summary>
@@ -2077,7 +2223,7 @@ public sealed class SeclaiClient : IDisposable
     public async Task<List<AgentCallerApiResponse>> GetAgentCallersAsync(string agentId, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(agentId)) throw new ArgumentException("agentId is required", nameof(agentId));
-        return await SendJsonAsync<List<AgentCallerApiResponse>>(HttpMethod.Get, $"/agents/{Uri.EscapeDataString(agentId)}/callers", null, null, cancellationToken).ConfigureAwait(false);
+        return await SendListAsync<AgentCallerApiResponse>(HttpMethod.Get, $"/agents/{Uri.EscapeDataString(agentId)}/callers", null, cancellationToken).ConfigureAwait(false);
     }
     // ── Agent Email Triggers ──────────────────────────────────────────────────
 
@@ -2123,7 +2269,7 @@ public sealed class SeclaiClient : IDisposable
             ["limit"] = limit is > 0 ? limit.Value.ToString() : null,
             ["offset"] = offset is >= 0 ? offset.Value.ToString() : null,
         };
-        return await SendJsonAsync<AgentEmailOptOutListResponse>(HttpMethod.Get, "/agents/agent-email-optouts", query, null, cancellationToken).ConfigureAwait(false);
+        return await SendPageAsync<AgentEmailOptOutListResponse, AgentEmailOptOutResponse>(HttpMethod.Get, "/agents/agent-email-optouts", query, null, "items", cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>Revokes an opt-out, opting the recipient back in to agent emails.</summary>
@@ -2141,7 +2287,7 @@ public sealed class SeclaiClient : IDisposable
             ["limit"] = limit is > 0 ? limit.Value.ToString() : null,
             ["offset"] = offset is >= 0 ? offset.Value.ToString() : null,
         };
-        return await SendJsonAsync<BlockedEmailSenderListResponse>(HttpMethod.Get, "/agents/blocked-email-senders", query, null, cancellationToken).ConfigureAwait(false);
+        return await SendPageAsync<BlockedEmailSenderListResponse, BlockedEmailSenderResponse>(HttpMethod.Get, "/agents/blocked-email-senders", query, null, "items", cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>Adds a sender address or a whole domain to the account blocklist. Idempotent. Requires an account owner or admin.</summary>
@@ -2158,9 +2304,14 @@ public sealed class SeclaiClient : IDisposable
     }
 
     /// <summary>Sets whether a governance BLOCK on an authenticated inbound sender auto-adds them to the blocklist. Requires an account owner or admin.</summary>
+    /// <remarks>
+    /// Returns the first blocked senders. <c>Total</c> is the account's full count by default, and
+    /// the number of rows returned once <see cref="SeclaiClientOptions.ApiVersion"/> is
+    /// <c>2026-07-27</c> or later.
+    /// </remarks>
     public async Task<BlockedEmailSenderListResponse> SetAutoBlockModeAsync(SetAutoBlockModeRequest body, CancellationToken cancellationToken = default)
     {
-        return await SendJsonAsync<BlockedEmailSenderListResponse>(HttpMethod.Put, "/agents/blocked-email-senders/mode", null, body, cancellationToken).ConfigureAwait(false);
+        return await SendPageAsync<BlockedEmailSenderListResponse, BlockedEmailSenderResponse>(HttpMethod.Put, "/agents/blocked-email-senders/mode", null, body, "items", cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>Lists recent inbound emails discarded before running an agent — unauthorized sender, unknown alias, spam or flood-shed.</summary>
@@ -2171,7 +2322,7 @@ public sealed class SeclaiClient : IDisposable
             ["agent_id"] = string.IsNullOrWhiteSpace(agentId) ? null : agentId,
             ["limit"] = limit is > 0 ? limit.Value.ToString() : null,
         };
-        return await SendJsonAsync<List<InboundEmailRejectionResponse>>(HttpMethod.Get, "/agents/inbound-email-rejections", query, null, cancellationToken).ConfigureAwait(false);
+        return await SendListAsync<InboundEmailRejectionResponse>(HttpMethod.Get, "/agents/inbound-email-rejections", query, cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>Reports whether the account-wide overload circuit breaker has paused inbound email, plus the queued backlog size.</summary>
@@ -2196,7 +2347,7 @@ public sealed class SeclaiClient : IDisposable
     /// <summary>Lists the account's vanity and custom agent-email domains with verification status, required DNS records and plan capabilities.</summary>
     public async Task<EmailDomainsListResponse> ListEmailDomainsAsync(CancellationToken cancellationToken = default)
     {
-        return await SendJsonAsync<EmailDomainsListResponse>(HttpMethod.Get, "/email-domains", null, null, cancellationToken).ConfigureAwait(false);
+        return await SendPageAsync<EmailDomainsListResponse, EmailDomainResponse>(HttpMethod.Get, "/email-domains", null, null, "domains", cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>Adds and provisions a vanity subdomain or a custom domain, standing up the SES identity and DNS. Requires an account owner or admin.</summary>
@@ -2251,9 +2402,20 @@ public sealed class SeclaiClient : IDisposable
         return await SendJsonAsync<DmarcSummaryResponse>(HttpMethod.Get, $"/email-domains/{Uri.EscapeDataString(domainId)}/dmarc", query, null, cancellationToken).ConfigureAwait(false);
     }
     /// <summary>Lists the media-generation quality tiers and the model and cost each resolves to. Global routing and pricing; read-only.</summary>
+    /// <remarks>
+    /// Returns the response body as sent: <c>{tiers}</c> by default, and the canonical
+    /// <c>{data, pagination}</c> envelope once <see cref="SeclaiClientOptions.ApiVersion"/> is
+    /// <c>2026-07-27</c> or later. The <see cref="Typed"/> form reads both.
+    /// </remarks>
     public async Task<JsonElement> GetGenerationTiersAsync(CancellationToken cancellationToken = default)
     {
-        return await SendRawAsync(HttpMethod.Get, "/models/generation-tiers", null, null, cancellationToken).ConfigureAwait(false);
+        return (await GetGenerationTiersResponseAsync(cancellationToken).ConfigureAwait(false)).ToJson();
+    }
+
+    // The one definition of this request; the Typed form reads the same response.
+    internal async Task<RawResponse> GetGenerationTiersResponseAsync(CancellationToken cancellationToken)
+    {
+        return await SendRawResponseAsync(HttpMethod.Get, "/models/generation-tiers", null, null, cancellationToken).ConfigureAwait(false);
     }
     /// <summary>Searches the Seclai documentation by content. Mode is keyword (default) or semantic. Results are global, not account-scoped.</summary>
     public async Task<JsonElement> SearchDocsAsync(string query, string? mode = null, int? limit = null, CancellationToken cancellationToken = default)
@@ -2345,10 +2507,7 @@ public sealed class SeclaiClient : IDisposable
         var url = BuildUri($"/agents/{Uri.EscapeDataString(agentId)}/runs/stream", query: null);
 
         using var req = new HttpRequestMessage(HttpMethod.Post, url);
-        await ApplyAuthAsync(req, cancellationToken).ConfigureAwait(false);
-        req.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("text/event-stream"));
-        req.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-        ApplyDefaultHeaders(req);
+        await ApplyHeadersAsync(req, cancellationToken, "text/event-stream", "application/json").ConfigureAwait(false);
 
         var json = JsonSerializer.Serialize(body, JsonOptions);
         req.Content = new StringContent(json, Encoding.UTF8, "application/json");
@@ -2476,9 +2635,7 @@ public sealed class SeclaiClient : IDisposable
         var url = BuildUri(path, query: null);
 
         using var req = new HttpRequestMessage(HttpMethod.Post, url) { Content = content };
-        await ApplyAuthAsync(req, cancellationToken).ConfigureAwait(false);
-        req.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-        ApplyDefaultHeaders(req);
+        await ApplyHeadersAsync(req, cancellationToken, "application/json").ConfigureAwait(false);
 
         using var resp = await _http.SendAsync(req, cancellationToken).ConfigureAwait(false);
         var responseBody = await ReadBodyAsync(resp).ConfigureAwait(false);

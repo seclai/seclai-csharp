@@ -542,7 +542,7 @@ public static class SeclaiAuth
         switch (state.Mode)
         {
             case AuthMode.ApiKey:
-                headers.TryAddWithoutValidation(state.ApiKeyHeader, state.ApiKey);
+                SetHeader(headers, state.ApiKeyHeader, state.ApiKey);
                 break;
 
             case AuthMode.BearerStatic:
@@ -561,7 +561,16 @@ public static class SeclaiAuth
         }
 
         if (!string.IsNullOrWhiteSpace(state.AccountId))
-            headers.TryAddWithoutValidation("X-Account-Id", state.AccountId);
+            SetHeader(headers, "X-Account-Id", state.AccountId);
+    }
+
+    /// <summary>Sets a request header to exactly one value, replacing any already present.</summary>
+    internal static void SetHeader(HttpRequestHeaders headers, string name, string? value)
+    {
+        // False means the name is not usable as a request header; Remove would throw on it.
+        if (!headers.TryAddWithoutValidation(name, value)) return;
+        headers.Remove(name);
+        headers.TryAddWithoutValidation(name, value);
     }
 
     private static async Task<string> ResolveSsoTokenAsync(
