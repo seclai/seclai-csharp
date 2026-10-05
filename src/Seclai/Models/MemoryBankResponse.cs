@@ -24,4 +24,8 @@ public sealed class MemoryBankResponse
 
     [JsonPropertyName("updated_at")]
     public string? UpdatedAt { get; set; }
+
+    /// <summary>Conversation banks only. When true, a conversation turn written to this bank has the quoted reply chain an email client prepends to a reply dropped from it.</summary>
+    [JsonPropertyName("strip_quoted_reply_chains")]
+    public bool StripQuotedReplyChains { get; set; }
 }

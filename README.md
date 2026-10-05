@@ -120,8 +120,8 @@ Leave `ApiVersion` unset and the header is omitted, so the account's pinned
 baseline applies and responses keep their current shapes. Upgrading this package
 alone never changes the wire contract.
 
-Known versions are on `SeclaiApiVersion` (`V2026_07_01`, `V2026_07_27`, plus
-`Default`, `Latest` and `Known`). A version this release was **not** built
+Known versions are on `SeclaiApiVersion` (`V2026_07_01` through `V2026_10_03`,
+plus `Default`, `Latest` and `Known`). A version this release was **not** built
 against is rejected at construction: a newer version can reshape responses, and
 this client would decode them incorrectly rather than reject them. Upgrade the
 package to adopt a new version, or set `AllowUnknownApiVersion` if you have to
@@ -134,8 +134,8 @@ is how you detect the gap.
 
 **What `2026-07-27` changes.** Undeclared query parameters become a 422 instead
 of being ignored, and list endpoints move to the canonical
-`{data, pagination}` envelope. The affected methods read both shapes, so they
-keep working either way — but the metadata moves:
+`{data, pagination}` envelope. These methods read both shapes, so they keep
+working either way — but the metadata moves:
 
 | Method | Before | From 2026-07-27 |
 | --- | --- | --- |
@@ -143,11 +143,42 @@ keep working either way — but the metadata moves:
 | `ListRunEvaluationResultsAsync` | bare array | `Data` + `Pagination` |
 | `Typed.ListAlertConfigsAsync` | `Configs` + `Total` | `Data` + `Pagination` |
 | `Typed.ListModelAlertsAsync` | `Alerts` + `Total` | `Data` + `Pagination` |
+| `ListKnowledgeBasesAsync` | `knowledge_bases` + flat `total`/`page`/`limit` | `data` + `pagination` |
+| `ListMemoryBanksAsync` | `memory_banks` + flat `total`/`page`/`limit` | `data` + `pagination` |
 
-Read the last two through `Items`, which returns whichever key arrived, and
-prefer `Pagination` over the flat `Total`/`Page`/`Limit` properties. The flat
+Read the alert-config and model-alert listings through `Items`, which returns
+whichever key arrived, and prefer `Pagination` over the flat
+`Total`/`Page`/`Limit` properties. The knowledge-base and memory-bank listings
+fill `Data`, `Total`, `Page` and `Limit` from either shape. The flat
 properties will be deprecated and then removed once the canonical envelope is
 the default.
+
+The cloud-drive listings and `ListEmbeddingModelsAsync` /
+`ListRerankerModelsAsync` follow the same rule. The cloud-drive methods return
+the items from either shape; read the two model listings through `Items`.
+
+**Not yet safe with `ApiVersion` `2026-07-27` or later.** These list methods
+still decode only the default shape. Call them from a client that leaves
+`ApiVersion` unset, or use the raw `JsonElement` method where one exists:
+
+- Return an empty list, with no error: `ListOrganizationAlertPreferencesAsync`,
+  `ListAgentEmailOptOutsAsync`, `ListBlockedEmailSendersAsync`,
+  `ListEmailDomainsAsync`, `Typed.ListExperimentsAsync`,
+  `Typed.GetGenerationTiersAsync`
+- Throw `JsonException`: `ListSolutionConversationsAsync`,
+  `ListGovernanceAiConversationsAsync`, `GetAgentCallersAsync`,
+  `ListInboundEmailRejectionsAsync`, `Typed.ListModelsAsync`
+
+**Later versions.** Each is cumulative, and none changes a response shape this
+client decodes:
+
+| Version | What it changes |
+| --- | --- |
+| `2026-08-03` | The API rejects `max_age_days` on a memory bank with a 400 — leave `UpdateMemoryBankRequest.MaxAgeDays` unset, or send 0 to clear a stored value — and a bank created without `retention_days` gets a default per bank type instead of 30 |
+| `2026-08-21` | `CreateSourceAsync` rejects an embedding dimension its embedder does not support with a 400 — `ListEmbeddingModelsAsync` reports the supported ones |
+| `2026-09-28` | Agent-definition writes use the current file-list grammar: an omitted `attachments` keeps the stored list and `[]` means no files |
+| `2026-09-30` | `AgentRunResponse.Output` and `AgentRunStepResponse.Output` are the text rather than a JSON manifest; the files are in `Attachments` on every version |
+| `2026-10-03` | A new LLM step written without `attachments` takes its parent's files, and a new retrieval step's matched media are its files |
 
 ## Typed responses
 
@@ -247,9 +278,12 @@ var refs = await client.GetAgentAttachmentReferencesAsync("ag1");
 // refs.RequiresUploads reports whether the agent accepts files; refs.Agent lists the
 // exact names / indexes / glob patterns a run-time upload batch must satisfy.
 
-// Download a file attachment emitted by a step in a run (raw HttpResponseMessage).
-// attachmentId is the URL-safe-base64 storage_key from run output manifests / webhooks.
-using var attachment = await client.DownloadAgentRunAttachmentAsync("run1", "attachment_id");
+// Files a run produced are listed on the run and on each step, on every API version.
+// Download one by its Id (raw HttpResponseMessage).
+foreach (var file in detail.Attachments)
+{
+    using var attachment = await client.DownloadAgentRunAttachmentAsync("run1", file.Id, file.Name);
+}
 ```
 
 ### Streaming
@@ -302,7 +336,34 @@ await client.UploadInlineTextToSourceAsync("sc1", new InlineTextUploadRequest
 var content = await client.GetContentDetailAsync("cv1");
 await client.DeleteContentAsync("cv1");
 var embeddings = await client.ListContentEmbeddingsAsync("cv1", page: 1, limit: 50);
+
+// Indexing status of a source's content, keyed by the ContentVersionId an upload returns
+var failed = await client.ListSourceContentsAsync("sc1", status: "failed");
+var batch = await client.ListSourceContentsAsync("sc1",
+    contentVersionIds: new[] { upload.ContentVersionId!, upload2.ContentVersionId! });
+var one = await client.GetSourceContentStatusAsync("sc1", upload.ContentVersionId!);
+Console.WriteLine($"{one.ContentStatus} {one.Error}");
 ```
+
+### Cloud Drives
+
+```csharp
+var providers = await client.ListCloudDriveProvidersAsync();
+var drives = await client.ListCloudDrivesAsync();
+var drive = await client.GetCloudDriveAsync("cd1");
+
+// Only the properties you set are sent; the rest are left unchanged
+await client.UpdateCloudDriveAsync("cd1", new CloudDriveUpdateRequest { Name = "Contracts" });
+
+// Which agents depend on it, and which files it skipped and why
+var users = await client.GetAgentsUsingCloudDriveAsync("cd1");
+var skipped = await client.ListCloudDriveRejectionsAsync("cd1", limit: 20);
+
+await client.DisconnectCloudDriveAsync("cd1");  // keeps the connection
+await client.DeleteCloudDriveAsync("cd1");
+```
+
+Connecting a drive happens in the app; the API manages connections that exist.
 
 ### Source Exports
 
@@ -485,6 +546,13 @@ var removed = await client.RemoveEmailDomainAsync(custom.Id);
 ```csharp
 // Media-generation quality tiers (fast/balanced/thorough) and what each resolves to
 var tiers = await client.GetGenerationTiersAsync();                    // JsonElement
+
+// Embedding and reranker models, with their pricing
+var embedders = await client.ListEmbeddingModelsAsync(supportsInputMedia: "image");
+foreach (var m in embedders.Items)
+    Console.WriteLine($"{m.ModelType} {string.Join(",", m.Dimensions)}");
+var rerankers = await client.ListRerankerModelsAsync();
+Console.WriteLine(rerankers.DefaultModelType);
 
 var alerts = await client.ListModelAlertsAsync();                      // JsonElement
 await client.MarkModelAlertReadAsync("ma1");

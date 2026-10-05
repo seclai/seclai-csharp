@@ -43,4 +43,8 @@ public sealed class VariantOptionResponse
 
     [JsonPropertyName("value")]
     public string Value { get; set; } = string.Empty;
+
+    /// <summary>Credits per 1,000 input tokens written to a 30-minute prompt cache.</summary>
+    [JsonPropertyName("input_30m_cache_write_credits_per_1000_tokens")]
+    public double? Input30mCacheWriteCreditsPer1000Tokens { get; set; }
 }

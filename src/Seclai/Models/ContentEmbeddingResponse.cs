@@ -25,4 +25,16 @@ public sealed class ContentEmbeddingResponse
 
     [JsonPropertyName("vector")]
     public List<float> Vector { get; set; } = new();
+
+    [JsonPropertyName("media_name")]
+    public string? MediaName { get; set; }
+
+    [JsonPropertyName("page_number")]
+    public int? PageNumber { get; set; }
+
+    [JsonPropertyName("source_mime")]
+    public string? SourceMime { get; set; }
+
+    [JsonPropertyName("source_url")]
+    public string? SourceUrl { get; set; }
 }
