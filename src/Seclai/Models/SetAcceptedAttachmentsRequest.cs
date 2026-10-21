@@ -12,5 +12,6 @@ public sealed class SetAcceptedAttachmentsRequest
     /// triggers take files.
     /// </summary>
     [JsonPropertyName("accepted_attachments")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     public List<AcceptedAttachmentSlot>? AcceptedAttachments { get; set; }
 }

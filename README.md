@@ -225,7 +225,7 @@ client decodes:
 | `2026-10-13` | `MediaTypes` on a source rejects an unknown kind, or any kind on a source type other than website or RSS, with a 400 instead of dropping it |
 | `2026-10-16` | `UploadAgentInputAsync` accepts a file of any type and it is ready at once; each step receives the file itself when its model reads that type, and the run's input carries a heading per file instead of the file's extracted text |
 | `2026-10-18` | `DocumentImages` defaults to true on a new source with a text-only embedder too |
-| `2026-10-19` | `PollingMaxItems` is accepted on RSS sources only; any other source type rejects it with a 400 |
+| `2026-10-19` | `CreateSourceAsync` accepts `PollingMaxItems` on RSS sources only; any other source type rejects it with a 400 |
 
 ## Typed responses
 
@@ -430,7 +430,9 @@ foreach (var att in attachments.Data)
     if (detail.FileWithheld is null)   // otherwise the download answers 403
     {
         using var file = await client.DownloadContentAttachmentAsync("cv1", att.Id);
-        await using var output = File.Create(att.Key);
+        // The key comes from a third party (an email filename, feed media): keep only its
+        // file name so it cannot write outside the current directory.
+        await using var output = File.Create(Path.GetFileName(att.Key));
         await file.Content.CopyToAsync(output);
     }
 }
@@ -468,14 +470,17 @@ await client.CreateSourceAsync(new CreateSourceRequest
 });
 ```
 
-The new source fields (`CloudDrive*`, `DocumentImages`, `EmailAllowedSenders`,
-`FeedAttachments`) are omitted from the request when `null`. On `UpdateSourceRequest`
-that leaves the stored value unchanged; send `""` (or `0` for `CloudDriveMaxFileMb`)
-to clear one.
-
-`UpdateSourceAsync` sends only the properties you set; a `null` property is left
-unchanged. To remove the retention window, so content is kept indefinitely, call
-`ClearSourceRetentionAsync`:
+Every request body omits a property left `null`, so the API applies its default on a
+create and leaves the stored value unchanged on an update. On `UpdateSourceRequest`, send
+`""` (or `0` for `CloudDriveMaxFileMb`, `[]` for `MediaTypes` and `FeedAttachments`) to
+clear a setting. The two properties where `null` itself is the value are still sent:
+`SetAcceptedAttachmentsRequest.AcceptedAttachments` (accept any files) and
+`UpdateApiVersionRequest.Version` (clear the pin). Where a stored value is removed by
+sending `null`, the client has a named way to do it: `ClearSourceRetentionAsync` removes a
+source's retention window, so content is kept indefinitely,
+`ClearEvaluationCriteriaFieldsAsync` clears evaluation-criteria fields (see
+[Evaluations](#evaluations)), and `CreateMemoryBankRequest.RetainIndefinitely` creates a
+memory bank that keeps entries indefinitely (see [Memory Banks](#memory-banks)):
 
 ```csharp
 await client.UpdateSourceAsync("s1", new UpdateSourceRequest { RetentionDays = 90 });
@@ -531,6 +536,12 @@ var bank = await client.CreateMemoryBankAsync(new CreateMemoryBankRequest
 {
     Name = "Chat Memory", Type = "conversation"
 });
+// Omit RetentionDays for the API default (from 2026-08-03: 90 days for a conversation bank,
+// indefinite for a general bank), set it to a number of days, or keep entries indefinitely:
+var archive = await client.CreateMemoryBankAsync(new CreateMemoryBankRequest
+{
+    Name = "Archive", Type = "conversation", RetainIndefinitely = true
+});
 var stats = await client.GetMemoryBankStatsAsync(bank.Id);          // JsonElement
 var templates = await client.Typed.ListMemoryBankTemplatesAsync();   // List<Dictionary<string, JsonElement>>
 var usedBy = await client.Typed.GetAgentsUsingMemoryBankAsync(bank.Id);
@@ -551,6 +562,10 @@ var criteria = await client.ListEvaluationCriteriaAsync("ag1", page: 1, limit: 5
 var created = await client.CreateEvaluationCriteriaAsync("ag1",
     new CreateEvaluationCriteriaRequest { StepId = "s1" });
 var summary = await client.GetEvaluationCriteriaSummaryAsync(created.Id);
+// UpdateEvaluationCriteriaAsync leaves a property it is not given unchanged; to remove a
+// stored value, clear it. A cleared tier falls back to the agent's default tier.
+await client.ClearEvaluationCriteriaFieldsAsync(created.Id,
+    EvaluationCriteriaField.EvaluationTier, EvaluationCriteriaField.Description);
 await client.DeleteEvaluationCriteriaAsync(created.Id);
 
 // Results

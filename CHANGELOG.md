@@ -4,7 +4,7 @@
 
 ### Changed
 
-- Move `SeclaiApiVersion.Latest` from `2026-10-03` to `2026-10-19`. It is a `const`, so code compiled against an earlier release keeps the old value until it is rebuilt
+- Move `SeclaiApiVersion.Latest` from `2026-10-03` to `2026-10-19`, which opts a client that sends `Latest` into five more versions: from `2026-10-05` a content item held for review reports `ContentStatus` `completed` rather than `failed`, so code that looks for `failed` to find held items should read `HeldForReview`; from `2026-10-13` `CreateSourceAsync` and `UpdateSourceAsync` reject an unknown `MediaTypes` kind, or any kind on a source other than website or RSS, with a 400; from `2026-10-16` `UploadAgentInputAsync` accepts any file type and the upload is ready at once; from `2026-10-18` `DocumentImages` defaults to true with a text-only embedder too; and from `2026-10-19` `CreateSourceAsync` rejects `PollingMaxItems` on a source other than RSS with a 400. It is a `const`, so code compiled against an earlier release keeps the old value until it is rebuilt
 
 ### Added
 
@@ -15,13 +15,16 @@
 - Add email and cloud-drive source settings: `EmailAllowedSenders`, `DocumentImages`, `FeedAttachments` and the `CloudDrive*` fields on `CreateSourceRequest` (including `CloudDriveConnectionId`) and `UpdateSourceRequest`, and the same on `SourceResponse` plus `EmailAddress`. The request fields are omitted when `null`, so an update leaves them unchanged
 - Add `SkippedAttachments` to `ContentDetailResponse`, listing the parts of an email that were not stored as attachments, and `HeldForReview` to `SourceContentStatusResponse`
 - Add `RunOnAttachmentMismatch` to `SetEmailTriggerConfigRequest` and `EmailRunOnAttachmentMismatch` to `EmailTriggerConfigResponse`
-- Add `IncludeReasoning` to `AgentRunStreamRequest` to receive `stream_reasoning` events; it is omitted when `null`
+- Add `IncludeReasoning` to `AgentRunStreamRequest` to receive `stream_reasoning` events from `RunStreamingAgentAsync`; it is omitted when `null`. `RunStreamingAgentAndWaitAsync` reads only the `init` and `done` events, so it has no use there
 - Add `SeclaiApiVersion` constants `V2026_10_05`, `V2026_10_13`, `V2026_10_16`, `V2026_10_18` and `V2026_10_19`, so those versions are accepted as `ApiVersion`
 - Add `ClearSourceRetentionAsync` to remove a source's retention window, so its content is kept indefinitely. `UpdateSourceAsync` no longer clears it, see below
+- Add `ClearEvaluationCriteriaFieldsAsync` with `EvaluationCriteriaField` to clear an evaluation criterion's description, evaluation prompt, expectation config or evaluation tier by sending it as `null`. A cleared tier falls back to the agent's default tier, which is the only way to undo a pinned one
+- Add `RetentionDays` to `CreateMemoryBankRequest`, omitted when `null` so the API's default applies, and `RetainIndefinitely`, which sends `retention_days` as `null` so the bank keeps entries indefinitely. Setting both throws an `ArgumentException`. `UpdateMemoryBankRequest` gains the same `RetainIndefinitely`, which sends `retention_days` as 0, the value an update reads as "keep indefinitely"
+- Document the 402 that `GetContentAttachmentAsync`, `ListContentAttachmentEmbeddingsAsync` and `DownloadContentAttachmentAsync` throw when the account has no credits left
 
 ### Fixed
 
-- Send only the properties set on `UpdateSourceRequest` from `UpdateSourceAsync`. Every call sent an explicit null for `Name`, `Polling`, `RetentionDays` and `MediaTypes` when they were unset, and the API reads a null `retention_days` as "clear the retention window", so any update that did not set it, such as a rename, made the source keep its content indefinitely. A caller who relied on that to clear the window must now call `ClearSourceRetentionAsync`
+- Omit unset properties from every request body instead of sending them as `null`. The API reads some of those nulls as a value: `UpdateSourceAsync` cleared the retention window on any update that did not set `RetentionDays`, such as a rename, so the source kept its content indefinitely, and `UpdateEvaluationCriteriaAsync` failed with a 400 ("step_id is required") when `StepId` was unset, sent a null into a NOT NULL column when `PassThreshold` was unset, and, when both were set, cleared the description, prompt, tier and expectation config it was not given. It rejects others with a 422, so a call that left them unset failed: among them `Priority` on `AgentRunRequest`, `Type` on `CreateMemoryBankRequest`, `Enabled` and `DistributionType` on `CreateAlertConfigRequest`, `Enabled` and `PassThreshold` on `CreateEvaluationCriteriaRequest`, `TopN` on `AgentTraceSearchRequest`, `Delegated` on `AddEmailDomainRequest` and `MatchType` on `BlockEmailSenderRequest`. `SetAcceptedAttachmentsRequest.AcceptedAttachments` and `UpdateApiVersionRequest.Version` are still sent when `null`, since null is their value. A caller who relied on the old behavior to clear a source's retention window must now call `ClearSourceRetentionAsync`, and one that relied on it to clear evaluation-criteria fields must call `ClearEvaluationCriteriaFieldsAsync`
 
 ## [1.5.1] - 2026-10-05
 
