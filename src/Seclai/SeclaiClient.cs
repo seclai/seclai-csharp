@@ -389,6 +389,128 @@ public sealed class SeclaiClient : IDisposable
     }
 
     /// <summary>
+    /// Lists the files attached to a content item, with pagination: files an agent's
+    /// <c>write_content_attachment</c> step attached, files sent with a message to an email source,
+    /// the feed files an RSS source's <c>feed_attachments</c> chose, web-page media on a source with
+    /// media indexing on, and the images inside documents on a source that indexes document images.
+    /// </summary>
+    /// <param name="sourceConnectionContentVersion">Content version identifier.</param>
+    /// <param name="page">Page number (1-indexed, default 1).</param>
+    /// <param name="limit">Items per page (default 20).</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    public async Task<ContentAttachmentsListResponse> ListContentAttachmentsAsync(
+        string sourceConnectionContentVersion,
+        int? page = null,
+        int? limit = null,
+        CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(sourceConnectionContentVersion))
+        {
+            throw new ArgumentException("sourceConnectionContentVersion is required", nameof(sourceConnectionContentVersion));
+        }
+
+        var query = PaginationQuery(page, limit);
+
+        return await SendJsonAsync<ContentAttachmentsListResponse>(HttpMethod.Get, $"/contents/{Uri.EscapeDataString(sourceConnectionContentVersion)}/attachments", query, body: null, cancellationToken).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Gets one file attached to a content item: its indexing status and reason, its metadata, and
+    /// the text it is indexed by. Use <paramref name="start"/> and <paramref name="end"/> to page
+    /// through long text. A file that was not indexed has no text.
+    /// </summary>
+    /// <param name="sourceConnectionContentVersion">Content version identifier.</param>
+    /// <param name="attachmentId">The <c>Id</c> of an entry from <see cref="ListContentAttachmentsAsync"/>.</param>
+    /// <param name="start">Start offset of the text range (default 0).</param>
+    /// <param name="end">End offset of the text range (default 5000).</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    public async Task<ContentAttachmentDetailResponse> GetContentAttachmentAsync(
+        string sourceConnectionContentVersion,
+        string attachmentId,
+        int? start = null,
+        int? end = null,
+        CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(sourceConnectionContentVersion))
+        {
+            throw new ArgumentException("sourceConnectionContentVersion is required", nameof(sourceConnectionContentVersion));
+        }
+        if (string.IsNullOrWhiteSpace(attachmentId)) throw new ArgumentException("attachmentId is required", nameof(attachmentId));
+
+        var query = new Dictionary<string, string?>
+        {
+            ["start"] = start is >= 0 ? start.Value.ToString() : null,
+            ["end"] = end is >= 0 ? end.Value.ToString() : null,
+        };
+
+        return await SendJsonAsync<ContentAttachmentDetailResponse>(HttpMethod.Get, $"/contents/{Uri.EscapeDataString(sourceConnectionContentVersion)}/attachments/{Uri.EscapeDataString(attachmentId)}", query, body: null, cancellationToken).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Lists the embeddings (chunk vectors) an attached file is indexed by, with pagination. The list
+    /// is empty for a file that has no completed index.
+    /// </summary>
+    /// <param name="sourceConnectionContentVersion">Content version identifier.</param>
+    /// <param name="attachmentId">The <c>Id</c> of an entry from <see cref="ListContentAttachmentsAsync"/>.</param>
+    /// <param name="page">Page number (1-indexed, default 1).</param>
+    /// <param name="limit">Items per page (1-100, default 20).</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    public async Task<ContentEmbeddingsListResponse> ListContentAttachmentEmbeddingsAsync(
+        string sourceConnectionContentVersion,
+        string attachmentId,
+        int? page = null,
+        int? limit = null,
+        CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(sourceConnectionContentVersion))
+        {
+            throw new ArgumentException("sourceConnectionContentVersion is required", nameof(sourceConnectionContentVersion));
+        }
+        if (string.IsNullOrWhiteSpace(attachmentId)) throw new ArgumentException("attachmentId is required", nameof(attachmentId));
+
+        var query = PaginationQuery(page, limit);
+
+        return await SendJsonAsync<ContentEmbeddingsListResponse>(HttpMethod.Get, $"/contents/{Uri.EscapeDataString(sourceConnectionContentVersion)}/attachments/{Uri.EscapeDataString(attachmentId)}/embeddings", query, body: null, cancellationToken).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Downloads a file attached to a content item. Returns the raw HTTP response so the caller can
+    /// stream the body; the caller must dispose the returned <see cref="HttpResponseMessage"/>.
+    /// </summary>
+    /// <remarks>
+    /// Images, audio, video, PDF and plain text are served with their own type; anything else as
+    /// <c>application/octet-stream</c>. The API answers 403 — thrown as an <see cref="ApiException"/> —
+    /// when the file is withheld; <see cref="ContentAttachmentDetailResponse.FileWithheld"/> says why
+    /// before you ask.
+    /// </remarks>
+    /// <param name="sourceConnectionContentVersion">Content version identifier.</param>
+    /// <param name="attachmentId">The <c>Id</c> of an entry from <see cref="ListContentAttachmentsAsync"/>.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    public async Task<HttpResponseMessage> DownloadContentAttachmentAsync(string sourceConnectionContentVersion, string attachmentId, CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(sourceConnectionContentVersion))
+        {
+            throw new ArgumentException("sourceConnectionContentVersion is required", nameof(sourceConnectionContentVersion));
+        }
+        if (string.IsNullOrWhiteSpace(attachmentId)) throw new ArgumentException("attachmentId is required", nameof(attachmentId));
+
+        var url = BuildUri($"/contents/{Uri.EscapeDataString(sourceConnectionContentVersion)}/attachments/{Uri.EscapeDataString(attachmentId)}/file", query: null);
+        using var req = new HttpRequestMessage(HttpMethod.Get, url);
+        await ApplyHeadersAsync(req, cancellationToken).ConfigureAwait(false);
+
+        var resp = await _http.SendAsync(req, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+
+        if (!resp.IsSuccessStatusCode)
+        {
+            var responseBody = await ReadBodyAsync(resp).ConfigureAwait(false);
+            resp.Dispose();
+            ThrowApiError(resp.StatusCode, req.Method.Method, url, responseBody);
+        }
+
+        return resp;
+    }
+
+    /// <summary>
     /// Upload a file to a specific source connection.
     /// </summary>
     /// <remarks>
@@ -1530,6 +1652,26 @@ public sealed class SeclaiClient : IDisposable
         return await SendJsonAsync<SourceContentStatusResponse>(HttpMethod.Get, $"/sources/{Uri.EscapeDataString(sourceId)}/contents/{Uri.EscapeDataString(contentVersionId)}", query: null, body: null, cancellationToken).ConfigureAwait(false);
     }
 
+    /// <summary>
+    /// Lists mail that an email content source refused, newest first. Each entry says who sent the
+    /// message and why it was refused, never its subject or body.
+    /// </summary>
+    /// <remarks>
+    /// To accept a refused sender, add its <c>FromAddress</c> or that address's domain to the source's
+    /// <see cref="UpdateSourceRequest.EmailAllowedSenders"/>. That only helps when
+    /// <see cref="EmailSourceRejectionResponse.Authenticated"/> is true.
+    /// </remarks>
+    /// <param name="sourceId">Source connection identifier.</param>
+    /// <param name="page">Page number (1-indexed, default 1).</param>
+    /// <param name="limit">Items per page (1-100, default 20).</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    public async Task<EmailSourceRejectionListResponse> ListEmailSourceRejectionsAsync(string sourceId, int? page = null, int? limit = null, CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(sourceId)) throw new ArgumentException("sourceId is required", nameof(sourceId));
+        var query = PaginationQuery(page, limit);
+        return await SendJsonAsync<EmailSourceRejectionListResponse>(HttpMethod.Get, $"/sources/{Uri.EscapeDataString(sourceId)}/email-rejections", query, body: null, cancellationToken).ConfigureAwait(false);
+    }
+
     // ── Source Exports ──────────────────────────────────────────────────────
 
     /// <summary>Lists exports for a source.</summary>
@@ -2233,6 +2375,24 @@ public sealed class SeclaiClient : IDisposable
         if (string.IsNullOrWhiteSpace(agentId)) throw new ArgumentException("agentId is required", nameof(agentId));
         if (string.IsNullOrWhiteSpace(triggerId)) throw new ArgumentException("triggerId is required", nameof(triggerId));
         return await SendJsonAsync<EmailTriggerConfigResponse>(HttpMethod.Put, $"/agents/{Uri.EscapeDataString(agentId)}/triggers/{Uri.EscapeDataString(triggerId)}/email-config", null, body, cancellationToken).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Replaces the input attachments an agent's trigger accepts. A run's files are each assigned to one
+    /// declared attachment before any step runs; steps reference one as
+    /// <c>{{agent.attachments.&lt;name&gt;}}</c>. The API answers 400 when the agent references an
+    /// attachment the new declaration leaves out.
+    /// </summary>
+    /// <param name="agentId">Agent identifier.</param>
+    /// <param name="triggerId">The trigger's id, from <see cref="AgentSummaryResponse.TriggerId"/>.</param>
+    /// <param name="body">The new declaration; a null <see cref="SetAcceptedAttachmentsRequest.AcceptedAttachments"/> accepts any files.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    public async Task<AcceptedAttachmentsResponse> SetAcceptedAttachmentsAsync(string agentId, string triggerId, SetAcceptedAttachmentsRequest body, CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(agentId)) throw new ArgumentException("agentId is required", nameof(agentId));
+        if (string.IsNullOrWhiteSpace(triggerId)) throw new ArgumentException("triggerId is required", nameof(triggerId));
+        if (body is null) throw new ArgumentNullException(nameof(body));
+        return await SendJsonAsync<AcceptedAttachmentsResponse>(HttpMethod.Put, $"/agents/{Uri.EscapeDataString(agentId)}/triggers/{Uri.EscapeDataString(triggerId)}/accepted-attachments", null, body, cancellationToken).ConfigureAwait(false);
     }
     // ── API Version ───────────────────────────────────────────────────────────
 

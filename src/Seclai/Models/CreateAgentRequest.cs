@@ -40,4 +40,13 @@ public sealed class CreateAgentRequest
     /// </summary>
     [JsonPropertyName("entity_remap")]
     public Dictionary<string, string>? EntityRemap { get; set; }
+
+    /// <summary>
+    /// The input attachments the trigger accepts. Left null, the field is omitted: the
+    /// <see cref="AgentDefinition"/> trigger's declaration is kept when the export carries one;
+    /// otherwise a <c>dynamic_input</c> or <c>email_received</c> trigger accepts any files.
+    /// </summary>
+    [JsonPropertyName("accepted_attachments")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public List<AcceptedAttachmentSlot>? AcceptedAttachments { get; set; }
 }

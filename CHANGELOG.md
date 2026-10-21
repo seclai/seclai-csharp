@@ -1,5 +1,23 @@
 # Changelog
 
+## [1.6.0] - 2026-10-21
+
+### Changed
+
+- Move `SeclaiApiVersion.Latest` from `2026-10-03` to `2026-10-19`. It is a `const`, so code compiled against an earlier release keeps the old value until it is rebuilt
+
+### Added
+
+- Add `SetAcceptedAttachmentsAsync` to declare the named input attachments an agent's trigger accepts, with `SetAcceptedAttachmentsRequest`, `AcceptedAttachmentSlot` and `AcceptedAttachmentsResponse`. A null list is sent as-is and accepts any files
+- Add `AcceptedAttachments` to `CreateAgentRequest` and `UpdateAgentDefinitionRequest` to declare the slots in the same save, and to `AgentAttachmentRefsApiResponse` to read them; add `TriggerId` to `AgentSummaryResponse` for the trigger endpoints
+- Add content-attachment methods: `ListContentAttachmentsAsync`, `GetContentAttachmentAsync` with its indexed text and `FileWithheld` reason, `ListContentAttachmentEmbeddingsAsync`, and `DownloadContentAttachmentAsync`, which returns the raw `HttpResponseMessage` for streaming
+- Add `ListEmailSourceRejectionsAsync` for the mail an email content source refused, returning `EmailSourceRejectionListResponse`
+- Add email and cloud-drive source settings: `EmailAllowedSenders`, `DocumentImages`, `FeedAttachments` and the `CloudDrive*` fields on `CreateSourceRequest` (including `CloudDriveConnectionId`) and `UpdateSourceRequest`, and the same on `SourceResponse` plus `EmailAddress`. The request fields are omitted when `null`, so an update leaves them unchanged
+- Add `SkippedAttachments` to `ContentDetailResponse`, listing the parts of an email that were not stored as attachments, and `HeldForReview` to `SourceContentStatusResponse`
+- Add `RunOnAttachmentMismatch` to `SetEmailTriggerConfigRequest` and `EmailRunOnAttachmentMismatch` to `EmailTriggerConfigResponse`
+- Add `IncludeReasoning` to `AgentRunStreamRequest` to receive `stream_reasoning` events; it is omitted when `null`
+- Add `SeclaiApiVersion` constants `V2026_10_05`, `V2026_10_13`, `V2026_10_16`, `V2026_10_18` and `V2026_10_19`, so those versions are accepted as `ApiVersion`
+
 ## [1.5.1] - 2026-10-05
 
 ### Changed
@@ -190,6 +208,7 @@ _Stable release. Packaging only; no API changes since 0.0.1._
 
 _Initial release._
 
+[1.6.0]: https://github.com/seclai/seclai-csharp/releases/tag/1.6.0
 [1.5.1]: https://github.com/seclai/seclai-csharp/releases/tag/1.5.1
 [1.5.0]: https://github.com/seclai/seclai-csharp/releases/tag/1.5.0
 [1.4.0]: https://github.com/seclai/seclai-csharp/releases/tag/1.4.0

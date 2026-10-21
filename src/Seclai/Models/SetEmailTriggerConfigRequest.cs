@@ -37,4 +37,9 @@ public sealed class SetEmailTriggerConfigRequest
     [JsonPropertyName("require_sender_auth")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public bool? RequireSenderAuth { get; set; }
+
+    /// <summary>When true (default false), an email whose attachments don't fit what the agent expects still runs: files the agent can't take are left out and the problems are listed in the <c>email_attachment_issues</c> run metadata. When false, the run fails.</summary>
+    [JsonPropertyName("run_on_attachment_mismatch")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public bool? RunOnAttachmentMismatch { get; set; }
 }

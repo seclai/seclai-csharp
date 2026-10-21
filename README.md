@@ -143,7 +143,7 @@ Leave `ApiVersion` unset and the header is omitted, so the account's pinned
 baseline applies and responses keep their current shapes. Upgrading this package
 alone never changes the wire contract.
 
-Known versions are on `SeclaiApiVersion` (`V2026_07_01` through `V2026_10_03`,
+Known versions are on `SeclaiApiVersion` (`V2026_07_01` through `V2026_10_19`,
 plus `Default`, `Latest` and `Known`). A version this release was **not** built
 against is rejected with `ConfigurationException`: a newer version can reshape
 responses, and this client would decode them incorrectly rather than reject
@@ -221,6 +221,11 @@ client decodes:
 | `2026-09-28` | Agent-definition writes use the current file-list grammar: an omitted `attachments` keeps the stored list and `[]` means no files |
 | `2026-09-30` | `AgentRunResponse.Output` and `AgentRunStepResponse.Output` are the text rather than a JSON manifest; the files are in `Attachments` on every version |
 | `2026-10-03` | A new LLM step written without `attachments` takes its parent's files, and a new retrieval step's matched media are its files |
+| `2026-10-05` | A content item an Enforce governance policy holds for review reports `completed` rather than `failed`; `HeldForReview` is true either way |
+| `2026-10-13` | `MediaTypes` on a source rejects an unknown kind, or any kind on a source type other than website or RSS, with a 400 instead of dropping it |
+| `2026-10-16` | `UploadAgentInputAsync` accepts a file of any type and it is ready at once; each step receives the file itself when its model reads that type, and the run's input carries a heading per file instead of the file's extracted text |
+| `2026-10-18` | `DocumentImages` defaults to true on a new source with a text-only embedder too |
+| `2026-10-19` | `PollingMaxItems` is accepted on RSS sources only; any other source type rejects it with a 400 |
 
 ## Typed responses
 
@@ -300,6 +305,33 @@ var imported = await client.CreateAgentAsync(new CreateAgentRequest
 // imported.ImportWarnings lists any items that couldn't be applied.
 ```
 
+#### Accepted attachments
+
+A trigger declares the input files it accepts as named slots; steps read one as
+`{{agent.attachments.<name>}}`. The trigger's id is on `AgentSummaryResponse.TriggerId`.
+
+```csharp
+var slots = await client.SetAcceptedAttachmentsAsync(agent.Id!, agent.TriggerId!,
+    new SetAcceptedAttachmentsRequest
+    {
+        AcceptedAttachments = new List<AcceptedAttachmentSlot>
+        {
+            new() { Name = "invoice", ContentTypes = new List<string> { "application/pdf" }, Min = 1, Max = 1 },
+            new() { Name = "receipts", ContentTypes = new List<string> { "image/*" } },
+        },
+    });
+
+// A null list is sent as-is and accepts any files (one slot named "files").
+await client.SetAcceptedAttachmentsAsync(agent.Id!, agent.TriggerId!, new SetAcceptedAttachmentsRequest());
+
+// What a run must supply
+var refs = await client.GetAgentAttachmentReferencesAsync(agent.Id!);
+foreach (var slot in refs.AcceptedAttachments ?? new()) Console.WriteLine($"{slot.Name}: min {slot.Min}");
+```
+
+`CreateAgentRequest.AcceptedAttachments` and `UpdateAgentDefinitionRequest.AcceptedAttachments`
+declare the same slots in the same save; left `null`, they are omitted.
+
 ### Agent Runs
 
 ```csharp
@@ -333,8 +365,10 @@ foreach (var file in detail.Attachments)
 ```csharp
 // SSE streaming — yields AgentRunEvent items as they arrive
 await foreach (var evt in client.RunStreamingAgentAsync("ag1",
-    new AgentRunStreamRequest { Input = "hello" }))
+    new AgentRunStreamRequest { Input = "hello", IncludeReasoning = true }))
 {
+    // "stream_reasoning" events carry the model's reasoning for a streaming_result
+    // step whose author enabled show_reasoning; read evt.Data for those.
     Console.WriteLine($"[{evt.Event}] {evt.Run?.Status}");
 }
 
@@ -384,8 +418,60 @@ var failed = await client.ListSourceContentsAsync("sc1", status: "failed");
 var batch = await client.ListSourceContentsAsync("sc1",
     contentVersionIds: new[] { upload.ContentVersionId!, upload2.ContentVersionId! });
 var one = await client.GetSourceContentStatusAsync("sc1", upload.ContentVersionId!);
-Console.WriteLine($"{one.ContentStatus} {one.Error}");
+Console.WriteLine($"{one.ContentStatus} {one.Error} held={one.HeldForReview}");
+
+// Files attached to a content item: email attachments, feed files, web-page media,
+// images inside documents, and files an agent step wrote
+var attachments = await client.ListContentAttachmentsAsync("cv1", page: 1, limit: 20);
+foreach (var att in attachments.Data)
+{
+    var detail = await client.GetContentAttachmentAsync("cv1", att.Id, start: 0, end: 5000);
+    var chunks = await client.ListContentAttachmentEmbeddingsAsync("cv1", att.Id);
+    if (detail.FileWithheld is null)   // otherwise the download answers 403
+    {
+        using var file = await client.DownloadContentAttachmentAsync("cv1", att.Id);
+        await using var output = File.Create(att.Key);
+        await file.Content.CopyToAsync(output);
+    }
+}
 ```
+
+#### Email and cloud-drive sources
+
+```csharp
+// An email source stores mail from its allowed senders; mail goes to EmailAddress
+var inbox = await client.CreateSourceAsync(new CreateSourceRequest
+{
+    Name = "Newsletters",
+    SourceType = "email",
+    EmailAllowedSenders = new List<string> { "news@example.com", "example.org" },
+});
+Console.WriteLine(inbox.EmailAddress);
+
+// What it refused, and why — never the subject or body
+var refused = await client.ListEmailSourceRejectionsAsync(inbox.Id!, page: 1, limit: 20);
+foreach (var r in refused.Data) Console.WriteLine($"{r.FromAddress} {r.Reason} auth={r.Authenticated}");
+
+// Parts of a message that were not stored as attachments
+var item = await client.GetContentDetailAsync("cv1");
+foreach (var part in item.SkippedAttachments ?? new()) Console.WriteLine($"{part.Filename}: {part.Reason}");
+
+// A cloud_drive source indexes a connected drive's folder
+await client.CreateSourceAsync(new CreateSourceRequest
+{
+    Name = "Contracts",
+    SourceType = "cloud_drive",
+    CloudDriveConnectionId = "cd1",
+    CloudDriveFolderPath = "/contracts",
+    CloudDrivePathPattern = "**/*.pdf",
+    CloudDriveMaxFileMb = 50,
+});
+```
+
+The new source fields (`CloudDrive*`, `DocumentImages`, `EmailAllowedSenders`,
+`FeedAttachments`) are omitted from the request when `null`. On `UpdateSourceRequest`
+that leaves the stored value unchanged; send `""` (or `0` for `CloudDriveMaxFileMb`)
+to clear one.
 
 ### Cloud Drives
 
@@ -526,6 +612,11 @@ var cfg = await client.SetEmailTriggerConfigAsync("a1", "t1",
         RequireSenderAuth = true,
     });
 Console.WriteLine(string.Join(", ", cfg.EmailAddresses ?? new List<string>()));
+
+// Run even when an email's attachments don't fit the accepted slots; the problems
+// are listed in the run's email_attachment_issues metadata.
+await client.SetEmailTriggerConfigAsync("a1", "t1",
+    new SetEmailTriggerConfigRequest { RunOnAttachmentMismatch = true });
 
 // Clear the alias and open the inbox to any sender.
 await client.SetEmailTriggerConfigAsync("a1", "t1",

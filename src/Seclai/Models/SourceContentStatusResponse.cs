@@ -107,4 +107,13 @@ public sealed class SourceContentStatusResponse
     /// <summary>Title of the content item.</summary>
     [JsonPropertyName("title")]
     public string? Title { get; set; }
+
+    /// <summary>
+    /// True when an Enforce governance policy blocked this item at import. It is held for review and is not
+    /// retrievable: resolving its blocking evaluations releases it into the source, and it is purged when the
+    /// hold window ends. From API version <c>2026-10-05</c> such an item reports <c>completed</c>; earlier
+    /// versions report <c>failed</c> with the hold as the error.
+    /// </summary>
+    [JsonPropertyName("held_for_review")]
+    public bool HeldForReview { get; set; }
 }

@@ -90,4 +90,40 @@ public sealed class SourceResponse
     /// <summary>Media kinds extracted from indexed content and embedded as multi-modal KB chunks (subset of ['images', 'video']). Empty = text-only.</summary>
     [JsonPropertyName("media_types")]
     public List<string>? MediaTypes { get; set; }
+
+    /// <summary>For a cloud_drive source: the id of the connected drive it indexes. Null for every other source type.</summary>
+    [JsonPropertyName("cloud_drive_connection_id")]
+    public string? CloudDriveConnectionId { get; set; }
+
+    /// <summary>For a cloud_drive source: the comma-separated MIME types a file must have to be indexed. Null when there is no filter.</summary>
+    [JsonPropertyName("cloud_drive_content_types")]
+    public string? CloudDriveContentTypes { get; set; }
+
+    /// <summary>For a cloud_drive source: the folder it indexes. Null when it indexes the connected drive's own folder.</summary>
+    [JsonPropertyName("cloud_drive_folder_path")]
+    public string? CloudDriveFolderPath { get; set; }
+
+    /// <summary>For a cloud_drive source: the size in megabytes above which a file is skipped. Null when the source sets no limit of its own.</summary>
+    [JsonPropertyName("cloud_drive_max_file_mb")]
+    public int? CloudDriveMaxFileMb { get; set; }
+
+    /// <summary>For a cloud_drive source: the glob a file's path must match to be indexed. Null when there is none.</summary>
+    [JsonPropertyName("cloud_drive_path_pattern")]
+    public string? CloudDrivePathPattern { get; set; }
+
+    /// <summary>Whether the images inside PDF, DOCX, PPTX and XLSX files are attached to the item and indexed. On a website or RSS source it reports whether <see cref="MediaTypes"/> holds <c>images</c>.</summary>
+    [JsonPropertyName("document_images")]
+    public bool? DocumentImages { get; set; }
+
+    /// <summary>For an email source: the address to send mail to. Null for every other source type.</summary>
+    [JsonPropertyName("email_address")]
+    public string? EmailAddress { get; set; }
+
+    /// <summary>For an email source: the addresses and domains whose mail is stored. Null for every other source type.</summary>
+    [JsonPropertyName("email_allowed_senders")]
+    public List<string>? EmailAllowedSenders { get; set; }
+
+    /// <summary>Kinds of file listed beside a feed item's content that an RSS source attaches to the item and indexes (subset of <c>enclosures</c>, <c>item_image</c>, <c>media_rss</c>).</summary>
+    [JsonPropertyName("feed_attachments")]
+    public List<string>? FeedAttachments { get; set; }
 }

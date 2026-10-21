@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
 namespace Seclai.Models;
@@ -23,4 +24,12 @@ public sealed class AgentAttachmentRefsApiResponse
     /// </summary>
     [JsonPropertyName("requires_uploads")]
     public bool RequiresUploads { get; set; }
+
+    /// <summary>
+    /// The attachments the agent's trigger declares. A run's files are each assigned to one; a file
+    /// none accepts, or an attachment with fewer files than its <c>min</c>, rejects the run with HTTP 400.
+    /// Steps reference one as <c>{{agent.attachments.&lt;name&gt;}}</c>.
+    /// </summary>
+    [JsonPropertyName("accepted_attachments")]
+    public List<AcceptedAttachmentSlot>? AcceptedAttachments { get; set; }
 }
