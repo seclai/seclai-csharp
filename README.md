@@ -473,6 +473,15 @@ The new source fields (`CloudDrive*`, `DocumentImages`, `EmailAllowedSenders`,
 that leaves the stored value unchanged; send `""` (or `0` for `CloudDriveMaxFileMb`)
 to clear one.
 
+`UpdateSourceAsync` sends only the properties you set; a `null` property is left
+unchanged. To remove the retention window, so content is kept indefinitely, call
+`ClearSourceRetentionAsync`:
+
+```csharp
+await client.UpdateSourceAsync("s1", new UpdateSourceRequest { RetentionDays = 90 });
+await client.ClearSourceRetentionAsync("s1");
+```
+
 ### Cloud Drives
 
 ```csharp

@@ -1587,11 +1587,25 @@ public sealed class SeclaiClient : IDisposable
         return await SendJsonAsync<SourceResponse>(HttpMethod.Get, $"/sources/{Uri.EscapeDataString(sourceId)}", query: null, body: null, cancellationToken).ConfigureAwait(false);
     }
 
-    /// <summary>Updates a source.</summary>
+    /// <summary>Updates a source. Only the properties set on <paramref name="body"/> are sent; a null property leaves that setting unchanged. To remove the retention window, use <see cref="ClearSourceRetentionAsync"/>.</summary>
     public async Task<SourceResponse> UpdateSourceAsync(string sourceId, UpdateSourceRequest body, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(sourceId)) throw new ArgumentException("sourceId is required", nameof(sourceId));
         return await SendJsonAsync<SourceResponse>(HttpMethod.Put, $"/sources/{Uri.EscapeDataString(sourceId)}", query: null, body, cancellationToken).ConfigureAwait(false);
+    }
+
+    /// <summary>Removes a source's retention window, so its content is kept indefinitely. Sends an explicit null <c>retention_days</c> and leaves every other setting unchanged.</summary>
+    public async Task<SourceResponse> ClearSourceRetentionAsync(string sourceId, CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(sourceId)) throw new ArgumentException("sourceId is required", nameof(sourceId));
+        return await SendJsonAsync<SourceResponse>(HttpMethod.Put, $"/sources/{Uri.EscapeDataString(sourceId)}", query: null, new ClearRetentionBody(), cancellationToken).ConfigureAwait(false);
+    }
+
+    // The body of ClearSourceRetentionAsync: an explicit null retention_days, which the API reads as "remove the window".
+    private sealed class ClearRetentionBody
+    {
+        [System.Text.Json.Serialization.JsonPropertyName("retention_days")]
+        public int? RetentionDays => null;
     }
 
     /// <summary>Deletes a source.</summary>

@@ -17,6 +17,11 @@
 - Add `RunOnAttachmentMismatch` to `SetEmailTriggerConfigRequest` and `EmailRunOnAttachmentMismatch` to `EmailTriggerConfigResponse`
 - Add `IncludeReasoning` to `AgentRunStreamRequest` to receive `stream_reasoning` events; it is omitted when `null`
 - Add `SeclaiApiVersion` constants `V2026_10_05`, `V2026_10_13`, `V2026_10_16`, `V2026_10_18` and `V2026_10_19`, so those versions are accepted as `ApiVersion`
+- Add `ClearSourceRetentionAsync` to remove a source's retention window, so its content is kept indefinitely. `UpdateSourceAsync` no longer clears it, see below
+
+### Fixed
+
+- Send only the properties set on `UpdateSourceRequest` from `UpdateSourceAsync`. Every call sent an explicit null for `Name`, `Polling`, `RetentionDays` and `MediaTypes` when they were unset, and the API reads a null `retention_days` as "clear the retention window", so any update that did not set it, such as a rename, made the source keep its content indefinitely. A caller who relied on that to clear the window must now call `ClearSourceRetentionAsync`
 
 ## [1.5.1] - 2026-10-05
 

@@ -3466,6 +3466,42 @@ public sealed class SeclaiClientTests
     }
 
     [Fact]
+    public async Task UpdateSource_SendsOnlySetFields()
+    {
+        var bodies = new List<string>();
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Put, req.Method);
+            Assert.Equal("/sources/s1", req.RequestUri!.AbsolutePath);
+            bodies.Add(req.Content!.ReadAsStringAsync().GetAwaiter().GetResult());
+            return JsonResponse("{\"id\":\"s1\"}");
+        });
+        var client = MakeClient(handler);
+        await client.UpdateSourceAsync("s1", new UpdateSourceRequest { Name = "n" });
+        await client.UpdateSourceAsync("s1", new UpdateSourceRequest());
+        await client.UpdateSourceAsync("s1", new UpdateSourceRequest { RetentionDays = 30, MediaTypes = new List<string>() });
+        Assert.Equal("{\"name\":\"n\"}", bodies[0]);
+        Assert.Equal("{}", bodies[1]);
+        Assert.Equal("{\"retention_days\":30,\"media_types\":[]}", bodies[2]);
+    }
+
+    [Fact]
+    public async Task ClearSourceRetention_SendsExplicitNull()
+    {
+        string? body = null;
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Put, req.Method);
+            Assert.Equal("/sources/s1", req.RequestUri!.AbsolutePath);
+            body = req.Content!.ReadAsStringAsync().GetAwaiter().GetResult();
+            return JsonResponse("{\"id\":\"s1\"}");
+        });
+        var client = MakeClient(handler);
+        await client.ClearSourceRetentionAsync("s1");
+        Assert.Equal("{\"retention_days\":null}", body);
+    }
+
+    [Fact]
     public async Task NewRequestFields_AreSentWhenSet()
     {
         var bodies = new List<string>();

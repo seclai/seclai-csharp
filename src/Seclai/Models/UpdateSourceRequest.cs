@@ -5,17 +5,24 @@ namespace Seclai.Models;
 
 public sealed class UpdateSourceRequest
 {
+    /// <summary>New name. Leave null to keep it.</summary>
     [JsonPropertyName("name")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? Name { get; set; }
 
+    /// <summary>New polling interval. Leave null to keep it.</summary>
     [JsonPropertyName("polling")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? Polling { get; set; }
 
+    /// <summary>New retention period in days; content older than this is deleted permanently. Leave null to keep it. To remove the window, call <see cref="SeclaiClient.ClearSourceRetentionAsync"/>.</summary>
     [JsonPropertyName("retention_days")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public int? RetentionDays { get; set; }
 
-    /// <summary>Media kinds to extract from indexed content and embed as multi-modal KB chunks. Subset of ['images', 'video']. Only kinds the source's embedder can index are honored; unsupported values are dropped. [] disables media extraction (text-only).</summary>
+    /// <summary>Media kinds to extract from indexed content and embed as multi-modal KB chunks. Subset of ['images', 'video']. Only kinds the source's embedder can index are honored; unsupported values are dropped. [] disables media extraction (text-only). Leave null to keep them.</summary>
     [JsonPropertyName("media_types")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public List<string>? MediaTypes { get; set; }
 
     /// <summary>For a cloud_drive source: comma-separated MIME types a file must have to be indexed. Send an empty string to clear it; leave null to keep it.</summary>
