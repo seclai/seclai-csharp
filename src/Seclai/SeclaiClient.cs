@@ -41,10 +41,7 @@ public sealed class SeclaiClient : IDisposable
 
     // Upload metadata is the caller's own data, so a null inside it (also a null property of an
     // object value) is sent as written.
-    private static readonly JsonSerializerOptions MetadataJsonOptions = new()
-    {
-        PropertyNameCaseInsensitive = true,
-    };
+    private static readonly JsonSerializerOptions MetadataJsonOptions = new();
 
     // Returns body as a JSON object with key set to value, a null value included. It is the one way
     // a request sends an explicit null past the WhenWritingNull default, or overrides a single field

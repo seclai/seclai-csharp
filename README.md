@@ -475,7 +475,7 @@ await client.CreateSourceAsync(new CreateSourceRequest
 
 Every request body omits a property left `null`, so the API applies its default on a
 create and leaves the stored value unchanged on an update. On `UpdateSourceRequest`, send
-`""` (or `0` for `CloudDriveMaxFileMb`, `[]` for `MediaTypes` and `FeedAttachments`) to
+`""` (or `0` for `CloudDriveMaxFileMb`, an empty list for `MediaTypes` and `FeedAttachments`) to
 clear a setting. The two properties where `null` itself is the value are still sent:
 `SetAcceptedAttachmentsRequest.AcceptedAttachments` (accept any files) and
 `UpdateApiVersionRequest.Version` (clear the pin); they are the only model properties
@@ -571,7 +571,7 @@ var summary = await client.GetEvaluationCriteriaSummaryAsync(created.Id);
 // UpdateEvaluationCriteriaAsync leaves a property it is not given unchanged; to remove a
 // stored value, clear it. A cleared tier falls back to the agent's default tier.
 await client.ClearEvaluationCriteriaFieldsAsync(created.Id,
-    [EvaluationCriteriaField.EvaluationTier, EvaluationCriteriaField.Description]);
+    new[] { EvaluationCriteriaField.EvaluationTier, EvaluationCriteriaField.Description });
 await client.DeleteEvaluationCriteriaAsync(created.Id);
 
 // Results
