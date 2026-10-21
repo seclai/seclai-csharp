@@ -18,7 +18,6 @@ public sealed class CreateMemoryBankRequest
 
     /// <summary>Conversation banks only. When true, a conversation turn written to this bank has the quoted reply chain an email client prepends to a reply dropped from it. Omitted when null, which leaves it off.</summary>
     [JsonPropertyName("strip_quoted_reply_chains")]
-    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public bool? StripQuotedReplyChains { get; set; }
 
     /// <summary>
@@ -28,7 +27,6 @@ public sealed class CreateMemoryBankRequest
     /// To keep entries indefinitely, set <see cref="RetainIndefinitely"/> instead.
     /// </summary>
     [JsonPropertyName("retention_days")]
-    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public int? RetentionDays { get; set; }
 
     /// <summary>

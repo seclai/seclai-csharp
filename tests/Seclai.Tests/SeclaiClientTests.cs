@@ -374,6 +374,28 @@ public sealed class SeclaiClientTests
     }
 
     [Fact]
+    public async Task RunStreamingAgentAndWait_DoesNotAskForReasoning()
+    {
+        string? sent = null;
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            sent = req.Content!.ReadAsStringAsync().GetAwaiter().GetResult();
+            var sse = "event: done\n" +
+                "data: {\"run_id\":\"run_1\",\"status\":\"completed\",\"output\":\"ok\",\"attempts\":[],\"error_count\":0,\"priority\":false}\n\n";
+            var resp = new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(sse, Encoding.UTF8, "text/event-stream") };
+            return resp;
+        });
+        var client = MakeClient(handler);
+        var body = new AgentRunStreamRequest { Input = "hi", IncludeReasoning = true };
+
+        var res = await client.RunStreamingAgentAndWaitAsync("a", body);
+
+        Assert.Equal("run_1", res.RunId);
+        Assert.Equal("{\"input\":\"hi\"}", sent);
+        Assert.True(body.IncludeReasoning);
+    }
+
+    [Fact]
     public async Task RunStreamingAgentAndWait_TimesOut()
     {
         var handler = new FakeHttpMessageHandler(_ =>
@@ -435,6 +457,26 @@ public sealed class SeclaiClientTests
         Assert.Equal("hello.txt", res.Filename);
         Assert.Equal("success", res.Status);
         Assert.Equal("sc_cv_1", res.SourceConnectionContentVersionId);
+    }
+
+    [Fact]
+    public async Task UploadFileToSource_KeepsNullsInsideMetadata()
+    {
+        string? metadataJson = null;
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            metadataJson = ExtractMultipartPartValue(req.Content!.ReadAsStringAsync().GetAwaiter().GetResult(), "metadata");
+            return JsonResponse("{\"filename\":\"a.txt\",\"status\":\"success\"}");
+        });
+        var client = MakeClient(handler);
+
+        await client.UploadFileToSourceAsync(
+            sourceConnectionId: "sc_1",
+            fileBytes: Encoding.UTF8.GetBytes("a"),
+            fileName: "a.txt",
+            metadata: new Dictionary<string, object?> { ["doc"] = new { author = (string?)null, tags = new { lang = (string?)null } }, ["top"] = null });
+
+        Assert.Equal("{\"doc\":{\"author\":null,\"tags\":{\"lang\":null}},\"top\":null}", metadataJson);
     }
 
     [Fact]
@@ -3269,10 +3311,10 @@ public sealed class SeclaiClientTests
         });
         var client = MakeClient(handler);
 
-        var res = await client.ClearEvaluationCriteriaFieldsAsync("ec1", EvaluationCriteriaField.EvaluationTier);
+        var res = await client.ClearEvaluationCriteriaFieldsAsync("ec1", new[] { EvaluationCriteriaField.EvaluationTier });
         await client.ClearEvaluationCriteriaFieldsAsync("ec1",
-            EvaluationCriteriaField.Description, EvaluationCriteriaField.EvaluationPrompt,
-            EvaluationCriteriaField.ExpectationConfig, EvaluationCriteriaField.Description);
+            [EvaluationCriteriaField.Description, EvaluationCriteriaField.EvaluationPrompt,
+            EvaluationCriteriaField.ExpectationConfig, EvaluationCriteriaField.Description], CancellationToken.None);
         await client.ClearEvaluationCriteriaFieldsAsync("ec1", new List<EvaluationCriteriaField> { EvaluationCriteriaField.ExpectationConfig }, CancellationToken.None);
 
         Assert.Equal("ec1", res.Id);
@@ -3287,15 +3329,36 @@ public sealed class SeclaiClientTests
         var handler = new FakeHttpMessageHandler(_ => throw new InvalidOperationException("no request expected"));
         var client = MakeClient(handler);
 
-        var none = await Assert.ThrowsAsync<ArgumentException>(() => client.ClearEvaluationCriteriaFieldsAsync("ec1"));
-        var nullArray = await Assert.ThrowsAsync<ArgumentException>(() => client.ClearEvaluationCriteriaFieldsAsync("ec1", (EvaluationCriteriaField[])null!));
-        var undefined = await Assert.ThrowsAsync<ArgumentException>(() => client.ClearEvaluationCriteriaFieldsAsync("ec1", EvaluationCriteriaField.Description, (EvaluationCriteriaField)99));
-        await Assert.ThrowsAsync<ArgumentException>(() => client.ClearEvaluationCriteriaFieldsAsync(" ", EvaluationCriteriaField.Description));
+        var none = await Assert.ThrowsAsync<ArgumentException>(() => client.ClearEvaluationCriteriaFieldsAsync("ec1", Array.Empty<EvaluationCriteriaField>()));
+        var nullArray = await Assert.ThrowsAsync<ArgumentException>(() => client.ClearEvaluationCriteriaFieldsAsync("ec1", null!));
+        var undefined = await Assert.ThrowsAsync<ArgumentException>(() => client.ClearEvaluationCriteriaFieldsAsync("ec1", [EvaluationCriteriaField.Description, (EvaluationCriteriaField)99]));
+        await Assert.ThrowsAsync<ArgumentException>(() => client.ClearEvaluationCriteriaFieldsAsync(" ", [EvaluationCriteriaField.Description]));
 
         Assert.Equal("fields", none.ParamName);
         Assert.Equal("fields", nullArray.ParamName);
         Assert.Equal("fields", undefined.ParamName);
         Assert.Contains("99", undefined.Message);
+    }
+
+    [Fact]
+    public async Task ClearEvaluationCriteriaFields_HonoursCancellation()
+    {
+        var handler = new WaitForCancellationHandler();
+        var client = MakeClient(handler);
+        using var cts = new CancellationTokenSource(TimeSpan.FromMilliseconds(50));
+
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(
+            () => client.ClearEvaluationCriteriaFieldsAsync("ec1", [EvaluationCriteriaField.Description], cts.Token));
+    }
+
+    // Holds every request until its token is cancelled.
+    private sealed class WaitForCancellationHandler : HttpMessageHandler
+    {
+        protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+        {
+            await Task.Delay(Timeout.Infinite, cancellationToken).ConfigureAwait(false);
+            throw new InvalidOperationException("unreachable");
+        }
     }
 
     [Fact]
@@ -3693,6 +3756,39 @@ public sealed class SeclaiClientTests
             .ToList();
         Assert.True(types.Count > 40, $"found only {types.Count} request types");
 
+        // Add the model types nested in a request (such as AcceptedAttachmentSlot), which the same
+        // options serialize.
+        var queue = new Queue<Type>(types);
+        while (queue.Count > 0)
+        {
+            foreach (var prop in queue.Dequeue().GetProperties())
+            {
+                var pt = prop.PropertyType;
+                var candidates = pt.IsArray ? new[] { pt.GetElementType()! } : pt.IsGenericType ? pt.GetGenericArguments() : new[] { pt };
+                foreach (var c in candidates)
+                {
+                    if (c.Namespace == "Seclai.Models" && c.IsClass && c.GetConstructor(Type.EmptyTypes) is not null && !types.Contains(c))
+                    {
+                        types.Add(c);
+                        queue.Enqueue(c);
+                    }
+                }
+            }
+        }
+        Assert.Contains(typeof(AcceptedAttachmentSlot), types);
+
+        // The global default is the only thing that drops a null: a per-property WhenWritingNull
+        // would hide its removal from this test.
+        var attributed = typeof(SeclaiClient).Assembly.GetTypes()
+            .Where(t => t.Namespace == "Seclai.Models")
+            .SelectMany(t => t.GetProperties().Select(p => (t, p)))
+            .Where(x => x.p.GetCustomAttributes(typeof(System.Text.Json.Serialization.JsonIgnoreAttribute), false)
+                .Cast<System.Text.Json.Serialization.JsonIgnoreAttribute>()
+                .Any(a => a.Condition == System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull))
+            .Select(x => $"{x.t.Name}.{x.p.Name}")
+            .ToList();
+        Assert.Empty(attributed);
+
         foreach (var type in types)
         {
             var json = JsonSerializer.Serialize(Activator.CreateInstance(type), type, options);
@@ -3725,13 +3821,14 @@ public sealed class SeclaiClientTests
     [Fact]
     public void AgentRequests_SerializeAcceptedAttachmentsAndReasoning()
     {
+        var o = ClientJsonOptions();
         var slots = new List<AcceptedAttachmentSlot> { new() { Name = "files" } };
-        Assert.DoesNotContain("accepted_attachments", JsonSerializer.Serialize(new CreateAgentRequest { Name = "a" }));
-        Assert.Contains("\"accepted_attachments\":[{\"name\":\"files\",\"min\":0}]", JsonSerializer.Serialize(new CreateAgentRequest { Name = "a", AcceptedAttachments = slots }));
-        Assert.DoesNotContain("accepted_attachments", JsonSerializer.Serialize(new UpdateAgentDefinitionRequest()));
-        Assert.Contains("\"accepted_attachments\":[", JsonSerializer.Serialize(new UpdateAgentDefinitionRequest { AcceptedAttachments = slots }));
-        Assert.DoesNotContain("include_reasoning", JsonSerializer.Serialize(new AgentRunStreamRequest { Input = "x" }));
-        Assert.Contains("\"include_reasoning\":true", JsonSerializer.Serialize(new AgentRunStreamRequest { Input = "x", IncludeReasoning = true }));
+        Assert.DoesNotContain("accepted_attachments", JsonSerializer.Serialize(new CreateAgentRequest { Name = "a" }, o));
+        Assert.Contains("\"accepted_attachments\":[{\"name\":\"files\",\"min\":0}]", JsonSerializer.Serialize(new CreateAgentRequest { Name = "a", AcceptedAttachments = slots }, o));
+        Assert.DoesNotContain("accepted_attachments", JsonSerializer.Serialize(new UpdateAgentDefinitionRequest(), o));
+        Assert.Contains("\"accepted_attachments\":[", JsonSerializer.Serialize(new UpdateAgentDefinitionRequest { AcceptedAttachments = slots }, o));
+        Assert.DoesNotContain("include_reasoning", JsonSerializer.Serialize(new AgentRunStreamRequest { Input = "x" }, o));
+        Assert.Contains("\"include_reasoning\":true", JsonSerializer.Serialize(new AgentRunStreamRequest { Input = "x", IncludeReasoning = true }, o));
     }
 
     [Fact]
@@ -3764,7 +3861,7 @@ public sealed class SeclaiClientTests
         Assert.Equal("*.pdf", slot.NamePattern);
     }
 
-    private static SeclaiClient MakeClient(FakeHttpMessageHandler handler)
+    private static SeclaiClient MakeClient(HttpMessageHandler handler)
     {
         var http = new HttpClient(handler);
         return new SeclaiClient(new SeclaiClientOptions { ApiKey = "k", BaseUri = new Uri("https://example.invalid"), HttpClient = http });

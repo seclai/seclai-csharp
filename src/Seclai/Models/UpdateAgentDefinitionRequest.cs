@@ -18,6 +18,5 @@ public sealed class UpdateAgentDefinitionRequest
     /// triggers keep theirs.
     /// </summary>
     [JsonPropertyName("accepted_attachments")]
-    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public List<AcceptedAttachmentSlot>? AcceptedAttachments { get; set; }
 }

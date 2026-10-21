@@ -1,7 +1,7 @@
 namespace Seclai.Models;
 
 /// <summary>
-/// An evaluation-criteria field that <see cref="SeclaiClient.ClearEvaluationCriteriaFieldsAsync(string, EvaluationCriteriaField[])"/>
+/// An evaluation-criteria field that <see cref="SeclaiClient.ClearEvaluationCriteriaFieldsAsync(string, System.Collections.Generic.IEnumerable{EvaluationCriteriaField}, System.Threading.CancellationToken)"/>
 /// can clear by sending it as <c>null</c>.
 /// </summary>
 public enum EvaluationCriteriaField

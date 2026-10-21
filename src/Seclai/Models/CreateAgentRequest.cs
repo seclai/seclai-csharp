@@ -47,6 +47,5 @@ public sealed class CreateAgentRequest
     /// otherwise a <c>dynamic_input</c> or <c>email_received</c> trigger accepts any files.
     /// </summary>
     [JsonPropertyName("accepted_attachments")]
-    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public List<AcceptedAttachmentSlot>? AcceptedAttachments { get; set; }
 }

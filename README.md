@@ -372,7 +372,8 @@ await foreach (var evt in client.RunStreamingAgentAsync("ag1",
     Console.WriteLine($"[{evt.Event}] {evt.Run?.Status}");
 }
 
-// Wait for the final result from the SSE stream
+// Wait for the final result from the SSE stream. It reads only the init and done
+// events, so it does not send IncludeReasoning.
 var final = await client.RunStreamingAgentAndWaitAsync("ag1",
     new AgentRunStreamRequest { Input = "hello" },
     timeout: TimeSpan.FromSeconds(120));
@@ -432,7 +433,9 @@ foreach (var att in attachments.Data)
         using var file = await client.DownloadContentAttachmentAsync("cv1", att.Id);
         // The key comes from a third party (an email filename, feed media): keep only its
         // file name so it cannot write outside the current directory.
-        await using var output = File.Create(Path.GetFileName(att.Key));
+        // An empty name (an empty key, or one ending in a slash) falls back to the id.
+        var name = Path.GetFileName(att.Key);
+        await using var output = File.Create(string.IsNullOrEmpty(name) ? att.Id : name);
         await file.Content.CopyToAsync(output);
     }
 }
@@ -475,7 +478,10 @@ create and leaves the stored value unchanged on an update. On `UpdateSourceReque
 `""` (or `0` for `CloudDriveMaxFileMb`, `[]` for `MediaTypes` and `FeedAttachments`) to
 clear a setting. The two properties where `null` itself is the value are still sent:
 `SetAcceptedAttachmentsRequest.AcceptedAttachments` (accept any files) and
-`UpdateApiVersionRequest.Version` (clear the pin). Where a stored value is removed by
+`UpdateApiVersionRequest.Version` (clear the pin); they are the only model properties
+marked `[JsonIgnore(Condition = JsonIgnoreCondition.Never)]`, and no model marks a
+property to be omitted, since the client's serializer omits every null. Upload `metadata`
+is your own data and is sent as written, nulls included. Where a stored value is removed by
 sending `null`, the client has a named way to do it: `ClearSourceRetentionAsync` removes a
 source's retention window, so content is kept indefinitely,
 `ClearEvaluationCriteriaFieldsAsync` clears evaluation-criteria fields (see
@@ -565,7 +571,7 @@ var summary = await client.GetEvaluationCriteriaSummaryAsync(created.Id);
 // UpdateEvaluationCriteriaAsync leaves a property it is not given unchanged; to remove a
 // stored value, clear it. A cleared tier falls back to the agent's default tier.
 await client.ClearEvaluationCriteriaFieldsAsync(created.Id,
-    EvaluationCriteriaField.EvaluationTier, EvaluationCriteriaField.Description);
+    [EvaluationCriteriaField.EvaluationTier, EvaluationCriteriaField.Description]);
 await client.DeleteEvaluationCriteriaAsync(created.Id);
 
 // Results

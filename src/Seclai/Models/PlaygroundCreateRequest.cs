@@ -34,6 +34,5 @@ public sealed class PlaygroundCreateRequest
 
     /// <summary>Reasoning effort per model id, each one of that model's <c>effort_options</c> values. Not combinable with <c>json_template</c>.</summary>
     [JsonPropertyName("effort")]
-    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public Dictionary<string, string>? Effort { get; set; }
 }

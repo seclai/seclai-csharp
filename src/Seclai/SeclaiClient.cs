@@ -7,6 +7,7 @@ using System.Net.Http.Headers;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using System.Threading;
 using System.Threading.Tasks;
 using Seclai.Exceptions;
@@ -24,16 +25,38 @@ public sealed class SeclaiClient : IDisposable
     /// <summary>Serializer settings shared with <see cref="SeclaiTypedClient"/>.</summary>
     internal static JsonSerializerOptions TypedJsonOptions => JsonOptions;
 
-    // WhenWritingNull: an unset (null) property of a request body is omitted rather than sent as
-    // null, because the API reads an explicit null as "clear this setting" on several fields. The
-    // few fields where null is a deliberate value opt back in with
-    // [JsonIgnore(Condition = JsonIgnoreCondition.Never)]. Dictionary entries and JsonElement
-    // bodies are not affected. Reading is unaffected.
+    // Null convention for request bodies: WhenWritingNull omits every null model property, so an
+    // unset property is never sent (the API reads an explicit null as "clear this setting" on
+    // several fields). Models carry no per-property WhenWritingNull attribute; the only attributes
+    // are [JsonIgnore(Condition = JsonIgnoreCondition.Never)] on the few properties where null is
+    // itself the value. A method that must send a null or override one field goes through
+    // WithField. Dictionary entries, JsonElement and JsonNode values are written as given, and
+    // caller-supplied upload metadata uses MetadataJsonOptions, which keeps nulls. Reading is
+    // unaffected.
     private static readonly JsonSerializerOptions JsonOptions = new()
     {
         PropertyNameCaseInsensitive = true,
         DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull,
     };
+
+    // Upload metadata is the caller's own data, so a null inside it (also a null property of an
+    // object value) is sent as written.
+    private static readonly JsonSerializerOptions MetadataJsonOptions = new()
+    {
+        PropertyNameCaseInsensitive = true,
+    };
+
+    // Returns body as a JSON object with key set to value, a null value included. It is the one way
+    // a request sends an explicit null past the WhenWritingNull default, or overrides a single field
+    // of a serialized model. A JsonObject body is updated in place; anything else is serialized
+    // with JsonOptions first.
+    private static JsonObject WithField(object? body, string key, JsonNode? value)
+    {
+        var node = body as JsonObject
+            ?? (body is null ? new JsonObject() : JsonSerializer.SerializeToNode(body, JsonOptions)!.AsObject());
+        node[key] = value;
+        return node;
+    }
 
     private static readonly HttpMethod HttpPatch = new("PATCH");
 
@@ -177,8 +200,11 @@ public sealed class SeclaiClient : IDisposable
         using var req = new HttpRequestMessage(HttpMethod.Post, url);
         await ApplyHeadersAsync(req, cancellationToken, "text/event-stream", "application/json").ConfigureAwait(false);
 
-        var json = JsonSerializer.Serialize(body, JsonOptions);
-        req.Content = new StringContent(json, Encoding.UTF8, "application/json");
+        // This method reads only init and done, so stream_reasoning events would be traffic counted
+        // against the timeout. The field is dropped from a copy; the caller's object is unchanged.
+        var node = JsonSerializer.SerializeToNode(body, JsonOptions);
+        (node as JsonObject)?.Remove("include_reasoning");
+        req.Content = new StringContent(node?.ToJsonString() ?? "null", Encoding.UTF8, "application/json");
 
         var effectiveTimeout = timeout ?? TimeSpan.FromSeconds(60);
         using var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
@@ -199,7 +225,7 @@ public sealed class SeclaiClient : IDisposable
             if (!resp.IsSuccessStatusCode)
             {
                 var responseBody = await ReadBodyAsync(resp).ConfigureAwait(false);
-                ThrowApiError(resp.StatusCode, req.Method.Method, url, responseBody);
+                throw CreateApiError(resp.StatusCode, req.Method.Method, url, responseBody);
             }
 
             var mediaType = resp.Content.Headers.ContentType?.MediaType ?? string.Empty;
@@ -718,7 +744,7 @@ public sealed class SeclaiClient : IDisposable
 
         if (metadata is not null && metadata.Count > 0)
         {
-            var metadataJson = JsonSerializer.Serialize(metadata, JsonOptions);
+            var metadataJson = JsonSerializer.Serialize(metadata, MetadataJsonOptions);
             content.Add(new StringContent(metadataJson, Encoding.UTF8, "text/plain"), "metadata");
         }
 
@@ -749,7 +775,7 @@ public sealed class SeclaiClient : IDisposable
 
         if (!resp.IsSuccessStatusCode)
         {
-            ThrowApiError(resp.StatusCode, method.Method, url, responseBody);
+            throw CreateApiError(resp.StatusCode, method.Method, url, responseBody);
         }
 
         if (!expectBody)
@@ -790,7 +816,7 @@ public sealed class SeclaiClient : IDisposable
         if (raw.ValueKind == JsonValueKind.Object)
         {
             // The reader owns the list keys: a `data` that is not an array must not fail the model.
-            var rest = System.Text.Json.Nodes.JsonObject.Create(raw)!;
+            var rest = JsonObject.Create(raw)!;
             rest.Remove("data");
             if (legacyKey is not null) rest.Remove(legacyKey);
             page = rest.Deserialize<TPage>(JsonOptions) ?? page;
@@ -888,8 +914,7 @@ public sealed class SeclaiClient : IDisposable
         {
             resp.Dispose();
         }
-        ThrowApiError(status, method.Method, url, responseBody);
-        return resp; // unreachable: ThrowApiError always throws
+        throw CreateApiError(status, method.Method, url, responseBody);
     }
 
     private async Task SendNoContentAsync(HttpMethod method, string path, Dictionary<string, string?>? query, object? body, CancellationToken cancellationToken)
@@ -910,7 +935,7 @@ public sealed class SeclaiClient : IDisposable
         if (!resp.IsSuccessStatusCode)
         {
             var responseBody = await ReadBodyAsync(resp).ConfigureAwait(false);
-            ThrowApiError(resp.StatusCode, method.Method, url, responseBody);
+            throw CreateApiError(resp.StatusCode, method.Method, url, responseBody);
         }
     }
 
@@ -937,13 +962,13 @@ public sealed class SeclaiClient : IDisposable
 
         if (!resp.IsSuccessStatusCode)
         {
-            ThrowApiError(resp.StatusCode, method.Method, url, responseBody);
+            throw CreateApiError(resp.StatusCode, method.Method, url, responseBody);
         }
 
         return new RawResponse(url, responseBody);
     }
 
-    private void ThrowApiError(HttpStatusCode statusCode, string method, Uri url, string? responseBody)
+    private static ApiException CreateApiError(HttpStatusCode statusCode, string method, Uri url, string? responseBody)
     {
         if ((int)statusCode == 422)
         {
@@ -968,9 +993,9 @@ public sealed class SeclaiClient : IDisposable
             {
                 // ignore parse issues
             }
-            throw new ApiValidationException(statusCode, method, url, responseBody, validation);
+            return new ApiValidationException(statusCode, method, url, responseBody, validation);
         }
-        throw new ApiException(statusCode, method, url, responseBody);
+        return new ApiException(statusCode, method, url, responseBody);
     }
 
     private Uri BuildUri(string path, Dictionary<string, string?>? query, Dictionary<string, IEnumerable<string>?>? repeatedQuery = null)
@@ -1363,24 +1388,24 @@ public sealed class SeclaiClient : IDisposable
     /// <see cref="EvaluationCriteriaField.EvaluationTier"/> makes the criterion fall back to the agent's
     /// default evaluation tier.
     /// </remarks>
+    /// <example>
+    /// <code>
+    /// await client.ClearEvaluationCriteriaFieldsAsync(criteriaId,
+    ///     new[] { EvaluationCriteriaField.Description, EvaluationCriteriaField.EvaluationTier }, cancellationToken);
+    /// </code>
+    /// </example>
     /// <exception cref="ArgumentException">No field was given, or a value is not a defined <see cref="EvaluationCriteriaField"/>.</exception>
-    public Task<EvaluationCriteriaResponse> ClearEvaluationCriteriaFieldsAsync(string criteriaId, params EvaluationCriteriaField[] fields)
-        => ClearEvaluationCriteriaFieldsAsync(criteriaId, fields, CancellationToken.None);
-
-    /// <inheritdoc cref="ClearEvaluationCriteriaFieldsAsync(string, EvaluationCriteriaField[])"/>
     public async Task<EvaluationCriteriaResponse> ClearEvaluationCriteriaFieldsAsync(string criteriaId, IEnumerable<EvaluationCriteriaField> fields, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(criteriaId)) throw new ArgumentException("criteriaId is required", nameof(criteriaId));
         if (fields is null) throw new ArgumentException("at least one field is required", nameof(fields));
 
-        // A JsonObject keeps its null members: the shared options drop null properties of a model.
-        var body = new System.Text.Json.Nodes.JsonObject();
+        JsonObject? body = null;
         foreach (var field in fields)
         {
-            var key = EvaluationCriteriaFieldName(field);
-            if (!body.ContainsKey(key)) body.Add(key, null);
+            body = WithField(body, EvaluationCriteriaFieldName(field), null);
         }
-        if (body.Count == 0) throw new ArgumentException("at least one field is required", nameof(fields));
+        if (body is null) throw new ArgumentException("at least one field is required", nameof(fields));
 
         return await SendJsonAsync<EvaluationCriteriaResponse>(HttpPatch, $"/agents/evaluation-criteria/{Uri.EscapeDataString(criteriaId)}", query: null, body, cancellationToken).ConfigureAwait(false);
     }
@@ -1534,10 +1559,8 @@ public sealed class SeclaiClient : IDisposable
             {
                 throw new ArgumentException("set either RetentionDays or RetainIndefinitely, not both", nameof(body));
             }
-            // An explicit null keeps entries indefinitely; the shared options would drop it from the model.
-            var node = JsonSerializer.SerializeToNode(body, JsonOptions)!.AsObject();
-            node.Add("retention_days", null);
-            payload = node;
+            // An explicit null keeps entries indefinitely.
+            payload = WithField(body, "retention_days", null);
         }
         return await SendJsonAsync<MemoryBankResponse>(HttpMethod.Post, "/memory_banks", query: null, payload, cancellationToken).ConfigureAwait(false);
     }
@@ -1562,10 +1585,7 @@ public sealed class SeclaiClient : IDisposable
                 throw new ArgumentException("set either RetentionDays or RetainIndefinitely, not both", nameof(body));
             }
             // On an update, 0 (not null) clears the retention window.
-            var node = JsonSerializer.SerializeToNode(body, JsonOptions)!.AsObject();
-            node.Remove("retention_days");
-            node.Add("retention_days", 0);
-            payload = node;
+            payload = WithField(body, "retention_days", 0);
         }
         return await SendJsonAsync<MemoryBankResponse>(HttpMethod.Put, $"/memory_banks/{Uri.EscapeDataString(memoryBankId)}", query: null, payload, cancellationToken).ConfigureAwait(false);
     }
@@ -1693,13 +1713,8 @@ public sealed class SeclaiClient : IDisposable
     public async Task<SourceResponse> ClearSourceRetentionAsync(string sourceId, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(sourceId)) throw new ArgumentException("sourceId is required", nameof(sourceId));
-        return await SendJsonAsync<SourceResponse>(HttpMethod.Put, $"/sources/{Uri.EscapeDataString(sourceId)}", query: null, ClearRetentionBody, cancellationToken).ConfigureAwait(false);
+        return await SendJsonAsync<SourceResponse>(HttpMethod.Put, $"/sources/{Uri.EscapeDataString(sourceId)}", query: null, WithField(null, "retention_days", null), cancellationToken).ConfigureAwait(false);
     }
-
-    // The body of ClearSourceRetentionAsync: an explicit null retention_days, which the API reads as
-    // "remove the window". A JsonElement is written verbatim, so the null survives the
-    // WhenWritingNull default on JsonOptions.
-    private static readonly JsonElement ClearRetentionBody = JsonSerializer.Deserialize<JsonElement>("{\"retention_days\":null}");
 
     /// <summary>Deletes a source.</summary>
     public async Task DeleteSourceAsync(string sourceId, CancellationToken cancellationToken = default)
@@ -2758,7 +2773,7 @@ public sealed class SeclaiClient : IDisposable
         if (!resp.IsSuccessStatusCode)
         {
             var responseBody = await ReadBodyAsync(resp).ConfigureAwait(false);
-            ThrowApiError(resp.StatusCode, req.Method.Method, url, responseBody);
+            throw CreateApiError(resp.StatusCode, req.Method.Method, url, responseBody);
         }
 
         // If the server returns JSON instead of SSE, emit a single done event.
@@ -2883,7 +2898,7 @@ public sealed class SeclaiClient : IDisposable
 
         if (!resp.IsSuccessStatusCode)
         {
-            ThrowApiError(resp.StatusCode, req.Method.Method, url, responseBody);
+            throw CreateApiError(resp.StatusCode, req.Method.Method, url, responseBody);
         }
 
         return responseBody ?? string.Empty;
