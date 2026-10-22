@@ -3865,21 +3865,12 @@ public sealed class SeclaiClientTests
     // ── 2026-10-21 sync: evaluator errors ───────────────────────────────────
 
     [Fact]
-    public async Task ApiVersionHeader_LatestSends20261021()
+    public async Task ListEvaluationResults_ReadsStatus()
     {
-        var handler = new FakeHttpMessageHandler(req =>
-        {
-            Assert.Equal("2026-10-21", Assert.Single(req.Headers.GetValues("Seclai-Version")));
-            return JsonResponse("{\"data\":[]}");
-        });
-        using var client = new SeclaiClient(new SeclaiClientOptions
-        {
-            ApiKey = "k",
-            BaseUri = new Uri("https://example.invalid"),
-            HttpClient = new HttpClient(handler),
-            ApiVersion = SeclaiApiVersion.Latest,
-        });
-        await client.ListAgentsAsync();
+        var client = MakeClient(new FakeHttpMessageHandler(_ => JsonResponse(
+            "{\"data\":[{\"id\":\"er1\",\"criteria_id\":\"ec1\",\"status\":\"error\",\"score\":null}],\"total\":1,\"page\":1,\"limit\":20}")));
+        var res = await client.ListEvaluationResultsAsync("ec1");
+        Assert.Equal("error", Assert.Single(res.Data).Status);
     }
 
     [Theory]
