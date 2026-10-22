@@ -143,7 +143,7 @@ Leave `ApiVersion` unset and the header is omitted, so the account's pinned
 baseline applies and responses keep their current shapes. Upgrading this package
 alone never changes the wire contract.
 
-Known versions are on `SeclaiApiVersion` (`V2026_07_01` through `V2026_10_19`,
+Known versions are on `SeclaiApiVersion` (`V2026_07_01` through `V2026_10_21`,
 plus `Default`, `Latest` and `Known`). A version this release was **not** built
 against is rejected with `ConfigurationException`: a newer version can reshape
 responses, and this client would decode them incorrectly rather than reject
@@ -211,8 +211,8 @@ pass `limit`, before relying on the result being complete. `SetAutoBlockModeAsyn
 cannot tell you: opted in, its `Total` is the row count and `HasNext` is always
 false. To see every blocked sender, page through `ListBlockedEmailSendersAsync`.
 
-**Later versions.** Each is cumulative, and none changes a response shape this
-client decodes:
+**Later versions.** Each is cumulative, and this client decodes the responses of
+every one:
 
 | Version | What it changes |
 | --- | --- |
@@ -226,6 +226,7 @@ client decodes:
 | `2026-10-16` | `UploadAgentInputAsync` accepts a file of any type and it is ready at once; each step receives the file itself when its model reads that type, and the run's input carries a heading per file instead of the file's extracted text |
 | `2026-10-18` | `DocumentImages` defaults to true on a new source with a text-only embedder too |
 | `2026-10-19` | `CreateSourceAsync` accepts `PollingMaxItems` on RSS sources only; any other source type rejects it with a 400 |
+| `2026-10-21` | A result whose evaluator returned no verdict (`error`) is counted only in `Error` by `GetNonManualEvaluationSummaryAsync`, not in `Failed` or either rate, and `GetEvaluationCriteriaSummaryAsync` averages `AverageScore` over passed and failed results only. `TestDraftEvaluationAsync` receives a null score and verdict for an `error` result, which this client reads as `Score` 0 and `Passed` false (earlier versions send 0.5 and false), so check `Status` |
 
 ## Typed responses
 

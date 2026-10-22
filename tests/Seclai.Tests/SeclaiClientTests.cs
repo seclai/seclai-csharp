@@ -2740,9 +2740,10 @@ public sealed class SeclaiClientTests
                 SeclaiApiVersion.V2026_07_01, SeclaiApiVersion.V2026_07_27, SeclaiApiVersion.V2026_08_03, SeclaiApiVersion.V2026_08_21,
                 SeclaiApiVersion.V2026_09_28, SeclaiApiVersion.V2026_09_30, SeclaiApiVersion.V2026_10_03, SeclaiApiVersion.V2026_10_05,
                 SeclaiApiVersion.V2026_10_13, SeclaiApiVersion.V2026_10_16, SeclaiApiVersion.V2026_10_18, SeclaiApiVersion.V2026_10_19,
+                SeclaiApiVersion.V2026_10_21,
             },
             SeclaiApiVersion.Known);
-        Assert.Equal(SeclaiApiVersion.V2026_10_19, SeclaiApiVersion.Latest);
+        Assert.Equal(SeclaiApiVersion.V2026_10_21, SeclaiApiVersion.Latest);
     }
 
     [Fact]
@@ -3859,6 +3860,59 @@ public sealed class SeclaiClientTests
         var slot = Assert.Single(refs.AcceptedAttachments!);
         Assert.Equal(2, slot.Max);
         Assert.Equal("*.pdf", slot.NamePattern);
+    }
+
+    // ── 2026-10-21 sync: evaluator errors ───────────────────────────────────
+
+    [Fact]
+    public async Task ApiVersionHeader_LatestSends20261021()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal("2026-10-21", Assert.Single(req.Headers.GetValues("Seclai-Version")));
+            return JsonResponse("{\"data\":[]}");
+        });
+        using var client = new SeclaiClient(new SeclaiClientOptions
+        {
+            ApiKey = "k",
+            BaseUri = new Uri("https://example.invalid"),
+            HttpClient = new HttpClient(handler),
+            ApiVersion = SeclaiApiVersion.Latest,
+        });
+        await client.ListAgentsAsync();
+    }
+
+    [Theory]
+    [InlineData("{\"status\":\"error\",\"score\":null,\"passed\":null,\"explanation\":\"no verdict\"}", 0f)]   // 2026-10-21
+    [InlineData("{\"status\":\"error\",\"score\":0.5,\"passed\":false,\"explanation\":\"no verdict\"}", 0.5f)]   // earlier
+    public async Task TestDraftEvaluation_ErrorResultDecodesWithStatusError(string body, float expectedScore)
+    {
+        var client = MakeClient(new FakeHttpMessageHandler(_ => JsonResponse(body)));
+        var res = await client.TestDraftEvaluationAsync("a1", new TestDraftEvaluationRequest { StepOutput = "out" });
+        Assert.Equal("error", res.Status);
+        Assert.Equal(expectedScore, res.Score);
+        Assert.False(res.Passed);
+        Assert.Equal("no verdict", res.Explanation);
+    }
+
+    [Fact]
+    public async Task TestDraftEvaluation_FailedResultKeepsItsScore()
+    {
+        var client = MakeClient(new FakeHttpMessageHandler(_ => JsonResponse("{\"status\":\"failed\",\"score\":0.2,\"passed\":false,\"explanation\":null}")));
+        var res = await client.TestDraftEvaluationAsync("a1", new TestDraftEvaluationRequest { StepOutput = "out" });
+        Assert.Equal("failed", res.Status);
+        Assert.Equal(0.2f, res.Score);
+        Assert.False(res.Passed);
+    }
+
+    [Fact]
+    public async Task GetNonManualEvaluationSummary_ReadsErrorCount()
+    {
+        var client = MakeClient(new FakeHttpMessageHandler(_ => JsonResponse(
+            "{\"total\":5,\"passed\":2,\"failed\":1,\"error\":2,\"flagged\":0,\"pass_rate\":0.667,\"failure_rate\":0.333,\"by_mode\":[{\"mode\":\"auto\",\"total\":5,\"passed\":2,\"failed\":1,\"error\":2,\"flagged\":0,\"pass_rate\":0.667,\"failure_rate\":0.333}]}")));
+        var res = await client.GetNonManualEvaluationSummaryAsync();
+        Assert.Equal(2, res.Error);
+        Assert.Equal(1, res.Failed);
     }
 
     private static SeclaiClient MakeClient(HttpMessageHandler handler)

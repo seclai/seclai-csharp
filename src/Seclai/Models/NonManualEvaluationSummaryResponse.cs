@@ -15,6 +15,10 @@ public sealed class NonManualEvaluationSummaryResponse
     [JsonPropertyName("failed")]
     public int Failed { get; set; }
 
+    /// <summary>Results whose evaluator returned no verdict.</summary>
+    [JsonPropertyName("error")]
+    public int Error { get; set; }
+
     [JsonPropertyName("flagged")]
     public int Flagged { get; set; }
 
