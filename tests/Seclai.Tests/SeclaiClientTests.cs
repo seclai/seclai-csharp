@@ -3864,23 +3864,29 @@ public sealed class SeclaiClientTests
 
     // ── 2026-10-21 sync: evaluator errors ───────────────────────────────────
 
-    [Fact]
-    public async Task ListEvaluationResults_ReadsEverySpecField()
+    // Each bool is true in one row, so a missing or swapped mapping fails a row.
+    [Theory]
+    [InlineData(true, false)]
+    [InlineData(false, true)]
+    public async Task ListEvaluationResults_ReadsEverySpecField(bool retryTriggered, bool flagged)
     {
         var client = MakeClient(new FakeHttpMessageHandler(_ => JsonResponse(
             "{\"data\":[{\"id\":\"er1\",\"criteria_id\":\"ec1\",\"agent_run_id\":\"r1\",\"agent_step_run_id\":\"s1\",\"status\":\"error\",\"score\":null,"
-            + "\"details\":{\"explanation\":\"no verdict\"},\"retry_triggered\":false,\"retry_count\":2,\"flagged\":true,"
+            + "\"details\":{\"explanation\":\"no verdict\"},\"retry_triggered\":" + (retryTriggered ? "true" : "false") + ",\"retry_count\":2,\"flagged\":" + (flagged ? "true" : "false") + ","
             + "\"evaluated_at\":\"2026-10-21T00:00:00Z\",\"created_at\":\"2026-10-21T00:00:01Z\"}],\"total\":1,\"page\":1,\"limit\":20}")));
         var res = await client.ListEvaluationResultsAsync("ec1");
         var item = Assert.Single(res.Data);
+        Assert.Equal("er1", item.Id);
+        Assert.Equal("ec1", item.CriteriaId);
+        Assert.Equal("2026-10-21T00:00:01Z", item.CreatedAt);
         Assert.Equal("r1", item.AgentRunId);
         Assert.Equal("s1", item.AgentStepRunId);
         Assert.Equal("error", item.Status);
         Assert.Null(item.Score);
         Assert.Equal("no verdict", item.Details!["explanation"].GetString());
-        Assert.False(item.RetryTriggered);
+        Assert.Equal(retryTriggered, item.RetryTriggered);
         Assert.Equal(2, item.RetryCount);
-        Assert.True(item.Flagged);
+        Assert.Equal(flagged, item.Flagged);
         Assert.Equal("2026-10-21T00:00:00Z", item.EvaluatedAt);
     }
 
