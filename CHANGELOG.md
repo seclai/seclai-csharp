@@ -5,6 +5,7 @@
 ### Changed
 
 - Move `SeclaiApiVersion.Latest` from `2026-10-03` to `2026-10-21`, which opts a client that sends `Latest` into six more versions: from `2026-10-05` a content item held for review reports `ContentStatus` `completed` rather than `failed`, so code that looks for `failed` to find held items should read `HeldForReview`; from `2026-10-13` `CreateSourceAsync` and `UpdateSourceAsync` reject an unknown `MediaTypes` kind, or any kind on a source other than website or RSS, with a 400; from `2026-10-16` `UploadAgentInputAsync` accepts any file type and the upload is ready at once; from `2026-10-18` `DocumentImages` defaults to true with a text-only embedder too; from `2026-10-19` `CreateSourceAsync` rejects `PollingMaxItems` on a source other than RSS with a 400; and from `2026-10-21` a result whose evaluator returned no verdict counts only in `Error` of `GetNonManualEvaluationSummaryAsync`, not in `Failed` or its pass and failure rates, and is left out of `AverageScore` of `GetEvaluationCriteriaSummaryAsync`. It is a `const`, so code compiled against an earlier release keeps the old value until it is rebuilt
+- Deprecate `EvaluationResultResponse.Passed` and `EvaluationResultResponse.Comment`. The API sends neither, so they were always false and null. Read `Status` and `Details`
 
 ### Added
 
@@ -19,7 +20,7 @@
 - Add `SeclaiApiVersion` constants `V2026_10_05`, `V2026_10_13`, `V2026_10_16`, `V2026_10_18`, `V2026_10_19` and `V2026_10_21`, so those versions are accepted as `ApiVersion`
 - Add `Status` to `TestDraftEvaluationResponse`: `passed`, `failed`, or `error` when the evaluator returned no verdict. `Score` and `Passed` are then not a verdict: `2026-10-21` sends them as `null`, which this client reads as 0 and false, and earlier versions send 0.5 and false, so check `Status` rather than `Passed` to tell a failure from no verdict
 - Add `Error` to `NonManualEvaluationSummaryResponse`, the count of results whose evaluator returned no verdict
-- Add `Status` to `EvaluationResultResponse`, which `ListEvaluationResultsAsync` and `CreateEvaluationResultAsync` return. Its `Passed` is obsolete: the API never sends it, so it was always false
+- Add `Status`, `AgentRunId`, `AgentStepRunId`, `Details`, `RetryTriggered`, `RetryCount`, `Flagged` and `EvaluatedAt` to `EvaluationResultResponse`, which `ListEvaluationResultsAsync` and `CreateEvaluationResultAsync` return
 - Add `ClearSourceRetentionAsync` to remove a source's retention window, so its content is kept indefinitely. `UpdateSourceAsync` no longer clears it, see below
 - Add `ClearEvaluationCriteriaFieldsAsync(criteriaId, fields, cancellationToken)` with `EvaluationCriteriaField` to clear an evaluation criterion's description, evaluation prompt, expectation config or evaluation tier by sending it as `null`. A cleared tier falls back to the agent's default tier, which is the only way to undo a pinned one
 - Add `RetentionDays` to `CreateMemoryBankRequest`, omitted when `null` so the API's default applies, and `RetainIndefinitely`, which sends `retention_days` as `null` so the bank keeps entries indefinitely. Setting both throws an `ArgumentException`. `UpdateMemoryBankRequest` gains the same `RetainIndefinitely`, which sends `retention_days` as 0, the value an update reads as "keep indefinitely"

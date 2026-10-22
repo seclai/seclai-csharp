@@ -3865,12 +3865,23 @@ public sealed class SeclaiClientTests
     // ── 2026-10-21 sync: evaluator errors ───────────────────────────────────
 
     [Fact]
-    public async Task ListEvaluationResults_ReadsStatus()
+    public async Task ListEvaluationResults_ReadsEverySpecField()
     {
         var client = MakeClient(new FakeHttpMessageHandler(_ => JsonResponse(
-            "{\"data\":[{\"id\":\"er1\",\"criteria_id\":\"ec1\",\"status\":\"error\",\"score\":null}],\"total\":1,\"page\":1,\"limit\":20}")));
+            "{\"data\":[{\"id\":\"er1\",\"criteria_id\":\"ec1\",\"agent_run_id\":\"r1\",\"agent_step_run_id\":\"s1\",\"status\":\"error\",\"score\":null,"
+            + "\"details\":{\"explanation\":\"no verdict\"},\"retry_triggered\":false,\"retry_count\":2,\"flagged\":true,"
+            + "\"evaluated_at\":\"2026-10-21T00:00:00Z\",\"created_at\":\"2026-10-21T00:00:01Z\"}],\"total\":1,\"page\":1,\"limit\":20}")));
         var res = await client.ListEvaluationResultsAsync("ec1");
-        Assert.Equal("error", Assert.Single(res.Data).Status);
+        var item = Assert.Single(res.Data);
+        Assert.Equal("r1", item.AgentRunId);
+        Assert.Equal("s1", item.AgentStepRunId);
+        Assert.Equal("error", item.Status);
+        Assert.Null(item.Score);
+        Assert.Equal("no verdict", item.Details!["explanation"].GetString());
+        Assert.False(item.RetryTriggered);
+        Assert.Equal(2, item.RetryCount);
+        Assert.True(item.Flagged);
+        Assert.Equal("2026-10-21T00:00:00Z", item.EvaluatedAt);
     }
 
     [Theory]
