@@ -119,9 +119,198 @@
 </h3>
 
 
+  <a id="Seclai_Models_UpdateSourceRequest_CloudDriveContentTypes_" data-uid="Seclai.Models.UpdateSourceRequest.CloudDriveContentTypes*"></a>
+  <h4 id="Seclai_Models_UpdateSourceRequest_CloudDriveContentTypes" data-uid="Seclai.Models.UpdateSourceRequest.CloudDriveContentTypes">CloudDriveContentTypes</h4>
+  <div class="markdown level1 summary"><p>For a cloud_drive source: comma-separated MIME types a file must have to be indexed. Send an empty string to clear it; leave null to keep it.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;cloud_drive_content_types&quot;)]
+public string? CloudDriveContentTypes { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_Models_UpdateSourceRequest_CloudDriveFolderPath_" data-uid="Seclai.Models.UpdateSourceRequest.CloudDriveFolderPath*"></a>
+  <h4 id="Seclai_Models_UpdateSourceRequest_CloudDriveFolderPath" data-uid="Seclai.Models.UpdateSourceRequest.CloudDriveFolderPath">CloudDriveFolderPath</h4>
+  <div class="markdown level1 summary"><p>For a cloud_drive source: the folder to index, as a path inside the drive. Send an empty string to index the connected drive's own folder; leave null to keep it.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;cloud_drive_folder_path&quot;)]
+public string? CloudDriveFolderPath { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_Models_UpdateSourceRequest_CloudDriveMaxFileMb_" data-uid="Seclai.Models.UpdateSourceRequest.CloudDriveMaxFileMb*"></a>
+  <h4 id="Seclai_Models_UpdateSourceRequest_CloudDriveMaxFileMb" data-uid="Seclai.Models.UpdateSourceRequest.CloudDriveMaxFileMb">CloudDriveMaxFileMb</h4>
+  <div class="markdown level1 summary"><p>For a cloud_drive source: files larger than this many megabytes are skipped. Send 0 to clear the source's own limit; leave null to keep it.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;cloud_drive_max_file_mb&quot;)]
+public int? CloudDriveMaxFileMb { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>?</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_Models_UpdateSourceRequest_CloudDrivePathPattern_" data-uid="Seclai.Models.UpdateSourceRequest.CloudDrivePathPattern*"></a>
+  <h4 id="Seclai_Models_UpdateSourceRequest_CloudDrivePathPattern" data-uid="Seclai.Models.UpdateSourceRequest.CloudDrivePathPattern">CloudDrivePathPattern</h4>
+  <div class="markdown level1 summary"><p>For a cloud_drive source: a glob a file's path must match to be indexed, such as <code>**/<em>.pdf</em></code> or <code>/reports/</code>. Send an empty string to clear it; leave null to keep it.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;cloud_drive_path_pattern&quot;)]
+public string? CloudDrivePathPattern { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_Models_UpdateSourceRequest_DocumentImages_" data-uid="Seclai.Models.UpdateSourceRequest.DocumentImages*"></a>
+  <h4 id="Seclai_Models_UpdateSourceRequest_DocumentImages" data-uid="Seclai.Models.UpdateSourceRequest.DocumentImages">DocumentImages</h4>
+  <div class="markdown level1 summary"><p>Whether the images inside PDF, DOCX, PPTX and XLSX files are attached to the item and indexed; on a text-only embedder, by the text in each image. Applies to documents added after it changes. Ignored on a website or RSS source, where <a class="xref" href="Seclai.Models.UpdateSourceRequest.html#Seclai_Models_UpdateSourceRequest_MediaTypes">MediaTypes</a> decides. Leave null to keep it.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;document_images&quot;)]
+public bool? DocumentImages { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a>?</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_Models_UpdateSourceRequest_EmailAllowedSenders_" data-uid="Seclai.Models.UpdateSourceRequest.EmailAllowedSenders*"></a>
+  <h4 id="Seclai_Models_UpdateSourceRequest_EmailAllowedSenders" data-uid="Seclai.Models.UpdateSourceRequest.EmailAllowedSenders">EmailAllowedSenders</h4>
+  <div class="markdown level1 summary"><p>For an email source: replaces the allowed senders. Each entry is a full address or a bare domain. The list cannot be emptied. Leave null to keep it.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;email_allowed_senders&quot;)]
+public List&lt;string&gt;? EmailAllowedSenders { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.list-1">List</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_Models_UpdateSourceRequest_FeedAttachments_" data-uid="Seclai.Models.UpdateSourceRequest.FeedAttachments*"></a>
+  <h4 id="Seclai_Models_UpdateSourceRequest_FeedAttachments" data-uid="Seclai.Models.UpdateSourceRequest.FeedAttachments">FeedAttachments</h4>
+  <div class="markdown level1 summary"><p>Kinds of file listed beside a feed item's content to attach to the item and index, on an RSS source. Subset of <code>enclosures</code>, <code>item_image</code>, <code>media_rss</code>; any other value is refused. Leave null to keep them.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;feed_attachments&quot;)]
+public List&lt;string&gt;? FeedAttachments { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.list-1">List</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
   <a id="Seclai_Models_UpdateSourceRequest_MediaTypes_" data-uid="Seclai.Models.UpdateSourceRequest.MediaTypes*"></a>
   <h4 id="Seclai_Models_UpdateSourceRequest_MediaTypes" data-uid="Seclai.Models.UpdateSourceRequest.MediaTypes">MediaTypes</h4>
-  <div class="markdown level1 summary"><p>Media kinds to extract from indexed content and embed as multi-modal KB chunks. Subset of ['images', 'video']. Only kinds the source's embedder can index are honored; unsupported values are dropped. [] disables media extraction (text-only).</p>
+  <div class="markdown level1 summary"><p>Media kinds to extract from indexed content and embed as multi-modal KB chunks. Subset of ['images', 'video']. Only kinds the source's embedder can index are honored; unsupported values are dropped. [] disables media extraction (text-only). Leave null to keep them.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="declaration">Declaration</h5>
@@ -148,7 +337,8 @@ public List&lt;string&gt;? MediaTypes { get; set; }</code></pre>
 
   <a id="Seclai_Models_UpdateSourceRequest_Name_" data-uid="Seclai.Models.UpdateSourceRequest.Name*"></a>
   <h4 id="Seclai_Models_UpdateSourceRequest_Name" data-uid="Seclai.Models.UpdateSourceRequest.Name">Name</h4>
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>New name. Leave null to keep it.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="declaration">Declaration</h5>
   <div class="codewrapper">
@@ -174,7 +364,8 @@ public string? Name { get; set; }</code></pre>
 
   <a id="Seclai_Models_UpdateSourceRequest_Polling_" data-uid="Seclai.Models.UpdateSourceRequest.Polling*"></a>
   <h4 id="Seclai_Models_UpdateSourceRequest_Polling" data-uid="Seclai.Models.UpdateSourceRequest.Polling">Polling</h4>
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>New polling interval. Leave null to keep it.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="declaration">Declaration</h5>
   <div class="codewrapper">
@@ -200,7 +391,8 @@ public string? Polling { get; set; }</code></pre>
 
   <a id="Seclai_Models_UpdateSourceRequest_RetentionDays_" data-uid="Seclai.Models.UpdateSourceRequest.RetentionDays*"></a>
   <h4 id="Seclai_Models_UpdateSourceRequest_RetentionDays" data-uid="Seclai.Models.UpdateSourceRequest.RetentionDays">RetentionDays</h4>
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>New retention period in days; content older than this is deleted permanently. Leave null to keep it. To remove the window, call <a class="xref" href="Seclai.SeclaiClient.html#Seclai_SeclaiClient_ClearSourceRetentionAsync_System_String_System_Threading_CancellationToken_">ClearSourceRetentionAsync(string, CancellationToken)</a>.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="declaration">Declaration</h5>
   <div class="codewrapper">

@@ -147,11 +147,13 @@ public string? Explanation { get; set; }</code></pre>
 
   <a id="Seclai_Models_TestDraftEvaluationResponse_Passed_" data-uid="Seclai.Models.TestDraftEvaluationResponse.Passed*"></a>
   <h4 id="Seclai_Models_TestDraftEvaluationResponse_Passed" data-uid="Seclai.Models.TestDraftEvaluationResponse.Passed">Passed</h4>
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>False when <a class="xref" href="Seclai.Models.TestDraftEvaluationResponse.html#Seclai_Models_TestDraftEvaluationResponse_Status">Status</a> is <code>error</code>.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="declaration">Declaration</h5>
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;passed&quot;)]
+[JsonConverter(typeof(NullAsDefaultConverter&lt;bool&gt;))]
 public bool Passed { get; set; }</code></pre>
   </div>
   <h5 class="propertyValue">Property Value</h5>
@@ -173,11 +175,14 @@ public bool Passed { get; set; }</code></pre>
 
   <a id="Seclai_Models_TestDraftEvaluationResponse_Score_" data-uid="Seclai.Models.TestDraftEvaluationResponse.Score*"></a>
   <h4 id="Seclai_Models_TestDraftEvaluationResponse_Score" data-uid="Seclai.Models.TestDraftEvaluationResponse.Score">Score</h4>
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Not a score when <a class="xref" href="Seclai.Models.TestDraftEvaluationResponse.html#Seclai_Models_TestDraftEvaluationResponse_Status">Status</a> is <code>error</code>: 0 from API version <code>2026-10-21</code>,
+which sends <code>null</code>, and 0.5 before it.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="declaration">Declaration</h5>
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;score&quot;)]
+[JsonConverter(typeof(NullAsDefaultConverter&lt;float&gt;))]
 public float Score { get; set; }</code></pre>
   </div>
   <h5 class="propertyValue">Property Value</h5>
@@ -191,6 +196,34 @@ public float Score { get; set; }</code></pre>
     <tbody>
       <tr>
         <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.single">float</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_Models_TestDraftEvaluationResponse_Status_" data-uid="Seclai.Models.TestDraftEvaluationResponse.Status*"></a>
+  <h4 id="Seclai_Models_TestDraftEvaluationResponse_Status" data-uid="Seclai.Models.TestDraftEvaluationResponse.Status">Status</h4>
+  <div class="markdown level1 summary"><p><code>passed</code>, <code>failed</code>, or <code>error</code> when the evaluator returned no verdict.
+On <code>error</code>, <a class="xref" href="Seclai.Models.TestDraftEvaluationResponse.html#Seclai_Models_TestDraftEvaluationResponse_Passed">Passed</a> and <a class="xref" href="Seclai.Models.TestDraftEvaluationResponse.html#Seclai_Models_TestDraftEvaluationResponse_Score">Score</a> are not a verdict.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;status&quot;)]
+public string Status { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
         <td></td>
       </tr>
     </tbody>

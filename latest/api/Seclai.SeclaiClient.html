@@ -1165,6 +1165,133 @@ the run has already reached a terminal state.</p>
   </table>
 
 
+  <a id="Seclai_SeclaiClient_ClearEvaluationCriteriaFieldsAsync_" data-uid="Seclai.SeclaiClient.ClearEvaluationCriteriaFieldsAsync*"></a>
+  <h4 id="Seclai_SeclaiClient_ClearEvaluationCriteriaFieldsAsync_System_String_System_Collections_Generic_IEnumerable_Seclai_Models_EvaluationCriteriaField__System_Threading_CancellationToken_" data-uid="Seclai.SeclaiClient.ClearEvaluationCriteriaFieldsAsync(System.String,System.Collections.Generic.IEnumerable{Seclai.Models.EvaluationCriteriaField},System.Threading.CancellationToken)">ClearEvaluationCriteriaFieldsAsync(string, IEnumerable&lt;EvaluationCriteriaField&gt;, CancellationToken)</h4>
+  <div class="markdown level1 summary"><p>Clears fields on evaluation criteria by sending each of them as <code>null</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;EvaluationCriteriaResponse&gt; ClearEvaluationCriteriaFieldsAsync(string criteriaId, IEnumerable&lt;EvaluationCriteriaField&gt; fields, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
+        <td><span class="parametername">criteriaId</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.ienumerable-1">IEnumerable</a>&lt;<a class="xref" href="Seclai.Models.EvaluationCriteriaField.html">EvaluationCriteriaField</a>&gt;</td>
+        <td><span class="parametername">fields</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></td>
+        <td><span class="parametername">cancellationToken</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Seclai.Models.EvaluationCriteriaResponse.html">EvaluationCriteriaResponse</a>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="Seclai_SeclaiClient_ClearEvaluationCriteriaFieldsAsync_System_String_System_Collections_Generic_IEnumerable_Seclai_Models_EvaluationCriteriaField__System_Threading_CancellationToken__remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p><a class="xref" href="Seclai.SeclaiClient.html#Seclai_SeclaiClient_UpdateEvaluationCriteriaAsync_System_String_Seclai_Models_UpdateEvaluationCriteriaRequest_System_Threading_CancellationToken_">UpdateEvaluationCriteriaAsync(string, UpdateEvaluationCriteriaRequest, CancellationToken)</a> omits a property left <code>null</code>, which leaves the
+stored value unchanged; this method is how a stored value is removed. Clearing
+<a class="xref" href="Seclai.Models.EvaluationCriteriaField.html#Seclai_Models_EvaluationCriteriaField_EvaluationTier">EvaluationTier</a> makes the criterion fall back to the agent's
+default evaluation tier.</p>
+</div>
+  <h5 id="Seclai_SeclaiClient_ClearEvaluationCriteriaFieldsAsync_System_String_System_Collections_Generic_IEnumerable_Seclai_Models_EvaluationCriteriaField__System_Threading_CancellationToken__examples">Examples</h5>
+  <pre><code class="lang-csharp">await client.ClearEvaluationCriteriaFieldsAsync(criteriaId,
+    new[] { EvaluationCriteriaField.Description, EvaluationCriteriaField.EvaluationTier }, cancellationToken);</code></pre>
+
+  <h5 class="exceptions">Exceptions</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Condition</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></td>
+        <td><p>No field was given, or a value is not a defined <a class="xref" href="Seclai.Models.EvaluationCriteriaField.html">EvaluationCriteriaField</a>.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_SeclaiClient_ClearSourceRetentionAsync_" data-uid="Seclai.SeclaiClient.ClearSourceRetentionAsync*"></a>
+  <h4 id="Seclai_SeclaiClient_ClearSourceRetentionAsync_System_String_System_Threading_CancellationToken_" data-uid="Seclai.SeclaiClient.ClearSourceRetentionAsync(System.String,System.Threading.CancellationToken)">ClearSourceRetentionAsync(string, CancellationToken)</h4>
+  <div class="markdown level1 summary"><p>Removes a source's retention window, so its content is kept indefinitely. Sends an explicit null <code>retention_days</code> and leaves every other setting unchanged.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;SourceResponse&gt; ClearSourceRetentionAsync(string sourceId, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
+        <td><span class="parametername">sourceId</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></td>
+        <td><span class="parametername">cancellationToken</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Seclai.Models.SourceResponse.html">SourceResponse</a>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
   <a id="Seclai_SeclaiClient_CompactMemoryBankAsync_" data-uid="Seclai.SeclaiClient.CompactMemoryBankAsync*"></a>
   <h4 id="Seclai_SeclaiClient_CompactMemoryBankAsync_System_String_System_Threading_CancellationToken_" data-uid="Seclai.SeclaiClient.CompactMemoryBankAsync(System.String,System.Threading.CancellationToken)">CompactMemoryBankAsync(string, CancellationToken)</h4>
   <div class="markdown level1 summary"><p>Triggers compaction for a memory bank.</p>
@@ -1554,6 +1681,22 @@ the run has already reached a terminal state.</p>
       <tr>
         <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Seclai.Models.MemoryBankResponse.html">MemoryBankResponse</a>&gt;</td>
         <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="exceptions">Exceptions</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Condition</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></td>
+        <td><p>Both <a class="xref" href="Seclai.Models.CreateMemoryBankRequest.html#Seclai_Models_CreateMemoryBankRequest_RetentionDays">RetentionDays</a> and <a class="xref" href="Seclai.Models.CreateMemoryBankRequest.html#Seclai_Models_CreateMemoryBankRequest_RetainIndefinitely">RetainIndefinitely</a> are set.</p>
+</td>
       </tr>
     </tbody>
   </table>
@@ -2658,6 +2801,70 @@ URL-safe-base64-encoded storage key that webhook and email links carry.</p>
       </tr>
     </tbody>
   </table>
+
+
+  <a id="Seclai_SeclaiClient_DownloadContentAttachmentAsync_" data-uid="Seclai.SeclaiClient.DownloadContentAttachmentAsync*"></a>
+  <h4 id="Seclai_SeclaiClient_DownloadContentAttachmentAsync_System_String_System_String_System_Threading_CancellationToken_" data-uid="Seclai.SeclaiClient.DownloadContentAttachmentAsync(System.String,System.String,System.Threading.CancellationToken)">DownloadContentAttachmentAsync(string, string, CancellationToken)</h4>
+  <div class="markdown level1 summary"><p>Downloads a file attached to a content item. Returns the raw HTTP response so the caller can
+stream the body; the caller must dispose the returned <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.net.http.httpresponsemessage">HttpResponseMessage</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;HttpResponseMessage&gt; DownloadContentAttachmentAsync(string sourceConnectionContentVersion, string attachmentId, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
+        <td><span class="parametername">sourceConnectionContentVersion</span></td>
+        <td><p>Content version identifier.</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
+        <td><span class="parametername">attachmentId</span></td>
+        <td><p>The <code>Id</code> of an entry from <a class="xref" href="Seclai.SeclaiClient.html#Seclai_SeclaiClient_ListContentAttachmentsAsync_System_String_System_Nullable_System_Int32__System_Nullable_System_Int32__System_Threading_CancellationToken_">ListContentAttachmentsAsync(string, int?, int?, CancellationToken)</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></td>
+        <td><span class="parametername">cancellationToken</span></td>
+        <td><p>Cancellation token.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.net.http.httpresponsemessage">HttpResponseMessage</a>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="Seclai_SeclaiClient_DownloadContentAttachmentAsync_System_String_System_String_System_Threading_CancellationToken__remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>Images, audio, video, PDF and plain text are served with their own type; anything else as
+<code>application/octet-stream</code>. The API answers 403 — thrown as an <a class="xref" href="Seclai.Exceptions.ApiException.html">ApiException</a> —
+when the file is withheld; <a class="xref" href="Seclai.Models.ContentAttachmentDetailResponse.html#Seclai_Models_ContentAttachmentDetailResponse_FileWithheld">FileWithheld</a> says why
+before you ask. It answers 402 when the account has no credits left (<code>error.code</code> is
+<code>insufficient_credits</code>).</p>
+</div>
 
 
   <a id="Seclai_SeclaiClient_DownloadSourceExportAsync_" data-uid="Seclai.SeclaiClient.DownloadSourceExportAsync*"></a>
@@ -4023,6 +4230,83 @@ so it reflects <a class="xref" href="Seclai.SeclaiClientOptions.html#Seclai_Secl
       </tr>
     </tbody>
   </table>
+
+
+  <a id="Seclai_SeclaiClient_GetContentAttachmentAsync_" data-uid="Seclai.SeclaiClient.GetContentAttachmentAsync*"></a>
+  <h4 id="Seclai_SeclaiClient_GetContentAttachmentAsync_System_String_System_String_System_Nullable_System_Int32__System_Nullable_System_Int32__System_Threading_CancellationToken_" data-uid="Seclai.SeclaiClient.GetContentAttachmentAsync(System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.Threading.CancellationToken)">GetContentAttachmentAsync(string, string, int?, int?, CancellationToken)</h4>
+  <div class="markdown level1 summary"><p>Gets one file attached to a content item: its indexing status and reason, its metadata, and
+the text it is indexed by. Use <code class="paramref">start</code> and <code class="paramref">end</code> to page
+through long text. A file that was not indexed has no text.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;ContentAttachmentDetailResponse&gt; GetContentAttachmentAsync(string sourceConnectionContentVersion, string attachmentId, int? start = null, int? end = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
+        <td><span class="parametername">sourceConnectionContentVersion</span></td>
+        <td><p>Content version identifier.</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
+        <td><span class="parametername">attachmentId</span></td>
+        <td><p>The <code>Id</code> of an entry from <a class="xref" href="Seclai.SeclaiClient.html#Seclai_SeclaiClient_ListContentAttachmentsAsync_System_String_System_Nullable_System_Int32__System_Nullable_System_Int32__System_Threading_CancellationToken_">ListContentAttachmentsAsync(string, int?, int?, CancellationToken)</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>?</td>
+        <td><span class="parametername">start</span></td>
+        <td><p>Start offset of the text range (default 0).</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>?</td>
+        <td><span class="parametername">end</span></td>
+        <td><p>End offset of the text range (default 5000). Unlike <a class="xref" href="Seclai.SeclaiClient.html#Seclai_SeclaiClient_GetContentDetailAsync_System_String_System_Nullable_System_Int32__System_Nullable_System_Int32__System_Threading_CancellationToken_">GetContentDetailAsync(string, int?, int?, CancellationToken)</a>, where
+<code>0</code> means &quot;server default&quot;, <code>0</code> is sent as-is here: an empty range, which returns the
+file's metadata and <a class="xref" href="Seclai.Models.ContentAttachmentDetailResponse.html#Seclai_Models_ContentAttachmentDetailResponse_TextContentTotalLength">TextContentTotalLength</a> without
+its text. Leave it null for the server default.</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></td>
+        <td><span class="parametername">cancellationToken</span></td>
+        <td><p>Cancellation token.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Seclai.Models.ContentAttachmentDetailResponse.html">ContentAttachmentDetailResponse</a>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="Seclai_SeclaiClient_GetContentAttachmentAsync_System_String_System_String_System_Nullable_System_Int32__System_Nullable_System_Int32__System_Threading_CancellationToken__remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>The API answers 402 — thrown as an <a class="xref" href="Seclai.Exceptions.ApiException.html">ApiException</a> — when the account has no credits
+left (<code>error.code</code> is <code>insufficient_credits</code>).</p>
+</div>
 
 
   <a id="Seclai_SeclaiClient_GetContentDetailAsync_" data-uid="Seclai.SeclaiClient.GetContentDetailAsync*"></a>
@@ -5813,6 +6097,144 @@ later. Accepted and dropped so existing call sites keep working.</p>
   </table>
 
 
+  <a id="Seclai_SeclaiClient_ListContentAttachmentEmbeddingsAsync_" data-uid="Seclai.SeclaiClient.ListContentAttachmentEmbeddingsAsync*"></a>
+  <h4 id="Seclai_SeclaiClient_ListContentAttachmentEmbeddingsAsync_System_String_System_String_System_Nullable_System_Int32__System_Nullable_System_Int32__System_Threading_CancellationToken_" data-uid="Seclai.SeclaiClient.ListContentAttachmentEmbeddingsAsync(System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.Threading.CancellationToken)">ListContentAttachmentEmbeddingsAsync(string, string, int?, int?, CancellationToken)</h4>
+  <div class="markdown level1 summary"><p>Lists the embeddings (chunk vectors) an attached file is indexed by, with pagination. The list
+is empty for a file that has no completed index.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;ContentEmbeddingsListResponse&gt; ListContentAttachmentEmbeddingsAsync(string sourceConnectionContentVersion, string attachmentId, int? page = null, int? limit = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
+        <td><span class="parametername">sourceConnectionContentVersion</span></td>
+        <td><p>Content version identifier.</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
+        <td><span class="parametername">attachmentId</span></td>
+        <td><p>The <code>Id</code> of an entry from <a class="xref" href="Seclai.SeclaiClient.html#Seclai_SeclaiClient_ListContentAttachmentsAsync_System_String_System_Nullable_System_Int32__System_Nullable_System_Int32__System_Threading_CancellationToken_">ListContentAttachmentsAsync(string, int?, int?, CancellationToken)</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>?</td>
+        <td><span class="parametername">page</span></td>
+        <td><p>Page number (1-indexed, default 1).</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>?</td>
+        <td><span class="parametername">limit</span></td>
+        <td><p>Items per page (1-100, default 20).</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></td>
+        <td><span class="parametername">cancellationToken</span></td>
+        <td><p>Cancellation token.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Seclai.Models.ContentEmbeddingsListResponse.html">ContentEmbeddingsListResponse</a>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="Seclai_SeclaiClient_ListContentAttachmentEmbeddingsAsync_System_String_System_String_System_Nullable_System_Int32__System_Nullable_System_Int32__System_Threading_CancellationToken__remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>The API answers 402 — thrown as an <a class="xref" href="Seclai.Exceptions.ApiException.html">ApiException</a> — when the account has no credits
+left (<code>error.code</code> is <code>insufficient_credits</code>).</p>
+</div>
+
+
+  <a id="Seclai_SeclaiClient_ListContentAttachmentsAsync_" data-uid="Seclai.SeclaiClient.ListContentAttachmentsAsync*"></a>
+  <h4 id="Seclai_SeclaiClient_ListContentAttachmentsAsync_System_String_System_Nullable_System_Int32__System_Nullable_System_Int32__System_Threading_CancellationToken_" data-uid="Seclai.SeclaiClient.ListContentAttachmentsAsync(System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.Threading.CancellationToken)">ListContentAttachmentsAsync(string, int?, int?, CancellationToken)</h4>
+  <div class="markdown level1 summary"><p>Lists the files attached to a content item, with pagination: files an agent's
+<code>write_content_attachment</code> step attached, files sent with a message to an email source,
+the feed files an RSS source's <code>feed_attachments</code> chose, web-page media on a source with
+media indexing on, and the images inside documents on a source that indexes document images.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;ContentAttachmentsListResponse&gt; ListContentAttachmentsAsync(string sourceConnectionContentVersion, int? page = null, int? limit = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
+        <td><span class="parametername">sourceConnectionContentVersion</span></td>
+        <td><p>Content version identifier.</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>?</td>
+        <td><span class="parametername">page</span></td>
+        <td><p>Page number (1-indexed, default 1).</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>?</td>
+        <td><span class="parametername">limit</span></td>
+        <td><p>Items per page (default 20).</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></td>
+        <td><span class="parametername">cancellationToken</span></td>
+        <td><p>Cancellation token.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Seclai.Models.ContentAttachmentsListResponse.html">ContentAttachmentsListResponse</a>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
   <a id="Seclai_SeclaiClient_ListContentEmbeddingsAsync_" data-uid="Seclai.SeclaiClient.ListContentEmbeddingsAsync*"></a>
   <h4 id="Seclai_SeclaiClient_ListContentEmbeddingsAsync_System_String_System_Nullable_System_Int32__System_Nullable_System_Int32__System_Threading_CancellationToken_" data-uid="Seclai.SeclaiClient.ListContentEmbeddingsAsync(System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.Threading.CancellationToken)">ListContentEmbeddingsAsync(string, int?, int?, CancellationToken)</h4>
   <div class="markdown level1 summary"><p>Lists embeddings for a content version with pagination.</p>
@@ -5912,6 +6334,74 @@ later. Accepted and dropped so existing call sites keep working.</p>
       </tr>
     </tbody>
   </table>
+
+
+  <a id="Seclai_SeclaiClient_ListEmailSourceRejectionsAsync_" data-uid="Seclai.SeclaiClient.ListEmailSourceRejectionsAsync*"></a>
+  <h4 id="Seclai_SeclaiClient_ListEmailSourceRejectionsAsync_System_String_System_Nullable_System_Int32__System_Nullable_System_Int32__System_Threading_CancellationToken_" data-uid="Seclai.SeclaiClient.ListEmailSourceRejectionsAsync(System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.Threading.CancellationToken)">ListEmailSourceRejectionsAsync(string, int?, int?, CancellationToken)</h4>
+  <div class="markdown level1 summary"><p>Lists mail that an email content source refused, newest first. Each entry says who sent the
+message and why it was refused, never its subject or body.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;EmailSourceRejectionListResponse&gt; ListEmailSourceRejectionsAsync(string sourceId, int? page = null, int? limit = null, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
+        <td><span class="parametername">sourceId</span></td>
+        <td><p>Source connection identifier.</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>?</td>
+        <td><span class="parametername">page</span></td>
+        <td><p>Page number (1-indexed, default 1).</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>?</td>
+        <td><span class="parametername">limit</span></td>
+        <td><p>Items per page (1-100, default 20).</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></td>
+        <td><span class="parametername">cancellationToken</span></td>
+        <td><p>Cancellation token.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Seclai.Models.EmailSourceRejectionListResponse.html">EmailSourceRejectionListResponse</a>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="Seclai_SeclaiClient_ListEmailSourceRejectionsAsync_System_String_System_Nullable_System_Int32__System_Nullable_System_Int32__System_Threading_CancellationToken__remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>To accept a refused sender, add its <code>FromAddress</code> or that address's domain to the source's
+<a class="xref" href="Seclai.Models.UpdateSourceRequest.html#Seclai_Models_UpdateSourceRequest_EmailAllowedSenders">EmailAllowedSenders</a>. That only helps when
+<a class="xref" href="Seclai.Models.EmailSourceRejectionResponse.html#Seclai_Models_EmailSourceRejectionResponse_Authenticated">Authenticated</a> is true.</p>
+</div>
 
 
   <a id="Seclai_SeclaiClient_ListEmbeddingModelsAsync_" data-uid="Seclai.SeclaiClient.ListEmbeddingModelsAsync*"></a>
@@ -8079,6 +8569,71 @@ raw body in <a class="xref" href="Seclai.Exceptions.ApiException.html#Seclai_Exc
   </table>
 
 
+  <a id="Seclai_SeclaiClient_SetAcceptedAttachmentsAsync_" data-uid="Seclai.SeclaiClient.SetAcceptedAttachmentsAsync*"></a>
+  <h4 id="Seclai_SeclaiClient_SetAcceptedAttachmentsAsync_System_String_System_String_Seclai_Models_SetAcceptedAttachmentsRequest_System_Threading_CancellationToken_" data-uid="Seclai.SeclaiClient.SetAcceptedAttachmentsAsync(System.String,System.String,Seclai.Models.SetAcceptedAttachmentsRequest,System.Threading.CancellationToken)">SetAcceptedAttachmentsAsync(string, string, SetAcceptedAttachmentsRequest, CancellationToken)</h4>
+  <div class="markdown level1 summary"><p>Replaces the input attachments an agent's trigger accepts. A run's files are each assigned to one
+declared attachment before any step runs; steps reference one as
+<code>{{agent.attachments.&lt;name&gt;}}</code>. The API answers 400 when the agent references an
+attachment the new declaration leaves out.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;AcceptedAttachmentsResponse&gt; SetAcceptedAttachmentsAsync(string agentId, string triggerId, SetAcceptedAttachmentsRequest body, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
+        <td><span class="parametername">agentId</span></td>
+        <td><p>Agent identifier.</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
+        <td><span class="parametername">triggerId</span></td>
+        <td><p>The trigger's id, from <a class="xref" href="Seclai.Models.AgentSummaryResponse.html#Seclai_Models_AgentSummaryResponse_TriggerId">TriggerId</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="Seclai.Models.SetAcceptedAttachmentsRequest.html">SetAcceptedAttachmentsRequest</a></td>
+        <td><span class="parametername">body</span></td>
+        <td><p>The new declaration; a null <a class="xref" href="Seclai.Models.SetAcceptedAttachmentsRequest.html#Seclai_Models_SetAcceptedAttachmentsRequest_AcceptedAttachments">AcceptedAttachments</a> accepts any files.</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></td>
+        <td><span class="parametername">cancellationToken</span></td>
+        <td><p>Cancellation token.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Seclai.Models.AcceptedAttachmentsResponse.html">AcceptedAttachmentsResponse</a>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
   <a id="Seclai_SeclaiClient_SetAutoBlockModeAsync_" data-uid="Seclai.SeclaiClient.SetAutoBlockModeAsync*"></a>
   <h4 id="Seclai_SeclaiClient_SetAutoBlockModeAsync_Seclai_Models_SetAutoBlockModeRequest_System_Threading_CancellationToken_" data-uid="Seclai.SeclaiClient.SetAutoBlockModeAsync(Seclai.Models.SetAutoBlockModeRequest,System.Threading.CancellationToken)">SetAutoBlockModeAsync(SetAutoBlockModeRequest, CancellationToken)</h4>
   <div class="markdown level1 summary"><p>Sets whether a governance BLOCK on an authenticated inbound sender auto-adds them to the blocklist. Requires an account owner or admin.</p>
@@ -9219,6 +9774,22 @@ the pin just written.</p>
       </tr>
     </tbody>
   </table>
+  <h5 class="exceptions">Exceptions</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Condition</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></td>
+        <td><p><a class="xref" href="Seclai.Models.UpdateMemoryBankRequest.html#Seclai_Models_UpdateMemoryBankRequest_RetainIndefinitely">RetainIndefinitely</a> is set together with a nonzero <a class="xref" href="Seclai.Models.UpdateMemoryBankRequest.html#Seclai_Models_UpdateMemoryBankRequest_RetentionDays">RetentionDays</a>.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
 
 
   <a id="Seclai_SeclaiClient_UpdateOrganizationAlertPreferenceAsync_" data-uid="Seclai.SeclaiClient.UpdateOrganizationAlertPreferenceAsync*"></a>
@@ -9334,7 +9905,7 @@ the pin just written.</p>
 
   <a id="Seclai_SeclaiClient_UpdateSourceAsync_" data-uid="Seclai.SeclaiClient.UpdateSourceAsync*"></a>
   <h4 id="Seclai_SeclaiClient_UpdateSourceAsync_System_String_Seclai_Models_UpdateSourceRequest_System_Threading_CancellationToken_" data-uid="Seclai.SeclaiClient.UpdateSourceAsync(System.String,Seclai.Models.UpdateSourceRequest,System.Threading.CancellationToken)">UpdateSourceAsync(string, UpdateSourceRequest, CancellationToken)</h4>
-  <div class="markdown level1 summary"><p>Updates a source.</p>
+  <div class="markdown level1 summary"><p>Updates a source. Only the properties set on <code class="paramref">body</code> are sent; a null property leaves that setting unchanged. To remove the retention window, use <a class="xref" href="Seclai.SeclaiClient.html#Seclai_SeclaiClient_ClearSourceRetentionAsync_System_String_System_Threading_CancellationToken_">ClearSourceRetentionAsync(string, CancellationToken)</a>.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="declaration">Declaration</h5>
@@ -9456,6 +10027,13 @@ the pin just written.</p>
       </tr>
     </tbody>
   </table>
+  <h5 id="Seclai_SeclaiClient_UploadAgentInputAsync_System_String_System_Byte___System_String_System_String_System_String_System_Collections_Generic_IReadOnlyDictionary_System_String_System_Object__System_Threading_CancellationToken__remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>Only a <code>dynamic_input</code> agent takes uploads; any other agent rejects them with a 400. Size limit:
+200 MB per file. From API version <code>2026-10-16</code> a file of any type is accepted and is <code>ready</code>
+at once, with no need to poll. Earlier versions accept only certain file types and extract each
+file's text first, so poll
+<a class="xref" href="Seclai.SeclaiClient.html#Seclai_SeclaiClient_GetAgentInputUploadStatusAsync_System_String_System_String_System_Threading_CancellationToken_">GetAgentInputUploadStatusAsync(string, string, CancellationToken)</a> until <code>Status</code> is <code>ready</code> before running.</p>
+</div>
 
 
   <a id="Seclai_SeclaiClient_UploadFileToContentAsync_" data-uid="Seclai.SeclaiClient.UploadFileToContentAsync*"></a>

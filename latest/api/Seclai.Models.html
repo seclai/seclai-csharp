@@ -85,6 +85,13 @@
     <h3 id="classes">
 Classes
 </h3>
+      <h4><a class="xref" href="Seclai.Models.AcceptedAttachmentSlot.html">AcceptedAttachmentSlot</a></h4>
+      <section><p>One input attachment a trigger accepts. A run's files are each assigned to one declared
+attachment before any step runs; steps reference one as <code>{{agent.attachments.&lt;name&gt;}}</code>.</p>
+</section>
+      <h4><a class="xref" href="Seclai.Models.AcceptedAttachmentsResponse.html">AcceptedAttachmentsResponse</a></h4>
+      <section><p>The input attachments a trigger accepts, as stored.</p>
+</section>
       <h4><a class="xref" href="Seclai.Models.AddCommentRequest.html">AddCommentRequest</a></h4>
       <section></section>
       <h4><a class="xref" href="Seclai.Models.AddConversationTurnRequest.html">AddConversationTurnRequest</a></h4>
@@ -234,6 +241,15 @@ only happen on commit.</p>
       <section></section>
       <h4><a class="xref" href="Seclai.Models.CompatibleRunListResponse.html">CompatibleRunListResponse</a></h4>
       <section></section>
+      <h4><a class="xref" href="Seclai.Models.ContentAttachmentDetailResponse.html">ContentAttachmentDetailResponse</a></h4>
+      <section><p>One attached file, with the text indexed from it.</p>
+</section>
+      <h4><a class="xref" href="Seclai.Models.ContentAttachmentResponse.html">ContentAttachmentResponse</a></h4>
+      <section><p>A file attached to a content item.</p>
+</section>
+      <h4><a class="xref" href="Seclai.Models.ContentAttachmentsListResponse.html">ContentAttachmentsListResponse</a></h4>
+      <section><p>A page of the files attached to a content item.</p>
+</section>
       <h4><a class="xref" href="Seclai.Models.ContentDetailResponse.html">ContentDetailResponse</a></h4>
       <section></section>
       <h4><a class="xref" href="Seclai.Models.ContentEmbeddingResponse.html">ContentEmbeddingResponse</a></h4>
@@ -282,6 +298,12 @@ only happen on commit.</p>
       <section></section>
       <h4><a class="xref" href="Seclai.Models.EmailDomainsListResponse.html">EmailDomainsListResponse</a></h4>
       <section></section>
+      <h4><a class="xref" href="Seclai.Models.EmailSourceRejectionListResponse.html">EmailSourceRejectionListResponse</a></h4>
+      <section><p>A page of mail an email content source refused.</p>
+</section>
+      <h4><a class="xref" href="Seclai.Models.EmailSourceRejectionResponse.html">EmailSourceRejectionResponse</a></h4>
+      <section><p>Mail an email content source refused: who sent it and why, never what it said.</p>
+</section>
       <h4><a class="xref" href="Seclai.Models.EmailTriggerConfigResponse.html">EmailTriggerConfigResponse</a></h4>
       <section><p>An EMAIL_RECEIVED trigger's resolved address(es) and config.</p>
 </section>
@@ -454,11 +476,17 @@ accepts an <code>agent_definition</code> payload.</p>
       <section></section>
       <h4><a class="xref" href="Seclai.Models.SendTestEmailResponse.html">SendTestEmailResponse</a></h4>
       <section></section>
+      <h4><a class="xref" href="Seclai.Models.SetAcceptedAttachmentsRequest.html">SetAcceptedAttachmentsRequest</a></h4>
+      <section><p>Replaces the input attachments a trigger accepts.</p>
+</section>
       <h4><a class="xref" href="Seclai.Models.SetAutoBlockModeRequest.html">SetAutoBlockModeRequest</a></h4>
       <section><p>Set the account's governance auto-block mode (shared REST request).</p>
 </section>
       <h4><a class="xref" href="Seclai.Models.SetEmailTriggerConfigRequest.html">SetEmailTriggerConfigRequest</a></h4>
       <section><p>Alias, sender allowlist and inbound-handling flags for an EMAIL_RECEIVED trigger.</p>
+</section>
+      <h4><a class="xref" href="Seclai.Models.SkippedAttachmentResponse.html">SkippedAttachmentResponse</a></h4>
+      <section><p>A part of an email that was not stored as an attachment.</p>
 </section>
       <h4><a class="xref" href="Seclai.Models.SolutionConversationResponse.html">SolutionConversationResponse</a></h4>
       <section></section>
@@ -522,6 +550,13 @@ accepts an <code>agent_definition</code> payload.</p>
 </section>
       <h4><a class="xref" href="Seclai.Models.VariantOptionResponse.html">VariantOptionResponse</a></h4>
       <section><p>Response model for a variant option</p>
+</section>
+    <h3 id="enums">
+Enums
+</h3>
+      <h4><a class="xref" href="Seclai.Models.EvaluationCriteriaField.html">EvaluationCriteriaField</a></h4>
+      <section><p>An evaluation-criteria field that <a class="xref" href="Seclai.SeclaiClient.html#Seclai_SeclaiClient_ClearEvaluationCriteriaFieldsAsync_System_String_System_Collections_Generic_IEnumerable_Seclai_Models_EvaluationCriteriaField__System_Threading_CancellationToken_">ClearEvaluationCriteriaFieldsAsync(string, IEnumerable&lt;EvaluationCriteriaField&gt;, CancellationToken)</a>
+can clear by sending it as <code>null</code>.</p>
 </section>
 
 

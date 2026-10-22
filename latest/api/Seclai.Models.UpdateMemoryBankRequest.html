@@ -276,9 +276,40 @@ public string? Name { get; set; }</code></pre>
   </table>
 
 
+  <a id="Seclai_Models_UpdateMemoryBankRequest_RetainIndefinitely_" data-uid="Seclai.Models.UpdateMemoryBankRequest.RetainIndefinitely*"></a>
+  <h4 id="Seclai_Models_UpdateMemoryBankRequest_RetainIndefinitely" data-uid="Seclai.Models.UpdateMemoryBankRequest.RetainIndefinitely">RetainIndefinitely</h4>
+  <div class="markdown level1 summary"><p>When true, the bank keeps entries indefinitely: <a class="xref" href="Seclai.SeclaiClient.html#Seclai_SeclaiClient_UpdateMemoryBankAsync_System_String_Seclai_Models_UpdateMemoryBankRequest_System_Threading_CancellationToken_">UpdateMemoryBankAsync(string, UpdateMemoryBankRequest, CancellationToken)</a> sends
+<code>retention_days</code> as 0, which the API reads as &quot;clear the retention window&quot; on an update.
+<a class="xref" href="Seclai.SeclaiClient.html#Seclai_SeclaiClient_UpdateMemoryBankAsync_System_String_Seclai_Models_UpdateMemoryBankRequest_System_Threading_CancellationToken_">UpdateMemoryBankAsync(string, UpdateMemoryBankRequest, CancellationToken)</a> throws an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a> when
+<a class="xref" href="Seclai.Models.UpdateMemoryBankRequest.html#Seclai_Models_UpdateMemoryBankRequest_RetentionDays">RetentionDays</a> is also set to anything other than 0.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonIgnore]
+public bool RetainIndefinitely { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
   <a id="Seclai_Models_UpdateMemoryBankRequest_RetentionDays_" data-uid="Seclai.Models.UpdateMemoryBankRequest.RetentionDays*"></a>
   <h4 id="Seclai_Models_UpdateMemoryBankRequest_RetentionDays" data-uid="Seclai.Models.UpdateMemoryBankRequest.RetentionDays">RetentionDays</h4>
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Days a memory entry is kept before it is deleted. Omitted when null, which leaves it unchanged; 0 clears it, which keeps entries indefinitely. To keep entries indefinitely, you can also set <a class="xref" href="Seclai.Models.UpdateMemoryBankRequest.html#Seclai_Models_UpdateMemoryBankRequest_RetainIndefinitely">RetainIndefinitely</a>.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="declaration">Declaration</h5>
   <div class="codewrapper">
@@ -310,7 +341,6 @@ public int? RetentionDays { get; set; }</code></pre>
   <h5 class="declaration">Declaration</h5>
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;strip_quoted_reply_chains&quot;)]
-[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
 public bool? StripQuotedReplyChains { get; set; }</code></pre>
   </div>
   <h5 class="propertyValue">Property Value</h5>

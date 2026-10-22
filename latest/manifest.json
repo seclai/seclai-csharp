@@ -92,6 +92,34 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.AcceptedAttachmentSlot.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.AcceptedAttachmentSlot.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.AcceptedAttachmentSlot",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.AcceptedAttachmentSlot.yml\" sourcestartlinenumber=\"1\">One input attachment a trigger accepts. A run's files are each assigned to one declared\nattachment before any step runs; steps reference one as <code>{{agent.attachments.&lt;name&gt;}}</code>.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.AcceptedAttachmentsResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.AcceptedAttachmentsResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.AcceptedAttachmentsResponse",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.AcceptedAttachmentsResponse.yml\" sourcestartlinenumber=\"1\">The input attachments a trigger accepts, as stored.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "build/api/Seclai.Models.AddCommentRequest.yml",
       "output": {
         ".html": {
@@ -932,6 +960,48 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.ContentAttachmentDetailResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.ContentAttachmentDetailResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.ContentAttachmentDetailResponse",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.ContentAttachmentDetailResponse.yml\" sourcestartlinenumber=\"1\">One attached file, with the text indexed from it.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.ContentAttachmentResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.ContentAttachmentResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.ContentAttachmentResponse",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.ContentAttachmentResponse.yml\" sourcestartlinenumber=\"1\">A file attached to a content item.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.ContentAttachmentsListResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.ContentAttachmentsListResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.ContentAttachmentsListResponse",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.ContentAttachmentsListResponse.yml\" sourcestartlinenumber=\"1\">A page of the files attached to a content item.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "build/api/Seclai.Models.ContentDetailResponse.yml",
       "output": {
         ".html": {
@@ -1254,6 +1324,34 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.EmailSourceRejectionListResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.EmailSourceRejectionListResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.EmailSourceRejectionListResponse",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.EmailSourceRejectionListResponse.yml\" sourcestartlinenumber=\"1\">A page of mail an email content source refused.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.EmailSourceRejectionResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.EmailSourceRejectionResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.EmailSourceRejectionResponse",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.EmailSourceRejectionResponse.yml\" sourcestartlinenumber=\"1\">Mail an email content source refused: who sent it and why, never what it said.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "build/api/Seclai.Models.EmailTriggerConfigResponse.yml",
       "output": {
         ".html": {
@@ -1349,6 +1447,20 @@
       "IsMRef": true,
       "Title": "Seclai.Models.EstimateExportResponse",
       "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.EvaluationCriteriaField.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.EvaluationCriteriaField.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.EvaluationCriteriaField",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.EvaluationCriteriaField.yml\" sourcestartlinenumber=\"1\">An evaluation-criteria field that <xref href=\"Seclai.SeclaiClient.ClearEvaluationCriteriaFieldsAsync(System.String%2cSystem.Collections.Generic.IEnumerable%7bSeclai.Models.EvaluationCriteriaField%7d%2cSystem.Threading.CancellationToken)\" data-throw-if-not-resolved=\"false\"></xref>\ncan clear by sending it as <code>null</code>.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -2276,6 +2388,20 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.SetAcceptedAttachmentsRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.SetAcceptedAttachmentsRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.SetAcceptedAttachmentsRequest",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.SetAcceptedAttachmentsRequest.yml\" sourcestartlinenumber=\"1\">Replaces the input attachments a trigger accepts.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "build/api/Seclai.Models.SetAutoBlockModeRequest.yml",
       "output": {
         ".html": {
@@ -2301,6 +2427,20 @@
       "IsMRef": true,
       "Title": "Seclai.Models.SetEmailTriggerConfigRequest",
       "Summary": "<p sourcefile=\"build/api/Seclai.Models.SetEmailTriggerConfigRequest.yml\" sourcestartlinenumber=\"1\">Alias, sender allowlist and inbound-handling flags for an EMAIL_RECEIVED trigger.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.SkippedAttachmentResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.SkippedAttachmentResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.SkippedAttachmentResponse",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.SkippedAttachmentResponse.yml\" sourcestartlinenumber=\"1\">A part of an email that was not stored as an attachment.</p>\n"
     },
     {
       "type": "ManagedReference",

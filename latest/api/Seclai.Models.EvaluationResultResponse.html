@@ -119,13 +119,66 @@
 </h3>
 
 
+  <a id="Seclai_Models_EvaluationResultResponse_AgentRunId_" data-uid="Seclai.Models.EvaluationResultResponse.AgentRunId*"></a>
+  <h4 id="Seclai_Models_EvaluationResultResponse_AgentRunId" data-uid="Seclai.Models.EvaluationResultResponse.AgentRunId">AgentRunId</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;agent_run_id&quot;)]
+public string? AgentRunId { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_Models_EvaluationResultResponse_AgentStepRunId_" data-uid="Seclai.Models.EvaluationResultResponse.AgentStepRunId*"></a>
+  <h4 id="Seclai_Models_EvaluationResultResponse_AgentStepRunId" data-uid="Seclai.Models.EvaluationResultResponse.AgentStepRunId">AgentStepRunId</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;agent_step_run_id&quot;)]
+public string? AgentStepRunId { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
   <a id="Seclai_Models_EvaluationResultResponse_Comment_" data-uid="Seclai.Models.EvaluationResultResponse.Comment*"></a>
   <h4 id="Seclai_Models_EvaluationResultResponse_Comment" data-uid="Seclai.Models.EvaluationResultResponse.Comment">Comment</h4>
   <div class="markdown level1 summary"></div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="declaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;comment&quot;)]
+    <pre><code class="lang-csharp hljs">[Obsolete(&quot;The API does not send comment, so this is always null. Read Details.&quot;)]
+[JsonPropertyName(&quot;comment&quot;)]
 public string? Comment { get; set; }</code></pre>
   </div>
   <h5 class="propertyValue">Property Value</h5>
@@ -197,6 +250,84 @@ public string? CriteriaId { get; set; }</code></pre>
   </table>
 
 
+  <a id="Seclai_Models_EvaluationResultResponse_Details_" data-uid="Seclai.Models.EvaluationResultResponse.Details*"></a>
+  <h4 id="Seclai_Models_EvaluationResultResponse_Details" data-uid="Seclai.Models.EvaluationResultResponse.Details">Details</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;details&quot;)]
+public Dictionary&lt;string, JsonElement&gt;? Details { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.dictionary-2">Dictionary</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.json.jsonelement">JsonElement</a>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_Models_EvaluationResultResponse_EvaluatedAt_" data-uid="Seclai.Models.EvaluationResultResponse.EvaluatedAt*"></a>
+  <h4 id="Seclai_Models_EvaluationResultResponse_EvaluatedAt" data-uid="Seclai.Models.EvaluationResultResponse.EvaluatedAt">EvaluatedAt</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;evaluated_at&quot;)]
+public string? EvaluatedAt { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_Models_EvaluationResultResponse_Flagged_" data-uid="Seclai.Models.EvaluationResultResponse.Flagged*"></a>
+  <h4 id="Seclai_Models_EvaluationResultResponse_Flagged" data-uid="Seclai.Models.EvaluationResultResponse.Flagged">Flagged</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;flagged&quot;)]
+public bool Flagged { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
   <a id="Seclai_Models_EvaluationResultResponse_Id_" data-uid="Seclai.Models.EvaluationResultResponse.Id*"></a>
   <h4 id="Seclai_Models_EvaluationResultResponse_Id" data-uid="Seclai.Models.EvaluationResultResponse.Id">Id</h4>
   <div class="markdown level1 summary"></div>
@@ -229,8 +360,61 @@ public string? Id { get; set; }</code></pre>
   <div class="markdown level1 conceptual"></div>
   <h5 class="declaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;passed&quot;)]
+    <pre><code class="lang-csharp hljs">[Obsolete(&quot;The API does not send passed, so this is always false. Read Status.&quot;)]
+[JsonPropertyName(&quot;passed&quot;)]
 public bool Passed { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_Models_EvaluationResultResponse_RetryCount_" data-uid="Seclai.Models.EvaluationResultResponse.RetryCount*"></a>
+  <h4 id="Seclai_Models_EvaluationResultResponse_RetryCount" data-uid="Seclai.Models.EvaluationResultResponse.RetryCount">RetryCount</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;retry_count&quot;)]
+public int RetryCount { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_Models_EvaluationResultResponse_RetryTriggered_" data-uid="Seclai.Models.EvaluationResultResponse.RetryTriggered*"></a>
+  <h4 id="Seclai_Models_EvaluationResultResponse_RetryTriggered" data-uid="Seclai.Models.EvaluationResultResponse.RetryTriggered">RetryTriggered</h4>
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;retry_triggered&quot;)]
+public bool RetryTriggered { get; set; }</code></pre>
   </div>
   <h5 class="propertyValue">Property Value</h5>
   <table class="table table-bordered table-condensed">
@@ -269,6 +453,33 @@ public float? Score { get; set; }</code></pre>
     <tbody>
       <tr>
         <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.single">float</a>?</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_Models_EvaluationResultResponse_Status_" data-uid="Seclai.Models.EvaluationResultResponse.Status*"></a>
+  <h4 id="Seclai_Models_EvaluationResultResponse_Status" data-uid="Seclai.Models.EvaluationResultResponse.Status">Status</h4>
+  <div class="markdown level1 summary"><p><code>pending</code>, <code>passed</code>, <code>failed</code>, <code>skipped</code>, or <code>error</code> when the evaluator returned no verdict.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;status&quot;)]
+public string? Status { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
         <td></td>
       </tr>
     </tbody>

@@ -1,0 +1,3019 @@
+{
+  "source_base_path": "/home/runner/work/seclai-csharp/seclai-csharp",
+  "xrefmap": "xrefmap.yml",
+  "files": [
+    {
+      "type": "Resource",
+      "output": {
+        "resource": {
+          "relative_path": "index.json"
+        }
+      }
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "api/index.md",
+      "output": {
+        ".html": {
+          "relative_path": "api/index.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Exceptions.ApiException.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Exceptions.ApiException.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Exceptions.ApiException",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Exceptions.ApiException.yml\" sourcestartlinenumber=\"1\">Thrown when the Seclai API returns a non-success HTTP status code, or a successful\nresponse whose body is not what the method reads (a list method given a non-list).\nContains the status code, HTTP method, request URL, and raw response body.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Exceptions.ApiValidationException.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Exceptions.ApiValidationException.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Exceptions.ApiValidationException",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Exceptions.ApiValidationException.yml\" sourcestartlinenumber=\"1\">Thrown when the API returns HTTP 422 (Unprocessable Entity) with structured validation errors.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Exceptions.ConfigurationException.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Exceptions.ConfigurationException.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Exceptions.ConfigurationException",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Exceptions.ConfigurationException.yml\" sourcestartlinenumber=\"1\">Thrown when the <xref href=\"Seclai.SeclaiClient\" data-throw-if-not-resolved=\"false\"></xref> cannot be constructed due to missing\nor invalid configuration (e.g. no API key).</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Exceptions.StreamingException.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Exceptions.StreamingException.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Exceptions.StreamingException",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Exceptions.StreamingException.yml\" sourcestartlinenumber=\"1\">Thrown when an SSE streaming agent run encounters an error, such as a timeout\nor an unexpected end of stream.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Exceptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Exceptions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Exceptions",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.AcceptedAttachmentSlot.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.AcceptedAttachmentSlot.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.AcceptedAttachmentSlot",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.AcceptedAttachmentSlot.yml\" sourcestartlinenumber=\"1\">One input attachment a trigger accepts. A run's files are each assigned to one declared\nattachment before any step runs; steps reference one as <code>{{agent.attachments.&lt;name&gt;}}</code>.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.AcceptedAttachmentsResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.AcceptedAttachmentsResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.AcceptedAttachmentsResponse",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.AcceptedAttachmentsResponse.yml\" sourcestartlinenumber=\"1\">The input attachments a trigger accepts, as stored.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.AddCommentRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.AddCommentRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.AddCommentRequest",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.AddConversationTurnRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.AddConversationTurnRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.AddConversationTurnRequest",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.AddEmailDomainRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.AddEmailDomainRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.AddEmailDomainRequest",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.AgentAttachmentRefsApiResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.AgentAttachmentRefsApiResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.AgentAttachmentRefsApiResponse",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.AgentAttachmentRefsApiResponse.yml\" sourcestartlinenumber=\"1\">Static attachment-reference contract for an agent — what files (if any) its\ntemplates expect on a run, so uploads can be staged before starting the run.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.AgentCallerApiResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.AgentCallerApiResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.AgentCallerApiResponse",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.AgentCallerApiResponse.yml\" sourcestartlinenumber=\"1\">One agent that calls another (blocks disabling the callee while live).</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.AgentDefinitionImportErrorResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.AgentDefinitionImportErrorResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.AgentDefinitionImportErrorResponse",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.AgentDefinitionImportErrorResponse.yml\" sourcestartlinenumber=\"1\">422 response body for invalid <code>agent_definition</code> payloads on\n<code>POST /agents</code>, <code>PUT /agents/{id}</code>, and <code>POST /agents/preview-import</code>.</p>\n<p sourcefile=\"build/api/Seclai.Models.AgentDefinitionImportErrorResponse.yml\" sourcestartlinenumber=\"4\">Errors carry 1-indexed line/column references into the canonical\n<xref href=\"Seclai.Models.AgentDefinitionImportErrorResponse.Source\" data-throw-if-not-resolved=\"false\"></xref> echo.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.AgentDefinitionResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.AgentDefinitionResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.AgentDefinitionResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.AgentEmailOptOutListResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.AgentEmailOptOutListResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.AgentEmailOptOutListResponse",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.AgentEmailOptOutListResponse.yml\" sourcestartlinenumber=\"1\">A page of agent-email opt-outs plus the total (for pagination).</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.AgentEmailOptOutResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.AgentEmailOptOutResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.AgentEmailOptOutResponse",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.AgentEmailOptOutResponse.yml\" sourcestartlinenumber=\"1\">A recipient's opt-out from an account's agent emails (one agent or all).</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.AgentExportResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.AgentExportResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.AgentExportResponse",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.AgentExportResponse.yml\" sourcestartlinenumber=\"1\">Portable JSON snapshot of an agent definition.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.AgentImportPreviewRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.AgentImportPreviewRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.AgentImportPreviewRequest",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.AgentImportPreviewRequest.yml\" sourcestartlinenumber=\"1\">Dry-run import request body for <code>POST /agents/preview-import</code>.\nCarries the same payload shape produced by <xref href=\"Seclai.Models.AgentExportResponse\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.AgentImportPreviewResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.AgentImportPreviewResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.AgentImportPreviewResponse",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.AgentImportPreviewResponse.yml\" sourcestartlinenumber=\"1\">Summary of a successfully validated <code>agent_definition</code> import payload (no DB writes).</p>\n<p sourcefile=\"build/api/Seclai.Models.AgentImportPreviewResponse.yml\" sourcestartlinenumber=\"3\">Counts reflect what the payload requested; cross-account skips (recipients, KB names)\nonly happen on commit.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.AgentListResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.AgentListResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.AgentListResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.AgentRunAttemptResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.AgentRunAttemptResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.AgentRunAttemptResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.AgentRunEvent.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.AgentRunEvent.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.AgentRunEvent",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.AgentRunEvent.yml\" sourcestartlinenumber=\"1\">Represents a single event from an SSE agent run stream.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.AgentRunFileResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.AgentRunFileResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.AgentRunFileResponse",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.AgentRunFileResponse.yml\" sourcestartlinenumber=\"1\">A file in a run's or a step's output.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.AgentRunListResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.AgentRunListResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.AgentRunListResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.AgentRunRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.AgentRunRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.AgentRunRequest",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.AgentRunResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.AgentRunResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.AgentRunResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.AgentRunStepResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.AgentRunStepResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.AgentRunStepResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.AgentRunStreamRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.AgentRunStreamRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.AgentRunStreamRequest",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.AgentRunToolCallResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.AgentRunToolCallResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.AgentRunToolCallResponse",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.AgentRunToolCallResponse.yml\" sourcestartlinenumber=\"1\">A single LLM tool call made during a <code>prompt_call</code> step.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.AgentSummaryResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.AgentSummaryResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.AgentSummaryResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.AgentTraceSearchRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.AgentTraceSearchRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.AgentTraceSearchRequest",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.AgentTraceSearchResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.AgentTraceSearchResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.AgentTraceSearchResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.AgentUsingCloudDriveResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.AgentUsingCloudDriveResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.AgentUsingCloudDriveResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.AiAssistantAcceptRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.AiAssistantAcceptRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.AiAssistantAcceptRequest",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.AiAssistantAcceptResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.AiAssistantAcceptResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.AiAssistantAcceptResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.AiAssistantFeedbackRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.AiAssistantFeedbackRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.AiAssistantFeedbackRequest",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.AiAssistantFeedbackResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.AiAssistantFeedbackResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.AiAssistantFeedbackResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.AiAssistantGenerateRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.AiAssistantGenerateRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.AiAssistantGenerateRequest",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.AiAssistantGenerateResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.AiAssistantGenerateResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.AiAssistantGenerateResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.AiConversationHistoryOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.AiConversationHistoryOptions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.AiConversationHistoryOptions",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.AiConversationHistoryOptions.yml\" sourcestartlinenumber=\"1\">Filters for the agent AI assistant conversation history.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.AiConversationHistoryResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.AiConversationHistoryResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.AiConversationHistoryResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.AiConversationTurnResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.AiConversationTurnResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.AiConversationTurnResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.AlertCommentResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.AlertCommentResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.AlertCommentResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.AlertConfigListResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.AlertConfigListResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.AlertConfigListResponse",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.AlertConfigListResponse.yml\" sourcestartlinenumber=\"1\">A page of alert configurations.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.AlertConfigResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.AlertConfigResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.AlertConfigResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.AlertDetailResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.AlertDetailResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.AlertDetailResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.AlertHistoryEntryResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.AlertHistoryEntryResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.AlertHistoryEntryResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.AlertListResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.AlertListResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.AlertListResponse",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.AlertListResponse.yml\" sourcestartlinenumber=\"1\">A page of alerts. Always the canonical <code>{data, pagination}</code> envelope.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.AlertResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.AlertResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.AlertResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.AlertSubscriberResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.AlertSubscriberResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.AlertSubscriberResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.ApiVersionResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.ApiVersionResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.ApiVersionResponse",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.ApiVersionResponse.yml\" sourcestartlinenumber=\"1\">The API version a request resolved to, and the versions available.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.AttachmentRefsSourceApiSummary.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.AttachmentRefsSourceApiSummary.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.AttachmentRefsSourceApiSummary",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.AttachmentRefsSourceApiSummary.yml\" sourcestartlinenumber=\"1\">Per-source attachment-reference summary within an <xref href=\"Seclai.Models.AgentAttachmentRefsApiResponse\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.BlockEmailSenderRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.BlockEmailSenderRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.BlockEmailSenderRequest",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.BlockEmailSenderRequest.yml\" sourcestartlinenumber=\"1\">Add one sender/domain to the account blocklist (shared REST request).</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.BlockedEmailSenderListResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.BlockedEmailSenderListResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.BlockedEmailSenderListResponse",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.BlockedEmailSenderListResponse.yml\" sourcestartlinenumber=\"1\">A page of blocked senders + the account's auto-block mode.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.BlockedEmailSenderResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.BlockedEmailSenderResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.BlockedEmailSenderResponse",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.BlockedEmailSenderResponse.yml\" sourcestartlinenumber=\"1\">A single blocked inbound email sender.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.CancelExperimentResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.CancelExperimentResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.CancelExperimentResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.CancelQueuedRunsResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.CancelQueuedRunsResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.CancelQueuedRunsResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.ChangeStatusRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.ChangeStatusRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.ChangeStatusRequest",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.CloudDriveAccessLevelResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.CloudDriveAccessLevelResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.CloudDriveAccessLevelResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.CloudDriveProviderResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.CloudDriveProviderResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.CloudDriveProviderResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.CloudDriveRejectionResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.CloudDriveRejectionResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.CloudDriveRejectionResponse",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.CloudDriveRejectionResponse.yml\" sourcestartlinenumber=\"1\">One file the connection deliberately did not process.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.CloudDriveResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.CloudDriveResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.CloudDriveResponse",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.CloudDriveResponse.yml\" sourcestartlinenumber=\"1\">A cloud-drive connection, without any secret material.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.CloudDriveScopeResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.CloudDriveScopeResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.CloudDriveScopeResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.CloudDriveUpdateRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.CloudDriveUpdateRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.CloudDriveUpdateRequest",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.CloudDriveUpdateRequest.yml\" sourcestartlinenumber=\"1\">Fields to change on a cloud-drive connection.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.CompactionEvaluationModel.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.CompactionEvaluationModel.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.CompactionEvaluationModel",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.CompactionTestResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.CompactionTestResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.CompactionTestResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.CompatibleRunListResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.CompatibleRunListResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.CompatibleRunListResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.ContentAttachmentDetailResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.ContentAttachmentDetailResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.ContentAttachmentDetailResponse",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.ContentAttachmentDetailResponse.yml\" sourcestartlinenumber=\"1\">One attached file, with the text indexed from it.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.ContentAttachmentResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.ContentAttachmentResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.ContentAttachmentResponse",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.ContentAttachmentResponse.yml\" sourcestartlinenumber=\"1\">A file attached to a content item.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.ContentAttachmentsListResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.ContentAttachmentsListResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.ContentAttachmentsListResponse",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.ContentAttachmentsListResponse.yml\" sourcestartlinenumber=\"1\">A page of the files attached to a content item.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.ContentDetailResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.ContentDetailResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.ContentDetailResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.ContentEmbeddingResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.ContentEmbeddingResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.ContentEmbeddingResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.ContentEmbeddingsListResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.ContentEmbeddingsListResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.ContentEmbeddingsListResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.ContentFileUploadResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.ContentFileUploadResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.ContentFileUploadResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.CreateAgentRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.CreateAgentRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.CreateAgentRequest",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.CreateAlertConfigRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.CreateAlertConfigRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.CreateAlertConfigRequest",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.CreateEvaluationCriteriaRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.CreateEvaluationCriteriaRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.CreateEvaluationCriteriaRequest",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.CreateEvaluationResultRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.CreateEvaluationResultRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.CreateEvaluationResultRequest",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.CreateExperimentResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.CreateExperimentResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.CreateExperimentResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.CreateExportRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.CreateExportRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.CreateExportRequest",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.CreateKnowledgeBaseRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.CreateKnowledgeBaseRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.CreateKnowledgeBaseRequest",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.CreateMemoryBankRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.CreateMemoryBankRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.CreateMemoryBankRequest",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.CreateSolutionRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.CreateSolutionRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.CreateSolutionRequest",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.CreateSourceRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.CreateSourceRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.CreateSourceRequest",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.DmarcFailingSourceResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.DmarcFailingSourceResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.DmarcFailingSourceResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.DmarcSummaryResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.DmarcSummaryResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.DmarcSummaryResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.DnsProviderResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.DnsProviderResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.DnsProviderResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.DnsRecordResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.DnsRecordResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.DnsRecordResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.DocsSearchResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.DocsSearchResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.DocsSearchResponse",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.DocsSearchResponse.yml\" sourcestartlinenumber=\"1\">Ranked results, NOT a paginated collection — the <code sourcefile=\"build/api/Seclai.Models.DocsSearchResponse.yml\" sourcestartlinenumber=\"1\">{results}</code> shape is a deliberate carve-out matching the MCP <code sourcefile=\"build/api/Seclai.Models.DocsSearchResponse.yml\" sourcestartlinenumber=\"1\">search_docs</code> tool.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.DocsSearchResultResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.DocsSearchResultResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.DocsSearchResultResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.EffortOptionsResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.EffortOptionsResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.EffortOptionsResponse",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.EffortOptionsResponse.yml\" sourcestartlinenumber=\"1\">The reasoning-effort values a model accepts.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.EmailDomainResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.EmailDomainResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.EmailDomainResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.EmailDomainsListResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.EmailDomainsListResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.EmailDomainsListResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.EmailSourceRejectionListResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.EmailSourceRejectionListResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.EmailSourceRejectionListResponse",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.EmailSourceRejectionListResponse.yml\" sourcestartlinenumber=\"1\">A page of mail an email content source refused.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.EmailSourceRejectionResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.EmailSourceRejectionResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.EmailSourceRejectionResponse",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.EmailSourceRejectionResponse.yml\" sourcestartlinenumber=\"1\">Mail an email content source refused: who sent it and why, never what it said.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.EmailTriggerConfigResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.EmailTriggerConfigResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.EmailTriggerConfigResponse",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.EmailTriggerConfigResponse.yml\" sourcestartlinenumber=\"1\">An EMAIL_RECEIVED trigger's resolved address(es) and config.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.EmbeddingModalityRateResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.EmbeddingModalityRateResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.EmbeddingModalityRateResponse",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.EmbeddingModalityRateResponse.yml\" sourcestartlinenumber=\"1\">A non-text rate a multi-modal embedder charges, such as per image record or per second of video.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.EmbeddingModelListResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.EmbeddingModelListResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.EmbeddingModelListResponse",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.EmbeddingModelListResponse.yml\" sourcestartlinenumber=\"1\">The embedding model catalog.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.EmbeddingModelResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.EmbeddingModelResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.EmbeddingModelResponse",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.EmbeddingModelResponse.yml\" sourcestartlinenumber=\"1\">Information about an embedding model.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.EmbeddingStorageCreditsResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.EmbeddingStorageCreditsResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.EmbeddingStorageCreditsResponse",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.EmbeddingStorageCreditsResponse.yml\" sourcestartlinenumber=\"1\">Monthly storage credits per stored record at a dimension count.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.EstimateExportRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.EstimateExportRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.EstimateExportRequest",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.EstimateExportResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.EstimateExportResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.EstimateExportResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.EvaluationCriteriaField.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.EvaluationCriteriaField.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.EvaluationCriteriaField",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.EvaluationCriteriaField.yml\" sourcestartlinenumber=\"1\">An evaluation-criteria field that <xref href=\"Seclai.SeclaiClient.ClearEvaluationCriteriaFieldsAsync(System.String%2cSystem.Collections.Generic.IEnumerable%7bSeclai.Models.EvaluationCriteriaField%7d%2cSystem.Threading.CancellationToken)\" data-throw-if-not-resolved=\"false\"></xref>\ncan clear by sending it as <code>null</code>.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.EvaluationCriteriaListResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.EvaluationCriteriaListResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.EvaluationCriteriaListResponse",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.EvaluationCriteriaListResponse.yml\" sourcestartlinenumber=\"1\">A page of evaluation criteria.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.EvaluationCriteriaResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.EvaluationCriteriaResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.EvaluationCriteriaResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.EvaluationResultListResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.EvaluationResultListResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.EvaluationResultListResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.EvaluationResultResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.EvaluationResultResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.EvaluationResultResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.EvaluationResultSummaryResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.EvaluationResultSummaryResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.EvaluationResultSummaryResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.EvaluationResultWithCriteriaListResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.EvaluationResultWithCriteriaListResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.EvaluationResultWithCriteriaListResponse",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.EvaluationResultWithCriteriaListResponse.yml\" sourcestartlinenumber=\"1\">A page of evaluation results with criteria context.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.EvaluationRunSummaryListResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.EvaluationRunSummaryListResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.EvaluationRunSummaryListResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.ExamplePrompt.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.ExamplePrompt.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.ExamplePrompt",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.ExperimentDetailResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.ExperimentDetailResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.ExperimentDetailResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.ExperimentListResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.ExperimentListResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.ExperimentListResponse",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.ExperimentListResponse.yml\" sourcestartlinenumber=\"1\"><code sourcefile=\"build/api/Seclai.Models.ExperimentListResponse.yml\" sourcestartlinenumber=\"1\">GET /models/playground/experiments</code> legacy/default shape; 2026-07-27+ clients get the canonical <code sourcefile=\"build/api/Seclai.Models.ExperimentListResponse.yml\" sourcestartlinenumber=\"1\">{data, pagination}</code> envelope.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.ExperimentSummaryResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.ExperimentSummaryResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.ExperimentSummaryResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.ExportListResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.ExportListResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.ExportListResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.ExportResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.ExportResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.ExportResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.FileUploadResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.FileUploadResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.FileUploadResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.GenerateAgentStepsRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.GenerateAgentStepsRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.GenerateAgentStepsRequest",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.GenerateAgentStepsResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.GenerateAgentStepsResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.GenerateAgentStepsResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.GenerateStepConfigRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.GenerateStepConfigRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.GenerateStepConfigRequest",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.GenerateStepConfigResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.GenerateStepConfigResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.GenerateStepConfigResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.GenerationTierListResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.GenerationTierListResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.GenerationTierListResponse",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.GenerationTierListResponse.yml\" sourcestartlinenumber=\"1\"><code sourcefile=\"build/api/Seclai.Models.GenerationTierListResponse.yml\" sourcestartlinenumber=\"1\">GET /models/generation-tiers</code> legacy/default shape; 2026-07-27+ clients get the canonical <code sourcefile=\"build/api/Seclai.Models.GenerationTierListResponse.yml\" sourcestartlinenumber=\"1\">{data, pagination}</code> envelope.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.GenerationTierResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.GenerationTierResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.GenerationTierResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.GovernanceAiAcceptResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.GovernanceAiAcceptResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.GovernanceAiAcceptResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.GovernanceAiAssistantRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.GovernanceAiAssistantRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.GovernanceAiAssistantRequest",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.GovernanceAiAssistantResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.GovernanceAiAssistantResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.GovernanceAiAssistantResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.GovernanceConversationResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.GovernanceConversationResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.GovernanceConversationResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.GovernancePolicyRefResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.GovernancePolicyRefResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.GovernancePolicyRefResponse",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.GovernancePolicyRefResponse.yml\" sourcestartlinenumber=\"1\">Reference to a governance policy (id and optional display name).</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.HttpValidationError.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.HttpValidationError.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.HttpValidationError",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.ImportFieldErrorModel.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.ImportFieldErrorModel.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.ImportFieldErrorModel",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.ImportFieldErrorModel.yml\" sourcestartlinenumber=\"1\">Single <code>agent_definition</code> validation error with source position.\nCarried as elements of <xref href=\"Seclai.Models.AgentDefinitionImportErrorResponse.Errors\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.ImportSkipResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.ImportSkipResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.ImportSkipResponse",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.ImportSkipResponse.yml\" sourcestartlinenumber=\"1\">One item dropped or substituted during an agent import.</p>\n<p sourcefile=\"build/api/Seclai.Models.ImportSkipResponse.yml\" sourcestartlinenumber=\"3\">Used as the element type for <code>import_warnings</code> on every response model that\naccepts an <code>agent_definition</code> payload.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.InboundEmailRejectionResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.InboundEmailRejectionResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.InboundEmailRejectionResponse",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.InboundEmailRejectionResponse.yml\" sourcestartlinenumber=\"1\">An inbound email that was discarded without running an agent.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.InboundEmailStatusResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.InboundEmailStatusResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.InboundEmailStatusResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.InlineTextReplaceRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.InlineTextReplaceRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.InlineTextReplaceRequest",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.InlineTextUploadRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.InlineTextUploadRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.InlineTextUploadRequest",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.KnowledgeBaseListResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.KnowledgeBaseListResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.KnowledgeBaseListResponse",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.KnowledgeBaseListResponse.yml\" sourcestartlinenumber=\"1\">A page of knowledge bases.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.KnowledgeBaseResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.KnowledgeBaseResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.KnowledgeBaseResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.LinkResourcesRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.LinkResourcesRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.LinkResourcesRequest",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.MarkAiSuggestionRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.MarkAiSuggestionRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.MarkAiSuggestionRequest",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.MarkConversationTurnRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.MarkConversationTurnRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.MarkConversationTurnRequest",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.MeResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.MeResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.MeResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.MemoryBankAcceptRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.MemoryBankAcceptRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.MemoryBankAcceptRequest",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.MemoryBankAiAssistantRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.MemoryBankAiAssistantRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.MemoryBankAiAssistantRequest",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.MemoryBankAiAssistantResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.MemoryBankAiAssistantResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.MemoryBankAiAssistantResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.MemoryBankConversationTurnResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.MemoryBankConversationTurnResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.MemoryBankConversationTurnResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.MemoryBankLastConversationResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.MemoryBankLastConversationResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.MemoryBankLastConversationResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.MemoryBankListResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.MemoryBankListResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.MemoryBankListResponse",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.MemoryBankListResponse.yml\" sourcestartlinenumber=\"1\">A page of memory banks.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.MemoryBankResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.MemoryBankResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.MemoryBankResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.ModalityRateResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.ModalityRateResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.ModalityRateResponse",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.ModalityRateResponse.yml\" sourcestartlinenumber=\"1\">Per-modality rate for an LLM that prices image/audio/video output (or input) at a rate distinct from the default text rate. Example: Gemini 3.1 Flash Image charges $3/1M output tokens for text but $60/1M output tokens for generated images. The image rate surfaces here with <code sourcefile=\"build/api/Seclai.Models.ModalityRateResponse.yml\" sourcestartlinenumber=\"1\">modality=&quot;image&quot;</code> and <code sourcefile=\"build/api/Seclai.Models.ModalityRateResponse.yml\" sourcestartlinenumber=\"1\">output_credits_per_1000_tokens</code> set; the default text rate stays on the parent model fields.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.ModelAlertListResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.ModelAlertListResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.ModelAlertListResponse",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.ModelAlertListResponse.yml\" sourcestartlinenumber=\"1\">A page of model lifecycle alerts.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.ModelAlertResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.ModelAlertResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.ModelAlertResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.ModelRecommendationResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.ModelRecommendationResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.ModelRecommendationResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.ModelRecommendationsResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.ModelRecommendationsResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.ModelRecommendationsResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.NonManualEvaluationSummaryResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.NonManualEvaluationSummaryResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.NonManualEvaluationSummaryResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.OrganizationAlertPreferenceListResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.OrganizationAlertPreferenceListResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.OrganizationAlertPreferenceListResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.OrganizationInfoResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.OrganizationInfoResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.OrganizationInfoResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.PaginationResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.PaginationResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.PaginationResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.PlaygroundCreateRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.PlaygroundCreateRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.PlaygroundCreateRequest",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.PromptModelResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.PromptModelResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.PromptModelResponse",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.PromptModelResponse.yml\" sourcestartlinenumber=\"1\">Response model for prompt model data</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.PromptToolResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.PromptToolResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.PromptToolResponse",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.PromptToolResponse.yml\" sourcestartlinenumber=\"1\">Response model for a prompt tool.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.ProposedActionResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.ProposedActionResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.ProposedActionResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.ProviderGroupResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.ProviderGroupResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.ProviderGroupResponse",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.ProviderGroupResponse.yml\" sourcestartlinenumber=\"1\">Response model for provider group with models</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.RemoveEmailDomainResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.RemoveEmailDomainResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.RemoveEmailDomainResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.RerankerModelListResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.RerankerModelListResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.RerankerModelListResponse",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.RerankerModelListResponse.yml\" sourcestartlinenumber=\"1\">The reranker model catalog.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.RerankerModelResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.RerankerModelResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.RerankerModelResponse",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.RerankerModelResponse.yml\" sourcestartlinenumber=\"1\">Information about a reranker model.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.ResumeInboundResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.ResumeInboundResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.ResumeInboundResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.SearchResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.SearchResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.SearchResponse",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.SearchResponse.yml\" sourcestartlinenumber=\"1\">Ranked results, NOT a paginated collection — the <code sourcefile=\"build/api/Seclai.Models.SearchResponse.yml\" sourcestartlinenumber=\"1\">{results}</code> shape is a deliberate carve-out matching the MCP <code sourcefile=\"build/api/Seclai.Models.SearchResponse.yml\" sourcestartlinenumber=\"1\">search_resources</code> tool.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.SearchResultResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.SearchResultResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.SearchResultResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.SendTestEmailResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.SendTestEmailResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.SendTestEmailResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.SetAcceptedAttachmentsRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.SetAcceptedAttachmentsRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.SetAcceptedAttachmentsRequest",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.SetAcceptedAttachmentsRequest.yml\" sourcestartlinenumber=\"1\">Replaces the input attachments a trigger accepts.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.SetAutoBlockModeRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.SetAutoBlockModeRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.SetAutoBlockModeRequest",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.SetAutoBlockModeRequest.yml\" sourcestartlinenumber=\"1\">Set the account's governance auto-block mode (shared REST request).</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.SetEmailTriggerConfigRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.SetEmailTriggerConfigRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.SetEmailTriggerConfigRequest",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.SetEmailTriggerConfigRequest.yml\" sourcestartlinenumber=\"1\">Alias, sender allowlist and inbound-handling flags for an EMAIL_RECEIVED trigger.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.SkippedAttachmentResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.SkippedAttachmentResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.SkippedAttachmentResponse",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.SkippedAttachmentResponse.yml\" sourcestartlinenumber=\"1\">A part of an email that was not stored as an attachment.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.SolutionConversationResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.SolutionConversationResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.SolutionConversationResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.SolutionListResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.SolutionListResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.SolutionListResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.SolutionResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.SolutionResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.SolutionResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.SourceContentStatusListResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.SourceContentStatusListResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.SourceContentStatusListResponse",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.SourceContentStatusListResponse.yml\" sourcestartlinenumber=\"1\">Response model for a paginated per-item indexing status list.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.SourceContentStatusResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.SourceContentStatusResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.SourceContentStatusResponse",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.SourceContentStatusResponse.yml\" sourcestartlinenumber=\"1\">Response model for one content item's indexing status.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.SourceEmbeddingMigrationResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.SourceEmbeddingMigrationResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.SourceEmbeddingMigrationResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.SourceListResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.SourceListResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.SourceListResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.SourceResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.SourceResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.SourceResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.StandaloneTestCompactionRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.StandaloneTestCompactionRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.StandaloneTestCompactionRequest",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.StartSourceEmbeddingMigrationRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.StartSourceEmbeddingMigrationRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.StartSourceEmbeddingMigrationRequest",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.TestCompactionRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.TestCompactionRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.TestCompactionRequest",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.TestDraftEvaluationRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.TestDraftEvaluationRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.TestDraftEvaluationRequest",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.TestDraftEvaluationResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.TestDraftEvaluationResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.TestDraftEvaluationResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.UnlinkResourcesRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.UnlinkResourcesRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.UnlinkResourcesRequest",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.UnreadCountResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.UnreadCountResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.UnreadCountResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.UpdateAgentDefinitionRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.UpdateAgentDefinitionRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.UpdateAgentDefinitionRequest",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.UpdateAgentRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.UpdateAgentRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.UpdateAgentRequest",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.UpdateAlertConfigRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.UpdateAlertConfigRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.UpdateAlertConfigRequest",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.UpdateApiVersionRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.UpdateApiVersionRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.UpdateApiVersionRequest",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.UpdateApiVersionRequest.yml\" sourcestartlinenumber=\"1\">Sets or clears the account's sticky API version pin.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.UpdateEvaluationCriteriaRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.UpdateEvaluationCriteriaRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.UpdateEvaluationCriteriaRequest",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.UpdateKnowledgeBaseRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.UpdateKnowledgeBaseRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.UpdateKnowledgeBaseRequest",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.UpdateMemoryBankRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.UpdateMemoryBankRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.UpdateMemoryBankRequest",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.UpdateOrganizationAlertPreferenceRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.UpdateOrganizationAlertPreferenceRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.UpdateOrganizationAlertPreferenceRequest",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.UpdateSolutionRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.UpdateSolutionRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.UpdateSolutionRequest",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.UpdateSourceRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.UpdateSourceRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.UpdateSourceRequest",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.UploadAgentInputResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.UploadAgentInputResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.UploadAgentInputResponse",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.ValidationError.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.ValidationError.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.ValidationError",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.VariantCategoryResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.VariantCategoryResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.VariantCategoryResponse",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.VariantCategoryResponse.yml\" sourcestartlinenumber=\"1\">Response model for a variant category</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.VariantOptionResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.VariantOptionResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.VariantOptionResponse",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.VariantOptionResponse.yml\" sourcestartlinenumber=\"1\">Response model for a variant option</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models",
+      "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.SeclaiApiVersion.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.SeclaiApiVersion.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.SeclaiApiVersion",
+      "Summary": "<p sourcefile=\"build/api/Seclai.SeclaiApiVersion.yml\" sourcestartlinenumber=\"1\">Dated API versions known to this release, for use with\n<xref href=\"Seclai.SeclaiClientOptions.ApiVersion\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.SeclaiAuth.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.SeclaiAuth.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.SeclaiAuth",
+      "Summary": "<p sourcefile=\"build/api/Seclai.SeclaiAuth.yml\" sourcestartlinenumber=\"1\">Credential chain resolver and SSO cache utilities.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.SeclaiClient.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.SeclaiClient.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.SeclaiClient",
+      "Summary": "<p sourcefile=\"build/api/Seclai.SeclaiClient.yml\" sourcestartlinenumber=\"1\">HTTP client for the Seclai REST API. Provides strongly-typed async methods for\nagents, knowledge bases, memory banks, sources, content, evaluations, solutions,\ngovernance, alerts, search, and AI assistants.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.SeclaiClientOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.SeclaiClientOptions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.SeclaiClientOptions",
+      "Summary": "<p sourcefile=\"build/api/Seclai.SeclaiClientOptions.yml\" sourcestartlinenumber=\"1\">Configuration options for <xref href=\"Seclai.SeclaiClient\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.SeclaiTypedClient.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.SeclaiTypedClient.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.SeclaiTypedClient",
+      "Summary": "<p sourcefile=\"build/api/Seclai.SeclaiTypedClient.yml\" sourcestartlinenumber=\"1\">Typed variants of the <xref href=\"Seclai.SeclaiClient\" data-throw-if-not-resolved=\"false\"></xref> methods that return raw JSON.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.SsoCacheEntry.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.SsoCacheEntry.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.SsoCacheEntry",
+      "Summary": "<p sourcefile=\"build/api/Seclai.SsoCacheEntry.yml\" sourcestartlinenumber=\"1\">Cached SSO token entry on disk.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.SsoProfile.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.SsoProfile.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.SsoProfile",
+      "Summary": "<p sourcefile=\"build/api/Seclai.SsoProfile.yml\" sourcestartlinenumber=\"1\">Resolved SSO profile settings from the config file.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai",
+      "Summary": null
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "build/api/toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/toc.html"
+        },
+        ".json": {
+          "relative_path": "api/toc.json"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "docs/index.md",
+      "output": {
+        ".html": {
+          "relative_path": "index.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "docs/toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "toc.html"
+        },
+        ".json": {
+          "relative_path": "toc.json"
+        }
+      },
+      "version": ""
+    }
+  ],
+  "groups": [
+    {
+      "xrefmap": "xrefmap.yml"
+    }
+  ]
+}

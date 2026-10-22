@@ -171,6 +171,65 @@ public string? Name { get; set; }</code></pre>
   </table>
 
 
+  <a id="Seclai_Models_CreateMemoryBankRequest_RetainIndefinitely_" data-uid="Seclai.Models.CreateMemoryBankRequest.RetainIndefinitely*"></a>
+  <h4 id="Seclai_Models_CreateMemoryBankRequest_RetainIndefinitely" data-uid="Seclai.Models.CreateMemoryBankRequest.RetainIndefinitely">RetainIndefinitely</h4>
+  <div class="markdown level1 summary"><p>When true, the client sends <code>&quot;retention_days&quot;: null</code>, which keeps entries indefinitely on every
+API version. Cannot be combined with <a class="xref" href="Seclai.Models.CreateMemoryBankRequest.html#Seclai_Models_CreateMemoryBankRequest_RetentionDays">RetentionDays</a>:
+<a class="xref" href="Seclai.SeclaiClient.html#Seclai_SeclaiClient_CreateMemoryBankAsync_Seclai_Models_CreateMemoryBankRequest_System_Threading_CancellationToken_">CreateMemoryBankAsync(CreateMemoryBankRequest, CancellationToken)</a> throws an <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a> when both are set.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonIgnore]
+public bool RetainIndefinitely { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_Models_CreateMemoryBankRequest_RetentionDays_" data-uid="Seclai.Models.CreateMemoryBankRequest.RetentionDays*"></a>
+  <h4 id="Seclai_Models_CreateMemoryBankRequest_RetentionDays" data-uid="Seclai.Models.CreateMemoryBankRequest.RetentionDays">RetentionDays</h4>
+  <div class="markdown level1 summary"><p>Days a memory entry is kept before it is deleted outright, text and embeddings. Must be greater than 0.
+Omitted when null, which gives the API's default: from <code>Seclai-Version: 2026-08-03</code>, 90 days for a
+conversation bank and indefinite for a general bank; on older versions, 30 days for a conversation bank.
+To keep entries indefinitely, set <a class="xref" href="Seclai.Models.CreateMemoryBankRequest.html#Seclai_Models_CreateMemoryBankRequest_RetainIndefinitely">RetainIndefinitely</a> instead.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;retention_days&quot;)]
+public int? RetentionDays { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>?</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
   <a id="Seclai_Models_CreateMemoryBankRequest_SolutionId_" data-uid="Seclai.Models.CreateMemoryBankRequest.SolutionId*"></a>
   <h4 id="Seclai_Models_CreateMemoryBankRequest_SolutionId" data-uid="Seclai.Models.CreateMemoryBankRequest.SolutionId">SolutionId</h4>
   <div class="markdown level1 summary"></div>
@@ -205,7 +264,6 @@ public string? SolutionId { get; set; }</code></pre>
   <h5 class="declaration">Declaration</h5>
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;strip_quoted_reply_chains&quot;)]
-[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
 public bool? StripQuotedReplyChains { get; set; }</code></pre>
   </div>
   <h5 class="propertyValue">Property Value</h5>

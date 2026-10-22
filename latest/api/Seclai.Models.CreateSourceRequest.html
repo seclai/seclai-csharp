@@ -171,6 +171,141 @@ public int? ChunkSize { get; set; }</code></pre>
   </table>
 
 
+  <a id="Seclai_Models_CreateSourceRequest_CloudDriveConnectionId_" data-uid="Seclai.Models.CreateSourceRequest.CloudDriveConnectionId*"></a>
+  <h4 id="Seclai_Models_CreateSourceRequest_CloudDriveConnectionId" data-uid="Seclai.Models.CreateSourceRequest.CloudDriveConnectionId">CloudDriveConnectionId</h4>
+  <div class="markdown level1 summary"><p>Required for a cloud_drive source, and ignored on any other: the id of a connected drive, from <a class="xref" href="Seclai.SeclaiClient.html#Seclai_SeclaiClient_ListCloudDrivesAsync_System_Threading_CancellationToken_">ListCloudDrivesAsync(CancellationToken)</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;cloud_drive_connection_id&quot;)]
+public string? CloudDriveConnectionId { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_Models_CreateSourceRequest_CloudDriveContentTypes_" data-uid="Seclai.Models.CreateSourceRequest.CloudDriveContentTypes*"></a>
+  <h4 id="Seclai_Models_CreateSourceRequest_CloudDriveContentTypes" data-uid="Seclai.Models.CreateSourceRequest.CloudDriveContentTypes">CloudDriveContentTypes</h4>
+  <div class="markdown level1 summary"><p>For a cloud_drive source: comma-separated MIME types a file must have to be indexed. Omit for no filter.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;cloud_drive_content_types&quot;)]
+public string? CloudDriveContentTypes { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_Models_CreateSourceRequest_CloudDriveFolderPath_" data-uid="Seclai.Models.CreateSourceRequest.CloudDriveFolderPath*"></a>
+  <h4 id="Seclai_Models_CreateSourceRequest_CloudDriveFolderPath" data-uid="Seclai.Models.CreateSourceRequest.CloudDriveFolderPath">CloudDriveFolderPath</h4>
+  <div class="markdown level1 summary"><p>For a cloud_drive source: the folder to index, as a path inside the drive. Omit to index the connected drive's own folder.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;cloud_drive_folder_path&quot;)]
+public string? CloudDriveFolderPath { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_Models_CreateSourceRequest_CloudDriveMaxFileMb_" data-uid="Seclai.Models.CreateSourceRequest.CloudDriveMaxFileMb*"></a>
+  <h4 id="Seclai_Models_CreateSourceRequest_CloudDriveMaxFileMb" data-uid="Seclai.Models.CreateSourceRequest.CloudDriveMaxFileMb">CloudDriveMaxFileMb</h4>
+  <div class="markdown level1 summary"><p>For a cloud_drive source: files larger than this many megabytes are skipped. Omit for no limit of the source's own.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;cloud_drive_max_file_mb&quot;)]
+public int? CloudDriveMaxFileMb { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>?</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_Models_CreateSourceRequest_CloudDrivePathPattern_" data-uid="Seclai.Models.CreateSourceRequest.CloudDrivePathPattern*"></a>
+  <h4 id="Seclai_Models_CreateSourceRequest_CloudDrivePathPattern" data-uid="Seclai.Models.CreateSourceRequest.CloudDrivePathPattern">CloudDrivePathPattern</h4>
+  <div class="markdown level1 summary"><p>For a cloud_drive source: a glob a file's path must match to be indexed, such as <code>**/<em>.pdf</em></code> or <code>/reports/</code>. Omit for no filter.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;cloud_drive_path_pattern&quot;)]
+public string? CloudDrivePathPattern { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
   <a id="Seclai_Models_CreateSourceRequest_ContentFilter_" data-uid="Seclai.Models.CreateSourceRequest.ContentFilter*"></a>
   <h4 id="Seclai_Models_CreateSourceRequest_ContentFilter" data-uid="Seclai.Models.CreateSourceRequest.ContentFilter">ContentFilter</h4>
   <div class="markdown level1 summary"></div>
@@ -223,6 +358,60 @@ public int? Dimensions { get; set; }</code></pre>
   </table>
 
 
+  <a id="Seclai_Models_CreateSourceRequest_DocumentImages_" data-uid="Seclai.Models.CreateSourceRequest.DocumentImages*"></a>
+  <h4 id="Seclai_Models_CreateSourceRequest_DocumentImages" data-uid="Seclai.Models.CreateSourceRequest.DocumentImages">DocumentImages</h4>
+  <div class="markdown level1 summary"><p>Whether the images inside PDF, DOCX, PPTX and XLSX files are attached to the item and indexed; on a text-only embedder, by the text in each image. Applies to documents added after it changes. Ignored on a website or RSS source, where <a class="xref" href="Seclai.Models.CreateSourceRequest.html#Seclai_Models_CreateSourceRequest_MediaTypes">MediaTypes</a> decides. Defaults to true; below API version <code>2026-10-18</code> it defaults to false on a text-only embedder.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;document_images&quot;)]
+public bool? DocumentImages { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a>?</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_Models_CreateSourceRequest_EmailAllowedSenders_" data-uid="Seclai.Models.CreateSourceRequest.EmailAllowedSenders*"></a>
+  <h4 id="Seclai_Models_CreateSourceRequest_EmailAllowedSenders" data-uid="Seclai.Models.CreateSourceRequest.EmailAllowedSenders">EmailAllowedSenders</h4>
+  <div class="markdown level1 summary"><p>Required for an email source, and only valid there: the senders whose mail is stored. Each entry is a full address (<code>news@example.com</code>) or a bare domain (<code>example.com</code>), which also matches its sub-domains. Matched against the From address, which must pass DMARC.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;email_allowed_senders&quot;)]
+public List&lt;string&gt;? EmailAllowedSenders { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.list-1">List</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
   <a id="Seclai_Models_CreateSourceRequest_EmbeddingModel_" data-uid="Seclai.Models.CreateSourceRequest.EmbeddingModel*"></a>
   <h4 id="Seclai_Models_CreateSourceRequest_EmbeddingModel" data-uid="Seclai.Models.CreateSourceRequest.EmbeddingModel">EmbeddingModel</h4>
   <div class="markdown level1 summary"></div>
@@ -243,6 +432,33 @@ public string? EmbeddingModel { get; set; }</code></pre>
     <tbody>
       <tr>
         <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_Models_CreateSourceRequest_FeedAttachments_" data-uid="Seclai.Models.CreateSourceRequest.FeedAttachments*"></a>
+  <h4 id="Seclai_Models_CreateSourceRequest_FeedAttachments" data-uid="Seclai.Models.CreateSourceRequest.FeedAttachments">FeedAttachments</h4>
+  <div class="markdown level1 summary"><p>Kinds of file listed beside a feed item's content to attach to the item and index, on an RSS source. Subset of <code>enclosures</code>, <code>item_image</code>, <code>media_rss</code>; any other value is refused. None are attached unless chosen.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;feed_attachments&quot;)]
+public List&lt;string&gt;? FeedAttachments { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.list-1">List</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</td>
         <td></td>
       </tr>
     </tbody>

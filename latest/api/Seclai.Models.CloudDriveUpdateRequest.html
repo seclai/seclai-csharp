@@ -135,7 +135,6 @@ would make an agent that writes there re-trigger itself.</p>
   <h5 class="declaration">Declaration</h5>
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;folder_path&quot;)]
-[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
 public string? FolderPath { get; set; }</code></pre>
   </div>
   <h5 class="propertyValue">Property Value</h5>
@@ -163,7 +162,6 @@ public string? FolderPath { get; set; }</code></pre>
   <h5 class="declaration">Declaration</h5>
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;name&quot;)]
-[JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
 public string? Name { get; set; }</code></pre>
   </div>
   <h5 class="propertyValue">Property Value</h5>
