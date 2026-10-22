@@ -143,7 +143,7 @@ Leave `ApiVersion` unset and the header is omitted, so the account's pinned
 baseline applies and responses keep their current shapes. Upgrading this package
 alone never changes the wire contract.
 
-Known versions are on `SeclaiApiVersion` (`V2026_07_01` through `V2026_10_03`,
+Known versions are on `SeclaiApiVersion` (`V2026_07_01` through `V2026_10_21`,
 plus `Default`, `Latest` and `Known`). A version this release was **not** built
 against is rejected with `ConfigurationException`: a newer version can reshape
 responses, and this client would decode them incorrectly rather than reject
@@ -211,8 +211,8 @@ pass `limit`, before relying on the result being complete. `SetAutoBlockModeAsyn
 cannot tell you: opted in, its `Total` is the row count and `HasNext` is always
 false. To see every blocked sender, page through `ListBlockedEmailSendersAsync`.
 
-**Later versions.** Each is cumulative, and none changes a response shape this
-client decodes:
+**Later versions.** Each is cumulative, and this client decodes the responses of
+every one:
 
 | Version | What it changes |
 | --- | --- |
@@ -221,6 +221,12 @@ client decodes:
 | `2026-09-28` | Agent-definition writes use the current file-list grammar: an omitted `attachments` keeps the stored list and `[]` means no files |
 | `2026-09-30` | `AgentRunResponse.Output` and `AgentRunStepResponse.Output` are the text rather than a JSON manifest; the files are in `Attachments` on every version |
 | `2026-10-03` | A new LLM step written without `attachments` takes its parent's files, and a new retrieval step's matched media are its files |
+| `2026-10-05` | A content item an Enforce governance policy holds for review reports `completed` rather than `failed`; `HeldForReview` is true either way |
+| `2026-10-13` | `MediaTypes` on a source rejects an unknown kind, or any kind on a source type other than website or RSS, with a 400 instead of dropping it |
+| `2026-10-16` | `UploadAgentInputAsync` accepts a file of any type and it is ready at once; each step receives the file itself when its model reads that type, and the run's input carries a heading per file instead of the file's extracted text |
+| `2026-10-18` | `DocumentImages` defaults to true on a new source with a text-only embedder too |
+| `2026-10-19` | `CreateSourceAsync` accepts `PollingMaxItems` on RSS sources only; any other source type rejects it with a 400 |
+| `2026-10-21` | A result whose evaluator returned no verdict (`error`) is counted only in `Error` by `GetNonManualEvaluationSummaryAsync`, not in `Failed` or either rate, and `GetEvaluationCriteriaSummaryAsync` averages `AverageScore` over passed and failed results only. `TestDraftEvaluationAsync` receives a null score and verdict for an `error` result, which this client reads as `Score` 0 and `Passed` false (earlier versions send 0.5 and false), so check `Status` |
 
 ## Typed responses
 
@@ -300,6 +306,33 @@ var imported = await client.CreateAgentAsync(new CreateAgentRequest
 // imported.ImportWarnings lists any items that couldn't be applied.
 ```
 
+#### Accepted attachments
+
+A trigger declares the input files it accepts as named slots; steps read one as
+`{{agent.attachments.<name>}}`. The trigger's id is on `AgentSummaryResponse.TriggerId`.
+
+```csharp
+var slots = await client.SetAcceptedAttachmentsAsync(agent.Id!, agent.TriggerId!,
+    new SetAcceptedAttachmentsRequest
+    {
+        AcceptedAttachments = new List<AcceptedAttachmentSlot>
+        {
+            new() { Name = "invoice", ContentTypes = new List<string> { "application/pdf" }, Min = 1, Max = 1 },
+            new() { Name = "receipts", ContentTypes = new List<string> { "image/*" } },
+        },
+    });
+
+// A null list is sent as-is and accepts any files (one slot named "files").
+await client.SetAcceptedAttachmentsAsync(agent.Id!, agent.TriggerId!, new SetAcceptedAttachmentsRequest());
+
+// What a run must supply
+var refs = await client.GetAgentAttachmentReferencesAsync(agent.Id!);
+foreach (var slot in refs.AcceptedAttachments ?? new()) Console.WriteLine($"{slot.Name}: min {slot.Min}");
+```
+
+`CreateAgentRequest.AcceptedAttachments` and `UpdateAgentDefinitionRequest.AcceptedAttachments`
+declare the same slots in the same save; left `null`, they are omitted.
+
 ### Agent Runs
 
 ```csharp
@@ -333,12 +366,15 @@ foreach (var file in detail.Attachments)
 ```csharp
 // SSE streaming — yields AgentRunEvent items as they arrive
 await foreach (var evt in client.RunStreamingAgentAsync("ag1",
-    new AgentRunStreamRequest { Input = "hello" }))
+    new AgentRunStreamRequest { Input = "hello", IncludeReasoning = true }))
 {
+    // "stream_reasoning" events carry the model's reasoning for a streaming_result
+    // step whose author enabled show_reasoning; read evt.Data for those.
     Console.WriteLine($"[{evt.Event}] {evt.Run?.Status}");
 }
 
-// Wait for the final result from the SSE stream
+// Wait for the final result from the SSE stream. It reads only the init and done
+// events, so it does not send IncludeReasoning.
 var final = await client.RunStreamingAgentAndWaitAsync("ag1",
     new AgentRunStreamRequest { Input = "hello" },
     timeout: TimeSpan.FromSeconds(120));
@@ -384,7 +420,78 @@ var failed = await client.ListSourceContentsAsync("sc1", status: "failed");
 var batch = await client.ListSourceContentsAsync("sc1",
     contentVersionIds: new[] { upload.ContentVersionId!, upload2.ContentVersionId! });
 var one = await client.GetSourceContentStatusAsync("sc1", upload.ContentVersionId!);
-Console.WriteLine($"{one.ContentStatus} {one.Error}");
+Console.WriteLine($"{one.ContentStatus} {one.Error} held={one.HeldForReview}");
+
+// Files attached to a content item: email attachments, feed files, web-page media,
+// images inside documents, and files an agent step wrote
+var attachments = await client.ListContentAttachmentsAsync("cv1", page: 1, limit: 20);
+foreach (var att in attachments.Data)
+{
+    var detail = await client.GetContentAttachmentAsync("cv1", att.Id, start: 0, end: 5000);
+    var chunks = await client.ListContentAttachmentEmbeddingsAsync("cv1", att.Id);
+    if (detail.FileWithheld is null)   // otherwise the download answers 403
+    {
+        using var file = await client.DownloadContentAttachmentAsync("cv1", att.Id);
+        // The key comes from a third party (an email filename, feed media): keep only its
+        // file name so it cannot write outside the current directory.
+        // An empty name (an empty key, or one ending in a slash) falls back to the id.
+        var name = Path.GetFileName(att.Key);
+        await using var output = File.Create(string.IsNullOrEmpty(name) ? att.Id : name);
+        await file.Content.CopyToAsync(output);
+    }
+}
+```
+
+#### Email and cloud-drive sources
+
+```csharp
+// An email source stores mail from its allowed senders; mail goes to EmailAddress
+var inbox = await client.CreateSourceAsync(new CreateSourceRequest
+{
+    Name = "Newsletters",
+    SourceType = "email",
+    EmailAllowedSenders = new List<string> { "news@example.com", "example.org" },
+});
+Console.WriteLine(inbox.EmailAddress);
+
+// What it refused, and why — never the subject or body
+var refused = await client.ListEmailSourceRejectionsAsync(inbox.Id!, page: 1, limit: 20);
+foreach (var r in refused.Data) Console.WriteLine($"{r.FromAddress} {r.Reason} auth={r.Authenticated}");
+
+// Parts of a message that were not stored as attachments
+var item = await client.GetContentDetailAsync("cv1");
+foreach (var part in item.SkippedAttachments ?? new()) Console.WriteLine($"{part.Filename}: {part.Reason}");
+
+// A cloud_drive source indexes a connected drive's folder
+await client.CreateSourceAsync(new CreateSourceRequest
+{
+    Name = "Contracts",
+    SourceType = "cloud_drive",
+    CloudDriveConnectionId = "cd1",
+    CloudDriveFolderPath = "/contracts",
+    CloudDrivePathPattern = "**/*.pdf",
+    CloudDriveMaxFileMb = 50,
+});
+```
+
+Every request body omits a property left `null`, so the API applies its default on a
+create and leaves the stored value unchanged on an update. On `UpdateSourceRequest`, send
+`""` (or `0` for `CloudDriveMaxFileMb`, an empty list for `MediaTypes` and `FeedAttachments`) to
+clear a setting. The two properties where `null` itself is the value are still sent:
+`SetAcceptedAttachmentsRequest.AcceptedAttachments` (accept any files) and
+`UpdateApiVersionRequest.Version` (clear the pin); they are the only model properties
+marked `[JsonIgnore(Condition = JsonIgnoreCondition.Never)]`, and no model marks a
+property to be omitted, since the client's serializer omits every null. Upload `metadata`
+is your own data and is sent as written, nulls included. Where a stored value is removed by
+sending `null`, the client has a named way to do it: `ClearSourceRetentionAsync` removes a
+source's retention window, so content is kept indefinitely,
+`ClearEvaluationCriteriaFieldsAsync` clears evaluation-criteria fields (see
+[Evaluations](#evaluations)), and `CreateMemoryBankRequest.RetainIndefinitely` creates a
+memory bank that keeps entries indefinitely (see [Memory Banks](#memory-banks)):
+
+```csharp
+await client.UpdateSourceAsync("s1", new UpdateSourceRequest { RetentionDays = 90 });
+await client.ClearSourceRetentionAsync("s1");
 ```
 
 ### Cloud Drives
@@ -436,6 +543,12 @@ var bank = await client.CreateMemoryBankAsync(new CreateMemoryBankRequest
 {
     Name = "Chat Memory", Type = "conversation"
 });
+// Omit RetentionDays for the API default (from 2026-08-03: 90 days for a conversation bank,
+// indefinite for a general bank), set it to a number of days, or keep entries indefinitely:
+var archive = await client.CreateMemoryBankAsync(new CreateMemoryBankRequest
+{
+    Name = "Archive", Type = "conversation", RetainIndefinitely = true
+});
 var stats = await client.GetMemoryBankStatsAsync(bank.Id);          // JsonElement
 var templates = await client.Typed.ListMemoryBankTemplatesAsync();   // List<Dictionary<string, JsonElement>>
 var usedBy = await client.Typed.GetAgentsUsingMemoryBankAsync(bank.Id);
@@ -456,6 +569,10 @@ var criteria = await client.ListEvaluationCriteriaAsync("ag1", page: 1, limit: 5
 var created = await client.CreateEvaluationCriteriaAsync("ag1",
     new CreateEvaluationCriteriaRequest { StepId = "s1" });
 var summary = await client.GetEvaluationCriteriaSummaryAsync(created.Id);
+// UpdateEvaluationCriteriaAsync leaves a property it is not given unchanged; to remove a
+// stored value, clear it. A cleared tier falls back to the agent's default tier.
+await client.ClearEvaluationCriteriaFieldsAsync(created.Id,
+    new[] { EvaluationCriteriaField.EvaluationTier, EvaluationCriteriaField.Description });
 await client.DeleteEvaluationCriteriaAsync(created.Id);
 
 // Results
@@ -526,6 +643,11 @@ var cfg = await client.SetEmailTriggerConfigAsync("a1", "t1",
         RequireSenderAuth = true,
     });
 Console.WriteLine(string.Join(", ", cfg.EmailAddresses ?? new List<string>()));
+
+// Run even when an email's attachments don't fit the accepted slots; the problems
+// are listed in the run's email_attachment_issues metadata.
+await client.SetEmailTriggerConfigAsync("a1", "t1",
+    new SetEmailTriggerConfigRequest { RunOnAttachmentMismatch = true });
 
 // Clear the alias and open the inbox to any sender.
 await client.SetEmailTriggerConfigAsync("a1", "t1",

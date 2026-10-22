@@ -29,6 +29,5 @@ public sealed class AiAssistantFeedbackRequest
 
     /// <summary>Governance conversation ID, if applicable.</summary>
     [JsonPropertyName("governance_conversation_id")]
-    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? GovernanceConversationId { get; set; }
 }

@@ -1,5 +1,40 @@
 # Changelog
 
+## [1.6.0] - 2026-10-21
+
+### Changed
+
+- Move `SeclaiApiVersion.Latest` from `2026-10-03` to `2026-10-21`, which opts a client that sends `Latest` into six more versions: from `2026-10-05` a content item held for review reports `ContentStatus` `completed` rather than `failed`, so code that looks for `failed` to find held items should read `HeldForReview`; from `2026-10-13` `CreateSourceAsync` and `UpdateSourceAsync` reject an unknown `MediaTypes` kind, or any kind on a source other than website or RSS, with a 400; from `2026-10-16` `UploadAgentInputAsync` accepts any file type and the upload is ready at once; from `2026-10-18` `DocumentImages` defaults to true with a text-only embedder too; from `2026-10-19` `CreateSourceAsync` rejects `PollingMaxItems` on a source other than RSS with a 400; and from `2026-10-21` a result whose evaluator returned no verdict counts only in `Error` of `GetNonManualEvaluationSummaryAsync`, not in `Failed` or its pass and failure rates, and is left out of `AverageScore` of `GetEvaluationCriteriaSummaryAsync`. It is a `const`, so code compiled against an earlier release keeps the old value until it is rebuilt
+- Deprecate `EvaluationResultResponse.Passed` and `EvaluationResultResponse.Comment`. The API sends neither, so they were always false and null. Read `Status` and `Details`
+
+### Added
+
+- Add `SetAcceptedAttachmentsAsync` to declare the named input attachments an agent's trigger accepts, with `SetAcceptedAttachmentsRequest`, `AcceptedAttachmentSlot` and `AcceptedAttachmentsResponse`. A null list is sent as-is and accepts any files
+- Add `AcceptedAttachments` to `CreateAgentRequest` and `UpdateAgentDefinitionRequest` to declare the slots in the same save, and to `AgentAttachmentRefsApiResponse` to read them; add `TriggerId` to `AgentSummaryResponse` for the trigger endpoints
+- Add content-attachment methods: `ListContentAttachmentsAsync`, `GetContentAttachmentAsync` with its indexed text and `FileWithheld` reason, `ListContentAttachmentEmbeddingsAsync`, and `DownloadContentAttachmentAsync`, which returns the raw `HttpResponseMessage` for streaming
+- Add `ListEmailSourceRejectionsAsync` for the mail an email content source refused, returning `EmailSourceRejectionListResponse`
+- Add email and cloud-drive source settings: `EmailAllowedSenders`, `DocumentImages`, `FeedAttachments` and the `CloudDrive*` fields on `CreateSourceRequest` (including `CloudDriveConnectionId`) and `UpdateSourceRequest`, and the same on `SourceResponse` plus `EmailAddress`. The request fields are omitted when `null`, so an update leaves them unchanged
+- Add `SkippedAttachments` to `ContentDetailResponse`, listing the parts of an email that were not stored as attachments, and `HeldForReview` to `SourceContentStatusResponse`
+- Add `RunOnAttachmentMismatch` to `SetEmailTriggerConfigRequest` and `EmailRunOnAttachmentMismatch` to `EmailTriggerConfigResponse`
+- Add `IncludeReasoning` to `AgentRunStreamRequest` to receive `stream_reasoning` events from `RunStreamingAgentAsync`; it is omitted when `null`. `RunStreamingAgentAndWaitAsync` reads only the `init` and `done` events, so it does not send the field and reasoning never counts against its timeout
+- Add `SeclaiApiVersion` constants `V2026_10_05`, `V2026_10_13`, `V2026_10_16`, `V2026_10_18`, `V2026_10_19` and `V2026_10_21`, so those versions are accepted as `ApiVersion`
+- Add `Status` to `TestDraftEvaluationResponse`: `passed`, `failed`, or `error` when the evaluator returned no verdict. `Score` and `Passed` are then not a verdict: `2026-10-21` sends them as `null`, which this client reads as 0 and false, and earlier versions send 0.5 and false, so check `Status` rather than `Passed` to tell a failure from no verdict
+- Add `Error` to `NonManualEvaluationSummaryResponse`, the count of results whose evaluator returned no verdict
+- Add `Status`, `AgentRunId`, `AgentStepRunId`, `Details`, `RetryTriggered`, `RetryCount`, `Flagged` and `EvaluatedAt` to `EvaluationResultResponse`, which `ListEvaluationResultsAsync` and `CreateEvaluationResultAsync` return
+- Add `ClearSourceRetentionAsync` to remove a source's retention window, so its content is kept indefinitely. `UpdateSourceAsync` no longer clears it, see below
+- Add `ClearEvaluationCriteriaFieldsAsync(criteriaId, fields, cancellationToken)` with `EvaluationCriteriaField` to clear an evaluation criterion's description, evaluation prompt, expectation config or evaluation tier by sending it as `null`. A cleared tier falls back to the agent's default tier, which is the only way to undo a pinned one
+- Add `RetentionDays` to `CreateMemoryBankRequest`, omitted when `null` so the API's default applies, and `RetainIndefinitely`, which sends `retention_days` as `null` so the bank keeps entries indefinitely. Setting both throws an `ArgumentException`. `UpdateMemoryBankRequest` gains the same `RetainIndefinitely`, which sends `retention_days` as 0, the value an update reads as "keep indefinitely"
+- Document the 402 that `GetContentAttachmentAsync`, `ListContentAttachmentEmbeddingsAsync` and `DownloadContentAttachmentAsync` throw when the account has no credits left
+
+### Fixed
+
+- Omit unset properties from every request body instead of sending them as `null`. For most properties the API reads an omitted field and a `null` the same way, so nothing changes; for these it does not:
+  - `UpdateSourceRequest.RetentionDays`: an update that left it unset, such as a rename, cleared the source's retention window, so the source kept its content indefinitely. It now leaves the window unchanged. To remove the window, call `ClearSourceRetentionAsync`
+  - `UpdateEvaluationCriteriaRequest`: every update sent all seven properties. With `StepId` unset it failed with a 400 ("step_id is required"); with `PassThreshold` unset it wrote a null into a NOT NULL column; with both set it cleared `Description`, `EvaluationPrompt`, `EvaluationTier` and `ExpectationConfig` when they were unset. Unset properties are now left unchanged. To clear one of those four, call `ClearEvaluationCriteriaFieldsAsync`
+  - Properties the API rejects as `null` with a 422 and defaults when omitted. A request that left one unset failed and now gets the default: `AddEmailDomainRequest.Delegated` (false), `AgentRunRequest.Priority` (false), `AgentTraceSearchRequest.TopN` (10), `AiAssistantAcceptRequest.ConfirmDeletions` (false), `BlockEmailSenderRequest.MatchType` (`address`), `CreateAlertConfigRequest.DistributionType` (`owner`) and `Enabled` (true), `CreateEvaluationCriteriaRequest.PassThreshold` (0.5) and `Enabled` (true), `CreateEvaluationResultRequest.Flagged` (false), `RetryCount` (0) and `RetryTriggered` (false), `CreateMemoryBankRequest.Type` (`conversation`), `CreateSolutionRequest.Description` (empty), `PlaygroundCreateRequest.SystemPrompt` (empty), `EvaluationMode` (`manual`), `EvaluationComplexity` (`medium`) and `IncludeStepOutputInEvaluation` (false), `StandaloneTestCompactionRequest.BankType` (`conversation`) and `EntryCount` (5), `TestCompactionRequest.EntryCount` (5) and `TestDraftEvaluationRequest.PassThreshold` (0.5)
+
+  `CreateAlertConfigRequest.CooldownMinutes` and `UpdateMemoryBankRequest.RetentionDays` are unchanged: the API resolves a `null` cooldown to the per-alert-type default and reads a `null` retention as "keep", as it does an omitted one; an update still clears the memory-bank retention with 0. `SetAcceptedAttachmentsRequest.AcceptedAttachments` and `UpdateApiVersionRequest.Version` are still sent when `null`, since null is their value, and upload `metadata` is sent as written, nulls included
+
 ## [1.5.1] - 2026-10-05
 
 ### Changed
@@ -190,6 +225,7 @@ _Stable release. Packaging only; no API changes since 0.0.1._
 
 _Initial release._
 
+[1.6.0]: https://github.com/seclai/seclai-csharp/releases/tag/1.6.0
 [1.5.1]: https://github.com/seclai/seclai-csharp/releases/tag/1.5.1
 [1.5.0]: https://github.com/seclai/seclai-csharp/releases/tag/1.5.0
 [1.4.0]: https://github.com/seclai/seclai-csharp/releases/tag/1.4.0

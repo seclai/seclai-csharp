@@ -100,6 +100,15 @@ for those two SDKs will not drop as typing improves. Check the façade before
 concluding an endpoint is untyped. seclai-javascript needs no façade (`unknown`
 to a concrete type is source compatible) and does report zero.
 
+**`params` and `returns` follow one hop into a non-public helper, and no further.**
+A public method with no request of its own that calls a non-public method of the
+same client holding the verb and path literal (Go `c.thingsBody(`, C# `internal
+…ResponseAsync`, Python `self._x(`, JS `private`/`#x`) is audited as that request,
+with its own declared return type; both summaries then print how many methods
+were resolved that way, so a drop in that number is a narrower audit, not a
+cleaner SDK. A second hop, a helper that takes its verb or path as an argument,
+and a call from another class (the façade's `_client.X(`) are still not followed.
+
 **Dated versioning breaks the one-shape assumption.** Since `Seclai-Version`
 (2026-07-28) an operation can have two legal response bodies — a bare array by
 default, the canonical `{data, pagination}` envelope once the caller opts in —
@@ -133,8 +142,21 @@ diff called 21 JavaScript changes breaking when none were:
   gone, parameter list changed, or a return type changed in a static language.
 - **WARN** — compatible but worth checking: a *trailing* optional parameter
   (source compatible; flagged as binary breaking for C#), `unknown` narrowed to a
-  concrete type in TypeScript (safe), or a Python return annotation (not enforced
-  — but confirm the runtime value did not change too).
+  concrete type in TypeScript (safe), an optional member added to an inline
+  TypeScript options object such as `opts: { signal?: AbortSignal } = {}` (never
+  to an empty `{}`, which accepts any value the new type may reject; every
+  other member unchanged or only widened to accept `undefined`, the parameter's
+  name and its default unchanged; usually source
+  compatible, but a caller passing a non-literal object that already carries a
+  same-named property of another type — `const o = { signal: "abc" }` — no
+  longer compiles, since excess-property checks only cover literals), an
+  optional options-object member widened to accept `undefined`
+  (`x?: T` -> `x?: T | undefined`; source compatible), a TypeScript parameter
+  type wrapped in `Omit<T, "k">` (usually source compatible: an object literal
+  that sets an omitted key no longer compiles) or `Partial<T>` (source
+  compatible) — in each case with every other parameter unchanged, or a
+  Python return annotation (not enforced — but confirm the runtime value did not
+  change too).
 
 An optional parameter inserted *mid-list* is graded breaking, not a warning: in
 C# a positional `M(id, token)` then tries to bind `token` to the new parameter.

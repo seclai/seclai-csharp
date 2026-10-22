@@ -7,6 +7,7 @@ using System.Net.Http.Headers;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using System.Threading;
 using System.Threading.Tasks;
 using Seclai.Exceptions;
@@ -24,10 +25,35 @@ public sealed class SeclaiClient : IDisposable
     /// <summary>Serializer settings shared with <see cref="SeclaiTypedClient"/>.</summary>
     internal static JsonSerializerOptions TypedJsonOptions => JsonOptions;
 
+    // Null convention for request bodies: WhenWritingNull omits every null model property, so an
+    // unset property is never sent (the API reads an explicit null as "clear this setting" on
+    // several fields). Models carry no per-property WhenWritingNull attribute; the only attributes
+    // are [JsonIgnore(Condition = JsonIgnoreCondition.Never)] on the few properties where null is
+    // itself the value. A method that must send a null or override one field goes through
+    // WithField. Dictionary entries, JsonElement and JsonNode values are written as given, and
+    // caller-supplied upload metadata uses MetadataJsonOptions, which keeps nulls. Reading is
+    // unaffected.
     private static readonly JsonSerializerOptions JsonOptions = new()
     {
-        PropertyNameCaseInsensitive = true
+        PropertyNameCaseInsensitive = true,
+        DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull,
     };
+
+    // Upload metadata is the caller's own data, so a null inside it (also a null property of an
+    // object value) is sent as written.
+    private static readonly JsonSerializerOptions MetadataJsonOptions = new();
+
+    // Returns body as a JSON object with key set to value, a null value included. It is the one way
+    // a request sends an explicit null past the WhenWritingNull default, or overrides a single field
+    // of a serialized model. A JsonObject body is updated in place; anything else is serialized
+    // with JsonOptions first.
+    private static JsonObject WithField(object? body, string key, JsonNode? value)
+    {
+        var node = body as JsonObject
+            ?? (body is null ? new JsonObject() : JsonSerializer.SerializeToNode(body, JsonOptions)!.AsObject());
+        node[key] = value;
+        return node;
+    }
 
     private static readonly HttpMethod HttpPatch = new("PATCH");
 
@@ -171,8 +197,11 @@ public sealed class SeclaiClient : IDisposable
         using var req = new HttpRequestMessage(HttpMethod.Post, url);
         await ApplyHeadersAsync(req, cancellationToken, "text/event-stream", "application/json").ConfigureAwait(false);
 
-        var json = JsonSerializer.Serialize(body, JsonOptions);
-        req.Content = new StringContent(json, Encoding.UTF8, "application/json");
+        // This method reads only init and done, so stream_reasoning events would be traffic counted
+        // against the timeout. The field is dropped from a copy; the caller's object is unchanged.
+        var node = JsonSerializer.SerializeToNode(body, JsonOptions);
+        (node as JsonObject)?.Remove("include_reasoning");
+        req.Content = new StringContent(node?.ToJsonString() ?? "null", Encoding.UTF8, "application/json");
 
         var effectiveTimeout = timeout ?? TimeSpan.FromSeconds(60);
         using var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
@@ -193,7 +222,7 @@ public sealed class SeclaiClient : IDisposable
             if (!resp.IsSuccessStatusCode)
             {
                 var responseBody = await ReadBodyAsync(resp).ConfigureAwait(false);
-                ThrowApiError(resp.StatusCode, req.Method.Method, url, responseBody);
+                throw CreateApiError(resp.StatusCode, req.Method.Method, url, responseBody);
             }
 
             var mediaType = resp.Content.Headers.ContentType?.MediaType ?? string.Empty;
@@ -386,6 +415,117 @@ public sealed class SeclaiClient : IDisposable
         var query = PaginationQuery(page, limit);
 
         return await SendJsonAsync<ContentEmbeddingsListResponse>(HttpMethod.Get, $"/contents/{Uri.EscapeDataString(sourceConnectionContentVersion)}/embeddings", query, body: null, cancellationToken).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Lists the files attached to a content item, with pagination: files an agent's
+    /// <c>write_content_attachment</c> step attached, files sent with a message to an email source,
+    /// the feed files an RSS source's <c>feed_attachments</c> chose, web-page media on a source with
+    /// media indexing on, and the images inside documents on a source that indexes document images.
+    /// </summary>
+    /// <param name="sourceConnectionContentVersion">Content version identifier.</param>
+    /// <param name="page">Page number (1-indexed, default 1).</param>
+    /// <param name="limit">Items per page (default 20).</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    public async Task<ContentAttachmentsListResponse> ListContentAttachmentsAsync(
+        string sourceConnectionContentVersion,
+        int? page = null,
+        int? limit = null,
+        CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(sourceConnectionContentVersion)) throw new ArgumentException("sourceConnectionContentVersion is required", nameof(sourceConnectionContentVersion));
+
+        var query = PaginationQuery(page, limit);
+
+        return await SendJsonAsync<ContentAttachmentsListResponse>(HttpMethod.Get, $"/contents/{Uri.EscapeDataString(sourceConnectionContentVersion)}/attachments", query, body: null, cancellationToken).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Gets one file attached to a content item: its indexing status and reason, its metadata, and
+    /// the text it is indexed by. Use <paramref name="start"/> and <paramref name="end"/> to page
+    /// through long text. A file that was not indexed has no text.
+    /// </summary>
+    /// <remarks>
+    /// The API answers 402 — thrown as an <see cref="ApiException"/> — when the account has no credits
+    /// left (<c>error.code</c> is <c>insufficient_credits</c>).
+    /// </remarks>
+    /// <param name="sourceConnectionContentVersion">Content version identifier.</param>
+    /// <param name="attachmentId">The <c>Id</c> of an entry from <see cref="ListContentAttachmentsAsync"/>.</param>
+    /// <param name="start">Start offset of the text range (default 0).</param>
+    /// <param name="end">
+    /// End offset of the text range (default 5000). Unlike <see cref="GetContentDetailAsync"/>, where
+    /// <c>0</c> means "server default", <c>0</c> is sent as-is here: an empty range, which returns the
+    /// file's metadata and <see cref="ContentAttachmentDetailResponse.TextContentTotalLength"/> without
+    /// its text. Leave it null for the server default.
+    /// </param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    public async Task<ContentAttachmentDetailResponse> GetContentAttachmentAsync(
+        string sourceConnectionContentVersion,
+        string attachmentId,
+        int? start = null,
+        int? end = null,
+        CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(sourceConnectionContentVersion)) throw new ArgumentException("sourceConnectionContentVersion is required", nameof(sourceConnectionContentVersion));
+        if (string.IsNullOrWhiteSpace(attachmentId)) throw new ArgumentException("attachmentId is required", nameof(attachmentId));
+
+        var query = new Dictionary<string, string?>
+        {
+            ["start"] = start is >= 0 ? start.Value.ToString() : null,
+            ["end"] = end is >= 0 ? end.Value.ToString() : null,
+        };
+
+        return await SendJsonAsync<ContentAttachmentDetailResponse>(HttpMethod.Get, $"/contents/{Uri.EscapeDataString(sourceConnectionContentVersion)}/attachments/{Uri.EscapeDataString(attachmentId)}", query, body: null, cancellationToken).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Lists the embeddings (chunk vectors) an attached file is indexed by, with pagination. The list
+    /// is empty for a file that has no completed index.
+    /// </summary>
+    /// <remarks>
+    /// The API answers 402 — thrown as an <see cref="ApiException"/> — when the account has no credits
+    /// left (<c>error.code</c> is <c>insufficient_credits</c>).
+    /// </remarks>
+    /// <param name="sourceConnectionContentVersion">Content version identifier.</param>
+    /// <param name="attachmentId">The <c>Id</c> of an entry from <see cref="ListContentAttachmentsAsync"/>.</param>
+    /// <param name="page">Page number (1-indexed, default 1).</param>
+    /// <param name="limit">Items per page (1-100, default 20).</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    public async Task<ContentEmbeddingsListResponse> ListContentAttachmentEmbeddingsAsync(
+        string sourceConnectionContentVersion,
+        string attachmentId,
+        int? page = null,
+        int? limit = null,
+        CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(sourceConnectionContentVersion)) throw new ArgumentException("sourceConnectionContentVersion is required", nameof(sourceConnectionContentVersion));
+        if (string.IsNullOrWhiteSpace(attachmentId)) throw new ArgumentException("attachmentId is required", nameof(attachmentId));
+
+        var query = PaginationQuery(page, limit);
+
+        return await SendJsonAsync<ContentEmbeddingsListResponse>(HttpMethod.Get, $"/contents/{Uri.EscapeDataString(sourceConnectionContentVersion)}/attachments/{Uri.EscapeDataString(attachmentId)}/embeddings", query, body: null, cancellationToken).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Downloads a file attached to a content item. Returns the raw HTTP response so the caller can
+    /// stream the body; the caller must dispose the returned <see cref="HttpResponseMessage"/>.
+    /// </summary>
+    /// <remarks>
+    /// Images, audio, video, PDF and plain text are served with their own type; anything else as
+    /// <c>application/octet-stream</c>. The API answers 403 — thrown as an <see cref="ApiException"/> —
+    /// when the file is withheld; <see cref="ContentAttachmentDetailResponse.FileWithheld"/> says why
+    /// before you ask. It answers 402 when the account has no credits left (<c>error.code</c> is
+    /// <c>insufficient_credits</c>).
+    /// </remarks>
+    /// <param name="sourceConnectionContentVersion">Content version identifier.</param>
+    /// <param name="attachmentId">The <c>Id</c> of an entry from <see cref="ListContentAttachmentsAsync"/>.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    public async Task<HttpResponseMessage> DownloadContentAttachmentAsync(string sourceConnectionContentVersion, string attachmentId, CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(sourceConnectionContentVersion)) throw new ArgumentException("sourceConnectionContentVersion is required", nameof(sourceConnectionContentVersion));
+        if (string.IsNullOrWhiteSpace(attachmentId)) throw new ArgumentException("attachmentId is required", nameof(attachmentId));
+
+        return await SendStreamAsync(HttpMethod.Get, $"/contents/{Uri.EscapeDataString(sourceConnectionContentVersion)}/attachments/{Uri.EscapeDataString(attachmentId)}/file", query: null, cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -601,7 +741,7 @@ public sealed class SeclaiClient : IDisposable
 
         if (metadata is not null && metadata.Count > 0)
         {
-            var metadataJson = JsonSerializer.Serialize(metadata, JsonOptions);
+            var metadataJson = JsonSerializer.Serialize(metadata, MetadataJsonOptions);
             content.Add(new StringContent(metadataJson, Encoding.UTF8, "text/plain"), "metadata");
         }
 
@@ -632,7 +772,7 @@ public sealed class SeclaiClient : IDisposable
 
         if (!resp.IsSuccessStatusCode)
         {
-            ThrowApiError(resp.StatusCode, method.Method, url, responseBody);
+            throw CreateApiError(resp.StatusCode, method.Method, url, responseBody);
         }
 
         if (!expectBody)
@@ -673,7 +813,7 @@ public sealed class SeclaiClient : IDisposable
         if (raw.ValueKind == JsonValueKind.Object)
         {
             // The reader owns the list keys: a `data` that is not an array must not fail the model.
-            var rest = System.Text.Json.Nodes.JsonObject.Create(raw)!;
+            var rest = JsonObject.Create(raw)!;
             rest.Remove("data");
             if (legacyKey is not null) rest.Remove(legacyKey);
             page = rest.Deserialize<TPage>(JsonOptions) ?? page;
@@ -747,6 +887,33 @@ public sealed class SeclaiClient : IDisposable
         return new ApiException(message, HttpStatusCode.OK, method, url, responseBody);
     }
 
+    /// <summary>
+    /// Sends a request whose response body the caller streams (a file download). Returns the
+    /// undisposed response on success; on an error status the body is read, the response is
+    /// disposed, and the error is thrown.
+    /// </summary>
+    private async Task<HttpResponseMessage> SendStreamAsync(HttpMethod method, string path, Dictionary<string, string?>? query, CancellationToken cancellationToken)
+    {
+        var url = BuildUri(path, query);
+        using var req = new HttpRequestMessage(method, url);
+        await ApplyHeadersAsync(req, cancellationToken).ConfigureAwait(false);
+
+        var resp = await _http.SendAsync(req, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
+        if (resp.IsSuccessStatusCode) return resp;
+
+        var status = resp.StatusCode;
+        string? responseBody;
+        try
+        {
+            responseBody = await ReadBodyAsync(resp).ConfigureAwait(false);
+        }
+        finally
+        {
+            resp.Dispose();
+        }
+        throw CreateApiError(status, method.Method, url, responseBody);
+    }
+
     private async Task SendNoContentAsync(HttpMethod method, string path, Dictionary<string, string?>? query, object? body, CancellationToken cancellationToken)
     {
         var url = BuildUri(path, query);
@@ -765,7 +932,7 @@ public sealed class SeclaiClient : IDisposable
         if (!resp.IsSuccessStatusCode)
         {
             var responseBody = await ReadBodyAsync(resp).ConfigureAwait(false);
-            ThrowApiError(resp.StatusCode, method.Method, url, responseBody);
+            throw CreateApiError(resp.StatusCode, method.Method, url, responseBody);
         }
     }
 
@@ -792,13 +959,13 @@ public sealed class SeclaiClient : IDisposable
 
         if (!resp.IsSuccessStatusCode)
         {
-            ThrowApiError(resp.StatusCode, method.Method, url, responseBody);
+            throw CreateApiError(resp.StatusCode, method.Method, url, responseBody);
         }
 
         return new RawResponse(url, responseBody);
     }
 
-    private void ThrowApiError(HttpStatusCode statusCode, string method, Uri url, string? responseBody)
+    private static ApiException CreateApiError(HttpStatusCode statusCode, string method, Uri url, string? responseBody)
     {
         if ((int)statusCode == 422)
         {
@@ -823,9 +990,9 @@ public sealed class SeclaiClient : IDisposable
             {
                 // ignore parse issues
             }
-            throw new ApiValidationException(statusCode, method, url, responseBody, validation);
+            return new ApiValidationException(statusCode, method, url, responseBody, validation);
         }
-        throw new ApiException(statusCode, method, url, responseBody);
+        return new ApiException(statusCode, method, url, responseBody);
     }
 
     private Uri BuildUri(string path, Dictionary<string, string?>? query, Dictionary<string, IEnumerable<string>?>? repeatedQuery = null)
@@ -1050,6 +1217,13 @@ public sealed class SeclaiClient : IDisposable
     // ── Agent Input Uploads ─────────────────────────────────────────────────
 
     /// <summary>Uploads an input file for an agent run.</summary>
+    /// <remarks>
+    /// Only a <c>dynamic_input</c> agent takes uploads; any other agent rejects them with a 400. Size limit:
+    /// 200 MB per file. From API version <c>2026-10-16</c> a file of any type is accepted and is <c>ready</c>
+    /// at once, with no need to poll. Earlier versions accept only certain file types and extract each
+    /// file's text first, so poll
+    /// <see cref="GetAgentInputUploadStatusAsync"/> until <c>Status</c> is <c>ready</c> before running.
+    /// </remarks>
     public async Task<UploadAgentInputResponse> UploadAgentInputAsync(
         string agentId,
         byte[] fileBytes,
@@ -1204,6 +1378,44 @@ public sealed class SeclaiClient : IDisposable
         return await SendJsonAsync<EvaluationCriteriaResponse>(HttpPatch, $"/agents/evaluation-criteria/{Uri.EscapeDataString(criteriaId)}", query: null, body, cancellationToken).ConfigureAwait(false);
     }
 
+    /// <summary>Clears fields on evaluation criteria by sending each of them as <c>null</c>.</summary>
+    /// <remarks>
+    /// <see cref="UpdateEvaluationCriteriaAsync"/> omits a property left <c>null</c>, which leaves the
+    /// stored value unchanged; this method is how a stored value is removed. Clearing
+    /// <see cref="EvaluationCriteriaField.EvaluationTier"/> makes the criterion fall back to the agent's
+    /// default evaluation tier.
+    /// </remarks>
+    /// <example>
+    /// <code>
+    /// await client.ClearEvaluationCriteriaFieldsAsync(criteriaId,
+    ///     new[] { EvaluationCriteriaField.Description, EvaluationCriteriaField.EvaluationTier }, cancellationToken);
+    /// </code>
+    /// </example>
+    /// <exception cref="ArgumentException">No field was given, or a value is not a defined <see cref="EvaluationCriteriaField"/>.</exception>
+    public async Task<EvaluationCriteriaResponse> ClearEvaluationCriteriaFieldsAsync(string criteriaId, IEnumerable<EvaluationCriteriaField> fields, CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(criteriaId)) throw new ArgumentException("criteriaId is required", nameof(criteriaId));
+        if (fields is null) throw new ArgumentException("at least one field is required", nameof(fields));
+
+        JsonObject? body = null;
+        foreach (var field in fields)
+        {
+            body = WithField(body, EvaluationCriteriaFieldName(field), null);
+        }
+        if (body is null) throw new ArgumentException("at least one field is required", nameof(fields));
+
+        return await SendJsonAsync<EvaluationCriteriaResponse>(HttpPatch, $"/agents/evaluation-criteria/{Uri.EscapeDataString(criteriaId)}", query: null, body, cancellationToken).ConfigureAwait(false);
+    }
+
+    private static string EvaluationCriteriaFieldName(EvaluationCriteriaField field) => field switch
+    {
+        EvaluationCriteriaField.Description => "description",
+        EvaluationCriteriaField.EvaluationPrompt => "evaluation_prompt",
+        EvaluationCriteriaField.ExpectationConfig => "expectation_config",
+        EvaluationCriteriaField.EvaluationTier => "evaluation_tier",
+        _ => throw new ArgumentException($"{(int)field} is not a defined EvaluationCriteriaField", "fields"),
+    };
+
     /// <summary>Deletes evaluation criteria.</summary>
     public async Task DeleteEvaluationCriteriaAsync(string criteriaId, CancellationToken cancellationToken = default)
     {
@@ -1334,9 +1546,20 @@ public sealed class SeclaiClient : IDisposable
     }
 
     /// <summary>Creates a new memory bank.</summary>
+    /// <exception cref="ArgumentException">Both <see cref="CreateMemoryBankRequest.RetentionDays"/> and <see cref="CreateMemoryBankRequest.RetainIndefinitely"/> are set.</exception>
     public async Task<MemoryBankResponse> CreateMemoryBankAsync(CreateMemoryBankRequest body, CancellationToken cancellationToken = default)
     {
-        return await SendJsonAsync<MemoryBankResponse>(HttpMethod.Post, "/memory_banks", query: null, body, cancellationToken).ConfigureAwait(false);
+        object? payload = body;
+        if (body is not null && body.RetainIndefinitely)
+        {
+            if (body.RetentionDays is not null)
+            {
+                throw new ArgumentException("set either RetentionDays or RetainIndefinitely, not both", nameof(body));
+            }
+            // An explicit null keeps entries indefinitely.
+            payload = WithField(body, "retention_days", null);
+        }
+        return await SendJsonAsync<MemoryBankResponse>(HttpMethod.Post, "/memory_banks", query: null, payload, cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>Retrieves a memory bank by ID.</summary>
@@ -1347,10 +1570,21 @@ public sealed class SeclaiClient : IDisposable
     }
 
     /// <summary>Updates a memory bank.</summary>
+    /// <exception cref="ArgumentException"><see cref="UpdateMemoryBankRequest.RetainIndefinitely"/> is set together with a nonzero <see cref="UpdateMemoryBankRequest.RetentionDays"/>.</exception>
     public async Task<MemoryBankResponse> UpdateMemoryBankAsync(string memoryBankId, UpdateMemoryBankRequest body, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(memoryBankId)) throw new ArgumentException("memoryBankId is required", nameof(memoryBankId));
-        return await SendJsonAsync<MemoryBankResponse>(HttpMethod.Put, $"/memory_banks/{Uri.EscapeDataString(memoryBankId)}", query: null, body, cancellationToken).ConfigureAwait(false);
+        object? payload = body;
+        if (body is not null && body.RetainIndefinitely)
+        {
+            if (body.RetentionDays is not null and not 0)
+            {
+                throw new ArgumentException("set either RetentionDays or RetainIndefinitely, not both", nameof(body));
+            }
+            // On an update, 0 (not null) clears the retention window.
+            payload = WithField(body, "retention_days", 0);
+        }
+        return await SendJsonAsync<MemoryBankResponse>(HttpMethod.Put, $"/memory_banks/{Uri.EscapeDataString(memoryBankId)}", query: null, payload, cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>Deletes a memory bank.</summary>
@@ -1465,11 +1699,18 @@ public sealed class SeclaiClient : IDisposable
         return await SendJsonAsync<SourceResponse>(HttpMethod.Get, $"/sources/{Uri.EscapeDataString(sourceId)}", query: null, body: null, cancellationToken).ConfigureAwait(false);
     }
 
-    /// <summary>Updates a source.</summary>
+    /// <summary>Updates a source. Only the properties set on <paramref name="body"/> are sent; a null property leaves that setting unchanged. To remove the retention window, use <see cref="ClearSourceRetentionAsync"/>.</summary>
     public async Task<SourceResponse> UpdateSourceAsync(string sourceId, UpdateSourceRequest body, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(sourceId)) throw new ArgumentException("sourceId is required", nameof(sourceId));
         return await SendJsonAsync<SourceResponse>(HttpMethod.Put, $"/sources/{Uri.EscapeDataString(sourceId)}", query: null, body, cancellationToken).ConfigureAwait(false);
+    }
+
+    /// <summary>Removes a source's retention window, so its content is kept indefinitely. Sends an explicit null <c>retention_days</c> and leaves every other setting unchanged.</summary>
+    public async Task<SourceResponse> ClearSourceRetentionAsync(string sourceId, CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(sourceId)) throw new ArgumentException("sourceId is required", nameof(sourceId));
+        return await SendJsonAsync<SourceResponse>(HttpMethod.Put, $"/sources/{Uri.EscapeDataString(sourceId)}", query: null, WithField(null, "retention_days", null), cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>Deletes a source.</summary>
@@ -1530,6 +1771,26 @@ public sealed class SeclaiClient : IDisposable
         return await SendJsonAsync<SourceContentStatusResponse>(HttpMethod.Get, $"/sources/{Uri.EscapeDataString(sourceId)}/contents/{Uri.EscapeDataString(contentVersionId)}", query: null, body: null, cancellationToken).ConfigureAwait(false);
     }
 
+    /// <summary>
+    /// Lists mail that an email content source refused, newest first. Each entry says who sent the
+    /// message and why it was refused, never its subject or body.
+    /// </summary>
+    /// <remarks>
+    /// To accept a refused sender, add its <c>FromAddress</c> or that address's domain to the source's
+    /// <see cref="UpdateSourceRequest.EmailAllowedSenders"/>. That only helps when
+    /// <see cref="EmailSourceRejectionResponse.Authenticated"/> is true.
+    /// </remarks>
+    /// <param name="sourceId">Source connection identifier.</param>
+    /// <param name="page">Page number (1-indexed, default 1).</param>
+    /// <param name="limit">Items per page (1-100, default 20).</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    public async Task<EmailSourceRejectionListResponse> ListEmailSourceRejectionsAsync(string sourceId, int? page = null, int? limit = null, CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(sourceId)) throw new ArgumentException("sourceId is required", nameof(sourceId));
+        var query = PaginationQuery(page, limit);
+        return await SendJsonAsync<EmailSourceRejectionListResponse>(HttpMethod.Get, $"/sources/{Uri.EscapeDataString(sourceId)}/email-rejections", query, body: null, cancellationToken).ConfigureAwait(false);
+    }
+
     // ── Source Exports ──────────────────────────────────────────────────────
 
     /// <summary>Lists exports for a source.</summary>
@@ -1580,20 +1841,7 @@ public sealed class SeclaiClient : IDisposable
         if (string.IsNullOrWhiteSpace(sourceId)) throw new ArgumentException("sourceId is required", nameof(sourceId));
         if (string.IsNullOrWhiteSpace(exportId)) throw new ArgumentException("exportId is required", nameof(exportId));
 
-        var url = BuildUri($"/sources/{Uri.EscapeDataString(sourceId)}/exports/{Uri.EscapeDataString(exportId)}/download", query: null);
-        using var req = new HttpRequestMessage(HttpMethod.Get, url);
-        await ApplyHeadersAsync(req, cancellationToken).ConfigureAwait(false);
-
-        var resp = await _http.SendAsync(req, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
-
-        if (!resp.IsSuccessStatusCode)
-        {
-            var responseBody = await ReadBodyAsync(resp).ConfigureAwait(false);
-            resp.Dispose();
-            ThrowApiError(resp.StatusCode, req.Method.Method, url, responseBody);
-        }
-
-        return resp;
+        return await SendStreamAsync(HttpMethod.Get, $"/sources/{Uri.EscapeDataString(sourceId)}/exports/{Uri.EscapeDataString(exportId)}/download", query: null, cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -1616,20 +1864,7 @@ public sealed class SeclaiClient : IDisposable
         var query = string.IsNullOrWhiteSpace(downloadName)
             ? null
             : new Dictionary<string, string?> { ["download_name"] = downloadName };
-        var url = BuildUri($"/v2/agent-runs/{Uri.EscapeDataString(runId)}/attachments/{Uri.EscapeDataString(attachmentId)}", query);
-        using var req = new HttpRequestMessage(HttpMethod.Get, url);
-        await ApplyHeadersAsync(req, cancellationToken).ConfigureAwait(false);
-
-        var resp = await _http.SendAsync(req, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
-
-        if (!resp.IsSuccessStatusCode)
-        {
-            var responseBody = await ReadBodyAsync(resp).ConfigureAwait(false);
-            resp.Dispose();
-            ThrowApiError(resp.StatusCode, req.Method.Method, url, responseBody);
-        }
-
-        return resp;
+        return await SendStreamAsync(HttpMethod.Get, $"/v2/agent-runs/{Uri.EscapeDataString(runId)}/attachments/{Uri.EscapeDataString(attachmentId)}", query, cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>Estimates the cost/size of a source export.</summary>
@@ -2234,6 +2469,24 @@ public sealed class SeclaiClient : IDisposable
         if (string.IsNullOrWhiteSpace(triggerId)) throw new ArgumentException("triggerId is required", nameof(triggerId));
         return await SendJsonAsync<EmailTriggerConfigResponse>(HttpMethod.Put, $"/agents/{Uri.EscapeDataString(agentId)}/triggers/{Uri.EscapeDataString(triggerId)}/email-config", null, body, cancellationToken).ConfigureAwait(false);
     }
+
+    /// <summary>
+    /// Replaces the input attachments an agent's trigger accepts. A run's files are each assigned to one
+    /// declared attachment before any step runs; steps reference one as
+    /// <c>{{agent.attachments.&lt;name&gt;}}</c>. The API answers 400 when the agent references an
+    /// attachment the new declaration leaves out.
+    /// </summary>
+    /// <param name="agentId">Agent identifier.</param>
+    /// <param name="triggerId">The trigger's id, from <see cref="AgentSummaryResponse.TriggerId"/>.</param>
+    /// <param name="body">The new declaration; a null <see cref="SetAcceptedAttachmentsRequest.AcceptedAttachments"/> accepts any files.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    public async Task<AcceptedAttachmentsResponse> SetAcceptedAttachmentsAsync(string agentId, string triggerId, SetAcceptedAttachmentsRequest body, CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(agentId)) throw new ArgumentException("agentId is required", nameof(agentId));
+        if (string.IsNullOrWhiteSpace(triggerId)) throw new ArgumentException("triggerId is required", nameof(triggerId));
+        if (body is null) throw new ArgumentNullException(nameof(body));
+        return await SendJsonAsync<AcceptedAttachmentsResponse>(HttpMethod.Put, $"/agents/{Uri.EscapeDataString(agentId)}/triggers/{Uri.EscapeDataString(triggerId)}/accepted-attachments", null, body, cancellationToken).ConfigureAwait(false);
+    }
     // ── API Version ───────────────────────────────────────────────────────────
 
     /// <summary>Reads the API version this request resolved to, and the versions available.</summary>
@@ -2517,7 +2770,7 @@ public sealed class SeclaiClient : IDisposable
         if (!resp.IsSuccessStatusCode)
         {
             var responseBody = await ReadBodyAsync(resp).ConfigureAwait(false);
-            ThrowApiError(resp.StatusCode, req.Method.Method, url, responseBody);
+            throw CreateApiError(resp.StatusCode, req.Method.Method, url, responseBody);
         }
 
         // If the server returns JSON instead of SSE, emit a single done event.
@@ -2642,7 +2895,7 @@ public sealed class SeclaiClient : IDisposable
 
         if (!resp.IsSuccessStatusCode)
         {
-            ThrowApiError(resp.StatusCode, req.Method.Method, url, responseBody);
+            throw CreateApiError(resp.StatusCode, req.Method.Method, url, responseBody);
         }
 
         return responseBody ?? string.Empty;

@@ -374,6 +374,28 @@ public sealed class SeclaiClientTests
     }
 
     [Fact]
+    public async Task RunStreamingAgentAndWait_DoesNotAskForReasoning()
+    {
+        string? sent = null;
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            sent = req.Content!.ReadAsStringAsync().GetAwaiter().GetResult();
+            var sse = "event: done\n" +
+                "data: {\"run_id\":\"run_1\",\"status\":\"completed\",\"output\":\"ok\",\"attempts\":[],\"error_count\":0,\"priority\":false}\n\n";
+            var resp = new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(sse, Encoding.UTF8, "text/event-stream") };
+            return resp;
+        });
+        var client = MakeClient(handler);
+        var body = new AgentRunStreamRequest { Input = "hi", IncludeReasoning = true };
+
+        var res = await client.RunStreamingAgentAndWaitAsync("a", body);
+
+        Assert.Equal("run_1", res.RunId);
+        Assert.Equal("{\"input\":\"hi\"}", sent);
+        Assert.True(body.IncludeReasoning);
+    }
+
+    [Fact]
     public async Task RunStreamingAgentAndWait_TimesOut()
     {
         var handler = new FakeHttpMessageHandler(_ =>
@@ -435,6 +457,26 @@ public sealed class SeclaiClientTests
         Assert.Equal("hello.txt", res.Filename);
         Assert.Equal("success", res.Status);
         Assert.Equal("sc_cv_1", res.SourceConnectionContentVersionId);
+    }
+
+    [Fact]
+    public async Task UploadFileToSource_KeepsNullsInsideMetadata()
+    {
+        string? metadataJson = null;
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            metadataJson = ExtractMultipartPartValue(req.Content!.ReadAsStringAsync().GetAwaiter().GetResult(), "metadata");
+            return JsonResponse("{\"filename\":\"a.txt\",\"status\":\"success\"}");
+        });
+        var client = MakeClient(handler);
+
+        await client.UploadFileToSourceAsync(
+            sourceConnectionId: "sc_1",
+            fileBytes: Encoding.UTF8.GetBytes("a"),
+            fileName: "a.txt",
+            metadata: new Dictionary<string, object?> { ["doc"] = new { author = (string?)null, tags = new { lang = (string?)null } }, ["top"] = null });
+
+        Assert.Equal("{\"doc\":{\"author\":null,\"tags\":{\"lang\":null}},\"top\":null}", metadataJson);
     }
 
     [Fact]
@@ -2696,9 +2738,12 @@ public sealed class SeclaiClientTests
             new[]
             {
                 SeclaiApiVersion.V2026_07_01, SeclaiApiVersion.V2026_07_27, SeclaiApiVersion.V2026_08_03, SeclaiApiVersion.V2026_08_21,
-                SeclaiApiVersion.V2026_09_28, SeclaiApiVersion.V2026_09_30, SeclaiApiVersion.V2026_10_03,
+                SeclaiApiVersion.V2026_09_28, SeclaiApiVersion.V2026_09_30, SeclaiApiVersion.V2026_10_03, SeclaiApiVersion.V2026_10_05,
+                SeclaiApiVersion.V2026_10_13, SeclaiApiVersion.V2026_10_16, SeclaiApiVersion.V2026_10_18, SeclaiApiVersion.V2026_10_19,
+                SeclaiApiVersion.V2026_10_21,
             },
             SeclaiApiVersion.Known);
+        Assert.Equal(SeclaiApiVersion.V2026_10_21, SeclaiApiVersion.Latest);
     }
 
     [Fact]
@@ -3201,6 +3246,123 @@ public sealed class SeclaiClientTests
     }
 
     [Fact]
+    public async Task CreateMemoryBank_SendsRetentionOnlyWhenAsked()
+    {
+        var bodies = new List<string>();
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            bodies.Add(req.Content!.ReadAsStringAsync().GetAwaiter().GetResult());
+            return JsonResponse("{\"id\":\"mb1\"}");
+        });
+        var client = MakeClient(handler);
+
+        await client.CreateMemoryBankAsync(new CreateMemoryBankRequest { Name = "Inbox", Type = "conversation" });
+        await client.CreateMemoryBankAsync(new CreateMemoryBankRequest { Name = "Inbox", RetentionDays = 7 });
+        await client.CreateMemoryBankAsync(new CreateMemoryBankRequest { Name = "Inbox", RetainIndefinitely = true });
+
+        Assert.Equal("{\"name\":\"Inbox\",\"type\":\"conversation\"}", bodies[0]);
+        Assert.Equal("{\"name\":\"Inbox\",\"retention_days\":7}", bodies[1]);
+        Assert.Equal("{\"name\":\"Inbox\",\"retention_days\":null}", bodies[2]);
+    }
+
+    [Fact]
+    public async Task CreateMemoryBank_RejectsRetentionDaysWithRetainIndefinitely()
+    {
+        var handler = new FakeHttpMessageHandler(_ => throw new InvalidOperationException("no request expected"));
+        var ex = await Assert.ThrowsAsync<ArgumentException>(() => MakeClient(handler).CreateMemoryBankAsync(
+            new CreateMemoryBankRequest { Name = "Inbox", RetentionDays = 7, RetainIndefinitely = true }));
+        Assert.Equal("body", ex.ParamName);
+    }
+
+    [Fact]
+    public async Task UpdateMemoryBank_RetainIndefinitelySendsZero()
+    {
+        var bodies = new List<string>();
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Put, req.Method);
+            Assert.Equal("/memory_banks/mb1", req.RequestUri!.AbsolutePath);
+            bodies.Add(req.Content!.ReadAsStringAsync().GetAwaiter().GetResult());
+            return JsonResponse("{\"id\":\"mb1\"}");
+        });
+        var client = MakeClient(handler);
+        await client.UpdateMemoryBankAsync("mb1", new UpdateMemoryBankRequest());
+        await client.UpdateMemoryBankAsync("mb1", new UpdateMemoryBankRequest { RetainIndefinitely = true });
+        await client.UpdateMemoryBankAsync("mb1", new UpdateMemoryBankRequest { RetentionDays = 0, RetainIndefinitely = true });
+        Assert.Equal("{}", bodies[0]);
+        Assert.Equal("{\"retention_days\":0}", bodies[1]);
+        Assert.Equal("{\"retention_days\":0}", bodies[2]);
+
+        var ex = await Assert.ThrowsAsync<ArgumentException>(() => client.UpdateMemoryBankAsync(
+            "mb1", new UpdateMemoryBankRequest { RetentionDays = 7, RetainIndefinitely = true }));
+        Assert.Equal("body", ex.ParamName);
+        Assert.Equal(3, bodies.Count);
+    }
+
+    [Fact]
+    public async Task ClearEvaluationCriteriaFields_PatchesNulls()
+    {
+        var bodies = new List<string>();
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal("PATCH", req.Method.Method);
+            Assert.Equal("/agents/evaluation-criteria/ec1", req.RequestUri!.AbsolutePath);
+            bodies.Add(req.Content!.ReadAsStringAsync().GetAwaiter().GetResult());
+            return JsonResponse("{\"id\":\"ec1\",\"evaluation_tier\":null}");
+        });
+        var client = MakeClient(handler);
+
+        var res = await client.ClearEvaluationCriteriaFieldsAsync("ec1", new[] { EvaluationCriteriaField.EvaluationTier });
+        await client.ClearEvaluationCriteriaFieldsAsync("ec1",
+            [EvaluationCriteriaField.Description, EvaluationCriteriaField.EvaluationPrompt,
+            EvaluationCriteriaField.ExpectationConfig, EvaluationCriteriaField.Description], CancellationToken.None);
+        await client.ClearEvaluationCriteriaFieldsAsync("ec1", new List<EvaluationCriteriaField> { EvaluationCriteriaField.ExpectationConfig }, CancellationToken.None);
+
+        Assert.Equal("ec1", res.Id);
+        Assert.Equal("{\"evaluation_tier\":null}", bodies[0]);
+        Assert.Equal("{\"description\":null,\"evaluation_prompt\":null,\"expectation_config\":null}", bodies[1]);
+        Assert.Equal("{\"expectation_config\":null}", bodies[2]);
+    }
+
+    [Fact]
+    public async Task ClearEvaluationCriteriaFields_RejectsNoOrUndefinedFields()
+    {
+        var handler = new FakeHttpMessageHandler(_ => throw new InvalidOperationException("no request expected"));
+        var client = MakeClient(handler);
+
+        var none = await Assert.ThrowsAsync<ArgumentException>(() => client.ClearEvaluationCriteriaFieldsAsync("ec1", Array.Empty<EvaluationCriteriaField>()));
+        var nullArray = await Assert.ThrowsAsync<ArgumentException>(() => client.ClearEvaluationCriteriaFieldsAsync("ec1", null!));
+        var undefined = await Assert.ThrowsAsync<ArgumentException>(() => client.ClearEvaluationCriteriaFieldsAsync("ec1", [EvaluationCriteriaField.Description, (EvaluationCriteriaField)99]));
+        await Assert.ThrowsAsync<ArgumentException>(() => client.ClearEvaluationCriteriaFieldsAsync(" ", [EvaluationCriteriaField.Description]));
+
+        Assert.Equal("fields", none.ParamName);
+        Assert.Equal("fields", nullArray.ParamName);
+        Assert.Equal("fields", undefined.ParamName);
+        Assert.Contains("99", undefined.Message);
+    }
+
+    [Fact]
+    public async Task ClearEvaluationCriteriaFields_HonoursCancellation()
+    {
+        var handler = new WaitForCancellationHandler();
+        var client = MakeClient(handler);
+        using var cts = new CancellationTokenSource(TimeSpan.FromMilliseconds(50));
+
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(
+            () => client.ClearEvaluationCriteriaFieldsAsync("ec1", [EvaluationCriteriaField.Description], cts.Token));
+    }
+
+    // Holds every request until its token is cancelled.
+    private sealed class WaitForCancellationHandler : HttpMessageHandler
+    {
+        protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+        {
+            await Task.Delay(Timeout.Infinite, cancellationToken).ConfigureAwait(false);
+            throw new InvalidOperationException("unreachable");
+        }
+    }
+
+    [Fact]
     public async Task Experiment_EffortIsSentPerModelAndReadBack()
     {
         string? body = null;
@@ -3283,7 +3445,485 @@ public sealed class SeclaiClientTests
         Assert.DoesNotContain("governance_conversation_id", bodies[1]);
     }
 
-    private static SeclaiClient MakeClient(FakeHttpMessageHandler handler)
+    // ── 2026-10-19 sync: attachments, email-source rejections ───────────────
+
+    [Fact]
+    public async Task SetAcceptedAttachments_PutsSlots()
+    {
+        string? body = null;
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Put, req.Method);
+            Assert.Equal("/agents/a1/triggers/t1/accepted-attachments", req.RequestUri!.AbsolutePath);
+            Assert.Equal("", req.RequestUri!.Query);
+            body = req.Content!.ReadAsStringAsync().GetAwaiter().GetResult();
+            return JsonResponse("{\"agent_id\":\"a1\",\"trigger_id\":\"t1\",\"accepted_attachments\":[{\"name\":\"invoice\",\"content_types\":[\"application/pdf\"],\"min\":1,\"max\":null,\"label\":null,\"name_pattern\":null}]}");
+        });
+        var res = await MakeClient(handler).SetAcceptedAttachmentsAsync("a1", "t1", new SetAcceptedAttachmentsRequest
+        {
+            AcceptedAttachments = new List<AcceptedAttachmentSlot>
+            {
+                new() { Name = "invoice", ContentTypes = new List<string> { "application/pdf" }, Min = 1 },
+            },
+        });
+        Assert.Equal("{\"accepted_attachments\":[{\"name\":\"invoice\",\"content_types\":[\"application/pdf\"],\"min\":1}]}", body);
+        Assert.Equal("t1", res.TriggerId);
+        var slot = Assert.Single(res.AcceptedAttachments);
+        Assert.Equal("invoice", slot.Name);
+        Assert.Equal(1, slot.Min);
+        Assert.Null(slot.Max);
+    }
+
+    [Fact]
+    public async Task SetAcceptedAttachments_SendsNullToAcceptAnyFiles()
+    {
+        string? body = null;
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            body = req.Content!.ReadAsStringAsync().GetAwaiter().GetResult();
+            return JsonResponse("{\"agent_id\":\"a1\",\"trigger_id\":\"t1\",\"accepted_attachments\":[{\"name\":\"files\",\"min\":0}]}");
+        });
+        await MakeClient(handler).SetAcceptedAttachmentsAsync("a1", "t1", new SetAcceptedAttachmentsRequest());
+        Assert.Equal("{\"accepted_attachments\":null}", body);
+    }
+
+    [Fact]
+    public async Task ListContentAttachments_GetsPage()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Get, req.Method);
+            Assert.Equal("/contents/c1/attachments", req.RequestUri!.AbsolutePath);
+            var query = System.Web.HttpUtility.ParseQueryString(req.RequestUri.Query);
+            Assert.Equal("2", query["page"]);
+            Assert.Equal("5", query["limit"]);
+            return JsonResponse("{\"data\":[{\"id\":\"att1\",\"key\":\"fig1.png\",\"content_type\":\"image/png\",\"size_bytes\":1024,\"indexed\":true,\"indexing_status\":\"completed\",\"indexing_error\":null,\"created_at\":\"2026-10-19T00:00:00Z\",\"updated_at\":\"2026-10-19T00:00:00Z\",\"metadata\":{\"page_number\":3}}],\"pagination\":" + OnePage + "}");
+        });
+        var res = await MakeClient(handler).ListContentAttachmentsAsync("c1", page: 2, limit: 5);
+        var att = Assert.Single(res.Data);
+        Assert.Equal("att1", att.Id);
+        Assert.Equal(1024, att.SizeBytes);
+        Assert.Equal("completed", att.IndexingStatus);
+        Assert.Equal(3, att.Metadata!["page_number"].GetInt32());
+        Assert.Equal(1, res.Pagination.Total);
+    }
+
+    [Fact]
+    public async Task GetContentAttachment_SendsTextRange()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Get, req.Method);
+            Assert.Equal("/contents/c1/attachments/att1", req.RequestUri!.AbsolutePath);
+            var query = System.Web.HttpUtility.ParseQueryString(req.RequestUri.Query);
+            Assert.Equal("0", query["start"]);
+            Assert.Equal("100", query["end"]);
+            return JsonResponse("{\"id\":\"att1\",\"key\":\"a.pdf\",\"content_type\":\"application/pdf\",\"size_bytes\":10,\"indexed\":true,\"indexing_status\":\"completed\",\"indexing_error\":null,\"created_at\":\"x\",\"updated_at\":\"x\",\"metadata\":{},\"file_withheld\":\"pending_screening\",\"text_content\":\"hello\",\"text_content_start\":0,\"text_content_end\":5,\"text_content_total_length\":5}");
+        });
+        var res = await MakeClient(handler).GetContentAttachmentAsync("c1", "att1", start: 0, end: 100);
+        Assert.Equal("pending_screening", res.FileWithheld);
+        Assert.Equal("hello", res.TextContent);
+        Assert.Equal(5, res.TextContentTotalLength);
+    }
+
+    [Fact]
+    public async Task GetContentAttachment_OmitsUnsetRange()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal("", req.RequestUri!.Query);
+            return JsonResponse("{\"id\":\"att1\",\"key\":\"a\",\"content_type\":\"text/plain\",\"size_bytes\":1,\"indexed\":false,\"metadata\":{}}");
+        });
+        var res = await MakeClient(handler).GetContentAttachmentAsync("c1", "att1");
+        Assert.Null(res.FileWithheld);
+    }
+
+    [Fact]
+    public async Task ListContentAttachmentEmbeddings_GetsPage()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Get, req.Method);
+            Assert.Equal("/contents/c1/attachments/att1/embeddings", req.RequestUri!.AbsolutePath);
+            var query = System.Web.HttpUtility.ParseQueryString(req.RequestUri.Query);
+            Assert.Equal("1", query["page"]);
+            Assert.Equal("50", query["limit"]);
+            return JsonResponse("{\"data\":[{\"id\":\"e1\"}],\"pagination\":" + OnePage + "}");
+        });
+        var res = await MakeClient(handler).ListContentAttachmentEmbeddingsAsync("c1", "att1", page: 1, limit: 50);
+        Assert.Equal("e1", Assert.Single(res.Data).Id);
+    }
+
+    [Fact]
+    public async Task DownloadContentAttachment_GetsRawResponse()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Get, req.Method);
+            Assert.Equal("/contents/c1/attachments/att1/file", req.RequestUri!.AbsolutePath);
+            return new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new ByteArrayContent(Encoding.UTF8.GetBytes("file-bytes")),
+            };
+        });
+        using var res = await MakeClient(handler).DownloadContentAttachmentAsync("c1", "att1");
+        Assert.Equal("file-bytes", await res.Content.ReadAsStringAsync());
+    }
+
+    [Fact]
+    public async Task DownloadContentAttachment_ThrowsWhenWithheld()
+    {
+        var handler = new FakeHttpMessageHandler(req => new HttpResponseMessage(HttpStatusCode.Forbidden)
+        {
+            Content = new StringContent("{\"detail\":\"withheld\"}", Encoding.UTF8, "application/json"),
+        });
+        var ex = await Assert.ThrowsAnyAsync<ApiException>(() => MakeClient(handler).DownloadContentAttachmentAsync("c1", "att1"));
+        Assert.Equal(HttpStatusCode.Forbidden, ex.StatusCode);
+    }
+
+    [Fact]
+    public async Task Downloads_ThrowWithStatusAndBodyOnError()
+    {
+        var paths = new List<string>();
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            paths.Add(req.RequestUri!.PathAndQuery);
+            return new HttpResponseMessage(HttpStatusCode.PaymentRequired)
+            {
+                Content = new StringContent("{\"error\":{\"code\":\"insufficient_credits\"}}", Encoding.UTF8, "application/json"),
+            };
+        });
+        var client = MakeClient(handler);
+        var a = await Assert.ThrowsAnyAsync<ApiException>(() => client.DownloadContentAttachmentAsync("c1", "att1"));
+        var b = await Assert.ThrowsAnyAsync<ApiException>(() => client.DownloadSourceExportAsync("s1", "e1"));
+        var c = await Assert.ThrowsAnyAsync<ApiException>(() => client.DownloadAgentRunAttachmentAsync("r1", "att1", "a.pdf"));
+        foreach (var ex in new[] { a, b, c })
+        {
+            Assert.Equal(HttpStatusCode.PaymentRequired, ex.StatusCode);
+            Assert.Contains("insufficient_credits", ex.ResponseBody);
+        }
+        Assert.Equal(new[] { "/contents/c1/attachments/att1/file", "/sources/s1/exports/e1/download", "/v2/agent-runs/r1/attachments/att1?download_name=a.pdf" }, paths);
+    }
+
+    [Fact]
+    public async Task GetContentAttachment_SendsEndZero()
+    {
+        string? query = null;
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            query = req.RequestUri!.Query;
+            return JsonResponse("{\"id\":\"att1\",\"text_content\":null,\"text_content_start\":0,\"text_content_end\":0,\"text_content_total_length\":120}");
+        });
+        var res = await MakeClient(handler).GetContentAttachmentAsync("c1", "att1", end: 0);
+        Assert.Equal("?end=0", query);
+        Assert.Equal(120, res.TextContentTotalLength);
+    }
+
+    [Fact]
+    public async Task ListEmailSourceRejections_GetsPage()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Get, req.Method);
+            Assert.Equal("/sources/s1/email-rejections", req.RequestUri!.AbsolutePath);
+            var query = System.Web.HttpUtility.ParseQueryString(req.RequestUri.Query);
+            Assert.Equal("3", query["page"]);
+            Assert.Equal("10", query["limit"]);
+            return JsonResponse("{\"data\":[{\"id\":\"r1\",\"created_at\":\"x\",\"recipient\":\"in@mail.seclai.com\",\"sender\":\"bounce@esp.example\",\"from_address\":\"news@example.com\",\"sender_ip\":null,\"reason\":\"sender_not_allowed\",\"authenticated\":true,\"auth_verdicts\":{\"dmarc\":\"pass\"}}],\"pagination\":" + OnePage + "}");
+        });
+        var res = await MakeClient(handler).ListEmailSourceRejectionsAsync("s1", page: 3, limit: 10);
+        var r = Assert.Single(res.Data);
+        Assert.Equal("sender_not_allowed", r.Reason);
+        Assert.Equal("news@example.com", r.FromAddress);
+        Assert.True(r.Authenticated);
+        Assert.Equal("pass", r.AuthVerdicts!["dmarc"]);
+    }
+
+    [Fact]
+    public async Task NewRequestFields_AreOmittedUnlessSet()
+    {
+        // Every field added in this sync is omitted when null, so existing callers send the same bodies.
+        var bodies = new List<string>();
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            bodies.Add(req.Content!.ReadAsStringAsync().GetAwaiter().GetResult());
+            return JsonResponse("{\"id\":\"x\",\"agent_id\":\"a1\",\"trigger_id\":\"t1\",\"trigger_type\":\"EMAIL_RECEIVED\"}");
+        });
+        var client = MakeClient(handler);
+        await client.CreateSourceAsync(new CreateSourceRequest { Name = "n", SourceType = "rss" });
+        await client.UpdateSourceAsync("s1", new UpdateSourceRequest { Name = "n" });
+        await client.SetEmailTriggerConfigAsync("a1", "t1", new SetEmailTriggerConfigRequest { Alias = "x" });
+        foreach (var b in bodies)
+        {
+            Assert.DoesNotContain("cloud_drive", b);
+            Assert.DoesNotContain("document_images", b);
+            Assert.DoesNotContain("email_allowed_senders", b);
+            Assert.DoesNotContain("feed_attachments", b);
+            Assert.DoesNotContain("run_on_attachment_mismatch", b);
+        }
+    }
+
+    [Fact]
+    public async Task UpdateSource_SendsOnlySetFields()
+    {
+        var bodies = new List<string>();
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Put, req.Method);
+            Assert.Equal("/sources/s1", req.RequestUri!.AbsolutePath);
+            bodies.Add(req.Content!.ReadAsStringAsync().GetAwaiter().GetResult());
+            return JsonResponse("{\"id\":\"s1\"}");
+        });
+        var client = MakeClient(handler);
+        await client.UpdateSourceAsync("s1", new UpdateSourceRequest { Name = "n" });
+        await client.UpdateSourceAsync("s1", new UpdateSourceRequest());
+        await client.UpdateSourceAsync("s1", new UpdateSourceRequest { RetentionDays = 30, MediaTypes = new List<string>() });
+        Assert.Equal("{\"name\":\"n\"}", bodies[0]);
+        Assert.Equal("{}", bodies[1]);
+        Assert.Equal("{\"retention_days\":30,\"media_types\":[]}", bodies[2]);
+    }
+
+    [Fact]
+    public async Task ClearSourceRetention_SendsExplicitNull()
+    {
+        string? body = null;
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Put, req.Method);
+            Assert.Equal("/sources/s1", req.RequestUri!.AbsolutePath);
+            body = req.Content!.ReadAsStringAsync().GetAwaiter().GetResult();
+            return JsonResponse("{\"id\":\"s1\"}");
+        });
+        var client = MakeClient(handler);
+        await client.ClearSourceRetentionAsync("s1");
+        Assert.Equal("{\"retention_days\":null}", body);
+    }
+
+    [Fact]
+    public async Task NewRequestFields_AreSentWhenSet()
+    {
+        var bodies = new List<string>();
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            bodies.Add(req.Content!.ReadAsStringAsync().GetAwaiter().GetResult());
+            return JsonResponse("{\"id\":\"x\",\"agent_id\":\"a1\",\"trigger_id\":\"t1\",\"trigger_type\":\"EMAIL_RECEIVED\"}");
+        });
+        var client = MakeClient(handler);
+        await client.CreateSourceAsync(new CreateSourceRequest
+        {
+            Name = "n",
+            SourceType = "email",
+            EmailAllowedSenders = new List<string> { "example.com" },
+            DocumentImages = false,
+            FeedAttachments = new List<string> { "enclosures" },
+            CloudDriveConnectionId = "cd1",
+            CloudDriveFolderPath = "/reports",
+            CloudDriveMaxFileMb = 25,
+        });
+        await client.UpdateSourceAsync("s1", new UpdateSourceRequest { CloudDrivePathPattern = "", CloudDriveMaxFileMb = 0 });
+        await client.SetEmailTriggerConfigAsync("a1", "t1", new SetEmailTriggerConfigRequest { RunOnAttachmentMismatch = true });
+        Assert.Contains("\"email_allowed_senders\":[\"example.com\"]", bodies[0]);
+        Assert.Contains("\"document_images\":false", bodies[0]);
+        Assert.Contains("\"feed_attachments\":[\"enclosures\"]", bodies[0]);
+        Assert.Contains("\"cloud_drive_connection_id\":\"cd1\"", bodies[0]);
+        Assert.Contains("\"cloud_drive_folder_path\":\"/reports\"", bodies[0]);
+        Assert.Contains("\"cloud_drive_max_file_mb\":25", bodies[0]);
+        Assert.Contains("\"cloud_drive_path_pattern\":\"\"", bodies[1]);
+        Assert.Contains("\"cloud_drive_max_file_mb\":0", bodies[1]);
+        Assert.Equal("{\"run_on_attachment_mismatch\":true}", bodies[2]);
+    }
+
+    // The fields where an explicit null is a deliberate value the API acts on, so the client sends it
+    // even under the WhenWritingNull default.
+    private static readonly Dictionary<Type, string> ExplicitNullFields = new()
+    {
+        [typeof(SetAcceptedAttachmentsRequest)] = "{\"accepted_attachments\":null}",
+        [typeof(UpdateApiVersionRequest)] = "{\"version\":null}",
+    };
+
+    private static JsonSerializerOptions ClientJsonOptions()
+        => (JsonSerializerOptions)typeof(SeclaiClient)
+            .GetField("JsonOptions", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static)!
+            .GetValue(null)!;
+
+    [Fact]
+    public void RequestBodies_OmitUnsetProperties()
+    {
+        var options = ClientJsonOptions();
+        var types = typeof(SeclaiClient).Assembly.GetTypes()
+            .Where(t => t.IsPublic && t.IsClass && !t.IsAbstract && t.Namespace == "Seclai.Models"
+                && t.Name.EndsWith("Request", StringComparison.Ordinal)
+                && t.GetConstructor(Type.EmptyTypes) is not null)
+            .ToList();
+        Assert.True(types.Count > 40, $"found only {types.Count} request types");
+
+        // Add the model types nested in a request (such as AcceptedAttachmentSlot), which the same
+        // options serialize.
+        var queue = new Queue<Type>(types);
+        while (queue.Count > 0)
+        {
+            foreach (var prop in queue.Dequeue().GetProperties())
+            {
+                var pt = prop.PropertyType;
+                var candidates = pt.IsArray ? new[] { pt.GetElementType()! } : pt.IsGenericType ? pt.GetGenericArguments() : new[] { pt };
+                foreach (var c in candidates)
+                {
+                    if (c.Namespace == "Seclai.Models" && c.IsClass && c.GetConstructor(Type.EmptyTypes) is not null && !types.Contains(c))
+                    {
+                        types.Add(c);
+                        queue.Enqueue(c);
+                    }
+                }
+            }
+        }
+        Assert.Contains(typeof(AcceptedAttachmentSlot), types);
+
+        // The global default is the only thing that drops a null: a per-property WhenWritingNull
+        // would hide its removal from this test.
+        var attributed = typeof(SeclaiClient).Assembly.GetTypes()
+            .Where(t => t.Namespace == "Seclai.Models")
+            .SelectMany(t => t.GetProperties().Select(p => (t, p)))
+            .Where(x => x.p.GetCustomAttributes(typeof(System.Text.Json.Serialization.JsonIgnoreAttribute), false)
+                .Cast<System.Text.Json.Serialization.JsonIgnoreAttribute>()
+                .Any(a => a.Condition == System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull))
+            .Select(x => $"{x.t.Name}.{x.p.Name}")
+            .ToList();
+        Assert.Empty(attributed);
+
+        foreach (var type in types)
+        {
+            var json = JsonSerializer.Serialize(Activator.CreateInstance(type), type, options);
+            if (ExplicitNullFields.TryGetValue(type, out var expected))
+            {
+                Assert.Equal(expected, json);
+                continue;
+            }
+            Assert.False(json.Contains("null"), $"{type.Name} sends a null when nothing is set: {json}");
+        }
+    }
+
+    [Fact]
+    public async Task RequestBodies_SendOnlySetFieldsOnTheWire()
+    {
+        var bodies = new List<string>();
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            bodies.Add(req.Content!.ReadAsStringAsync().GetAwaiter().GetResult());
+            return JsonResponse("{\"id\":\"x\"}");
+        });
+        var client = MakeClient(handler);
+        await client.UpdateAgentAsync("a1", new UpdateAgentRequest { Name = "x" });
+        await client.CreateSourceAsync(new CreateSourceRequest { Name = "Newsletters", SourceType = "email" });
+        Assert.Equal("{\"name\":\"x\"}", bodies[0]);
+        Assert.DoesNotContain("null", bodies[1]);
+        Assert.DoesNotContain("polling_max_items", bodies[1]);
+    }
+
+    [Fact]
+    public void AgentRequests_SerializeAcceptedAttachmentsAndReasoning()
+    {
+        var o = ClientJsonOptions();
+        var slots = new List<AcceptedAttachmentSlot> { new() { Name = "files" } };
+        Assert.DoesNotContain("accepted_attachments", JsonSerializer.Serialize(new CreateAgentRequest { Name = "a" }, o));
+        Assert.Contains("\"accepted_attachments\":[{\"name\":\"files\",\"min\":0}]", JsonSerializer.Serialize(new CreateAgentRequest { Name = "a", AcceptedAttachments = slots }, o));
+        Assert.DoesNotContain("accepted_attachments", JsonSerializer.Serialize(new UpdateAgentDefinitionRequest(), o));
+        Assert.Contains("\"accepted_attachments\":[", JsonSerializer.Serialize(new UpdateAgentDefinitionRequest { AcceptedAttachments = slots }, o));
+        Assert.DoesNotContain("include_reasoning", JsonSerializer.Serialize(new AgentRunStreamRequest { Input = "x" }, o));
+        Assert.Contains("\"include_reasoning\":true", JsonSerializer.Serialize(new AgentRunStreamRequest { Input = "x", IncludeReasoning = true }, o));
+    }
+
+    [Fact]
+    public void ResponseModels_ReadTheNewFields()
+    {
+        var opts = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+        var source = JsonSerializer.Deserialize<SourceResponse>("{\"account_id\":\"3f1a0d6e-0000-4000-8000-000000000001\",\"email_address\":\"in@mail.seclai.com\",\"email_allowed_senders\":[\"example.com\"],\"document_images\":true,\"feed_attachments\":[\"item_image\"],\"cloud_drive_connection_id\":\"cd1\",\"cloud_drive_content_types\":\"application/pdf\",\"cloud_drive_folder_path\":\"/r\",\"cloud_drive_max_file_mb\":10,\"cloud_drive_path_pattern\":\"**/*.pdf\"}", opts)!;
+        Assert.Equal("in@mail.seclai.com", source.EmailAddress);
+        Assert.Equal("example.com", Assert.Single(source.EmailAllowedSenders!));
+        Assert.True(source.DocumentImages);
+        Assert.Equal("item_image", Assert.Single(source.FeedAttachments!));
+        Assert.Equal("cd1", source.CloudDriveConnectionId);
+        Assert.Equal("application/pdf", source.CloudDriveContentTypes);
+        Assert.Equal("/r", source.CloudDriveFolderPath);
+        Assert.Equal(10, source.CloudDriveMaxFileMb);
+        Assert.Equal("**/*.pdf", source.CloudDrivePathPattern);
+
+        var detail = JsonSerializer.Deserialize<ContentDetailResponse>("{\"skipped_attachments\":[{\"filename\":null,\"content_type\":\"image/png\",\"size_bytes\":null,\"reason\":\"displayed_in_body\"}]}", opts)!;
+        var skipped = Assert.Single(detail.SkippedAttachments!);
+        Assert.Equal("displayed_in_body", skipped.Reason);
+        Assert.Null(skipped.Filename);
+        Assert.Null(skipped.SizeBytes);
+
+        Assert.True(JsonSerializer.Deserialize<SourceContentStatusResponse>("{\"content_status\":\"completed\",\"held_for_review\":true}", opts)!.HeldForReview);
+        Assert.Equal("t1", JsonSerializer.Deserialize<AgentSummaryResponse>("{\"id\":\"a1\",\"trigger_id\":\"t1\"}", opts)!.TriggerId);
+        Assert.True(JsonSerializer.Deserialize<EmailTriggerConfigResponse>("{\"email_run_on_attachment_mismatch\":true}", opts)!.EmailRunOnAttachmentMismatch);
+        var refs = JsonSerializer.Deserialize<AgentAttachmentRefsApiResponse>("{\"requires_uploads\":true,\"accepted_attachments\":[{\"name\":\"invoice\",\"min\":1,\"max\":2,\"name_pattern\":\"*.pdf\"}]}", opts)!;
+        var slot = Assert.Single(refs.AcceptedAttachments!);
+        Assert.Equal(2, slot.Max);
+        Assert.Equal("*.pdf", slot.NamePattern);
+    }
+
+    // ── 2026-10-21 sync: evaluator errors ───────────────────────────────────
+
+    // Each bool is true in one row, so a missing or swapped mapping fails a row.
+    [Theory]
+    [InlineData(true, false)]
+    [InlineData(false, true)]
+    public async Task ListEvaluationResults_ReadsEverySpecField(bool retryTriggered, bool flagged)
+    {
+        var client = MakeClient(new FakeHttpMessageHandler(_ => JsonResponse(
+            "{\"data\":[{\"id\":\"er1\",\"criteria_id\":\"ec1\",\"agent_run_id\":\"r1\",\"agent_step_run_id\":\"s1\",\"status\":\"failed\",\"score\":0.25,"
+            + "\"details\":{\"explanation\":\"no verdict\"},\"retry_triggered\":" + (retryTriggered ? "true" : "false") + ",\"retry_count\":2,\"flagged\":" + (flagged ? "true" : "false") + ","
+            + "\"evaluated_at\":\"2026-10-21T00:00:00Z\",\"created_at\":\"2026-10-21T00:00:01Z\"}],\"total\":1,\"page\":1,\"limit\":20}")));
+        var res = await client.ListEvaluationResultsAsync("ec1");
+        var item = Assert.Single(res.Data);
+        Assert.Equal("er1", item.Id);
+        Assert.Equal("ec1", item.CriteriaId);
+        Assert.Equal("2026-10-21T00:00:01Z", item.CreatedAt);
+        Assert.Equal("r1", item.AgentRunId);
+        Assert.Equal("s1", item.AgentStepRunId);
+        Assert.Equal("failed", item.Status);
+        Assert.Equal(0.25f, item.Score);
+        Assert.Equal("no verdict", item.Details!["explanation"].GetString());
+        Assert.Equal(retryTriggered, item.RetryTriggered);
+        Assert.Equal(2, item.RetryCount);
+        Assert.Equal(flagged, item.Flagged);
+        Assert.Equal("2026-10-21T00:00:00Z", item.EvaluatedAt);
+    }
+
+    [Theory]
+    [InlineData("{\"status\":\"error\",\"score\":null,\"passed\":null,\"explanation\":\"no verdict\"}", 0f)]   // 2026-10-21
+    [InlineData("{\"status\":\"error\",\"score\":0.5,\"passed\":false,\"explanation\":\"no verdict\"}", 0.5f)]   // earlier
+    public async Task TestDraftEvaluation_ErrorResultDecodesWithStatusError(string body, float expectedScore)
+    {
+        var client = MakeClient(new FakeHttpMessageHandler(_ => JsonResponse(body)));
+        var res = await client.TestDraftEvaluationAsync("a1", new TestDraftEvaluationRequest { StepOutput = "out" });
+        Assert.Equal("error", res.Status);
+        Assert.Equal(expectedScore, res.Score);
+        Assert.False(res.Passed);
+        Assert.Equal("no verdict", res.Explanation);
+    }
+
+    [Fact]
+    public async Task TestDraftEvaluation_FailedResultKeepsItsScore()
+    {
+        var client = MakeClient(new FakeHttpMessageHandler(_ => JsonResponse("{\"status\":\"failed\",\"score\":0.2,\"passed\":false,\"explanation\":null}")));
+        var res = await client.TestDraftEvaluationAsync("a1", new TestDraftEvaluationRequest { StepOutput = "out" });
+        Assert.Equal("failed", res.Status);
+        Assert.Equal(0.2f, res.Score);
+        Assert.False(res.Passed);
+    }
+
+    [Fact]
+    public async Task GetNonManualEvaluationSummary_ReadsErrorCount()
+    {
+        var client = MakeClient(new FakeHttpMessageHandler(_ => JsonResponse(
+            "{\"total\":5,\"passed\":2,\"failed\":1,\"error\":2,\"flagged\":0,\"pass_rate\":0.667,\"failure_rate\":0.333,\"by_mode\":[{\"mode\":\"auto\",\"total\":5,\"passed\":2,\"failed\":1,\"error\":2,\"flagged\":0,\"pass_rate\":0.667,\"failure_rate\":0.333}]}")));
+        var res = await client.GetNonManualEvaluationSummaryAsync();
+        Assert.Equal(2, res.Error);
+        Assert.Equal(1, res.Failed);
+    }
+
+    private static SeclaiClient MakeClient(HttpMessageHandler handler)
     {
         var http = new HttpClient(handler);
         return new SeclaiClient(new SeclaiClientOptions { ApiKey = "k", BaseUri = new Uri("https://example.invalid"), HttpClient = http });

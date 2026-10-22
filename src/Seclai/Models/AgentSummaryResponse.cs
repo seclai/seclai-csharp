@@ -49,4 +49,8 @@ public sealed class AgentSummaryResponse
     /// <summary>Why the agent is paused: 'manual' or 'email_overload'.</summary>
     [JsonPropertyName("disabled_reason")]
     public string? DisabledReason { get; set; }
+
+    /// <summary>ID of the agent's trigger, for the <c>/agents/{agent_id}/triggers/{trigger_id}/…</c> endpoints such as <see cref="SeclaiClient.SetAcceptedAttachmentsAsync"/> and <see cref="SeclaiClient.SetEmailTriggerConfigAsync"/>.</summary>
+    [JsonPropertyName("trigger_id")]
+    public string? TriggerId { get; set; }
 }

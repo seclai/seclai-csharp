@@ -23,11 +23,20 @@ public sealed class UpdateMemoryBankRequest
     [JsonPropertyName("max_turns")]
     public int? MaxTurns { get; set; }
 
+    /// <summary>Days a memory entry is kept before it is deleted. Omitted when null, which leaves it unchanged; 0 clears it, which keeps entries indefinitely. To keep entries indefinitely, you can also set <see cref="RetainIndefinitely"/>.</summary>
     [JsonPropertyName("retention_days")]
     public int? RetentionDays { get; set; }
 
+    /// <summary>
+    /// When true, the bank keeps entries indefinitely: <see cref="SeclaiClient.UpdateMemoryBankAsync"/> sends
+    /// <c>retention_days</c> as 0, which the API reads as "clear the retention window" on an update.
+    /// <see cref="SeclaiClient.UpdateMemoryBankAsync"/> throws an <see cref="System.ArgumentException"/> when
+    /// <see cref="RetentionDays"/> is also set to anything other than 0.
+    /// </summary>
+    [JsonIgnore]
+    public bool RetainIndefinitely { get; set; }
+
     /// <summary>Conversation banks only. When true, a conversation turn written to this bank has the quoted reply chain an email client prepends to a reply dropped from it. Omitted when null, which leaves it unchanged.</summary>
     [JsonPropertyName("strip_quoted_reply_chains")]
-    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public bool? StripQuotedReplyChains { get; set; }
 }

@@ -32,4 +32,8 @@ public sealed class EmailTriggerConfigResponse
 
     [JsonPropertyName("trigger_type")]
     public string TriggerType { get; set; } = string.Empty;
+
+    /// <summary>Whether an email whose attachments don't fit what the agent expects still runs.</summary>
+    [JsonPropertyName("email_run_on_attachment_mismatch")]
+    public bool? EmailRunOnAttachmentMismatch { get; set; }
 }

@@ -14,5 +14,6 @@ public sealed class UpdateApiVersionRequest
     /// clear the pin — omitting the property would leave it unchanged.
     /// </remarks>
     [JsonPropertyName("version")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     public string? Version { get; set; }
 }

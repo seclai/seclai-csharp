@@ -11,4 +11,12 @@ public sealed class UpdateAgentDefinitionRequest
 
     [JsonPropertyName("expected_change_id")]
     public string? ExpectedChangeId { get; set; }
+
+    /// <summary>
+    /// When given, declared on the main branch's file-taking triggers in the same save, so the steps may
+    /// read its slots as <c>{{agent.attachments.&lt;slot&gt;}}</c>. Left null, the field is omitted and the
+    /// triggers keep theirs.
+    /// </summary>
+    [JsonPropertyName("accepted_attachments")]
+    public List<AcceptedAttachmentSlot>? AcceptedAttachments { get; set; }
 }

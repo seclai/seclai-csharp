@@ -14,11 +14,9 @@ public sealed class CloudDriveUpdateRequest
     /// would make an agent that writes there re-trigger itself.
     /// </summary>
     [JsonPropertyName("folder_path")]
-    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? FolderPath { get; set; }
 
     /// <summary>New display name for the connection.</summary>
     [JsonPropertyName("name")]
-    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public string? Name { get; set; }
 }

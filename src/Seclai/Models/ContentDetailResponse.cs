@@ -82,4 +82,11 @@ public sealed class ContentDetailResponse
     /// <summary>The bound that was reached when <c>extracted_media_capped</c> is true and the stop was a bound. Null otherwise.</summary>
     [JsonPropertyName("extracted_media_limit")]
     public int? ExtractedMediaLimit { get; set; }
+
+    /// <summary>
+    /// Parts of an email delivered to an email content source that were not stored as attachments of this
+    /// item, each with the reason. Empty for every other item.
+    /// </summary>
+    [JsonPropertyName("skipped_attachments")]
+    public List<SkippedAttachmentResponse>? SkippedAttachments { get; set; }
 }
