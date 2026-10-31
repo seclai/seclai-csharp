@@ -116,4 +116,12 @@ public sealed class SourceContentStatusResponse
     /// </summary>
     [JsonPropertyName("held_for_review")]
     public bool HeldForReview { get; set; }
+
+    /// <summary>
+    /// Set on a held item whose review approved it but whose release was refused: why it waits, either the
+    /// account being unable to pay for it or the source's spend limit having no room for it. The release is
+    /// retried. Null until one is refused.
+    /// </summary>
+    [JsonPropertyName("release_waiting_reason")]
+    public string? ReleaseWaitingReason { get; set; }
 }

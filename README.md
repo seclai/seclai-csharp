@@ -143,7 +143,7 @@ Leave `ApiVersion` unset and the header is omitted, so the account's pinned
 baseline applies and responses keep their current shapes. Upgrading this package
 alone never changes the wire contract.
 
-Known versions are on `SeclaiApiVersion` (`V2026_07_01` through `V2026_10_21`,
+Known versions are on `SeclaiApiVersion` (`V2026_07_01` through `V2026_10_28`,
 plus `Default`, `Latest` and `Known`). A version this release was **not** built
 against is rejected with `ConfigurationException`: a newer version can reshape
 responses, and this client would decode them incorrectly rather than reject
@@ -227,6 +227,7 @@ every one:
 | `2026-10-18` | `DocumentImages` defaults to true on a new source with a text-only embedder too |
 | `2026-10-19` | `CreateSourceAsync` accepts `PollingMaxItems` on RSS sources only; any other source type rejects it with a 400 |
 | `2026-10-21` | A result whose evaluator returned no verdict (`error`) is counted only in `Error` by `GetNonManualEvaluationSummaryAsync`, not in `Failed` or either rate, and `GetEvaluationCriteriaSummaryAsync` averages `AverageScore` over passed and failed results only. `TestDraftEvaluationAsync` receives a null score and verdict for an `error` result, which this client reads as `Score` 0 and `Passed` false (earlier versions send 0.5 and false), so check `Status` |
+| `2026-10-28` | An `if_else` or `switch` step's `AgentRunStepResponse.Output` is the result of the arm it took (its input when that arm is empty or it took none) rather than the decision object. The arm taken is in `AgentRunStepResponse.Decision` on every version |
 
 ## Typed responses
 
@@ -244,6 +245,20 @@ compatibility; they will be deprecated and then removed in a future major.
 
 ## API Coverage
 
+**Filters.** List methods whose endpoint takes filters beyond paging have an overload taking
+an options object (`AlertListOptions`, `ModelListOptions`, `AgentRunListOptions` and so on);
+the original signatures are unchanged. Set only the properties you need, and pass the object
+by type rather than a bare `null`, which no longer picks an overload:
+
+```csharp
+var failed = await client.ListAgentRunsAsync("ag1", new AgentRunListOptions { Status = "failed", Limit = 20 });
+var recent = await client.Typed.ListAlertsAsync(new AlertListOptions
+{
+    AgentId = "ag1",
+    TimeFrom = DateTimeOffset.UtcNow.AddDays(-7),
+});
+```
+
 ### Identity
 
 ```csharp
@@ -260,6 +275,24 @@ foreach (var org in me.Organizations)
 // CRUD
 var agents = await client.ListAgentsAsync(page: 1, limit: 20);
 var agent = await client.CreateAgentAsync(new CreateAgentRequest { Name = "Bot" });
+
+// Start from the agent gallery: bind the resources the template needs, or let the
+// API create the missing ones (grouped with the agent in a new solution).
+var examples = await client.ListAgentExamplesAsync(query: "support", limit: 10);
+var key = examples.Data[0].GetProperty("key").GetString();
+var fromTemplate = await client.CreateAgentAsync(new CreateAgentRequest
+{
+    Name = "Support triage",
+    AgentTemplate = key,
+    ResourceBindings = new Dictionary<string, string> { ["knowledge_base"] = "kb1" },
+    CreateMissingResources = true,
+});
+// fromTemplate.CreatedResources maps each created slot to its new resource id.
+
+// Run limits. A null property is left unchanged; to remove a limit, set its
+// SetMax… flag and leave the value null.
+await client.UpdateAgentAsync(agent.Id, new UpdateAgentRequest { MaxRunsPerDay = 100 });
+await client.UpdateAgentAsync(agent.Id, new UpdateAgentRequest { SetMaxRunsPerDay = true });
 
 // Pause / resume — a disabled agent stops firing from every trigger path
 var callers = await client.GetAgentCallersAsync("a1");  // live agents calling this one
@@ -341,6 +374,7 @@ var run = await client.RunAgentAsync("ag1", new AgentRunRequest { Input = "hello
 
 // List runs, get details, cancel
 var runs = await client.ListAgentRunsAsync("ag1", page: 1, limit: 20);
+var failedRuns = await client.ListAgentRunsAsync("ag1", new AgentRunListOptions { Status = "failed" });
 var detail = await client.GetAgentRunAsync("run1", includeStepOutputs: true);
 await client.CancelAgentRunAsync("run1");
 await client.DeleteAgentRunAsync("run1");
@@ -484,7 +518,8 @@ marked `[JsonIgnore(Condition = JsonIgnoreCondition.Never)]`, and no model marks
 property to be omitted, since the client's serializer omits every null. Upload `metadata`
 is your own data and is sent as written, nulls included. Where a stored value is removed by
 sending `null`, the client has a named way to do it: `ClearSourceRetentionAsync` removes a
-source's retention window, so content is kept indefinitely,
+source's retention window, so content is kept indefinitely, `ClearSourceSpendLimitAsync`
+removes its spend limit,
 `ClearEvaluationCriteriaFieldsAsync` clears evaluation-criteria fields (see
 [Evaluations](#evaluations)), and `CreateMemoryBankRequest.RetainIndefinitely` creates a
 memory bank that keeps entries indefinitely (see [Memory Banks](#memory-banks)):
@@ -492,6 +527,14 @@ memory bank that keeps entries indefinitely (see [Memory Banks](#memory-banks)):
 ```csharp
 await client.UpdateSourceAsync("s1", new UpdateSourceRequest { RetentionDays = 90 });
 await client.ClearSourceRetentionAsync("s1");
+
+// Spend limit: credits the source may commit per billing period, and what happens
+// when it is reached ("stop", or "delete" entries in SpendCapDeleteOrder).
+await client.UpdateSourceAsync("s1", new UpdateSourceRequest
+{
+    MaxCreditsPerPeriod = 500, SpendCapAction = "delete", SpendCapDeleteOrder = "oldest_added",
+});
+await client.ClearSourceSpendLimitAsync("s1");
 ```
 
 ### Cloud Drives
@@ -539,6 +582,7 @@ await client.DeleteKnowledgeBaseAsync(kb.Id);
 
 ```csharp
 var banks = await client.ListMemoryBanksAsync();
+var chatBanks = await client.ListMemoryBanksAsync(new MemoryBankListOptions { Type = "conversation" });
 var bank = await client.CreateMemoryBankAsync(new CreateMemoryBankRequest
 {
     Name = "Chat Memory", Type = "conversation"
@@ -550,6 +594,7 @@ var archive = await client.CreateMemoryBankAsync(new CreateMemoryBankRequest
     Name = "Archive", Type = "conversation", RetainIndefinitely = true
 });
 var stats = await client.GetMemoryBankStatsAsync(bank.Id);          // JsonElement
+var weekStats = await client.GetMemoryBankStatsAsync(bank.Id, new MemoryBankStatsOptions { Days = 7 });
 var templates = await client.Typed.ListMemoryBankTemplatesAsync();   // List<Dictionary<string, JsonElement>>
 var usedBy = await client.Typed.GetAgentsUsingMemoryBankAsync(bank.Id);
 await client.CompactMemoryBankAsync(bank.Id);
@@ -577,7 +622,10 @@ await client.DeleteEvaluationCriteriaAsync(created.Id);
 
 // Results
 var results = await client.ListAgentEvaluationResultsAsync("ag1", page: 1);
+var flagged = await client.ListAgentEvaluationResultsAsync("ag1",
+    new AgentEvaluationResultListOptions { FlaggedOnly = true, TimeFrom = DateTimeOffset.UtcNow.AddDays(-1) });
 var nonManual = await client.GetNonManualEvaluationSummaryAsync();
+var lastWeek = await client.GetNonManualEvaluationSummaryAsync(new NonManualEvaluationSummaryOptions { Days = 7 });
 
 // Test before creating
 var test = await client.TestDraftEvaluationAsync("ag1",
@@ -588,6 +636,7 @@ var test = await client.TestDraftEvaluationAsync("ag1",
 
 ```csharp
 var solutions = await client.ListSolutionsAsync();
+var billing = await client.ListSolutionsAsync(new SolutionListOptions { Search = "billing" });
 var sol = await client.CreateSolutionAsync(new CreateSolutionRequest { Name = "My Solution" });
 
 // Link/unlink resources
@@ -609,22 +658,27 @@ var accepted = await client.AcceptSolutionAiPlanAsync(
 var gov = await client.GenerateGovernanceAiPlanAsync(
     new GovernanceAiAssistantRequest { UserInput = "create a content safety policy" });
 var conversations = await client.ListGovernanceAiConversationsAsync();
+var latest = await client.ListGovernanceAiConversationsAsync(limit: 5);
 ```
 
 ### Alerts
 
 ```csharp
 var alerts = await client.ListAlertsAsync(status: "active");           // JsonElement
+var agentAlerts = await client.Typed.ListAlertsAsync(new AlertListOptions { AgentId = "ag1" });
 var alert = await client.GetAlertAsync("al1");                         // JsonElement
 await client.ChangeAlertStatusAsync("al1", new ChangeStatusRequest { Status = "resolved" });
 await client.AddAlertCommentAsync("al1", new AddCommentRequest { Body = "Fixed" });
 
 // Alert configs
 var configs = await client.ListAlertConfigsAsync();                    // JsonElement
+var sourceConfigs = await client.Typed.ListAlertConfigsAsync(new AlertConfigListOptions { Scope = "source" });
 await client.DeleteAlertConfigAsync("ac1");
 
 // Organization preferences
 var prefs = await client.ListOrganizationAlertPreferencesAsync();
+var withDefaults = await client.ListOrganizationAlertPreferencesAsync(
+    new OrganizationAlertPreferenceListOptions { IncludeDefaults = true });
 ```
 
 ### Agent Email Triggers
@@ -652,6 +706,32 @@ await client.SetEmailTriggerConfigAsync("a1", "t1",
 // Clear the alias and open the inbox to any sender.
 await client.SetEmailTriggerConfigAsync("a1", "t1",
     new SetEmailTriggerConfigRequest { Alias = "", AllowedSenders = new List<string>() });
+```
+
+### Agent Slack Triggers
+
+A SLACK_COMMAND trigger runs the agent from Slack with `/seclai` or the message shortcut.
+As with email triggers, a property left `null` is omitted and stays as it is.
+
+```csharp
+var slack = await client.SetSlackTriggerConfigAsync("a1", "t1",
+    new SetSlackTriggerConfigRequest
+    {
+        McpClientId = "mcp1",            // the account's Slack (Bot) connection
+        Scope = "selected_channels",
+        ChannelIds = new List<string> { "C0123" },
+        Visibility = "private",          // reply in the person's DM
+        TurnsEnabled = true,             // replies in the thread continue the conversation
+        MaxTurns = 10,
+    });
+foreach (var scope in slack.MissingScopes) Console.WriteLine($"missing Slack scope: {scope}");
+
+// An empty list clears the form or the channels; null would leave them unchanged.
+await client.SetSlackTriggerConfigAsync("a1", "t1",
+    new SetSlackTriggerConfigRequest { Form = new(), ChannelIds = new() });
+
+// Remove the turn limit, so a thread may run any number of turns.
+await client.ClearSlackTriggerMaxTurnsAsync("a1", "t1");
 ```
 
 ### Agent Email Governance
@@ -720,9 +800,13 @@ var rerankers = await client.ListRerankerModelsAsync();
 Console.WriteLine(rerankers.DefaultModelType);
 
 var alerts = await client.ListModelAlertsAsync();                      // JsonElement
+var unread = await client.Typed.ListModelAlertsAsync(new ModelAlertListOptions { UnreadOnly = true });
+var imageModels = await client.Typed.ListModelsAsync(new ModelListOptions { SupportsInputMedia = "image" });
 await client.MarkModelAlertReadAsync("ma1");
 await client.MarkAllModelAlertsReadAsync();
 var recs = await client.GetModelRecommendationsAsync("model1");        // JsonElement
+var toolRecs = await client.Typed.GetModelRecommendationsAsync("model1",
+    new ModelRecommendationOptions { RequireToolUse = true, MinContextTokens = 100_000 });
 
 // Model playground experiments
 var experiment = await client.CreateExperimentAsync(

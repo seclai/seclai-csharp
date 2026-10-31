@@ -325,12 +325,17 @@ public sealed class SeclaiClient : IDisposable
     }
 
     /// <summary>Lists runs for an agent with optional pagination.</summary>
-    public async Task<AgentRunListResponse> ListAgentRunsAsync(string agentId, int? page = null, int? limit = null, CancellationToken cancellationToken = default)
+    [OverloadResolutionPriority(1)]
+    public Task<AgentRunListResponse> ListAgentRunsAsync(string agentId, int? page = null, int? limit = null, CancellationToken cancellationToken = default)
+        => ListAgentRunsAsync(agentId, new AgentRunListOptions { Page = page, Limit = limit }, cancellationToken);
+
+    /// <summary>Lists runs for an agent, filtered by <paramref name="options"/>.</summary>
+    public async Task<AgentRunListResponse> ListAgentRunsAsync(string agentId, AgentRunListOptions options, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(agentId)) throw new ArgumentException("agentId is required", nameof(agentId));
-
-        var query = PaginationQuery(page, limit);
-
+        if (options is null) throw new ArgumentNullException(nameof(options));
+        var query = PaginationQuery(options.Page, options.Limit);
+        query["status"] = QueryText(options.Status);
         return await SendJsonAsync<AgentRunListResponse>(HttpMethod.Get, $"/agents/{Uri.EscapeDataString(agentId)}/runs", query, body: null, cancellationToken).ConfigureAwait(false);
     }
 
@@ -1093,6 +1098,14 @@ public sealed class SeclaiClient : IDisposable
         };
     }
 
+    private static string? QueryText(string? value) => string.IsNullOrWhiteSpace(value) ? null : value;
+
+    private static string? QueryBool(bool? value) => value?.ToString().ToLowerInvariant();
+
+    private static string? QueryInt(int? value) => value?.ToString(System.Globalization.CultureInfo.InvariantCulture);
+
+    private static string? QueryTime(DateTimeOffset? value) => value?.ToString("o", System.Globalization.CultureInfo.InvariantCulture);
+
     private static Uri? TryGetEnvUri(string envVar)
     {
         var value = Environment.GetEnvironmentVariable(envVar);
@@ -1118,6 +1131,25 @@ public sealed class SeclaiClient : IDisposable
     {
         var query = PaginationQuery(page, limit);
         return await SendJsonAsync<AgentListResponse>(HttpMethod.Get, "/agents", query, body: null, cancellationToken).ConfigureAwait(false);
+    }
+
+    /// <summary>Lists the agent gallery: example agents to start from.</summary>
+    /// <remarks>
+    /// Pass an entry's <c>key</c> as <see cref="CreateAgentRequest.AgentTemplate"/> to
+    /// <see cref="CreateAgentAsync"/>, with <see cref="CreateAgentRequest.ResourceBindings"/> for the
+    /// resources it needs.
+    /// </remarks>
+    /// <param name="query">Words every match must contain.</param>
+    /// <param name="useCase">Only entries for this use case.</param>
+    /// <param name="page">1-indexed page number.</param>
+    /// <param name="limit">Items per page, 1-100 (server default 20).</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    public async Task<AgentExampleListResponse> ListAgentExamplesAsync(string? query = null, string? useCase = null, int? page = null, int? limit = null, CancellationToken cancellationToken = default)
+    {
+        var q = PaginationQuery(page, limit);
+        q["query"] = QueryText(query);
+        q["use_case"] = QueryText(useCase);
+        return await SendJsonAsync<AgentExampleListResponse>(HttpMethod.Get, "/agents/examples", q, body: null, cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>Creates a new agent.</summary>
@@ -1431,10 +1463,20 @@ public sealed class SeclaiClient : IDisposable
     }
 
     /// <summary>Lists evaluation results for criteria.</summary>
-    public async Task<EvaluationResultListResponse> ListEvaluationResultsAsync(string criteriaId, int? page = null, int? limit = null, CancellationToken cancellationToken = default)
+    [OverloadResolutionPriority(1)]
+    public Task<EvaluationResultListResponse> ListEvaluationResultsAsync(string criteriaId, int? page = null, int? limit = null, CancellationToken cancellationToken = default)
+        => ListEvaluationResultsAsync(criteriaId, new EvaluationResultListOptions { Page = page, Limit = limit }, cancellationToken);
+
+    /// <summary>Lists evaluation results for criteria, filtered by <paramref name="options"/>.</summary>
+    public async Task<EvaluationResultListResponse> ListEvaluationResultsAsync(string criteriaId, EvaluationResultListOptions options, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(criteriaId)) throw new ArgumentException("criteriaId is required", nameof(criteriaId));
-        var query = PaginationQuery(page, limit);
+        if (options is null) throw new ArgumentNullException(nameof(options));
+        var query = PaginationQuery(options.Page, options.Limit);
+        query["status"] = QueryText(options.Status);
+        query["flagged_only"] = QueryBool(options.FlaggedOnly);
+        query["time_from"] = QueryTime(options.TimeFrom);
+        query["time_to"] = QueryTime(options.TimeTo);
         return await SendPageAsync<EvaluationResultListResponse, EvaluationResultResponse>(HttpMethod.Get, $"/agents/evaluation-criteria/{Uri.EscapeDataString(criteriaId)}/results", query, body: null, "data", cancellationToken).ConfigureAwait(false);
     }
 
@@ -1446,10 +1488,17 @@ public sealed class SeclaiClient : IDisposable
     }
 
     /// <summary>Lists runs compatible with evaluation criteria.</summary>
-    public async Task<CompatibleRunListResponse> ListCompatibleRunsAsync(string criteriaId, int? page = null, int? limit = null, CancellationToken cancellationToken = default)
+    [OverloadResolutionPriority(1)]
+    public Task<CompatibleRunListResponse> ListCompatibleRunsAsync(string criteriaId, int? page = null, int? limit = null, CancellationToken cancellationToken = default)
+        => ListCompatibleRunsAsync(criteriaId, new CompatibleRunListOptions { Page = page, Limit = limit }, cancellationToken);
+
+    /// <summary>Lists runs compatible with evaluation criteria, filtered by <paramref name="options"/>.</summary>
+    public async Task<CompatibleRunListResponse> ListCompatibleRunsAsync(string criteriaId, CompatibleRunListOptions options, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(criteriaId)) throw new ArgumentException("criteriaId is required", nameof(criteriaId));
-        var query = PaginationQuery(page, limit);
+        if (options is null) throw new ArgumentNullException(nameof(options));
+        var query = PaginationQuery(options.Page, options.Limit);
+        query["started_after"] = QueryTime(options.StartedAfter);
         return await SendPageAsync<CompatibleRunListResponse, JsonElement>(HttpMethod.Get, $"/agents/evaluation-criteria/{Uri.EscapeDataString(criteriaId)}/compatible-runs", query, body: null, "data", cancellationToken).ConfigureAwait(false);
     }
 
@@ -1461,10 +1510,21 @@ public sealed class SeclaiClient : IDisposable
     }
 
     /// <summary>Lists all evaluation results for an agent.</summary>
-    public async Task<EvaluationResultWithCriteriaListResponse> ListAgentEvaluationResultsAsync(string agentId, int? page = null, int? limit = null, CancellationToken cancellationToken = default)
+    [OverloadResolutionPriority(1)]
+    public Task<EvaluationResultWithCriteriaListResponse> ListAgentEvaluationResultsAsync(string agentId, int? page = null, int? limit = null, CancellationToken cancellationToken = default)
+        => ListAgentEvaluationResultsAsync(agentId, new AgentEvaluationResultListOptions { Page = page, Limit = limit }, cancellationToken);
+
+    /// <summary>Lists evaluation results for an agent, filtered by <paramref name="options"/>.</summary>
+    public async Task<EvaluationResultWithCriteriaListResponse> ListAgentEvaluationResultsAsync(string agentId, AgentEvaluationResultListOptions options, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(agentId)) throw new ArgumentException("agentId is required", nameof(agentId));
-        var query = PaginationQuery(page, limit);
+        if (options is null) throw new ArgumentNullException(nameof(options));
+        var query = PaginationQuery(options.Page, options.Limit);
+        query["status"] = QueryText(options.Status);
+        query["step"] = QueryText(options.Step);
+        query["flagged_only"] = QueryBool(options.FlaggedOnly);
+        query["time_from"] = QueryTime(options.TimeFrom);
+        query["time_to"] = QueryTime(options.TimeTo);
         return await SendPageAsync<EvaluationResultWithCriteriaListResponse, JsonElement>(HttpMethod.Get, $"/agents/{Uri.EscapeDataString(agentId)}/evaluation-results", query, body: null, "data", cancellationToken).ConfigureAwait(false);
     }
 
@@ -1483,19 +1543,38 @@ public sealed class SeclaiClient : IDisposable
     }
 
     /// <summary>Lists evaluation run summaries for an agent.</summary>
-    public async Task<EvaluationRunSummaryListResponse> ListEvaluationRunsAsync(string agentId, int? page = null, int? limit = null, CancellationToken cancellationToken = default)
+    [OverloadResolutionPriority(1)]
+    public Task<EvaluationRunSummaryListResponse> ListEvaluationRunsAsync(string agentId, int? page = null, int? limit = null, CancellationToken cancellationToken = default)
+        => ListEvaluationRunsAsync(agentId, new EvaluationRunListOptions { Page = page, Limit = limit }, cancellationToken);
+
+    /// <summary>Lists evaluation run summaries for an agent, filtered by <paramref name="options"/>.</summary>
+    public async Task<EvaluationRunSummaryListResponse> ListEvaluationRunsAsync(string agentId, EvaluationRunListOptions options, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(agentId)) throw new ArgumentException("agentId is required", nameof(agentId));
-        var query = PaginationQuery(page, limit);
+        if (options is null) throw new ArgumentNullException(nameof(options));
+        var query = PaginationQuery(options.Page, options.Limit);
+        query["status"] = QueryText(options.Status);
+        query["step"] = QueryText(options.Step);
+        query["time_from"] = QueryTime(options.TimeFrom);
+        query["time_to"] = QueryTime(options.TimeTo);
         return await SendPageAsync<EvaluationRunSummaryListResponse, JsonElement>(HttpMethod.Get, $"/agents/{Uri.EscapeDataString(agentId)}/evaluation-runs", query, body: null, "data", cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>Retrieves a summary of non-manual evaluation results.</summary>
-    public async Task<NonManualEvaluationSummaryResponse> GetNonManualEvaluationSummaryAsync(string? agentId = null, CancellationToken cancellationToken = default)
+    [OverloadResolutionPriority(1)]
+    public Task<NonManualEvaluationSummaryResponse> GetNonManualEvaluationSummaryAsync(string? agentId = null, CancellationToken cancellationToken = default)
+        => GetNonManualEvaluationSummaryAsync(new NonManualEvaluationSummaryOptions { AgentId = agentId }, cancellationToken);
+
+    /// <summary>Retrieves a summary of non-manual evaluation results over the period in <paramref name="options"/>.</summary>
+    public async Task<NonManualEvaluationSummaryResponse> GetNonManualEvaluationSummaryAsync(NonManualEvaluationSummaryOptions options, CancellationToken cancellationToken = default)
     {
+        if (options is null) throw new ArgumentNullException(nameof(options));
         var query = new Dictionary<string, string?>
         {
-            ["agent_id"] = string.IsNullOrWhiteSpace(agentId) ? null : agentId,
+            ["agent_id"] = QueryText(options.AgentId),
+            ["days"] = QueryInt(options.Days),
+            ["start_date"] = QueryText(options.StartDate),
+            ["end_date"] = QueryText(options.EndDate),
         };
         return await SendJsonAsync<NonManualEvaluationSummaryResponse>(HttpMethod.Get, "/agents/evaluation-results/non-manual-summary", query, body: null, cancellationToken).ConfigureAwait(false);
     }
@@ -1539,9 +1618,16 @@ public sealed class SeclaiClient : IDisposable
     // ── Memory Banks ────────────────────────────────────────────────────────
 
     /// <summary>Lists memory banks.</summary>
-    public async Task<MemoryBankListResponse> ListMemoryBanksAsync(int? page = null, int? limit = null, string? sort = null, string? order = null, CancellationToken cancellationToken = default)
+    [OverloadResolutionPriority(1)]
+    public Task<MemoryBankListResponse> ListMemoryBanksAsync(int? page = null, int? limit = null, string? sort = null, string? order = null, CancellationToken cancellationToken = default)
+        => ListMemoryBanksAsync(new MemoryBankListOptions { Page = page, Limit = limit, Sort = sort, Order = order }, cancellationToken);
+
+    /// <summary>Lists memory banks, filtered by <paramref name="options"/>.</summary>
+    public async Task<MemoryBankListResponse> ListMemoryBanksAsync(MemoryBankListOptions options, CancellationToken cancellationToken = default)
     {
-        var query = PaginationQuery(page, limit, sort, order);
+        if (options is null) throw new ArgumentNullException(nameof(options));
+        var query = PaginationQuery(options.Page, options.Limit, options.Sort, options.Order);
+        query["type"] = QueryText(options.Type);
         return await SendPageAsync<MemoryBankListResponse, MemoryBankResponse>(HttpMethod.Get, "/memory_banks", query, body: null, "memory_banks", cancellationToken).ConfigureAwait(false);
     }
 
@@ -1613,10 +1699,21 @@ public sealed class SeclaiClient : IDisposable
     }
 
     /// <summary>Retrieves statistics for a memory bank.</summary>
-    public async Task<JsonElement> GetMemoryBankStatsAsync(string memoryBankId, CancellationToken cancellationToken = default)
+    public Task<JsonElement> GetMemoryBankStatsAsync(string memoryBankId, CancellationToken cancellationToken = default)
+        => GetMemoryBankStatsAsync(memoryBankId, new MemoryBankStatsOptions(), cancellationToken);
+
+    /// <summary>Retrieves statistics for a memory bank over the period in <paramref name="options"/>.</summary>
+    public async Task<JsonElement> GetMemoryBankStatsAsync(string memoryBankId, MemoryBankStatsOptions options, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(memoryBankId)) throw new ArgumentException("memoryBankId is required", nameof(memoryBankId));
-        return await SendRawAsync(HttpMethod.Get, $"/memory_banks/{Uri.EscapeDataString(memoryBankId)}/stats", query: null, body: null, cancellationToken).ConfigureAwait(false);
+        if (options is null) throw new ArgumentNullException(nameof(options));
+        var query = new Dictionary<string, string?>
+        {
+            ["days"] = QueryInt(options.Days),
+            ["start_date"] = QueryText(options.StartDate),
+            ["end_date"] = QueryText(options.EndDate),
+        };
+        return await SendRawAsync(HttpMethod.Get, $"/memory_banks/{Uri.EscapeDataString(memoryBankId)}/stats", query, body: null, cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>Triggers compaction for a memory bank.</summary>
@@ -1672,9 +1769,19 @@ public sealed class SeclaiClient : IDisposable
     }
 
     /// <summary>Retrieves the last AI assistant conversation for memory banks.</summary>
-    public async Task<MemoryBankLastConversationResponse> GetMemoryBankAiLastConversationAsync(CancellationToken cancellationToken = default)
+    public Task<MemoryBankLastConversationResponse> GetMemoryBankAiLastConversationAsync(CancellationToken cancellationToken = default)
+        => GetMemoryBankAiLastConversationAsync(new AiLastConversationOptions(), cancellationToken);
+
+    /// <summary>Retrieves a page of the last AI assistant conversation for memory banks.</summary>
+    public async Task<MemoryBankLastConversationResponse> GetMemoryBankAiLastConversationAsync(AiLastConversationOptions options, CancellationToken cancellationToken = default)
     {
-        return await SendJsonAsync<MemoryBankLastConversationResponse>(HttpMethod.Get, "/memory_banks/ai-assistant/last-conversation", query: null, body: null, cancellationToken).ConfigureAwait(false);
+        if (options is null) throw new ArgumentNullException(nameof(options));
+        var query = new Dictionary<string, string?>
+        {
+            ["limit"] = QueryInt(options.Limit),
+            ["offset"] = QueryInt(options.Offset),
+        };
+        return await SendJsonAsync<MemoryBankLastConversationResponse>(HttpMethod.Get, "/memory_banks/ai-assistant/last-conversation", query, body: null, cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>Accepts an AI-generated memory bank suggestion.</summary>
@@ -1699,7 +1806,7 @@ public sealed class SeclaiClient : IDisposable
         return await SendJsonAsync<SourceResponse>(HttpMethod.Get, $"/sources/{Uri.EscapeDataString(sourceId)}", query: null, body: null, cancellationToken).ConfigureAwait(false);
     }
 
-    /// <summary>Updates a source. Only the properties set on <paramref name="body"/> are sent; a null property leaves that setting unchanged. To remove the retention window, use <see cref="ClearSourceRetentionAsync"/>.</summary>
+    /// <summary>Updates a source. Only the properties set on <paramref name="body"/> are sent; a null property leaves that setting unchanged. To remove the retention window, use <see cref="ClearSourceRetentionAsync"/>; to remove the spend limit, <see cref="ClearSourceSpendLimitAsync"/>.</summary>
     public async Task<SourceResponse> UpdateSourceAsync(string sourceId, UpdateSourceRequest body, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(sourceId)) throw new ArgumentException("sourceId is required", nameof(sourceId));
@@ -1711,6 +1818,13 @@ public sealed class SeclaiClient : IDisposable
     {
         if (string.IsNullOrWhiteSpace(sourceId)) throw new ArgumentException("sourceId is required", nameof(sourceId));
         return await SendJsonAsync<SourceResponse>(HttpMethod.Put, $"/sources/{Uri.EscapeDataString(sourceId)}", query: null, WithField(null, "retention_days", null), cancellationToken).ConfigureAwait(false);
+    }
+
+    /// <summary>Removes a source's spend limit. Sends an explicit null <c>max_credits_per_period</c> and leaves every other setting unchanged.</summary>
+    public async Task<SourceResponse> ClearSourceSpendLimitAsync(string sourceId, CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(sourceId)) throw new ArgumentException("sourceId is required", nameof(sourceId));
+        return await SendJsonAsync<SourceResponse>(HttpMethod.Put, $"/sources/{Uri.EscapeDataString(sourceId)}", query: null, WithField(null, "max_credits_per_period", null), cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>Deletes a source.</summary>
@@ -1909,9 +2023,16 @@ public sealed class SeclaiClient : IDisposable
     // ── Solutions ───────────────────────────────────────────────────────────
 
     /// <summary>Lists solutions.</summary>
-    public async Task<SolutionListResponse> ListSolutionsAsync(int? page = null, int? limit = null, string? sort = null, string? order = null, CancellationToken cancellationToken = default)
+    [OverloadResolutionPriority(1)]
+    public Task<SolutionListResponse> ListSolutionsAsync(int? page = null, int? limit = null, string? sort = null, string? order = null, CancellationToken cancellationToken = default)
+        => ListSolutionsAsync(new SolutionListOptions { Page = page, Limit = limit, Sort = sort, Order = order }, cancellationToken);
+
+    /// <summary>Lists solutions, filtered by <paramref name="options"/>.</summary>
+    public async Task<SolutionListResponse> ListSolutionsAsync(SolutionListOptions options, CancellationToken cancellationToken = default)
     {
-        var query = PaginationQuery(page, limit, sort, order);
+        if (options is null) throw new ArgumentNullException(nameof(options));
+        var query = PaginationQuery(options.Page, options.Limit, options.Sort, options.Order);
+        query["search"] = QueryText(options.Search);
         return await SendJsonAsync<SolutionListResponse>(HttpMethod.Get, "/solutions", query, body: null, cancellationToken).ConfigureAwait(false);
     }
 
@@ -2061,6 +2182,16 @@ public sealed class SeclaiClient : IDisposable
         return await SendListAsync<GovernanceConversationResponse>(HttpMethod.Get, "/governance/ai-assistant/conversations", query: null, cancellationToken).ConfigureAwait(false);
     }
 
+    /// <summary>Lists up to <paramref name="limit"/> governance AI assistant conversations (server default 20).</summary>
+    public async Task<List<GovernanceConversationResponse>> ListGovernanceAiConversationsAsync(int limit, CancellationToken cancellationToken = default)
+    {
+        var query = new Dictionary<string, string?>
+        {
+            ["limit"] = QueryInt(limit),
+        };
+        return await SendListAsync<GovernanceConversationResponse>(HttpMethod.Get, "/governance/ai-assistant/conversations", query, cancellationToken).ConfigureAwait(false);
+    }
+
     /// <summary>Accepts a governance AI plan.</summary>
     public async Task<GovernanceAiAcceptResponse> AcceptGovernanceAiPlanAsync(string conversationId, CancellationToken cancellationToken = default)
     {
@@ -2085,10 +2216,20 @@ public sealed class SeclaiClient : IDisposable
     /// <see cref="SeclaiClientOptions.ApiVersion"/> is <c>2026-07-27</c> or
     /// later. Accepted and dropped so existing call sites keep working.
     /// </remarks>
-    public async Task<JsonElement> ListAlertsAsync(int? page = null, int? limit = null, string? status = null, string? severity = null, CancellationToken cancellationToken = default)
+    [OverloadResolutionPriority(1)]
+    public Task<JsonElement> ListAlertsAsync(int? page = null, int? limit = null, string? status = null, string? severity = null, CancellationToken cancellationToken = default)
+        => ListAlertsAsync(new AlertListOptions { Page = page, Limit = limit, Status = status }, cancellationToken);
+
+    /// <summary>Lists alerts, filtered by <paramref name="options"/>.</summary>
+    public async Task<JsonElement> ListAlertsAsync(AlertListOptions options, CancellationToken cancellationToken = default)
     {
-        var query = PaginationQuery(page, limit);
-        query["status"] = string.IsNullOrWhiteSpace(status) ? null : status;
+        if (options is null) throw new ArgumentNullException(nameof(options));
+        var query = PaginationQuery(options.Page, options.Limit);
+        query["status"] = QueryText(options.Status);
+        query["agent_id"] = QueryText(options.AgentId);
+        query["source_connection_id"] = QueryText(options.SourceConnectionId);
+        query["time_from"] = QueryTime(options.TimeFrom);
+        query["time_to"] = QueryTime(options.TimeTo);
         return await SendRawAsync(HttpMethod.Get, "/alerts", query, body: null, cancellationToken).ConfigureAwait(false);
     }
 
@@ -2138,15 +2279,27 @@ public sealed class SeclaiClient : IDisposable
     /// instead, so the top-level key changes — and it returns one page, 50 items
     /// unless <c>limit</c> is passed, where the default returns every configuration.
     /// </remarks>
+    [OverloadResolutionPriority(1)]
     public async Task<JsonElement> ListAlertConfigsAsync(int? page = null, int? limit = null, CancellationToken cancellationToken = default)
     {
-        return (await ListAlertConfigsResponseAsync(page, limit, cancellationToken).ConfigureAwait(false)).ToJson();
+        return (await ListAlertConfigsResponseAsync(new AlertConfigListOptions { Page = page, Limit = limit }, cancellationToken).ConfigureAwait(false)).ToJson();
+    }
+
+    /// <summary>Lists alert configurations, filtered by <paramref name="options"/>.</summary>
+    /// <remarks>The response shape follows <see cref="SeclaiClientOptions.ApiVersion"/> as described on the other overload.</remarks>
+    public async Task<JsonElement> ListAlertConfigsAsync(AlertConfigListOptions options, CancellationToken cancellationToken = default)
+    {
+        return (await ListAlertConfigsResponseAsync(options, cancellationToken).ConfigureAwait(false)).ToJson();
     }
 
     // The one definition of this request; the Typed form reads the same response.
-    internal async Task<RawResponse> ListAlertConfigsResponseAsync(int? page, int? limit, CancellationToken cancellationToken)
+    internal async Task<RawResponse> ListAlertConfigsResponseAsync(AlertConfigListOptions options, CancellationToken cancellationToken)
     {
-        var query = PaginationQuery(page, limit);
+        if (options is null) throw new ArgumentNullException(nameof(options));
+        var query = PaginationQuery(options.Page, options.Limit);
+        query["agent_id"] = QueryText(options.AgentId);
+        query["source_connection_id"] = QueryText(options.SourceConnectionId);
+        query["scope"] = QueryText(options.Scope);
         return await SendRawResponseAsync(HttpMethod.Get, "/alerts/configs", query, body: null, cancellationToken).ConfigureAwait(false);
     }
 
@@ -2180,9 +2333,19 @@ public sealed class SeclaiClient : IDisposable
     // ── Alert Preferences ───────────────────────────────────────────────────
 
     /// <summary>Lists organization alert preferences.</summary>
-    public async Task<OrganizationAlertPreferenceListResponse> ListOrganizationAlertPreferencesAsync(CancellationToken cancellationToken = default)
+    public Task<OrganizationAlertPreferenceListResponse> ListOrganizationAlertPreferencesAsync(CancellationToken cancellationToken = default)
+        => ListOrganizationAlertPreferencesAsync(new OrganizationAlertPreferenceListOptions(), cancellationToken);
+
+    /// <summary>Lists organization alert preferences, filtered by <paramref name="options"/>.</summary>
+    public async Task<OrganizationAlertPreferenceListResponse> ListOrganizationAlertPreferencesAsync(OrganizationAlertPreferenceListOptions options, CancellationToken cancellationToken = default)
     {
-        return await SendPageAsync<OrganizationAlertPreferenceListResponse, JsonElement>(HttpMethod.Get, "/alerts/organization-preferences/list", query: null, body: null, "preferences", cancellationToken).ConfigureAwait(false);
+        if (options is null) throw new ArgumentNullException(nameof(options));
+        var query = new Dictionary<string, string?>
+        {
+            ["organization_id"] = QueryText(options.OrganizationId),
+            ["include_defaults"] = QueryBool(options.IncludeDefaults),
+        };
+        return await SendPageAsync<OrganizationAlertPreferenceListResponse, JsonElement>(HttpMethod.Get, "/alerts/organization-preferences/list", query, body: null, "preferences", cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>Updates an organization alert preference.</summary>
@@ -2206,19 +2369,32 @@ public sealed class SeclaiClient : IDisposable
     /// <c>{data, pagination}</c> envelope once <see cref="SeclaiClientOptions.ApiVersion"/> is
     /// <c>2026-07-27</c> or later. The <see cref="Typed"/> form reads both.
     /// </remarks>
+    [OverloadResolutionPriority(1)]
     public async Task<JsonElement> ListModelAlertsAsync(int? page = null, int? limit = null, CancellationToken cancellationToken = default)
     {
-        return (await ListModelAlertsResponseAsync(page, limit, cancellationToken).ConfigureAwait(false)).ToJson();
+        return (await ListModelAlertsResponseAsync(new ModelAlertListOptions { Page = page, Limit = limit }, cancellationToken).ConfigureAwait(false)).ToJson();
+    }
+
+    /// <summary>Lists model alerts, filtered by <paramref name="options"/>.</summary>
+    /// <remarks>Paging and the response shape are as described on the other overload.</remarks>
+    public async Task<JsonElement> ListModelAlertsAsync(ModelAlertListOptions options, CancellationToken cancellationToken = default)
+    {
+        return (await ListModelAlertsResponseAsync(options, cancellationToken).ConfigureAwait(false)).ToJson();
     }
 
     // The one definition of this request; the Typed form reads the same response.
-    internal async Task<RawResponse> ListModelAlertsResponseAsync(int? page, int? limit, CancellationToken cancellationToken)
+    internal async Task<RawResponse> ListModelAlertsResponseAsync(ModelAlertListOptions options, CancellationToken cancellationToken)
     {
+        if (options is null) throw new ArgumentNullException(nameof(options));
+        var page = options.Page;
+        var limit = options.Limit;
         var effectiveLimit = limit is > 0 ? limit.Value : 50;
         var query = new Dictionary<string, string?>
         {
             ["offset"] = page is > 1 ? ((page.Value - 1) * effectiveLimit).ToString() : null,
             ["limit"] = limit is > 0 ? limit.Value.ToString() : null,
+            ["agent_id"] = QueryText(options.AgentId),
+            ["unread_only"] = QueryBool(options.UnreadOnly),
         };
         return await SendRawResponseAsync(HttpMethod.Get, "/models/alerts", query, body: null, cancellationToken).ConfigureAwait(false);
     }
@@ -2243,10 +2419,23 @@ public sealed class SeclaiClient : IDisposable
     }
 
     /// <summary>Retrieves recommendations for a model.</summary>
-    public async Task<JsonElement> GetModelRecommendationsAsync(string modelId, CancellationToken cancellationToken = default)
+    public Task<JsonElement> GetModelRecommendationsAsync(string modelId, CancellationToken cancellationToken = default)
+        => GetModelRecommendationsAsync(modelId, new ModelRecommendationOptions(), cancellationToken);
+
+    /// <summary>Retrieves recommendations for a model, limited to models that meet <paramref name="options"/>.</summary>
+    public async Task<JsonElement> GetModelRecommendationsAsync(string modelId, ModelRecommendationOptions options, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(modelId)) throw new ArgumentException("modelId is required", nameof(modelId));
-        return await SendRawAsync(HttpMethod.Get, $"/models/{Uri.EscapeDataString(modelId)}/recommendations", query: null, body: null, cancellationToken).ConfigureAwait(false);
+        if (options is null) throw new ArgumentNullException(nameof(options));
+        var query = new Dictionary<string, string?>
+        {
+            ["require_tool_use"] = QueryBool(options.RequireToolUse),
+            ["require_structured_output"] = QueryBool(options.RequireStructuredOutput),
+            ["require_thinking"] = QueryBool(options.RequireThinking),
+            ["min_context_tokens"] = QueryInt(options.MinContextTokens),
+            ["min_output_tokens"] = QueryInt(options.MinOutputTokens),
+        };
+        return await SendRawAsync(HttpMethod.Get, $"/models/{Uri.EscapeDataString(modelId)}/recommendations", query, body: null, cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>Lists all enabled LLM models grouped by provider.</summary>
@@ -2255,19 +2444,30 @@ public sealed class SeclaiClient : IDisposable
     /// <c>{data, pagination}</c> envelope once <see cref="SeclaiClientOptions.ApiVersion"/> is
     /// <c>2026-07-27</c> or later. The <see cref="Typed"/> form reads both.
     /// </remarks>
+    [OverloadResolutionPriority(1)]
     public async Task<JsonElement> ListModelsAsync(string? provider = null, bool? supportsToolUse = null, bool? supportsThinking = null, CancellationToken cancellationToken = default)
     {
-        return (await ListModelsResponseAsync(provider, supportsToolUse, supportsThinking, cancellationToken).ConfigureAwait(false)).ToJson();
+        return (await ListModelsResponseAsync(new ModelListOptions { Provider = provider, SupportsToolUse = supportsToolUse, SupportsThinking = supportsThinking }, cancellationToken).ConfigureAwait(false)).ToJson();
+    }
+
+    /// <summary>Lists enabled LLM models grouped by provider, filtered by <paramref name="options"/>.</summary>
+    /// <remarks>The response shape is as described on the other overload.</remarks>
+    public async Task<JsonElement> ListModelsAsync(ModelListOptions options, CancellationToken cancellationToken = default)
+    {
+        return (await ListModelsResponseAsync(options, cancellationToken).ConfigureAwait(false)).ToJson();
     }
 
     // The one definition of this request; the Typed form reads the same response.
-    internal async Task<RawResponse> ListModelsResponseAsync(string? provider, bool? supportsToolUse, bool? supportsThinking, CancellationToken cancellationToken)
+    internal async Task<RawResponse> ListModelsResponseAsync(ModelListOptions options, CancellationToken cancellationToken)
     {
+        if (options is null) throw new ArgumentNullException(nameof(options));
         var query = new Dictionary<string, string?>
         {
-            ["provider"] = string.IsNullOrWhiteSpace(provider) ? null : provider,
-            ["supports_tool_use"] = supportsToolUse?.ToString().ToLowerInvariant(),
-            ["supports_thinking"] = supportsThinking?.ToString().ToLowerInvariant(),
+            ["provider"] = QueryText(options.Provider),
+            ["supports_tool_use"] = QueryBool(options.SupportsToolUse),
+            ["supports_thinking"] = QueryBool(options.SupportsThinking),
+            ["supports_input_media"] = QueryText(options.SupportsInputMedia),
+            ["supports_output_media"] = QueryText(options.SupportsOutputMedia),
         };
         return await SendRawResponseAsync(HttpMethod.Get, "/models", query, body: null, cancellationToken).ConfigureAwait(false);
     }
@@ -2407,9 +2607,19 @@ public sealed class SeclaiClient : IDisposable
     }
 
     /// <summary>Retrieves the last AI assistant memory bank conversation.</summary>
-    public async Task<MemoryBankLastConversationResponse> GetAiAssistantMemoryBankHistoryAsync(CancellationToken cancellationToken = default)
+    public Task<MemoryBankLastConversationResponse> GetAiAssistantMemoryBankHistoryAsync(CancellationToken cancellationToken = default)
+        => GetAiAssistantMemoryBankHistoryAsync(new AiLastConversationOptions(), cancellationToken);
+
+    /// <summary>Retrieves a page of the last AI assistant memory bank conversation.</summary>
+    public async Task<MemoryBankLastConversationResponse> GetAiAssistantMemoryBankHistoryAsync(AiLastConversationOptions options, CancellationToken cancellationToken = default)
     {
-        return await SendJsonAsync<MemoryBankLastConversationResponse>(HttpMethod.Get, "/ai-assistant/memory-bank/last-conversation", query: null, body: null, cancellationToken).ConfigureAwait(false);
+        if (options is null) throw new ArgumentNullException(nameof(options));
+        var query = new Dictionary<string, string?>
+        {
+            ["limit"] = QueryInt(options.Limit),
+            ["offset"] = QueryInt(options.Offset),
+        };
+        return await SendJsonAsync<MemoryBankLastConversationResponse>(HttpMethod.Get, "/ai-assistant/memory-bank/last-conversation", query, body: null, cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>Accepts a top-level AI assistant plan.</summary>
@@ -2486,6 +2696,40 @@ public sealed class SeclaiClient : IDisposable
         if (string.IsNullOrWhiteSpace(triggerId)) throw new ArgumentException("triggerId is required", nameof(triggerId));
         if (body is null) throw new ArgumentNullException(nameof(body));
         return await SendJsonAsync<AcceptedAttachmentsResponse>(HttpMethod.Put, $"/agents/{Uri.EscapeDataString(agentId)}/triggers/{Uri.EscapeDataString(triggerId)}/accepted-attachments", null, body, cancellationToken).ConfigureAwait(false);
+    }
+
+    // ── Agent Slack Triggers ──────────────────────────────────────────────────
+
+    /// <summary>
+    /// Sets the Slack connection, form, channels, visibility and conversation settings of an agent's
+    /// SLACK_COMMAND trigger, which people run from Slack with <c>/seclai</c> or the message shortcut.
+    /// A null property is left unchanged. To clear the form or the channels, send an empty list; to remove the
+    /// turn limit, use <see cref="ClearSlackTriggerMaxTurnsAsync"/>.
+    /// </summary>
+    /// <param name="agentId">Agent identifier.</param>
+    /// <param name="triggerId">The trigger's id, from <see cref="AgentSummaryResponse.TriggerId"/>.</param>
+    /// <param name="body">The settings to change.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    public async Task<SlackTriggerConfigResponse> SetSlackTriggerConfigAsync(string agentId, string triggerId, SetSlackTriggerConfigRequest body, CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(agentId)) throw new ArgumentException("agentId is required", nameof(agentId));
+        if (string.IsNullOrWhiteSpace(triggerId)) throw new ArgumentException("triggerId is required", nameof(triggerId));
+        if (body is null) throw new ArgumentNullException(nameof(body));
+        return await SendJsonAsync<SlackTriggerConfigResponse>(HttpMethod.Put, $"/agents/{Uri.EscapeDataString(agentId)}/triggers/{Uri.EscapeDataString(triggerId)}/slack-config", null, body, cancellationToken).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Removes the turn limit of an agent's SLACK_COMMAND trigger, so a thread may run any number of turns.
+    /// Sends an explicit null <c>max_turns</c> and leaves every other setting unchanged.
+    /// </summary>
+    /// <param name="agentId">Agent identifier.</param>
+    /// <param name="triggerId">The trigger's id, from <see cref="AgentSummaryResponse.TriggerId"/>.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    public async Task<SlackTriggerConfigResponse> ClearSlackTriggerMaxTurnsAsync(string agentId, string triggerId, CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(agentId)) throw new ArgumentException("agentId is required", nameof(agentId));
+        if (string.IsNullOrWhiteSpace(triggerId)) throw new ArgumentException("triggerId is required", nameof(triggerId));
+        return await SendJsonAsync<SlackTriggerConfigResponse>(HttpMethod.Put, $"/agents/{Uri.EscapeDataString(agentId)}/triggers/{Uri.EscapeDataString(triggerId)}/slack-config", null, WithField(null, "max_turns", null), cancellationToken).ConfigureAwait(false);
     }
     // ── API Version ───────────────────────────────────────────────────────────
 
