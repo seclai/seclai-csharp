@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace Seclai.Models;
@@ -19,13 +18,11 @@ public sealed class SetSlackTriggerConfigRequest
     public string? McpClientId { get; set; }
 
     /// <summary>
-    /// Form fields, each <c>{key, label, type, required, hint, choices, max_length}</c>. <c>type</c> is one of
-    /// <c>short_text</c>, <c>long_text</c>, <c>number</c>, <c>single_choice</c>, <c>multi_choice</c>,
-    /// <c>yes_no</c>, <c>date</c>, <c>slack_user</c> or <c>slack_channel</c>. Each value reaches the run as
+    /// The form a person fills in before a run (see <see cref="SlackFormField"/>). Each value reaches the run as
     /// <c>{{metadata.&lt;key&gt;}}</c>. An empty list removes the form; null leaves it unchanged.
     /// </summary>
     [JsonPropertyName("form")]
-    public List<Dictionary<string, JsonElement>>? Form { get; set; }
+    public List<SlackFormField>? Form { get; set; }
 
     /// <summary>The trigger's input template. Each <c>{{metadata.&lt;key&gt;}}</c> in it must be a form field key or a platform key; it is checked together with <see cref="Form"/>.</summary>
     [JsonPropertyName("input")]

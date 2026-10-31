@@ -247,8 +247,9 @@ compatibility; they will be deprecated and then removed in a future major.
 
 **Filters.** List methods whose endpoint takes filters beyond paging have an overload taking
 an options object (`AlertListOptions`, `ModelListOptions`, `AgentRunListOptions` and so on);
-the original signatures are unchanged. Set only the properties you need, and pass the object
-by type rather than a bare `null`, which no longer picks an overload:
+the original signatures are unchanged. Set only the properties you need. The options types
+are structs, so a bare `null` still binds to the original overload, as it did before. A bare
+`default` literal fits both and does not compile; pass `null` or name the argument:
 
 ```csharp
 var failed = await client.ListAgentRunsAsync("ag1", new AgentRunListOptions { Status = "failed", Limit = 20 });
@@ -517,9 +518,10 @@ clear a setting. The two properties where `null` itself is the value are still s
 marked `[JsonIgnore(Condition = JsonIgnoreCondition.Never)]`, and no model marks a
 property to be omitted, since the client's serializer omits every null. Upload `metadata`
 is your own data and is sent as written, nulls included. Where a stored value is removed by
-sending `null`, the client has a named way to do it: `ClearSourceRetentionAsync` removes a
-source's retention window, so content is kept indefinitely, `ClearSourceSpendLimitAsync`
-removes its spend limit,
+sending `null`, the client has a named way to do it: `ClearSourceFieldsAsync` removes a
+source's retention window (`SourceField.RetentionDays`, so content is kept indefinitely) or
+its spend limit (`SourceField.MaxCreditsPerPeriod`), `ClearSourceRetentionAsync` is the
+shorthand for the first, `ClearSlackTriggerMaxTurnsAsync` removes a Slack trigger's turn limit,
 `ClearEvaluationCriteriaFieldsAsync` clears evaluation-criteria fields (see
 [Evaluations](#evaluations)), and `CreateMemoryBankRequest.RetainIndefinitely` creates a
 memory bank that keeps entries indefinitely (see [Memory Banks](#memory-banks)):
@@ -534,7 +536,7 @@ await client.UpdateSourceAsync("s1", new UpdateSourceRequest
 {
     MaxCreditsPerPeriod = 500, SpendCapAction = "delete", SpendCapDeleteOrder = "oldest_added",
 });
-await client.ClearSourceSpendLimitAsync("s1");
+await client.ClearSourceFieldsAsync("s1", new[] { SourceField.MaxCreditsPerPeriod });
 ```
 
 ### Cloud Drives

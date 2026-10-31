@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
@@ -36,7 +35,6 @@ public sealed class SeclaiTypedClient
     }
 
     /// <inheritdoc cref="SeclaiClient.ListAlertsAsync(int?, int?, string?, string?, CancellationToken)"/>
-    [OverloadResolutionPriority(1)]
     public async Task<AlertListResponse> ListAlertsAsync(int? page = null, int? limit = null, string? status = null, string? severity = null, CancellationToken cancellationToken = default)
     {
         var raw = await _client.ListAlertsAsync(page, limit, status, severity, cancellationToken).ConfigureAwait(false);
@@ -86,7 +84,6 @@ public sealed class SeclaiTypedClient
     }
 
     /// <inheritdoc cref="SeclaiClient.ListAlertConfigsAsync(int?, int?, CancellationToken)"/>
-    [OverloadResolutionPriority(1)]
     public async Task<AlertConfigListResponse> ListAlertConfigsAsync(int? page = null, int? limit = null, CancellationToken cancellationToken = default)
     {
         var response = await _client.ListAlertConfigsResponseAsync(new AlertConfigListOptions { Page = page, Limit = limit }, cancellationToken).ConfigureAwait(false);
@@ -115,7 +112,6 @@ public sealed class SeclaiTypedClient
     }
 
     /// <inheritdoc cref="SeclaiClient.ListModelAlertsAsync(int?, int?, CancellationToken)"/>
-    [OverloadResolutionPriority(1)]
     public async Task<ModelAlertListResponse> ListModelAlertsAsync(int? page = null, int? limit = null, CancellationToken cancellationToken = default)
     {
         var response = await _client.ListModelAlertsResponseAsync(new ModelAlertListOptions { Page = page, Limit = limit }, cancellationToken).ConfigureAwait(false);
@@ -151,7 +147,6 @@ public sealed class SeclaiTypedClient
     }
 
     /// <inheritdoc cref="SeclaiClient.ListModelsAsync(string?, bool?, bool?, CancellationToken)"/>
-    [OverloadResolutionPriority(1)]
     public async Task<List<ProviderGroupResponse>> ListModelsAsync(string? provider = null, bool? supportsToolUse = null, bool? supportsThinking = null, CancellationToken cancellationToken = default)
     {
         var response = await _client.ListModelsResponseAsync(new ModelListOptions { Provider = provider, SupportsToolUse = supportsToolUse, SupportsThinking = supportsThinking }, cancellationToken).ConfigureAwait(false);

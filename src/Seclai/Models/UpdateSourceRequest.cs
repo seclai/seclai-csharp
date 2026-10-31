@@ -13,7 +13,7 @@ public sealed class UpdateSourceRequest
     [JsonPropertyName("polling")]
     public string? Polling { get; set; }
 
-    /// <summary>New retention period in days; content older than this is deleted permanently. Leave null to keep it. To remove the window, call <see cref="SeclaiClient.ClearSourceRetentionAsync"/>.</summary>
+    /// <summary>New retention period in days; content older than this is deleted permanently. Leave null to keep it. To remove the window, call <see cref="SeclaiClient.ClearSourceFieldsAsync"/> with <see cref="SourceField.RetentionDays"/>.</summary>
     [JsonPropertyName("retention_days")]
     public int? RetentionDays { get; set; }
 
@@ -49,7 +49,7 @@ public sealed class UpdateSourceRequest
     [JsonPropertyName("feed_attachments")]
     public List<string>? FeedAttachments { get; set; }
 
-    /// <summary>Spend limit: the credits this source may commit per billing period, counting what the account was charged for it this period plus the storage of what it holds until the period ends. Leave null to keep it. To remove the limit, call <see cref="SeclaiClient.ClearSourceSpendLimitAsync"/>.</summary>
+    /// <summary>Spend limit: the credits this source may commit per billing period, counting what the account was charged for it this period plus the storage of what it holds until the period ends. Leave null to keep it. To remove the limit, call <see cref="SeclaiClient.ClearSourceFieldsAsync"/> with <see cref="SourceField.MaxCreditsPerPeriod"/>.</summary>
     [JsonPropertyName("max_credits_per_period")]
     public double? MaxCreditsPerPeriod { get; set; }
 

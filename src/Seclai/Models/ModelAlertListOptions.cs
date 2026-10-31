@@ -1,7 +1,8 @@
 namespace Seclai.Models;
 
 /// <summary>Filters and paging for <see cref="SeclaiClient.ListModelAlertsAsync(ModelAlertListOptions, System.Threading.CancellationToken)"/>.</summary>
-public sealed class ModelAlertListOptions
+/// <remarks>A struct rather than a class so that a bare <c>null</c> argument cannot convert to it and binds to the method's original overload.</remarks>
+public struct ModelAlertListOptions
 {
     /// <summary>1-indexed page number, sent as the <c>offset</c> the endpoint declares.</summary>
     public int? Page { get; set; }

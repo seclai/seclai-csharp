@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace Seclai.Models;
@@ -22,7 +21,7 @@ public sealed class SlackTriggerConfigResponse
     public string? SlackTeamId { get; set; }
 
     [JsonPropertyName("form")]
-    public List<Dictionary<string, JsonElement>> Form { get; set; } = new();
+    public List<SlackFormField> Form { get; set; } = new();
 
     /// <summary><c>selected_channels</c> or <c>bot_channels</c>.</summary>
     [JsonPropertyName("scope")]

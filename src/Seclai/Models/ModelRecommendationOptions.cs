@@ -1,7 +1,8 @@
 namespace Seclai.Models;
 
 /// <summary>Requirements for <see cref="SeclaiClient.GetModelRecommendationsAsync(string, ModelRecommendationOptions, System.Threading.CancellationToken)"/>.</summary>
-public sealed class ModelRecommendationOptions
+/// <remarks>A struct rather than a class so that a bare <c>null</c> argument cannot convert to it and binds to the method's original overload.</remarks>
+public struct ModelRecommendationOptions
 {
     /// <summary>Only recommend models that support tool use.</summary>
     public bool? RequireToolUse { get; set; }

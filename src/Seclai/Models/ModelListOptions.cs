@@ -1,7 +1,8 @@
 namespace Seclai.Models;
 
 /// <summary>Filters for <see cref="SeclaiClient.ListModelsAsync(ModelListOptions, System.Threading.CancellationToken)"/>.</summary>
-public sealed class ModelListOptions
+/// <remarks>A struct rather than a class so that a bare <c>null</c> argument cannot convert to it and binds to the method's original overload.</remarks>
+public struct ModelListOptions
 {
     /// <summary>Only models from this provider.</summary>
     public string? Provider { get; set; }

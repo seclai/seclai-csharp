@@ -1,7 +1,8 @@
 namespace Seclai.Models;
 
 /// <summary>Filters, sorting and paging for <see cref="SeclaiClient.ListMemoryBanksAsync(MemoryBankListOptions, System.Threading.CancellationToken)"/>.</summary>
-public sealed class MemoryBankListOptions
+/// <remarks>A struct rather than a class so that a bare <c>null</c> argument cannot convert to it and binds to the method's original overload.</remarks>
+public struct MemoryBankListOptions
 {
     /// <summary>1-indexed page number.</summary>
     public int? Page { get; set; }
