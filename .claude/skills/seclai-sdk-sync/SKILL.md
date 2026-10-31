@@ -323,5 +323,6 @@ local conventions (`searchDocs` / `search_docs` / `SearchDocs`).
 ## Release
 
 The version comes from the merge commit message, read by `seclai/github-tag-action`
-with `DEFAULT_BUMP: patch`. A sync that adds endpoints needs `#minor` in the PR
-title, or it ships as a patch and the changelog heading will not match the tag.
+with `DEFAULT_BUMP: patch`. A sync that adds endpoints needs `#minor` in a commit
+message (not the PR title), or it ships as a patch and the changelog heading
+will not match the tag.
