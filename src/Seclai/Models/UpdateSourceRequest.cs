@@ -13,7 +13,7 @@ public sealed class UpdateSourceRequest
     [JsonPropertyName("polling")]
     public string? Polling { get; set; }
 
-    /// <summary>New retention period in days; content older than this is deleted permanently. Leave null to keep it. To remove the window, call <see cref="SeclaiClient.ClearSourceRetentionAsync"/>.</summary>
+    /// <summary>New retention period in days; content older than this is deleted permanently. Leave null to keep it. To remove the window, call <see cref="SeclaiClient.ClearSourceFieldsAsync"/> with <see cref="SourceField.RetentionDays"/>.</summary>
     [JsonPropertyName("retention_days")]
     public int? RetentionDays { get; set; }
 
@@ -48,4 +48,16 @@ public sealed class UpdateSourceRequest
     /// <summary>Kinds of file listed beside a feed item's content to attach to the item and index, on an RSS source. Subset of <c>enclosures</c>, <c>item_image</c>, <c>media_rss</c>; any other value is refused. Leave null to keep them.</summary>
     [JsonPropertyName("feed_attachments")]
     public List<string>? FeedAttachments { get; set; }
+
+    /// <summary>Spend limit: the credits this source may commit per billing period, counting what the account was charged for it this period plus the storage of what it holds until the period ends. Leave null to keep it. To remove the limit, call <see cref="SeclaiClient.ClearSourceFieldsAsync"/> with <see cref="SourceField.MaxCreditsPerPeriod"/>.</summary>
+    [JsonPropertyName("max_credits_per_period")]
+    public double? MaxCreditsPerPeriod { get; set; }
+
+    /// <summary>Once the spend limit is reached: <c>stop</c> refuses new content; <c>delete</c> deletes entries, in <see cref="SpendCapDeleteOrder"/>, to make room, and refuses new content as <c>stop</c> does once spend already fills the limit. Deleting does not return credits already spent. Leave null to keep it.</summary>
+    [JsonPropertyName("spend_cap_action")]
+    public string? SpendCapAction { get; set; }
+
+    /// <summary>Which entries <c>delete</c> removes first: <c>oldest_added</c>, <c>oldest_published</c> or <c>largest_first</c>. Leave null to keep it.</summary>
+    [JsonPropertyName("spend_cap_delete_order")]
+    public string? SpendCapDeleteOrder { get; set; }
 }

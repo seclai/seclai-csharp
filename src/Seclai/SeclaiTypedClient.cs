@@ -34,10 +34,17 @@ public sealed class SeclaiTypedClient
         return value;
     }
 
-    /// <inheritdoc cref="SeclaiClient.ListAlertsAsync"/>
+    /// <inheritdoc cref="SeclaiClient.ListAlertsAsync(int?, int?, string?, string?, CancellationToken)"/>
     public async Task<AlertListResponse> ListAlertsAsync(int? page = null, int? limit = null, string? status = null, string? severity = null, CancellationToken cancellationToken = default)
     {
         var raw = await _client.ListAlertsAsync(page, limit, status, severity, cancellationToken).ConfigureAwait(false);
+        return Deserialize<AlertListResponse>(raw);
+    }
+
+    /// <inheritdoc cref="SeclaiClient.ListAlertsAsync(AlertListOptions, CancellationToken)"/>
+    public async Task<AlertListResponse> ListAlertsAsync(AlertListOptions options, CancellationToken cancellationToken = default)
+    {
+        var raw = await _client.ListAlertsAsync(options, cancellationToken).ConfigureAwait(false);
         return Deserialize<AlertListResponse>(raw);
     }
 
@@ -76,10 +83,17 @@ public sealed class SeclaiTypedClient
         return Deserialize<AlertDetailResponse>(raw);
     }
 
-    /// <inheritdoc cref="SeclaiClient.ListAlertConfigsAsync"/>
+    /// <inheritdoc cref="SeclaiClient.ListAlertConfigsAsync(int?, int?, CancellationToken)"/>
     public async Task<AlertConfigListResponse> ListAlertConfigsAsync(int? page = null, int? limit = null, CancellationToken cancellationToken = default)
     {
-        var response = await _client.ListAlertConfigsResponseAsync(page, limit, cancellationToken).ConfigureAwait(false);
+        var response = await _client.ListAlertConfigsResponseAsync(new AlertConfigListOptions { Page = page, Limit = limit }, cancellationToken).ConfigureAwait(false);
+        return _client.ReadPage<AlertConfigListResponse, AlertConfigResponse>(response, "configs", "GET");
+    }
+
+    /// <inheritdoc cref="SeclaiClient.ListAlertConfigsAsync(AlertConfigListOptions, CancellationToken)"/>
+    public async Task<AlertConfigListResponse> ListAlertConfigsAsync(AlertConfigListOptions options, CancellationToken cancellationToken = default)
+    {
+        var response = await _client.ListAlertConfigsResponseAsync(options, cancellationToken).ConfigureAwait(false);
         return _client.ReadPage<AlertConfigListResponse, AlertConfigResponse>(response, "configs", "GET");
     }
 
@@ -97,10 +111,17 @@ public sealed class SeclaiTypedClient
         return Deserialize<AlertConfigResponse>(raw);
     }
 
-    /// <inheritdoc cref="SeclaiClient.ListModelAlertsAsync"/>
+    /// <inheritdoc cref="SeclaiClient.ListModelAlertsAsync(int?, int?, CancellationToken)"/>
     public async Task<ModelAlertListResponse> ListModelAlertsAsync(int? page = null, int? limit = null, CancellationToken cancellationToken = default)
     {
-        var response = await _client.ListModelAlertsResponseAsync(page, limit, cancellationToken).ConfigureAwait(false);
+        var response = await _client.ListModelAlertsResponseAsync(new ModelAlertListOptions { Page = page, Limit = limit }, cancellationToken).ConfigureAwait(false);
+        return _client.ReadPage<ModelAlertListResponse, ModelAlertResponse>(response, "alerts", "GET");
+    }
+
+    /// <inheritdoc cref="SeclaiClient.ListModelAlertsAsync(ModelAlertListOptions, CancellationToken)"/>
+    public async Task<ModelAlertListResponse> ListModelAlertsAsync(ModelAlertListOptions options, CancellationToken cancellationToken = default)
+    {
+        var response = await _client.ListModelAlertsResponseAsync(options, cancellationToken).ConfigureAwait(false);
         return _client.ReadPage<ModelAlertListResponse, ModelAlertResponse>(response, "alerts", "GET");
     }
 
@@ -111,17 +132,31 @@ public sealed class SeclaiTypedClient
         return Deserialize<UnreadCountResponse>(raw);
     }
 
-    /// <inheritdoc cref="SeclaiClient.GetModelRecommendationsAsync"/>
+    /// <inheritdoc cref="SeclaiClient.GetModelRecommendationsAsync(string, CancellationToken)"/>
     public async Task<ModelRecommendationsResponse> GetModelRecommendationsAsync(string modelId, CancellationToken cancellationToken = default)
     {
         var raw = await _client.GetModelRecommendationsAsync(modelId, cancellationToken).ConfigureAwait(false);
         return Deserialize<ModelRecommendationsResponse>(raw);
     }
 
-    /// <inheritdoc cref="SeclaiClient.ListModelsAsync"/>
+    /// <inheritdoc cref="SeclaiClient.GetModelRecommendationsAsync(string, ModelRecommendationOptions, CancellationToken)"/>
+    public async Task<ModelRecommendationsResponse> GetModelRecommendationsAsync(string modelId, ModelRecommendationOptions options, CancellationToken cancellationToken = default)
+    {
+        var raw = await _client.GetModelRecommendationsAsync(modelId, options, cancellationToken).ConfigureAwait(false);
+        return Deserialize<ModelRecommendationsResponse>(raw);
+    }
+
+    /// <inheritdoc cref="SeclaiClient.ListModelsAsync(string?, bool?, bool?, CancellationToken)"/>
     public async Task<List<ProviderGroupResponse>> ListModelsAsync(string? provider = null, bool? supportsToolUse = null, bool? supportsThinking = null, CancellationToken cancellationToken = default)
     {
-        var response = await _client.ListModelsResponseAsync(provider, supportsToolUse, supportsThinking, cancellationToken).ConfigureAwait(false);
+        var response = await _client.ListModelsResponseAsync(new ModelListOptions { Provider = provider, SupportsToolUse = supportsToolUse, SupportsThinking = supportsThinking }, cancellationToken).ConfigureAwait(false);
+        return _client.ReadList<ProviderGroupResponse>(response, legacyKey: null, "GET", out _);
+    }
+
+    /// <inheritdoc cref="SeclaiClient.ListModelsAsync(ModelListOptions, CancellationToken)"/>
+    public async Task<List<ProviderGroupResponse>> ListModelsAsync(ModelListOptions options, CancellationToken cancellationToken = default)
+    {
+        var response = await _client.ListModelsResponseAsync(options, cancellationToken).ConfigureAwait(false);
         return _client.ReadList<ProviderGroupResponse>(response, legacyKey: null, "GET", out _);
     }
 

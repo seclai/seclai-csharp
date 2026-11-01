@@ -1,5 +1,22 @@
 # Changelog
 
+## [1.7.0] - 2026-10-31
+
+### Changed
+
+- **Breaking:** Make a call that passes a bare `default` literal where a new options overload also fits, such as `ListAlertsAsync(default)` or `ListAgentRunsAsync("a1", default)`, ambiguous at compile time. Pass `null` or name the argument (`page: default`). A bare `null` still binds to the original overload on every compiler, since the options types are structs, and compiled code is unaffected
+- Move `SeclaiApiVersion.Latest` from `2026-10-21` to `2026-10-28`, which opts a client that sends `Latest` into one more version: an `if_else` or `switch` step's `AgentRunStepResponse.Output` is the result of the arm it took (its input when that arm is empty or it took none) rather than the decision object, so read the arm from the new `Decision`. It is a `const`, so code compiled against an earlier release keeps the old value until it is rebuilt
+
+### Added
+
+- Add `ListAgentExamplesAsync(query, useCase, page, limit)` to list the agent gallery, returning `AgentExampleListResponse`, and add `AgentTemplate`, `ResourceBindings` and `CreateMissingResources` to `CreateAgentRequest` to create an agent from a gallery entry. `AgentSummaryResponse` gains `CreatedResources`, the resources the create made
+- Add `SetSlackTriggerConfigAsync` to set the Slack connection, form, channels, visibility and conversation settings of an agent's SLACK_COMMAND trigger, with `SetSlackTriggerConfigRequest`, `SlackTriggerConfigResponse` and `SlackFormField` for each form field. An empty `Form` or `ChannelIds` clears it, and `ClearSlackTriggerMaxTurnsAsync` removes the turn limit
+- Add agent run limits: `MaxCreditsPerPeriod`, `MaxCreditsPerRun`, `MaxRunsPerDay`, `MaxRunsPerHour` and `MaxRunsTotal` on `AgentSummaryResponse` and `UpdateAgentRequest`, with a `SetMax…` flag for each on `UpdateAgentRequest` that removes the limit when its value is left null, and `ApplyImportRunLimits` to take the limits from an imported `AgentDefinition`
+- Add source spend limits: `MaxCreditsPerPeriod`, `SpendCapAction` and `SpendCapDeleteOrder` on `UpdateSourceRequest` and `SourceResponse`, `SpendCapReached` on `SourceResponse`, and `ClearSourceFieldsAsync` with `SourceField` to send a source setting as `null`, which removes the spend limit (`MaxCreditsPerPeriod`) or the retention window (`RetentionDays`); `ClearSourceRetentionAsync` now calls it. `ReleaseWaitingReason` on `SourceContentStatusResponse` says why an approved held item is still waiting
+- Add `Decision` to `AgentRunStepResponse`, the arm an `if_else` or `switch` step took
+- Add an options overload for every list or lookup whose endpoint takes filters this client did not send, leaving the existing signatures unchanged: `ListAgentRunsAsync` (`AgentRunListOptions.Status`), `ListEvaluationResultsAsync`, `ListAgentEvaluationResultsAsync`, `ListEvaluationRunsAsync` and `ListCompatibleRunsAsync` (status, step, flagged-only and time-range filters), `GetNonManualEvaluationSummaryAsync` (`Days`, `StartDate`, `EndDate`), `ListAlertsAsync` (agent, source connection and time range), `ListAlertConfigsAsync` (agent, source connection, `Scope`), `ListOrganizationAlertPreferencesAsync` (`OrganizationId`, `IncludeDefaults`), `ListMemoryBanksAsync` (`Type`), `GetMemoryBankStatsAsync` (period), `GetMemoryBankAiLastConversationAsync` and `GetAiAssistantMemoryBankHistoryAsync` (`Limit`, `Offset`), `ListModelsAsync` (`SupportsInputMedia`, `SupportsOutputMedia`), `ListModelAlertsAsync` (`AgentId`, `UnreadOnly`), `GetModelRecommendationsAsync` (capability and token minimums) and `ListSolutionsAsync` (`Search`), plus `ListGovernanceAiConversationsAsync(limit)`. The options overloads of `ListAlertsAsync`, `ListAlertConfigsAsync`, `ListModelAlertsAsync`, `GetModelRecommendationsAsync` and `ListModelsAsync` also have typed counterparts on `client.Typed`; the API does not declare a schema for `GetMemoryBankStatsAsync`, which stays `JsonElement`
+- Add the `SeclaiApiVersion.V2026_10_28` constant, so that version is accepted as `ApiVersion`
+
 ## [1.6.0] - 2026-10-21
 
 ### Changed
@@ -225,6 +242,7 @@ _Stable release. Packaging only; no API changes since 0.0.1._
 
 _Initial release._
 
+[1.7.0]: https://github.com/seclai/seclai-csharp/releases/tag/1.7.0
 [1.6.0]: https://github.com/seclai/seclai-csharp/releases/tag/1.6.0
 [1.5.1]: https://github.com/seclai/seclai-csharp/releases/tag/1.5.1
 [1.5.0]: https://github.com/seclai/seclai-csharp/releases/tag/1.5.0

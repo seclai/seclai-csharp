@@ -48,4 +48,16 @@ public sealed class CreateAgentRequest
     /// </summary>
     [JsonPropertyName("accepted_attachments")]
     public List<AcceptedAttachmentSlot>? AcceptedAttachments { get; set; }
+
+    /// <summary>Agent gallery entry to start from: a <see cref="SeclaiClient.ListAgentExamplesAsync"/> entry's <c>key</c>, or <c>blank</c>.</summary>
+    [JsonPropertyName("agent_template")]
+    public string? AgentTemplate { get; set; }
+
+    /// <summary>For an <see cref="AgentTemplate"/>: the existing resource to use for each of the template's resource slots, as <c>{slot: resource_id}</c>. <see cref="SeclaiClient.ListAgentExamplesAsync"/> lists each template's slots.</summary>
+    [JsonPropertyName("resource_bindings")]
+    public Dictionary<string, string>? ResourceBindings { get; set; }
+
+    /// <summary>For an <see cref="AgentTemplate"/>: create each creatable resource slot left out of <see cref="ResourceBindings"/>, and group the agent with them in a new solution. When false (the server default), an unbound slot the template needs is an error. The created ids come back in <see cref="AgentSummaryResponse.CreatedResources"/>.</summary>
+    [JsonPropertyName("create_missing_resources")]
+    public bool? CreateMissingResources { get; set; }
 }

@@ -47,4 +47,13 @@ public sealed class AgentRunStepResponse
     /// <summary>Authoring problems the step ran into, whether or not it then failed, such as a file name selector that matched none of its source's files.</summary>
     [JsonPropertyName("warnings")]
     public List<string>? Warnings { get; set; }
+
+    /// <summary>
+    /// The arm an <c>if_else</c> or <c>switch</c> step took: <c>then</c> or <c>else</c>, or the case name or
+    /// <c>else</c>. Null for other step types, until the step has decided, and when a <c>switch</c> took no arm.
+    /// From API version <c>2026-10-28</c> such a step's <see cref="Output"/> is the result of the arm it took
+    /// rather than the decision object, so read the decision here.
+    /// </summary>
+    [JsonPropertyName("decision")]
+    public string? Decision { get; set; }
 }

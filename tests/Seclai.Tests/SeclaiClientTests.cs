@@ -2740,10 +2740,10 @@ public sealed class SeclaiClientTests
                 SeclaiApiVersion.V2026_07_01, SeclaiApiVersion.V2026_07_27, SeclaiApiVersion.V2026_08_03, SeclaiApiVersion.V2026_08_21,
                 SeclaiApiVersion.V2026_09_28, SeclaiApiVersion.V2026_09_30, SeclaiApiVersion.V2026_10_03, SeclaiApiVersion.V2026_10_05,
                 SeclaiApiVersion.V2026_10_13, SeclaiApiVersion.V2026_10_16, SeclaiApiVersion.V2026_10_18, SeclaiApiVersion.V2026_10_19,
-                SeclaiApiVersion.V2026_10_21,
+                SeclaiApiVersion.V2026_10_21, SeclaiApiVersion.V2026_10_28,
             },
             SeclaiApiVersion.Known);
-        Assert.Equal(SeclaiApiVersion.V2026_10_21, SeclaiApiVersion.Latest);
+        Assert.Equal(SeclaiApiVersion.V2026_10_28, SeclaiApiVersion.Latest);
     }
 
     [Fact]
@@ -3921,6 +3921,441 @@ public sealed class SeclaiClientTests
         var res = await client.GetNonManualEvaluationSummaryAsync();
         Assert.Equal(2, res.Error);
         Assert.Equal(1, res.Failed);
+    }
+
+    // ── 2026-10-31 sync: agent gallery, Slack triggers, spend limits, list filters ──
+
+    private const string EmptyPage = "{\"data\":[],\"pagination\":{\"page\":1,\"limit\":20,\"total\":0,\"pages\":0,\"has_next\":false,\"has_prev\":false}}";
+
+    // Sends one request and returns its path and decoded query, so a test can assert the exact keys sent.
+    private static async Task<(string Path, Dictionary<string, string> Query)> CaptureGet(Func<SeclaiClient, Task> call, string response = "{}")
+    {
+        string? path = null;
+        var query = new Dictionary<string, string>();
+        var client = MakeClient(new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Get, req.Method);
+            path = req.RequestUri!.AbsolutePath;
+            foreach (var part in req.RequestUri.Query.TrimStart('?').Split('&', StringSplitOptions.RemoveEmptyEntries))
+            {
+                var kv = part.Split('=', 2);
+                query.Add(Uri.UnescapeDataString(kv[0]), Uri.UnescapeDataString(kv[1]));
+            }
+            return JsonResponse(response);
+        }));
+        await call(client);
+        return (path!, query);
+    }
+
+    private static readonly DateTimeOffset T0 = new(2026, 10, 1, 12, 0, 0, TimeSpan.Zero);
+    private static readonly DateTimeOffset T1 = new(2026, 10, 2, 8, 30, 0, TimeSpan.FromHours(2));
+
+    private static void AssertQuery(Dictionary<string, string> actual, params (string Key, string Value)[] expected)
+    {
+        Assert.Equal(
+            expected.OrderBy(e => e.Key, StringComparer.Ordinal).Select(e => $"{e.Key}={e.Value}"),
+            actual.OrderBy(e => e.Key, StringComparer.Ordinal).Select(e => $"{e.Key}={e.Value}"));
+    }
+
+    [Fact]
+    public async Task ListAgentExamples_SendsFiltersAndReadsEnvelope()
+    {
+        var (path, query) = await CaptureGet(
+            c => c.ListAgentExamplesAsync(query: "support bot", useCase: "customer_support", page: 2, limit: 10),
+            "{\"data\":[{\"key\":\"support_triage\",\"name\":\"Support triage\"}],\"pagination\":{\"page\":2,\"limit\":10,\"total\":11,\"pages\":2,\"has_next\":false,\"has_prev\":true}}");
+        Assert.Equal("/agents/examples", path);
+        AssertQuery(query, ("query", "support bot"), ("use_case", "customer_support"), ("page", "2"), ("limit", "10"));
+
+        var client = MakeClient(new FakeHttpMessageHandler(_ => JsonResponse(
+            "{\"data\":[{\"key\":\"support_triage\"}],\"pagination\":{\"page\":1,\"limit\":20,\"total\":1,\"pages\":1,\"has_next\":false,\"has_prev\":false}}")));
+        var res = await client.ListAgentExamplesAsync();
+        Assert.Equal("support_triage", Assert.Single(res.Data).GetProperty("key").GetString());
+        Assert.Equal(1, res.Pagination!.Total);
+    }
+
+    [Fact]
+    public async Task ListAgentExamples_SendsNoQueryByDefault()
+    {
+        var (_, query) = await CaptureGet(c => c.ListAgentExamplesAsync(), EmptyPage);
+        Assert.Empty(query);
+    }
+
+    [Fact]
+    public async Task SetSlackTriggerConfig_PutsOnlySetPropertiesAndReadsResponse()
+    {
+        string? body = null;
+        var client = MakeClient(new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Put, req.Method);
+            Assert.Equal("/agents/a1/triggers/t1/slack-config", req.RequestUri!.AbsolutePath);
+            body = req.Content!.ReadAsStringAsync().GetAwaiter().GetResult();
+            return JsonResponse("{\"trigger_id\":\"t1\",\"agent_id\":\"a1\",\"mcp_client_id\":\"m1\",\"slack_team_id\":\"T1\","
+                + "\"form\":[{\"key\":\"topic\",\"label\":\"Topic\",\"type\":\"short_text\"}],\"scope\":\"selected_channels\",\"allow_dms\":true,"
+                + "\"activation\":\"channel_opt_in\",\"visibility\":\"private\",\"start_without_form\":true,\"turns_enabled\":true,\"turns_anyone\":true,"
+                + "\"max_turns\":5,\"include_invoker_email\":true,\"notify_failure_after_answer\":true,\"channel_ids\":[\"C1\"],\"missing_scopes\":[\"files:read\"]}");
+        }));
+
+        var res = await client.SetSlackTriggerConfigAsync("a1", "t1", new SetSlackTriggerConfigRequest
+        {
+            McpClientId = "m1",
+            Scope = "selected_channels",
+            ChannelIds = new List<string> { "C1" },
+            Visibility = "private",
+            TurnsEnabled = true,
+            MaxTurns = 5,
+        });
+
+        Assert.Equal("{\"mcp_client_id\":\"m1\",\"scope\":\"selected_channels\",\"channel_ids\":[\"C1\"],\"visibility\":\"private\",\"turns_enabled\":true,\"max_turns\":5}", body);
+        Assert.Equal("t1", res.TriggerId);
+        Assert.Equal("a1", res.AgentId);
+        Assert.Equal("m1", res.McpClientId);
+        Assert.Equal("T1", res.SlackTeamId);
+        Assert.Equal("topic", Assert.Single(res.Form).Key);
+        Assert.Equal("selected_channels", res.Scope);
+        Assert.True(res.AllowDms);
+        Assert.Equal("channel_opt_in", res.Activation);
+        Assert.Equal("private", res.Visibility);
+        Assert.True(res.StartWithoutForm);
+        Assert.True(res.TurnsEnabled);
+        Assert.True(res.TurnsAnyone);
+        Assert.Equal(5, res.MaxTurns);
+        Assert.True(res.IncludeInvokerEmail);
+        Assert.True(res.NotifyFailureAfterAnswer);
+        Assert.Equal(new[] { "C1" }, res.ChannelIds);
+        Assert.Equal(new[] { "files:read" }, res.MissingScopes);
+    }
+
+    [Fact]
+    public async Task SetSlackTriggerConfig_EmptyRequestSendsEmptyObject()
+    {
+        string? body = null;
+        var client = MakeClient(new FakeHttpMessageHandler(req =>
+        {
+            body = req.Content!.ReadAsStringAsync().GetAwaiter().GetResult();
+            return JsonResponse("{\"trigger_id\":\"t1\",\"agent_id\":\"a1\"}");
+        }));
+        await client.SetSlackTriggerConfigAsync("a1", "t1", new SetSlackTriggerConfigRequest());
+        Assert.Equal("{}", body);
+        await Assert.ThrowsAsync<ArgumentNullException>(() => client.SetSlackTriggerConfigAsync("a1", "t1", null!));
+        await Assert.ThrowsAsync<ArgumentException>(() => client.SetSlackTriggerConfigAsync("a1", " ", new SetSlackTriggerConfigRequest()));
+    }
+
+    [Fact]
+    public async Task SetSlackTriggerConfig_EmptyListsAreSentToClearFormAndChannels()
+    {
+        string? body = null;
+        var client = MakeClient(new FakeHttpMessageHandler(req =>
+        {
+            body = req.Content!.ReadAsStringAsync().GetAwaiter().GetResult();
+            return JsonResponse("{\"trigger_id\":\"t1\",\"agent_id\":\"a1\"}");
+        }));
+        await client.SetSlackTriggerConfigAsync("a1", "t1", new SetSlackTriggerConfigRequest { Form = new(), ChannelIds = new() });
+        Assert.Equal("{\"form\":[],\"channel_ids\":[]}", body);
+    }
+
+    [Fact]
+    public async Task BareNullArgument_BindsToTheOriginalOverload()
+    {
+        // The options types are structs, so null cannot convert to them and a bare null
+        // binds to the 1.6.0 overload on every compiler, sending what it sent before.
+        var paths = new List<string>();
+        var client = MakeClient(new FakeHttpMessageHandler(req =>
+        {
+            paths.Add(req.RequestUri!.PathAndQuery);
+            return JsonResponse("{\"data\":[],\"total\":0}");
+        }));
+        await client.ListAlertsAsync(null);
+        await client.ListAgentRunsAsync("a1", null);
+        await client.ListSolutionsAsync(null);
+        await client.GetNonManualEvaluationSummaryAsync(null);
+        await client.Typed.ListAlertsAsync(null);
+        await client.ListMemoryBanksAsync(null);
+        await client.ListModelsAsync(null);
+        Assert.Equal(new[] { "/alerts", "/agents/a1/runs", "/solutions", "/agents/evaluation-results/non-manual-summary", "/alerts", "/memory_banks", "/models" }, paths);
+    }
+
+    [Fact]
+    public async Task ClearSlackTriggerMaxTurns_SendsExplicitNull()
+    {
+        string? body = null;
+        var client = MakeClient(new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Put, req.Method);
+            Assert.Equal("/agents/a1/triggers/t1/slack-config", req.RequestUri!.AbsolutePath);
+            body = req.Content!.ReadAsStringAsync().GetAwaiter().GetResult();
+            return JsonResponse("{\"trigger_id\":\"t1\",\"agent_id\":\"a1\",\"max_turns\":null}");
+        }));
+        var result = await client.ClearSlackTriggerMaxTurnsAsync("a1", "t1");
+        Assert.Equal("{\"max_turns\":null}", body);
+        Assert.Null(result.MaxTurns);
+        await Assert.ThrowsAsync<ArgumentException>(() => client.ClearSlackTriggerMaxTurnsAsync(" ", "t1"));
+        await Assert.ThrowsAsync<ArgumentException>(() => client.ClearSlackTriggerMaxTurnsAsync("a1", ""));
+    }
+
+    [Fact]
+    public async Task ClearSourceFields_SendsEachFieldAsExplicitNull()
+    {
+        var bodies = new List<string>();
+        var client = MakeClient(new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Put, req.Method);
+            Assert.Equal("/sources/s1", req.RequestUri!.AbsolutePath);
+            bodies.Add(req.Content!.ReadAsStringAsync().GetAwaiter().GetResult());
+            return JsonResponse("{\"id\":\"s1\",\"max_credits_per_period\":null}");
+        }));
+        await client.ClearSourceFieldsAsync("s1", new[] { SourceField.MaxCreditsPerPeriod });
+        await client.ClearSourceFieldsAsync("s1", new[] { SourceField.RetentionDays, SourceField.MaxCreditsPerPeriod });
+        Assert.Equal(new[]
+        {
+            "{\"max_credits_per_period\":null}",
+            "{\"retention_days\":null,\"max_credits_per_period\":null}",
+        }, bodies);
+
+        await Assert.ThrowsAsync<ArgumentException>(() => client.ClearSourceFieldsAsync("s1", Array.Empty<SourceField>()));
+        await Assert.ThrowsAsync<ArgumentException>(() => client.ClearSourceFieldsAsync("s1", null!));
+        await Assert.ThrowsAsync<ArgumentException>(() => client.ClearSourceFieldsAsync("s1", new[] { (SourceField)99 }));
+        await Assert.ThrowsAsync<ArgumentException>(() => client.ClearSourceFieldsAsync(" ", new[] { SourceField.RetentionDays }));
+        Assert.Equal(2, bodies.Count);
+    }
+
+    [Fact]
+    public async Task SpendLimitAndAgentTemplateFields_AreSentWhenSet()
+    {
+        var bodies = new List<string>();
+        var client = MakeClient(new FakeHttpMessageHandler(req =>
+        {
+            bodies.Add(req.Content!.ReadAsStringAsync().GetAwaiter().GetResult());
+            return JsonResponse("{\"id\":\"x\",\"name\":\"n\"}");
+        }));
+        await client.UpdateSourceAsync("s1", new UpdateSourceRequest { MaxCreditsPerPeriod = 12.5, SpendCapAction = "delete", SpendCapDeleteOrder = "oldest_published" });
+        await client.CreateAgentAsync(new CreateAgentRequest
+        {
+            Name = "n",
+            AgentTemplate = "support_triage",
+            ResourceBindings = new Dictionary<string, string> { ["knowledge_base"] = "kb1" },
+            CreateMissingResources = true,
+        });
+        await client.UpdateAgentAsync("a1", new UpdateAgentRequest { MaxRunsPerDay = 100, SetMaxRunsTotal = true, ApplyImportRunLimits = true });
+
+        Assert.Equal("{\"max_credits_per_period\":12.5,\"spend_cap_action\":\"delete\",\"spend_cap_delete_order\":\"oldest_published\"}", bodies[0]);
+        Assert.Equal("{\"name\":\"n\",\"agent_template\":\"support_triage\",\"resource_bindings\":{\"knowledge_base\":\"kb1\"},\"create_missing_resources\":true}", bodies[1]);
+        Assert.Equal("{\"apply_import_run_limits\":true,\"max_runs_per_day\":100,\"set_max_runs_total\":true}", bodies[2]);
+    }
+
+    [Fact]
+    public void NewResponseFields_AreRead()
+    {
+        var options = ClientJsonOptions();
+
+        var agent = JsonSerializer.Deserialize<AgentSummaryResponse>(
+            "{\"id\":\"a1\",\"name\":\"n\",\"solution_id\":\"sol1\",\"created_resources\":{\"knowledge_base\":\"kb1\"},"
+            + "\"max_credits_per_period\":50.5,\"max_credits_per_run\":2.5,\"max_runs_per_day\":10,\"max_runs_per_hour\":3,\"max_runs_total\":1000}", options)!;
+        Assert.Equal("sol1", agent.SolutionId);
+        Assert.Equal("kb1", agent.CreatedResources!["knowledge_base"]);
+        Assert.Equal(50.5, agent.MaxCreditsPerPeriod);
+        Assert.Equal(2.5, agent.MaxCreditsPerRun);
+        Assert.Equal(10, agent.MaxRunsPerDay);
+        Assert.Equal(3, agent.MaxRunsPerHour);
+        Assert.Equal(1000, agent.MaxRunsTotal);
+
+        var source = JsonSerializer.Deserialize<SourceResponse>(
+            "{\"id\":\"s1\",\"max_credits_per_period\":20.0,\"spend_cap_action\":\"stop\",\"spend_cap_delete_order\":\"largest_first\",\"spend_cap_reached\":true}", options)!;
+        Assert.Equal(20.0, source.MaxCreditsPerPeriod);
+        Assert.Equal("stop", source.SpendCapAction);
+        Assert.Equal("largest_first", source.SpendCapDeleteOrder);
+        Assert.True(source.SpendCapReached);
+
+        var step = JsonSerializer.Deserialize<AgentRunStepResponse>("{\"agent_step_id\":\"st1\",\"decision\":\"then\"}", options)!;
+        Assert.Equal("then", step.Decision);
+
+        var content = JsonSerializer.Deserialize<SourceContentStatusResponse>("{\"content_version_id\":\"cv1\",\"release_waiting_reason\":\"spend_limit\"}", options)!;
+        Assert.Equal("spend_limit", content.ReleaseWaitingReason);
+    }
+
+    // Each options overload sends every filter it carries under the key the spec declares.
+    [Fact]
+    public async Task OptionsOverloads_SendEveryDeclaredQueryParam()
+    {
+        var (path, q) = await CaptureGet(c => c.ListAgentRunsAsync("a1", new AgentRunListOptions { Page = 2, Limit = 5, Status = "failed" }));
+        Assert.Equal("/agents/a1/runs", path);
+        AssertQuery(q, ("page", "2"), ("limit", "5"), ("status", "failed"));
+
+        (path, q) = await CaptureGet(c => c.ListEvaluationResultsAsync("ec1", new EvaluationResultListOptions { Page = 1, Limit = 20, Status = "failed", FlaggedOnly = true, TimeFrom = T0, TimeTo = T1 }), EmptyPage);
+        Assert.Equal("/agents/evaluation-criteria/ec1/results", path);
+        AssertQuery(q, ("page", "1"), ("limit", "20"), ("status", "failed"), ("flagged_only", "true"),
+            ("time_from", "2026-10-01T12:00:00.000000Z"), ("time_to", "2026-10-02T06:30:00.000000Z"));
+
+        (path, q) = await CaptureGet(c => c.ListCompatibleRunsAsync("ec1", new CompatibleRunListOptions { Limit = 7, StartedAfter = T0 }), EmptyPage);
+        Assert.Equal("/agents/evaluation-criteria/ec1/compatible-runs", path);
+        AssertQuery(q, ("limit", "7"), ("started_after", "2026-10-01T12:00:00.000000Z"));
+
+        (path, q) = await CaptureGet(c => c.ListAgentEvaluationResultsAsync("a1", new AgentEvaluationResultListOptions { Status = "passed", Step = "s1", FlaggedOnly = false, TimeFrom = T0, TimeTo = T0 }), EmptyPage);
+        Assert.Equal("/agents/a1/evaluation-results", path);
+        AssertQuery(q, ("status", "passed"), ("step", "s1"), ("flagged_only", "false"),
+            ("time_from", "2026-10-01T12:00:00.000000Z"), ("time_to", "2026-10-01T12:00:00.000000Z"));
+
+        (path, q) = await CaptureGet(c => c.ListEvaluationRunsAsync("a1", new EvaluationRunListOptions { Page = 3, Status = "completed", Step = "s2", TimeFrom = T0, TimeTo = T1 }), EmptyPage);
+        Assert.Equal("/agents/a1/evaluation-runs", path);
+        AssertQuery(q, ("page", "3"), ("status", "completed"), ("step", "s2"),
+            ("time_from", "2026-10-01T12:00:00.000000Z"), ("time_to", "2026-10-02T06:30:00.000000Z"));
+
+        (path, q) = await CaptureGet(c => c.GetNonManualEvaluationSummaryAsync(new NonManualEvaluationSummaryOptions { AgentId = "a1", Days = 7, StartDate = "2026-10-01", EndDate = "2026-10-07" }));
+        Assert.Equal("/agents/evaluation-results/non-manual-summary", path);
+        AssertQuery(q, ("agent_id", "a1"), ("days", "7"), ("start_date", "2026-10-01"), ("end_date", "2026-10-07"));
+
+        (path, q) = await CaptureGet(c => c.GetAiAssistantMemoryBankHistoryAsync(new AiLastConversationOptions { Limit = 3, Offset = 6 }));
+        Assert.Equal("/ai-assistant/memory-bank/last-conversation", path);
+        AssertQuery(q, ("limit", "3"), ("offset", "6"));
+
+        (path, q) = await CaptureGet(c => c.GetMemoryBankAiLastConversationAsync(new AiLastConversationOptions { Limit = 4, Offset = 2 }));
+        Assert.Equal("/memory_banks/ai-assistant/last-conversation", path);
+        AssertQuery(q, ("limit", "4"), ("offset", "2"));
+
+        (path, q) = await CaptureGet(c => c.ListAlertsAsync(new AlertListOptions { Page = 2, Limit = 10, Status = "open", AgentId = "a1", SourceConnectionId = "s1", TimeFrom = T0, TimeTo = T1 }));
+        Assert.Equal("/alerts", path);
+        AssertQuery(q, ("page", "2"), ("limit", "10"), ("status", "open"), ("agent_id", "a1"), ("source_connection_id", "s1"),
+            ("time_from", "2026-10-01T12:00:00.000000Z"), ("time_to", "2026-10-02T06:30:00.000000Z"));
+
+        (path, q) = await CaptureGet(c => c.ListAlertConfigsAsync(new AlertConfigListOptions { Page = 1, Limit = 50, AgentId = "a1", SourceConnectionId = "s1", Scope = "source" }));
+        Assert.Equal("/alerts/configs", path);
+        AssertQuery(q, ("page", "1"), ("limit", "50"), ("agent_id", "a1"), ("source_connection_id", "s1"), ("scope", "source"));
+
+        (path, q) = await CaptureGet(c => c.ListOrganizationAlertPreferencesAsync(new OrganizationAlertPreferenceListOptions { OrganizationId = "o1", IncludeDefaults = true }), EmptyPage);
+        Assert.Equal("/alerts/organization-preferences/list", path);
+        AssertQuery(q, ("organization_id", "o1"), ("include_defaults", "true"));
+
+        (path, q) = await CaptureGet(c => c.ListGovernanceAiConversationsAsync(15), "[]");
+        Assert.Equal("/governance/ai-assistant/conversations", path);
+        AssertQuery(q, ("limit", "15"));
+
+        (path, q) = await CaptureGet(c => c.ListMemoryBanksAsync(new MemoryBankListOptions { Page = 1, Limit = 5, Sort = "name", Order = "asc", Type = "conversation" }), EmptyPage);
+        Assert.Equal("/memory_banks", path);
+        AssertQuery(q, ("page", "1"), ("limit", "5"), ("sort", "name"), ("order", "asc"), ("type", "conversation"));
+
+        (path, q) = await CaptureGet(c => c.GetMemoryBankStatsAsync("mb1", new MemoryBankStatsOptions { Days = 14, StartDate = "2026-10-01", EndDate = "2026-10-14" }));
+        Assert.Equal("/memory_banks/mb1/stats", path);
+        AssertQuery(q, ("days", "14"), ("start_date", "2026-10-01"), ("end_date", "2026-10-14"));
+
+        (path, q) = await CaptureGet(c => c.ListModelsAsync(new ModelListOptions { Provider = "anthropic", SupportsToolUse = true, SupportsThinking = false, SupportsInputMedia = "image", SupportsOutputMedia = "audio/mpeg" }), "[]");
+        Assert.Equal("/models", path);
+        AssertQuery(q, ("provider", "anthropic"), ("supports_tool_use", "true"), ("supports_thinking", "false"),
+            ("supports_input_media", "image"), ("supports_output_media", "audio/mpeg"));
+
+        (path, q) = await CaptureGet(c => c.ListModelAlertsAsync(new ModelAlertListOptions { Page = 3, Limit = 10, AgentId = "a1", UnreadOnly = true }));
+        Assert.Equal("/models/alerts", path);
+        AssertQuery(q, ("offset", "20"), ("limit", "10"), ("agent_id", "a1"), ("unread_only", "true"));
+
+        (path, q) = await CaptureGet(c => c.GetModelRecommendationsAsync("m1", new ModelRecommendationOptions { RequireToolUse = true, RequireStructuredOutput = false, RequireThinking = true, MinContextTokens = 100000, MinOutputTokens = 8000 }));
+        Assert.Equal("/models/m1/recommendations", path);
+        AssertQuery(q, ("require_tool_use", "true"), ("require_structured_output", "false"), ("require_thinking", "true"),
+            ("min_context_tokens", "100000"), ("min_output_tokens", "8000"));
+
+        (path, q) = await CaptureGet(c => c.ListSolutionsAsync(new SolutionListOptions { Page = 2, Limit = 10, Sort = "name", Order = "asc", Search = "billing" }));
+        Assert.Equal("/solutions", path);
+        AssertQuery(q, ("page", "2"), ("limit", "10"), ("sort", "name"), ("order", "asc"), ("search", "billing"));
+    }
+
+    // The released overloads now delegate to the options overloads; they must send what they sent before.
+    [Fact]
+    public async Task ReleasedOverloads_SendTheSameQueryAsBefore()
+    {
+        var (_, q) = await CaptureGet(c => c.ListAgentRunsAsync("a1", 2, 5));
+        AssertQuery(q, ("page", "2"), ("limit", "5"));
+        (_, q) = await CaptureGet(c => c.ListAlertsAsync(page: 2, limit: 5, status: "open", severity: "high"));
+        AssertQuery(q, ("page", "2"), ("limit", "5"), ("status", "open"));
+        (_, q) = await CaptureGet(c => c.ListAlertConfigsAsync(1, 50));
+        AssertQuery(q, ("page", "1"), ("limit", "50"));
+        (_, q) = await CaptureGet(c => c.ListModelAlertsAsync(2, 25));
+        AssertQuery(q, ("offset", "25"), ("limit", "25"));
+        (_, q) = await CaptureGet(c => c.ListModelsAsync("openai", true, null), "[]");
+        AssertQuery(q, ("provider", "openai"), ("supports_tool_use", "true"));
+        (_, q) = await CaptureGet(c => c.ListMemoryBanksAsync(1, 5, "name", "asc"), EmptyPage);
+        AssertQuery(q, ("page", "1"), ("limit", "5"), ("sort", "name"), ("order", "asc"));
+        (_, q) = await CaptureGet(c => c.ListSolutionsAsync(1, 5, "name", "asc"));
+        AssertQuery(q, ("page", "1"), ("limit", "5"), ("sort", "name"), ("order", "asc"));
+        (_, q) = await CaptureGet(c => c.GetNonManualEvaluationSummaryAsync("a1"));
+        AssertQuery(q, ("agent_id", "a1"));
+        (_, q) = await CaptureGet(c => c.ListEvaluationResultsAsync("ec1", 1, 20), EmptyPage);
+        AssertQuery(q, ("page", "1"), ("limit", "20"));
+        (_, q) = await CaptureGet(c => c.ListCompatibleRunsAsync("ec1", 1, 20), EmptyPage);
+        AssertQuery(q, ("page", "1"), ("limit", "20"));
+        (_, q) = await CaptureGet(c => c.ListAgentEvaluationResultsAsync("a1", 1, 20), EmptyPage);
+        AssertQuery(q, ("page", "1"), ("limit", "20"));
+        (_, q) = await CaptureGet(c => c.ListEvaluationRunsAsync("a1", 1, 20), EmptyPage);
+        AssertQuery(q, ("page", "1"), ("limit", "20"));
+        foreach (var call in new Func<SeclaiClient, Task>[]
+        {
+            c => c.ListOrganizationAlertPreferencesAsync(),
+            c => c.GetMemoryBankStatsAsync("mb1"),
+            c => c.GetModelRecommendationsAsync("m1"),
+            c => c.GetAiAssistantMemoryBankHistoryAsync(),
+            c => c.GetMemoryBankAiLastConversationAsync(),
+        })
+        {
+            (_, q) = await CaptureGet(call, EmptyPage);
+            Assert.Empty(q);
+        }
+        (_, q) = await CaptureGet(c => c.ListGovernanceAiConversationsAsync(), "[]");
+        Assert.Empty(q);
+    }
+
+    [Fact]
+    public async Task NonPositiveIntegerFilters_AreDroppedLikePaging()
+    {
+        // The same rule as page/limit in PaginationQuery: a value that is not positive is not
+        // sent, so the server default applies instead of a 422 from the spec's minimum.
+        var (_, q) = await CaptureGet(c => c.ListGovernanceAiConversationsAsync(0), "[]");
+        Assert.Empty(q);
+        (_, q) = await CaptureGet(c => c.ListGovernanceAiConversationsAsync(-3), "[]");
+        Assert.Empty(q);
+        (_, q) = await CaptureGet(c => c.GetMemoryBankAiLastConversationAsync(new AiLastConversationOptions { Limit = 0, Offset = 0 }), EmptyPage);
+        Assert.Empty(q);
+        (_, q) = await CaptureGet(c => c.GetMemoryBankStatsAsync("mb1", new MemoryBankStatsOptions { Days = 0 }));
+        Assert.Empty(q);
+        (_, q) = await CaptureGet(c => c.GetNonManualEvaluationSummaryAsync(new NonManualEvaluationSummaryOptions { Days = -1 }));
+        Assert.Empty(q);
+        (_, q) = await CaptureGet(c => c.ListModelAlertsAsync(new ModelAlertListOptions { Page = 0, Limit = 0 }));
+        Assert.Empty(q);
+        (_, q) = await CaptureGet(c => c.ListGovernanceAiConversationsAsync(5), "[]");
+        AssertQuery(q, ("limit", "5"));
+    }
+
+    [Fact]
+    public async Task TypedOptionsOverloads_SendFiltersAndDeserialize()
+    {
+        var (path, q) = await CaptureGet(
+            async c =>
+            {
+                var res = await c.Typed.ListAlertsAsync(new AlertListOptions { AgentId = "a1" });
+                Assert.Empty(res.Data);
+            },
+            EmptyPage);
+        Assert.Equal("/alerts", path);
+        AssertQuery(q, ("agent_id", "a1"));
+
+        (path, q) = await CaptureGet(
+            async c => Assert.Empty((await c.Typed.ListAlertConfigsAsync(new AlertConfigListOptions { Scope = "source" })).Data),
+            EmptyPage);
+        Assert.Equal("/alerts/configs", path);
+        AssertQuery(q, ("scope", "source"));
+
+        (path, q) = await CaptureGet(
+            async c => Assert.Empty((await c.Typed.ListModelAlertsAsync(new ModelAlertListOptions { UnreadOnly = true })).Data),
+            EmptyPage);
+        Assert.Equal("/models/alerts", path);
+        AssertQuery(q, ("unread_only", "true"));
+
+        (path, q) = await CaptureGet(
+            async c => Assert.Empty(await c.Typed.ListModelsAsync(new ModelListOptions { SupportsInputMedia = "pdf" })),
+            "[]");
+        Assert.Equal("/models", path);
+        AssertQuery(q, ("supports_input_media", "pdf"));
+
+        (path, q) = await CaptureGet(
+            async c => Assert.NotNull(await c.Typed.GetModelRecommendationsAsync("m1", new ModelRecommendationOptions { MinOutputTokens = 4096 })),
+            "{}");
+        Assert.Equal("/models/m1/recommendations", path);
+        AssertQuery(q, ("min_output_tokens", "4096"));
     }
 
     private static SeclaiClient MakeClient(HttpMessageHandler handler)

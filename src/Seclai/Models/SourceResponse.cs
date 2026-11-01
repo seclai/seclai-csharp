@@ -126,4 +126,20 @@ public sealed class SourceResponse
     /// <summary>Kinds of file listed beside a feed item's content that an RSS source attaches to the item and indexes (subset of <c>enclosures</c>, <c>item_image</c>, <c>media_rss</c>).</summary>
     [JsonPropertyName("feed_attachments")]
     public List<string>? FeedAttachments { get; set; }
+
+    /// <summary>The source's spend limit: credits it may commit per billing period. Null when it has none.</summary>
+    [JsonPropertyName("max_credits_per_period")]
+    public double? MaxCreditsPerPeriod { get; set; }
+
+    /// <summary>What the source does once it reaches its spend limit: <c>stop</c> or <c>delete</c>.</summary>
+    [JsonPropertyName("spend_cap_action")]
+    public string? SpendCapAction { get; set; }
+
+    /// <summary>Which entries a <c>delete</c> spend limit removes first: <c>oldest_added</c>, <c>oldest_published</c> or <c>largest_first</c>.</summary>
+    [JsonPropertyName("spend_cap_delete_order")]
+    public string? SpendCapDeleteOrder { get; set; }
+
+    /// <summary>True while the spend limit refuses uploads and email to this source.</summary>
+    [JsonPropertyName("spend_cap_reached")]
+    public bool? SpendCapReached { get; set; }
 }
