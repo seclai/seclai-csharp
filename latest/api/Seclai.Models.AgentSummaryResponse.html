@@ -145,6 +145,33 @@ public string? CreatedAt { get; set; }</code></pre>
   </table>
 
 
+  <a id="Seclai_Models_AgentSummaryResponse_CreatedResources_" data-uid="Seclai.Models.AgentSummaryResponse.CreatedResources*"></a>
+  <h4 id="Seclai_Models_AgentSummaryResponse_CreatedResources" data-uid="Seclai.Models.AgentSummaryResponse.CreatedResources">CreatedResources</h4>
+  <div class="markdown level1 summary"><p>On a create from an <code>agent_template</code>: <code>{slot: resource_id}</code> for each resource <a class="xref" href="Seclai.Models.CreateAgentRequest.html#Seclai_Models_CreateAgentRequest_CreateMissingResources">CreateMissingResources</a> created. Null otherwise.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;created_resources&quot;)]
+public Dictionary&lt;string, string&gt;? CreatedResources { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.dictionary-2">Dictionary</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
   <a id="Seclai_Models_AgentSummaryResponse_Description_" data-uid="Seclai.Models.AgentSummaryResponse.Description*"></a>
   <h4 id="Seclai_Models_AgentSummaryResponse_Description" data-uid="Seclai.Models.AgentSummaryResponse.Description">Description</h4>
   <div class="markdown level1 summary"></div>
@@ -334,6 +361,141 @@ public bool IsPublic { get; set; }</code></pre>
   </table>
 
 
+  <a id="Seclai_Models_AgentSummaryResponse_MaxCreditsPerPeriod_" data-uid="Seclai.Models.AgentSummaryResponse.MaxCreditsPerPeriod*"></a>
+  <h4 id="Seclai_Models_AgentSummaryResponse_MaxCreditsPerPeriod" data-uid="Seclai.Models.AgentSummaryResponse.MaxCreditsPerPeriod">MaxCreditsPerPeriod</h4>
+  <div class="markdown level1 summary"><p>Credit limit per billing period; null when none.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;max_credits_per_period&quot;)]
+public double? MaxCreditsPerPeriod { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a>?</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_Models_AgentSummaryResponse_MaxCreditsPerRun_" data-uid="Seclai.Models.AgentSummaryResponse.MaxCreditsPerRun*"></a>
+  <h4 id="Seclai_Models_AgentSummaryResponse_MaxCreditsPerRun" data-uid="Seclai.Models.AgentSummaryResponse.MaxCreditsPerRun">MaxCreditsPerRun</h4>
+  <div class="markdown level1 summary"><p>Credit limit per run; null when none.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;max_credits_per_run&quot;)]
+public double? MaxCreditsPerRun { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a>?</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_Models_AgentSummaryResponse_MaxRunsPerDay_" data-uid="Seclai.Models.AgentSummaryResponse.MaxRunsPerDay*"></a>
+  <h4 id="Seclai_Models_AgentSummaryResponse_MaxRunsPerDay" data-uid="Seclai.Models.AgentSummaryResponse.MaxRunsPerDay">MaxRunsPerDay</h4>
+  <div class="markdown level1 summary"><p>Runs per day limit; null when none.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;max_runs_per_day&quot;)]
+public int? MaxRunsPerDay { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>?</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_Models_AgentSummaryResponse_MaxRunsPerHour_" data-uid="Seclai.Models.AgentSummaryResponse.MaxRunsPerHour*"></a>
+  <h4 id="Seclai_Models_AgentSummaryResponse_MaxRunsPerHour" data-uid="Seclai.Models.AgentSummaryResponse.MaxRunsPerHour">MaxRunsPerHour</h4>
+  <div class="markdown level1 summary"><p>Runs per hour limit; null when none.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;max_runs_per_hour&quot;)]
+public int? MaxRunsPerHour { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>?</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_Models_AgentSummaryResponse_MaxRunsTotal_" data-uid="Seclai.Models.AgentSummaryResponse.MaxRunsTotal*"></a>
+  <h4 id="Seclai_Models_AgentSummaryResponse_MaxRunsTotal" data-uid="Seclai.Models.AgentSummaryResponse.MaxRunsTotal">MaxRunsTotal</h4>
+  <div class="markdown level1 summary"><p>Limit on runs in total; null when none.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;max_runs_total&quot;)]
+public int? MaxRunsTotal { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>?</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
   <a id="Seclai_Models_AgentSummaryResponse_Name_" data-uid="Seclai.Models.AgentSummaryResponse.Name*"></a>
   <h4 id="Seclai_Models_AgentSummaryResponse_Name" data-uid="Seclai.Models.AgentSummaryResponse.Name">Name</h4>
   <div class="markdown level1 summary"></div>
@@ -362,7 +524,8 @@ public string? Name { get; set; }</code></pre>
 
   <a id="Seclai_Models_AgentSummaryResponse_SolutionId_" data-uid="Seclai.Models.AgentSummaryResponse.SolutionId*"></a>
   <h4 id="Seclai_Models_AgentSummaryResponse_SolutionId" data-uid="Seclai.Models.AgentSummaryResponse.SolutionId">SolutionId</h4>
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>The solution the agent belongs to. On a create from an <code>agent_template</code> that created resources, the new solution grouping the agent with them.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="declaration">Declaration</h5>
   <div class="codewrapper">

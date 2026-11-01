@@ -119,6 +119,10 @@ templates expect on a run, so uploads can be staged before starting the run.</p>
       <h4><a class="xref" href="Seclai.Models.AgentEmailOptOutResponse.html">AgentEmailOptOutResponse</a></h4>
       <section><p>A recipient's opt-out from an account's agent emails (one agent or all).</p>
 </section>
+      <h4><a class="xref" href="Seclai.Models.AgentExampleListResponse.html">AgentExampleListResponse</a></h4>
+      <section><p>A page of the agent gallery. Pass an entry's <code>key</code> as <a class="xref" href="Seclai.Models.CreateAgentRequest.html#Seclai_Models_CreateAgentRequest_AgentTemplate">AgentTemplate</a>,
+with <a class="xref" href="Seclai.Models.CreateAgentRequest.html#Seclai_Models_CreateAgentRequest_ResourceBindings">ResourceBindings</a> for the resources it needs.</p>
+</section>
       <h4><a class="xref" href="Seclai.Models.AgentExportResponse.html">AgentExportResponse</a></h4>
       <section><p>Portable JSON snapshot of an agent definition.</p>
 </section>
@@ -485,8 +489,20 @@ accepts an <code>agent_definition</code> payload.</p>
       <h4><a class="xref" href="Seclai.Models.SetEmailTriggerConfigRequest.html">SetEmailTriggerConfigRequest</a></h4>
       <section><p>Alias, sender allowlist and inbound-handling flags for an EMAIL_RECEIVED trigger.</p>
 </section>
+      <h4><a class="xref" href="Seclai.Models.SetSlackTriggerConfigRequest.html">SetSlackTriggerConfigRequest</a></h4>
+      <section><p>Slack connection, form, channels, visibility and conversation settings for an agent's
+SLACK_COMMAND trigger, which people run from Slack with <code>/seclai</code> or the message shortcut.</p>
+</section>
       <h4><a class="xref" href="Seclai.Models.SkippedAttachmentResponse.html">SkippedAttachmentResponse</a></h4>
       <section><p>A part of an email that was not stored as an attachment.</p>
+</section>
+      <h4><a class="xref" href="Seclai.Models.SlackFormField.html">SlackFormField</a></h4>
+      <section><p>One field of a SLACK_COMMAND trigger's form, in <a class="xref" href="Seclai.Models.SetSlackTriggerConfigRequest.html#Seclai_Models_SetSlackTriggerConfigRequest_Form">Form</a> and
+<a class="xref" href="Seclai.Models.SlackTriggerConfigResponse.html#Seclai_Models_SlackTriggerConfigResponse_Form">Form</a>. The value a person enters reaches the run as
+<code>{{metadata.&lt;key&gt;}}</code>.</p>
+</section>
+      <h4><a class="xref" href="Seclai.Models.SlackTriggerConfigResponse.html">SlackTriggerConfigResponse</a></h4>
+      <section><p>The settings of an agent's SLACK_COMMAND trigger, as returned by <a class="xref" href="Seclai.SeclaiClient.html#Seclai_SeclaiClient_SetSlackTriggerConfigAsync_System_String_System_String_Seclai_Models_SetSlackTriggerConfigRequest_System_Threading_CancellationToken_">SetSlackTriggerConfigAsync(string, string, SetSlackTriggerConfigRequest, CancellationToken)</a>.</p>
 </section>
       <h4><a class="xref" href="Seclai.Models.SolutionConversationResponse.html">SolutionConversationResponse</a></h4>
       <section></section>
@@ -551,11 +567,66 @@ accepts an <code>agent_definition</code> payload.</p>
       <h4><a class="xref" href="Seclai.Models.VariantOptionResponse.html">VariantOptionResponse</a></h4>
       <section><p>Response model for a variant option</p>
 </section>
+    <h3 id="structs">
+Structs
+</h3>
+      <h4><a class="xref" href="Seclai.Models.AgentEvaluationResultListOptions.html">AgentEvaluationResultListOptions</a></h4>
+      <section><p>Filters and paging for <a class="xref" href="Seclai.SeclaiClient.html#Seclai_SeclaiClient_ListAgentEvaluationResultsAsync_System_String_Seclai_Models_AgentEvaluationResultListOptions_System_Threading_CancellationToken_">ListAgentEvaluationResultsAsync(string, AgentEvaluationResultListOptions, CancellationToken)</a>.</p>
+</section>
+      <h4><a class="xref" href="Seclai.Models.AgentRunListOptions.html">AgentRunListOptions</a></h4>
+      <section><p>Filters and paging for <a class="xref" href="Seclai.SeclaiClient.html#Seclai_SeclaiClient_ListAgentRunsAsync_System_String_Seclai_Models_AgentRunListOptions_System_Threading_CancellationToken_">ListAgentRunsAsync(string, AgentRunListOptions, CancellationToken)</a>.</p>
+</section>
+      <h4><a class="xref" href="Seclai.Models.AiLastConversationOptions.html">AiLastConversationOptions</a></h4>
+      <section><p>Paging for the memory bank AI assistant's last conversation.</p>
+</section>
+      <h4><a class="xref" href="Seclai.Models.AlertConfigListOptions.html">AlertConfigListOptions</a></h4>
+      <section><p>Filters and paging for <a class="xref" href="Seclai.SeclaiClient.html#Seclai_SeclaiClient_ListAlertConfigsAsync_Seclai_Models_AlertConfigListOptions_System_Threading_CancellationToken_">ListAlertConfigsAsync(AlertConfigListOptions, CancellationToken)</a>.</p>
+</section>
+      <h4><a class="xref" href="Seclai.Models.AlertListOptions.html">AlertListOptions</a></h4>
+      <section><p>Filters and paging for <a class="xref" href="Seclai.SeclaiClient.html#Seclai_SeclaiClient_ListAlertsAsync_Seclai_Models_AlertListOptions_System_Threading_CancellationToken_">ListAlertsAsync(AlertListOptions, CancellationToken)</a>.</p>
+</section>
+      <h4><a class="xref" href="Seclai.Models.CompatibleRunListOptions.html">CompatibleRunListOptions</a></h4>
+      <section><p>Filters and paging for <a class="xref" href="Seclai.SeclaiClient.html#Seclai_SeclaiClient_ListCompatibleRunsAsync_System_String_Seclai_Models_CompatibleRunListOptions_System_Threading_CancellationToken_">ListCompatibleRunsAsync(string, CompatibleRunListOptions, CancellationToken)</a>.</p>
+</section>
+      <h4><a class="xref" href="Seclai.Models.EvaluationResultListOptions.html">EvaluationResultListOptions</a></h4>
+      <section><p>Filters and paging for <a class="xref" href="Seclai.SeclaiClient.html#Seclai_SeclaiClient_ListEvaluationResultsAsync_System_String_Seclai_Models_EvaluationResultListOptions_System_Threading_CancellationToken_">ListEvaluationResultsAsync(string, EvaluationResultListOptions, CancellationToken)</a>.</p>
+</section>
+      <h4><a class="xref" href="Seclai.Models.EvaluationRunListOptions.html">EvaluationRunListOptions</a></h4>
+      <section><p>Filters and paging for <a class="xref" href="Seclai.SeclaiClient.html#Seclai_SeclaiClient_ListEvaluationRunsAsync_System_String_Seclai_Models_EvaluationRunListOptions_System_Threading_CancellationToken_">ListEvaluationRunsAsync(string, EvaluationRunListOptions, CancellationToken)</a>.</p>
+</section>
+      <h4><a class="xref" href="Seclai.Models.MemoryBankListOptions.html">MemoryBankListOptions</a></h4>
+      <section><p>Filters, sorting and paging for <a class="xref" href="Seclai.SeclaiClient.html#Seclai_SeclaiClient_ListMemoryBanksAsync_Seclai_Models_MemoryBankListOptions_System_Threading_CancellationToken_">ListMemoryBanksAsync(MemoryBankListOptions, CancellationToken)</a>.</p>
+</section>
+      <h4><a class="xref" href="Seclai.Models.MemoryBankStatsOptions.html">MemoryBankStatsOptions</a></h4>
+      <section><p>Period for <a class="xref" href="Seclai.SeclaiClient.html#Seclai_SeclaiClient_GetMemoryBankStatsAsync_System_String_Seclai_Models_MemoryBankStatsOptions_System_Threading_CancellationToken_">GetMemoryBankStatsAsync(string, MemoryBankStatsOptions, CancellationToken)</a>.</p>
+</section>
+      <h4><a class="xref" href="Seclai.Models.ModelAlertListOptions.html">ModelAlertListOptions</a></h4>
+      <section><p>Filters and paging for <a class="xref" href="Seclai.SeclaiClient.html#Seclai_SeclaiClient_ListModelAlertsAsync_Seclai_Models_ModelAlertListOptions_System_Threading_CancellationToken_">ListModelAlertsAsync(ModelAlertListOptions, CancellationToken)</a>.</p>
+</section>
+      <h4><a class="xref" href="Seclai.Models.ModelListOptions.html">ModelListOptions</a></h4>
+      <section><p>Filters for <a class="xref" href="Seclai.SeclaiClient.html#Seclai_SeclaiClient_ListModelsAsync_Seclai_Models_ModelListOptions_System_Threading_CancellationToken_">ListModelsAsync(ModelListOptions, CancellationToken)</a>.</p>
+</section>
+      <h4><a class="xref" href="Seclai.Models.ModelRecommendationOptions.html">ModelRecommendationOptions</a></h4>
+      <section><p>Requirements for <a class="xref" href="Seclai.SeclaiClient.html#Seclai_SeclaiClient_GetModelRecommendationsAsync_System_String_Seclai_Models_ModelRecommendationOptions_System_Threading_CancellationToken_">GetModelRecommendationsAsync(string, ModelRecommendationOptions, CancellationToken)</a>.</p>
+</section>
+      <h4><a class="xref" href="Seclai.Models.NonManualEvaluationSummaryOptions.html">NonManualEvaluationSummaryOptions</a></h4>
+      <section><p>Scope and period for <a class="xref" href="Seclai.SeclaiClient.html#Seclai_SeclaiClient_GetNonManualEvaluationSummaryAsync_Seclai_Models_NonManualEvaluationSummaryOptions_System_Threading_CancellationToken_">GetNonManualEvaluationSummaryAsync(NonManualEvaluationSummaryOptions, CancellationToken)</a>.</p>
+</section>
+      <h4><a class="xref" href="Seclai.Models.OrganizationAlertPreferenceListOptions.html">OrganizationAlertPreferenceListOptions</a></h4>
+      <section><p>Filters for <a class="xref" href="Seclai.SeclaiClient.html#Seclai_SeclaiClient_ListOrganizationAlertPreferencesAsync_Seclai_Models_OrganizationAlertPreferenceListOptions_System_Threading_CancellationToken_">ListOrganizationAlertPreferencesAsync(OrganizationAlertPreferenceListOptions, CancellationToken)</a>.</p>
+</section>
+      <h4><a class="xref" href="Seclai.Models.SolutionListOptions.html">SolutionListOptions</a></h4>
+      <section><p>Filters, sorting and paging for <a class="xref" href="Seclai.SeclaiClient.html#Seclai_SeclaiClient_ListSolutionsAsync_Seclai_Models_SolutionListOptions_System_Threading_CancellationToken_">ListSolutionsAsync(SolutionListOptions, CancellationToken)</a>.</p>
+</section>
     <h3 id="enums">
 Enums
 </h3>
       <h4><a class="xref" href="Seclai.Models.EvaluationCriteriaField.html">EvaluationCriteriaField</a></h4>
       <section><p>An evaluation-criteria field that <a class="xref" href="Seclai.SeclaiClient.html#Seclai_SeclaiClient_ClearEvaluationCriteriaFieldsAsync_System_String_System_Collections_Generic_IEnumerable_Seclai_Models_EvaluationCriteriaField__System_Threading_CancellationToken_">ClearEvaluationCriteriaFieldsAsync(string, IEnumerable&lt;EvaluationCriteriaField&gt;, CancellationToken)</a>
+can clear by sending it as <code>null</code>.</p>
+</section>
+      <h4><a class="xref" href="Seclai.Models.SourceField.html">SourceField</a></h4>
+      <section><p>A source setting that <a class="xref" href="Seclai.SeclaiClient.html#Seclai_SeclaiClient_ClearSourceFieldsAsync_System_String_System_Collections_Generic_IEnumerable_Seclai_Models_SourceField__System_Threading_CancellationToken_">ClearSourceFieldsAsync(string, IEnumerable&lt;SourceField&gt;, CancellationToken)</a>
 can clear by sending it as <code>null</code>.</p>
 </section>
 

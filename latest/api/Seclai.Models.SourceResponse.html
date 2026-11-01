@@ -778,6 +778,33 @@ public string? Id { get; set; }</code></pre>
   </table>
 
 
+  <a id="Seclai_Models_SourceResponse_MaxCreditsPerPeriod_" data-uid="Seclai.Models.SourceResponse.MaxCreditsPerPeriod*"></a>
+  <h4 id="Seclai_Models_SourceResponse_MaxCreditsPerPeriod" data-uid="Seclai.Models.SourceResponse.MaxCreditsPerPeriod">MaxCreditsPerPeriod</h4>
+  <div class="markdown level1 summary"><p>The source's spend limit: credits it may commit per billing period. Null when it has none.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;max_credits_per_period&quot;)]
+public double? MaxCreditsPerPeriod { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a>?</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
   <a id="Seclai_Models_SourceResponse_MediaTypes_" data-uid="Seclai.Models.SourceResponse.MediaTypes*"></a>
   <h4 id="Seclai_Models_SourceResponse_MediaTypes" data-uid="Seclai.Models.SourceResponse.MediaTypes">MediaTypes</h4>
   <div class="markdown level1 summary"><p>Media kinds extracted from indexed content and embedded as multi-modal KB chunks (subset of ['images', 'video']). Empty = text-only.</p>
@@ -1033,6 +1060,87 @@ public string? SourceType { get; set; }</code></pre>
     <tbody>
       <tr>
         <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_Models_SourceResponse_SpendCapAction_" data-uid="Seclai.Models.SourceResponse.SpendCapAction*"></a>
+  <h4 id="Seclai_Models_SourceResponse_SpendCapAction" data-uid="Seclai.Models.SourceResponse.SpendCapAction">SpendCapAction</h4>
+  <div class="markdown level1 summary"><p>What the source does once it reaches its spend limit: <code>stop</code> or <code>delete</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;spend_cap_action&quot;)]
+public string? SpendCapAction { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_Models_SourceResponse_SpendCapDeleteOrder_" data-uid="Seclai.Models.SourceResponse.SpendCapDeleteOrder*"></a>
+  <h4 id="Seclai_Models_SourceResponse_SpendCapDeleteOrder" data-uid="Seclai.Models.SourceResponse.SpendCapDeleteOrder">SpendCapDeleteOrder</h4>
+  <div class="markdown level1 summary"><p>Which entries a <code>delete</code> spend limit removes first: <code>oldest_added</code>, <code>oldest_published</code> or <code>largest_first</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;spend_cap_delete_order&quot;)]
+public string? SpendCapDeleteOrder { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_Models_SourceResponse_SpendCapReached_" data-uid="Seclai.Models.SourceResponse.SpendCapReached*"></a>
+  <h4 id="Seclai_Models_SourceResponse_SpendCapReached" data-uid="Seclai.Models.SourceResponse.SpendCapReached">SpendCapReached</h4>
+  <div class="markdown level1 summary"><p>True while the spend limit refuses uploads and email to this source.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;spend_cap_reached&quot;)]
+public bool? SpendCapReached { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a>?</td>
         <td></td>
       </tr>
     </tbody>

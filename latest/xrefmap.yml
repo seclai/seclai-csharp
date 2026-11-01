@@ -792,6 +792,135 @@ references:
   isSpec: "True"
   fullName: Seclai.Models.AgentEmailOptOutResponse.RecipientEmail
   nameWithType: AgentEmailOptOutResponse.RecipientEmail
+- uid: Seclai.Models.AgentEvaluationResultListOptions
+  name: AgentEvaluationResultListOptions
+  href: api/Seclai.Models.AgentEvaluationResultListOptions.html
+  commentId: T:Seclai.Models.AgentEvaluationResultListOptions
+  fullName: Seclai.Models.AgentEvaluationResultListOptions
+  nameWithType: AgentEvaluationResultListOptions
+- uid: Seclai.Models.AgentEvaluationResultListOptions.FlaggedOnly
+  name: FlaggedOnly
+  href: api/Seclai.Models.AgentEvaluationResultListOptions.html#Seclai_Models_AgentEvaluationResultListOptions_FlaggedOnly
+  commentId: P:Seclai.Models.AgentEvaluationResultListOptions.FlaggedOnly
+  fullName: Seclai.Models.AgentEvaluationResultListOptions.FlaggedOnly
+  nameWithType: AgentEvaluationResultListOptions.FlaggedOnly
+- uid: Seclai.Models.AgentEvaluationResultListOptions.FlaggedOnly*
+  name: FlaggedOnly
+  href: api/Seclai.Models.AgentEvaluationResultListOptions.html#Seclai_Models_AgentEvaluationResultListOptions_FlaggedOnly_
+  commentId: Overload:Seclai.Models.AgentEvaluationResultListOptions.FlaggedOnly
+  isSpec: "True"
+  fullName: Seclai.Models.AgentEvaluationResultListOptions.FlaggedOnly
+  nameWithType: AgentEvaluationResultListOptions.FlaggedOnly
+- uid: Seclai.Models.AgentEvaluationResultListOptions.Limit
+  name: Limit
+  href: api/Seclai.Models.AgentEvaluationResultListOptions.html#Seclai_Models_AgentEvaluationResultListOptions_Limit
+  commentId: P:Seclai.Models.AgentEvaluationResultListOptions.Limit
+  fullName: Seclai.Models.AgentEvaluationResultListOptions.Limit
+  nameWithType: AgentEvaluationResultListOptions.Limit
+- uid: Seclai.Models.AgentEvaluationResultListOptions.Limit*
+  name: Limit
+  href: api/Seclai.Models.AgentEvaluationResultListOptions.html#Seclai_Models_AgentEvaluationResultListOptions_Limit_
+  commentId: Overload:Seclai.Models.AgentEvaluationResultListOptions.Limit
+  isSpec: "True"
+  fullName: Seclai.Models.AgentEvaluationResultListOptions.Limit
+  nameWithType: AgentEvaluationResultListOptions.Limit
+- uid: Seclai.Models.AgentEvaluationResultListOptions.Page
+  name: Page
+  href: api/Seclai.Models.AgentEvaluationResultListOptions.html#Seclai_Models_AgentEvaluationResultListOptions_Page
+  commentId: P:Seclai.Models.AgentEvaluationResultListOptions.Page
+  fullName: Seclai.Models.AgentEvaluationResultListOptions.Page
+  nameWithType: AgentEvaluationResultListOptions.Page
+- uid: Seclai.Models.AgentEvaluationResultListOptions.Page*
+  name: Page
+  href: api/Seclai.Models.AgentEvaluationResultListOptions.html#Seclai_Models_AgentEvaluationResultListOptions_Page_
+  commentId: Overload:Seclai.Models.AgentEvaluationResultListOptions.Page
+  isSpec: "True"
+  fullName: Seclai.Models.AgentEvaluationResultListOptions.Page
+  nameWithType: AgentEvaluationResultListOptions.Page
+- uid: Seclai.Models.AgentEvaluationResultListOptions.Status
+  name: Status
+  href: api/Seclai.Models.AgentEvaluationResultListOptions.html#Seclai_Models_AgentEvaluationResultListOptions_Status
+  commentId: P:Seclai.Models.AgentEvaluationResultListOptions.Status
+  fullName: Seclai.Models.AgentEvaluationResultListOptions.Status
+  nameWithType: AgentEvaluationResultListOptions.Status
+- uid: Seclai.Models.AgentEvaluationResultListOptions.Status*
+  name: Status
+  href: api/Seclai.Models.AgentEvaluationResultListOptions.html#Seclai_Models_AgentEvaluationResultListOptions_Status_
+  commentId: Overload:Seclai.Models.AgentEvaluationResultListOptions.Status
+  isSpec: "True"
+  fullName: Seclai.Models.AgentEvaluationResultListOptions.Status
+  nameWithType: AgentEvaluationResultListOptions.Status
+- uid: Seclai.Models.AgentEvaluationResultListOptions.Step
+  name: Step
+  href: api/Seclai.Models.AgentEvaluationResultListOptions.html#Seclai_Models_AgentEvaluationResultListOptions_Step
+  commentId: P:Seclai.Models.AgentEvaluationResultListOptions.Step
+  fullName: Seclai.Models.AgentEvaluationResultListOptions.Step
+  nameWithType: AgentEvaluationResultListOptions.Step
+- uid: Seclai.Models.AgentEvaluationResultListOptions.Step*
+  name: Step
+  href: api/Seclai.Models.AgentEvaluationResultListOptions.html#Seclai_Models_AgentEvaluationResultListOptions_Step_
+  commentId: Overload:Seclai.Models.AgentEvaluationResultListOptions.Step
+  isSpec: "True"
+  fullName: Seclai.Models.AgentEvaluationResultListOptions.Step
+  nameWithType: AgentEvaluationResultListOptions.Step
+- uid: Seclai.Models.AgentEvaluationResultListOptions.TimeFrom
+  name: TimeFrom
+  href: api/Seclai.Models.AgentEvaluationResultListOptions.html#Seclai_Models_AgentEvaluationResultListOptions_TimeFrom
+  commentId: P:Seclai.Models.AgentEvaluationResultListOptions.TimeFrom
+  fullName: Seclai.Models.AgentEvaluationResultListOptions.TimeFrom
+  nameWithType: AgentEvaluationResultListOptions.TimeFrom
+- uid: Seclai.Models.AgentEvaluationResultListOptions.TimeFrom*
+  name: TimeFrom
+  href: api/Seclai.Models.AgentEvaluationResultListOptions.html#Seclai_Models_AgentEvaluationResultListOptions_TimeFrom_
+  commentId: Overload:Seclai.Models.AgentEvaluationResultListOptions.TimeFrom
+  isSpec: "True"
+  fullName: Seclai.Models.AgentEvaluationResultListOptions.TimeFrom
+  nameWithType: AgentEvaluationResultListOptions.TimeFrom
+- uid: Seclai.Models.AgentEvaluationResultListOptions.TimeTo
+  name: TimeTo
+  href: api/Seclai.Models.AgentEvaluationResultListOptions.html#Seclai_Models_AgentEvaluationResultListOptions_TimeTo
+  commentId: P:Seclai.Models.AgentEvaluationResultListOptions.TimeTo
+  fullName: Seclai.Models.AgentEvaluationResultListOptions.TimeTo
+  nameWithType: AgentEvaluationResultListOptions.TimeTo
+- uid: Seclai.Models.AgentEvaluationResultListOptions.TimeTo*
+  name: TimeTo
+  href: api/Seclai.Models.AgentEvaluationResultListOptions.html#Seclai_Models_AgentEvaluationResultListOptions_TimeTo_
+  commentId: Overload:Seclai.Models.AgentEvaluationResultListOptions.TimeTo
+  isSpec: "True"
+  fullName: Seclai.Models.AgentEvaluationResultListOptions.TimeTo
+  nameWithType: AgentEvaluationResultListOptions.TimeTo
+- uid: Seclai.Models.AgentExampleListResponse
+  name: AgentExampleListResponse
+  href: api/Seclai.Models.AgentExampleListResponse.html
+  commentId: T:Seclai.Models.AgentExampleListResponse
+  fullName: Seclai.Models.AgentExampleListResponse
+  nameWithType: AgentExampleListResponse
+- uid: Seclai.Models.AgentExampleListResponse.Data
+  name: Data
+  href: api/Seclai.Models.AgentExampleListResponse.html#Seclai_Models_AgentExampleListResponse_Data
+  commentId: P:Seclai.Models.AgentExampleListResponse.Data
+  fullName: Seclai.Models.AgentExampleListResponse.Data
+  nameWithType: AgentExampleListResponse.Data
+- uid: Seclai.Models.AgentExampleListResponse.Data*
+  name: Data
+  href: api/Seclai.Models.AgentExampleListResponse.html#Seclai_Models_AgentExampleListResponse_Data_
+  commentId: Overload:Seclai.Models.AgentExampleListResponse.Data
+  isSpec: "True"
+  fullName: Seclai.Models.AgentExampleListResponse.Data
+  nameWithType: AgentExampleListResponse.Data
+- uid: Seclai.Models.AgentExampleListResponse.Pagination
+  name: Pagination
+  href: api/Seclai.Models.AgentExampleListResponse.html#Seclai_Models_AgentExampleListResponse_Pagination
+  commentId: P:Seclai.Models.AgentExampleListResponse.Pagination
+  fullName: Seclai.Models.AgentExampleListResponse.Pagination
+  nameWithType: AgentExampleListResponse.Pagination
+- uid: Seclai.Models.AgentExampleListResponse.Pagination*
+  name: Pagination
+  href: api/Seclai.Models.AgentExampleListResponse.html#Seclai_Models_AgentExampleListResponse_Pagination_
+  commentId: Overload:Seclai.Models.AgentExampleListResponse.Pagination
+  isSpec: "True"
+  fullName: Seclai.Models.AgentExampleListResponse.Pagination
+  nameWithType: AgentExampleListResponse.Pagination
 - uid: Seclai.Models.AgentExportResponse
   name: AgentExportResponse
   href: api/Seclai.Models.AgentExportResponse.html
@@ -1315,6 +1444,51 @@ references:
   isSpec: "True"
   fullName: Seclai.Models.AgentRunFileResponse.Name
   nameWithType: AgentRunFileResponse.Name
+- uid: Seclai.Models.AgentRunListOptions
+  name: AgentRunListOptions
+  href: api/Seclai.Models.AgentRunListOptions.html
+  commentId: T:Seclai.Models.AgentRunListOptions
+  fullName: Seclai.Models.AgentRunListOptions
+  nameWithType: AgentRunListOptions
+- uid: Seclai.Models.AgentRunListOptions.Limit
+  name: Limit
+  href: api/Seclai.Models.AgentRunListOptions.html#Seclai_Models_AgentRunListOptions_Limit
+  commentId: P:Seclai.Models.AgentRunListOptions.Limit
+  fullName: Seclai.Models.AgentRunListOptions.Limit
+  nameWithType: AgentRunListOptions.Limit
+- uid: Seclai.Models.AgentRunListOptions.Limit*
+  name: Limit
+  href: api/Seclai.Models.AgentRunListOptions.html#Seclai_Models_AgentRunListOptions_Limit_
+  commentId: Overload:Seclai.Models.AgentRunListOptions.Limit
+  isSpec: "True"
+  fullName: Seclai.Models.AgentRunListOptions.Limit
+  nameWithType: AgentRunListOptions.Limit
+- uid: Seclai.Models.AgentRunListOptions.Page
+  name: Page
+  href: api/Seclai.Models.AgentRunListOptions.html#Seclai_Models_AgentRunListOptions_Page
+  commentId: P:Seclai.Models.AgentRunListOptions.Page
+  fullName: Seclai.Models.AgentRunListOptions.Page
+  nameWithType: AgentRunListOptions.Page
+- uid: Seclai.Models.AgentRunListOptions.Page*
+  name: Page
+  href: api/Seclai.Models.AgentRunListOptions.html#Seclai_Models_AgentRunListOptions_Page_
+  commentId: Overload:Seclai.Models.AgentRunListOptions.Page
+  isSpec: "True"
+  fullName: Seclai.Models.AgentRunListOptions.Page
+  nameWithType: AgentRunListOptions.Page
+- uid: Seclai.Models.AgentRunListOptions.Status
+  name: Status
+  href: api/Seclai.Models.AgentRunListOptions.html#Seclai_Models_AgentRunListOptions_Status
+  commentId: P:Seclai.Models.AgentRunListOptions.Status
+  fullName: Seclai.Models.AgentRunListOptions.Status
+  nameWithType: AgentRunListOptions.Status
+- uid: Seclai.Models.AgentRunListOptions.Status*
+  name: Status
+  href: api/Seclai.Models.AgentRunListOptions.html#Seclai_Models_AgentRunListOptions_Status_
+  commentId: Overload:Seclai.Models.AgentRunListOptions.Status
+  isSpec: "True"
+  fullName: Seclai.Models.AgentRunListOptions.Status
+  nameWithType: AgentRunListOptions.Status
 - uid: Seclai.Models.AgentRunListResponse
   name: AgentRunListResponse
   href: api/Seclai.Models.AgentRunListResponse.html
@@ -1703,6 +1877,19 @@ references:
   isSpec: "True"
   fullName: Seclai.Models.AgentRunStepResponse.CreditsUsed
   nameWithType: AgentRunStepResponse.CreditsUsed
+- uid: Seclai.Models.AgentRunStepResponse.Decision
+  name: Decision
+  href: api/Seclai.Models.AgentRunStepResponse.html#Seclai_Models_AgentRunStepResponse_Decision
+  commentId: P:Seclai.Models.AgentRunStepResponse.Decision
+  fullName: Seclai.Models.AgentRunStepResponse.Decision
+  nameWithType: AgentRunStepResponse.Decision
+- uid: Seclai.Models.AgentRunStepResponse.Decision*
+  name: Decision
+  href: api/Seclai.Models.AgentRunStepResponse.html#Seclai_Models_AgentRunStepResponse_Decision_
+  commentId: Overload:Seclai.Models.AgentRunStepResponse.Decision
+  isSpec: "True"
+  fullName: Seclai.Models.AgentRunStepResponse.Decision
+  nameWithType: AgentRunStepResponse.Decision
 - uid: Seclai.Models.AgentRunStepResponse.DurationSeconds
   name: DurationSeconds
   href: api/Seclai.Models.AgentRunStepResponse.html#Seclai_Models_AgentRunStepResponse_DurationSeconds
@@ -2046,6 +2233,19 @@ references:
   isSpec: "True"
   fullName: Seclai.Models.AgentSummaryResponse.CreatedAt
   nameWithType: AgentSummaryResponse.CreatedAt
+- uid: Seclai.Models.AgentSummaryResponse.CreatedResources
+  name: CreatedResources
+  href: api/Seclai.Models.AgentSummaryResponse.html#Seclai_Models_AgentSummaryResponse_CreatedResources
+  commentId: P:Seclai.Models.AgentSummaryResponse.CreatedResources
+  fullName: Seclai.Models.AgentSummaryResponse.CreatedResources
+  nameWithType: AgentSummaryResponse.CreatedResources
+- uid: Seclai.Models.AgentSummaryResponse.CreatedResources*
+  name: CreatedResources
+  href: api/Seclai.Models.AgentSummaryResponse.html#Seclai_Models_AgentSummaryResponse_CreatedResources_
+  commentId: Overload:Seclai.Models.AgentSummaryResponse.CreatedResources
+  isSpec: "True"
+  fullName: Seclai.Models.AgentSummaryResponse.CreatedResources
+  nameWithType: AgentSummaryResponse.CreatedResources
 - uid: Seclai.Models.AgentSummaryResponse.Description
   name: Description
   href: api/Seclai.Models.AgentSummaryResponse.html#Seclai_Models_AgentSummaryResponse_Description
@@ -2137,6 +2337,71 @@ references:
   isSpec: "True"
   fullName: Seclai.Models.AgentSummaryResponse.IsPublic
   nameWithType: AgentSummaryResponse.IsPublic
+- uid: Seclai.Models.AgentSummaryResponse.MaxCreditsPerPeriod
+  name: MaxCreditsPerPeriod
+  href: api/Seclai.Models.AgentSummaryResponse.html#Seclai_Models_AgentSummaryResponse_MaxCreditsPerPeriod
+  commentId: P:Seclai.Models.AgentSummaryResponse.MaxCreditsPerPeriod
+  fullName: Seclai.Models.AgentSummaryResponse.MaxCreditsPerPeriod
+  nameWithType: AgentSummaryResponse.MaxCreditsPerPeriod
+- uid: Seclai.Models.AgentSummaryResponse.MaxCreditsPerPeriod*
+  name: MaxCreditsPerPeriod
+  href: api/Seclai.Models.AgentSummaryResponse.html#Seclai_Models_AgentSummaryResponse_MaxCreditsPerPeriod_
+  commentId: Overload:Seclai.Models.AgentSummaryResponse.MaxCreditsPerPeriod
+  isSpec: "True"
+  fullName: Seclai.Models.AgentSummaryResponse.MaxCreditsPerPeriod
+  nameWithType: AgentSummaryResponse.MaxCreditsPerPeriod
+- uid: Seclai.Models.AgentSummaryResponse.MaxCreditsPerRun
+  name: MaxCreditsPerRun
+  href: api/Seclai.Models.AgentSummaryResponse.html#Seclai_Models_AgentSummaryResponse_MaxCreditsPerRun
+  commentId: P:Seclai.Models.AgentSummaryResponse.MaxCreditsPerRun
+  fullName: Seclai.Models.AgentSummaryResponse.MaxCreditsPerRun
+  nameWithType: AgentSummaryResponse.MaxCreditsPerRun
+- uid: Seclai.Models.AgentSummaryResponse.MaxCreditsPerRun*
+  name: MaxCreditsPerRun
+  href: api/Seclai.Models.AgentSummaryResponse.html#Seclai_Models_AgentSummaryResponse_MaxCreditsPerRun_
+  commentId: Overload:Seclai.Models.AgentSummaryResponse.MaxCreditsPerRun
+  isSpec: "True"
+  fullName: Seclai.Models.AgentSummaryResponse.MaxCreditsPerRun
+  nameWithType: AgentSummaryResponse.MaxCreditsPerRun
+- uid: Seclai.Models.AgentSummaryResponse.MaxRunsPerDay
+  name: MaxRunsPerDay
+  href: api/Seclai.Models.AgentSummaryResponse.html#Seclai_Models_AgentSummaryResponse_MaxRunsPerDay
+  commentId: P:Seclai.Models.AgentSummaryResponse.MaxRunsPerDay
+  fullName: Seclai.Models.AgentSummaryResponse.MaxRunsPerDay
+  nameWithType: AgentSummaryResponse.MaxRunsPerDay
+- uid: Seclai.Models.AgentSummaryResponse.MaxRunsPerDay*
+  name: MaxRunsPerDay
+  href: api/Seclai.Models.AgentSummaryResponse.html#Seclai_Models_AgentSummaryResponse_MaxRunsPerDay_
+  commentId: Overload:Seclai.Models.AgentSummaryResponse.MaxRunsPerDay
+  isSpec: "True"
+  fullName: Seclai.Models.AgentSummaryResponse.MaxRunsPerDay
+  nameWithType: AgentSummaryResponse.MaxRunsPerDay
+- uid: Seclai.Models.AgentSummaryResponse.MaxRunsPerHour
+  name: MaxRunsPerHour
+  href: api/Seclai.Models.AgentSummaryResponse.html#Seclai_Models_AgentSummaryResponse_MaxRunsPerHour
+  commentId: P:Seclai.Models.AgentSummaryResponse.MaxRunsPerHour
+  fullName: Seclai.Models.AgentSummaryResponse.MaxRunsPerHour
+  nameWithType: AgentSummaryResponse.MaxRunsPerHour
+- uid: Seclai.Models.AgentSummaryResponse.MaxRunsPerHour*
+  name: MaxRunsPerHour
+  href: api/Seclai.Models.AgentSummaryResponse.html#Seclai_Models_AgentSummaryResponse_MaxRunsPerHour_
+  commentId: Overload:Seclai.Models.AgentSummaryResponse.MaxRunsPerHour
+  isSpec: "True"
+  fullName: Seclai.Models.AgentSummaryResponse.MaxRunsPerHour
+  nameWithType: AgentSummaryResponse.MaxRunsPerHour
+- uid: Seclai.Models.AgentSummaryResponse.MaxRunsTotal
+  name: MaxRunsTotal
+  href: api/Seclai.Models.AgentSummaryResponse.html#Seclai_Models_AgentSummaryResponse_MaxRunsTotal
+  commentId: P:Seclai.Models.AgentSummaryResponse.MaxRunsTotal
+  fullName: Seclai.Models.AgentSummaryResponse.MaxRunsTotal
+  nameWithType: AgentSummaryResponse.MaxRunsTotal
+- uid: Seclai.Models.AgentSummaryResponse.MaxRunsTotal*
+  name: MaxRunsTotal
+  href: api/Seclai.Models.AgentSummaryResponse.html#Seclai_Models_AgentSummaryResponse_MaxRunsTotal_
+  commentId: Overload:Seclai.Models.AgentSummaryResponse.MaxRunsTotal
+  isSpec: "True"
+  fullName: Seclai.Models.AgentSummaryResponse.MaxRunsTotal
+  nameWithType: AgentSummaryResponse.MaxRunsTotal
 - uid: Seclai.Models.AgentSummaryResponse.Name
   name: Name
   href: api/Seclai.Models.AgentSummaryResponse.html#Seclai_Models_AgentSummaryResponse_Name
@@ -2937,6 +3202,38 @@ references:
   isSpec: "True"
   fullName: Seclai.Models.AiConversationTurnResponse.UserInput
   nameWithType: AiConversationTurnResponse.UserInput
+- uid: Seclai.Models.AiLastConversationOptions
+  name: AiLastConversationOptions
+  href: api/Seclai.Models.AiLastConversationOptions.html
+  commentId: T:Seclai.Models.AiLastConversationOptions
+  fullName: Seclai.Models.AiLastConversationOptions
+  nameWithType: AiLastConversationOptions
+- uid: Seclai.Models.AiLastConversationOptions.Limit
+  name: Limit
+  href: api/Seclai.Models.AiLastConversationOptions.html#Seclai_Models_AiLastConversationOptions_Limit
+  commentId: P:Seclai.Models.AiLastConversationOptions.Limit
+  fullName: Seclai.Models.AiLastConversationOptions.Limit
+  nameWithType: AiLastConversationOptions.Limit
+- uid: Seclai.Models.AiLastConversationOptions.Limit*
+  name: Limit
+  href: api/Seclai.Models.AiLastConversationOptions.html#Seclai_Models_AiLastConversationOptions_Limit_
+  commentId: Overload:Seclai.Models.AiLastConversationOptions.Limit
+  isSpec: "True"
+  fullName: Seclai.Models.AiLastConversationOptions.Limit
+  nameWithType: AiLastConversationOptions.Limit
+- uid: Seclai.Models.AiLastConversationOptions.Offset
+  name: Offset
+  href: api/Seclai.Models.AiLastConversationOptions.html#Seclai_Models_AiLastConversationOptions_Offset
+  commentId: P:Seclai.Models.AiLastConversationOptions.Offset
+  fullName: Seclai.Models.AiLastConversationOptions.Offset
+  nameWithType: AiLastConversationOptions.Offset
+- uid: Seclai.Models.AiLastConversationOptions.Offset*
+  name: Offset
+  href: api/Seclai.Models.AiLastConversationOptions.html#Seclai_Models_AiLastConversationOptions_Offset_
+  commentId: Overload:Seclai.Models.AiLastConversationOptions.Offset
+  isSpec: "True"
+  fullName: Seclai.Models.AiLastConversationOptions.Offset
+  nameWithType: AiLastConversationOptions.Offset
 - uid: Seclai.Models.AlertCommentResponse
   name: AlertCommentResponse
   href: api/Seclai.Models.AlertCommentResponse.html
@@ -3008,6 +3305,77 @@ references:
   isSpec: "True"
   fullName: Seclai.Models.AlertCommentResponse.UserName
   nameWithType: AlertCommentResponse.UserName
+- uid: Seclai.Models.AlertConfigListOptions
+  name: AlertConfigListOptions
+  href: api/Seclai.Models.AlertConfigListOptions.html
+  commentId: T:Seclai.Models.AlertConfigListOptions
+  fullName: Seclai.Models.AlertConfigListOptions
+  nameWithType: AlertConfigListOptions
+- uid: Seclai.Models.AlertConfigListOptions.AgentId
+  name: AgentId
+  href: api/Seclai.Models.AlertConfigListOptions.html#Seclai_Models_AlertConfigListOptions_AgentId
+  commentId: P:Seclai.Models.AlertConfigListOptions.AgentId
+  fullName: Seclai.Models.AlertConfigListOptions.AgentId
+  nameWithType: AlertConfigListOptions.AgentId
+- uid: Seclai.Models.AlertConfigListOptions.AgentId*
+  name: AgentId
+  href: api/Seclai.Models.AlertConfigListOptions.html#Seclai_Models_AlertConfigListOptions_AgentId_
+  commentId: Overload:Seclai.Models.AlertConfigListOptions.AgentId
+  isSpec: "True"
+  fullName: Seclai.Models.AlertConfigListOptions.AgentId
+  nameWithType: AlertConfigListOptions.AgentId
+- uid: Seclai.Models.AlertConfigListOptions.Limit
+  name: Limit
+  href: api/Seclai.Models.AlertConfigListOptions.html#Seclai_Models_AlertConfigListOptions_Limit
+  commentId: P:Seclai.Models.AlertConfigListOptions.Limit
+  fullName: Seclai.Models.AlertConfigListOptions.Limit
+  nameWithType: AlertConfigListOptions.Limit
+- uid: Seclai.Models.AlertConfigListOptions.Limit*
+  name: Limit
+  href: api/Seclai.Models.AlertConfigListOptions.html#Seclai_Models_AlertConfigListOptions_Limit_
+  commentId: Overload:Seclai.Models.AlertConfigListOptions.Limit
+  isSpec: "True"
+  fullName: Seclai.Models.AlertConfigListOptions.Limit
+  nameWithType: AlertConfigListOptions.Limit
+- uid: Seclai.Models.AlertConfigListOptions.Page
+  name: Page
+  href: api/Seclai.Models.AlertConfigListOptions.html#Seclai_Models_AlertConfigListOptions_Page
+  commentId: P:Seclai.Models.AlertConfigListOptions.Page
+  fullName: Seclai.Models.AlertConfigListOptions.Page
+  nameWithType: AlertConfigListOptions.Page
+- uid: Seclai.Models.AlertConfigListOptions.Page*
+  name: Page
+  href: api/Seclai.Models.AlertConfigListOptions.html#Seclai_Models_AlertConfigListOptions_Page_
+  commentId: Overload:Seclai.Models.AlertConfigListOptions.Page
+  isSpec: "True"
+  fullName: Seclai.Models.AlertConfigListOptions.Page
+  nameWithType: AlertConfigListOptions.Page
+- uid: Seclai.Models.AlertConfigListOptions.Scope
+  name: Scope
+  href: api/Seclai.Models.AlertConfigListOptions.html#Seclai_Models_AlertConfigListOptions_Scope
+  commentId: P:Seclai.Models.AlertConfigListOptions.Scope
+  fullName: Seclai.Models.AlertConfigListOptions.Scope
+  nameWithType: AlertConfigListOptions.Scope
+- uid: Seclai.Models.AlertConfigListOptions.Scope*
+  name: Scope
+  href: api/Seclai.Models.AlertConfigListOptions.html#Seclai_Models_AlertConfigListOptions_Scope_
+  commentId: Overload:Seclai.Models.AlertConfigListOptions.Scope
+  isSpec: "True"
+  fullName: Seclai.Models.AlertConfigListOptions.Scope
+  nameWithType: AlertConfigListOptions.Scope
+- uid: Seclai.Models.AlertConfigListOptions.SourceConnectionId
+  name: SourceConnectionId
+  href: api/Seclai.Models.AlertConfigListOptions.html#Seclai_Models_AlertConfigListOptions_SourceConnectionId
+  commentId: P:Seclai.Models.AlertConfigListOptions.SourceConnectionId
+  fullName: Seclai.Models.AlertConfigListOptions.SourceConnectionId
+  nameWithType: AlertConfigListOptions.SourceConnectionId
+- uid: Seclai.Models.AlertConfigListOptions.SourceConnectionId*
+  name: SourceConnectionId
+  href: api/Seclai.Models.AlertConfigListOptions.html#Seclai_Models_AlertConfigListOptions_SourceConnectionId_
+  commentId: Overload:Seclai.Models.AlertConfigListOptions.SourceConnectionId
+  isSpec: "True"
+  fullName: Seclai.Models.AlertConfigListOptions.SourceConnectionId
+  nameWithType: AlertConfigListOptions.SourceConnectionId
 - uid: Seclai.Models.AlertConfigListResponse
   name: AlertConfigListResponse
   href: api/Seclai.Models.AlertConfigListResponse.html
@@ -3409,6 +3777,103 @@ references:
   isSpec: "True"
   fullName: Seclai.Models.AlertHistoryEntryResponse.PreviousStatus
   nameWithType: AlertHistoryEntryResponse.PreviousStatus
+- uid: Seclai.Models.AlertListOptions
+  name: AlertListOptions
+  href: api/Seclai.Models.AlertListOptions.html
+  commentId: T:Seclai.Models.AlertListOptions
+  fullName: Seclai.Models.AlertListOptions
+  nameWithType: AlertListOptions
+- uid: Seclai.Models.AlertListOptions.AgentId
+  name: AgentId
+  href: api/Seclai.Models.AlertListOptions.html#Seclai_Models_AlertListOptions_AgentId
+  commentId: P:Seclai.Models.AlertListOptions.AgentId
+  fullName: Seclai.Models.AlertListOptions.AgentId
+  nameWithType: AlertListOptions.AgentId
+- uid: Seclai.Models.AlertListOptions.AgentId*
+  name: AgentId
+  href: api/Seclai.Models.AlertListOptions.html#Seclai_Models_AlertListOptions_AgentId_
+  commentId: Overload:Seclai.Models.AlertListOptions.AgentId
+  isSpec: "True"
+  fullName: Seclai.Models.AlertListOptions.AgentId
+  nameWithType: AlertListOptions.AgentId
+- uid: Seclai.Models.AlertListOptions.Limit
+  name: Limit
+  href: api/Seclai.Models.AlertListOptions.html#Seclai_Models_AlertListOptions_Limit
+  commentId: P:Seclai.Models.AlertListOptions.Limit
+  fullName: Seclai.Models.AlertListOptions.Limit
+  nameWithType: AlertListOptions.Limit
+- uid: Seclai.Models.AlertListOptions.Limit*
+  name: Limit
+  href: api/Seclai.Models.AlertListOptions.html#Seclai_Models_AlertListOptions_Limit_
+  commentId: Overload:Seclai.Models.AlertListOptions.Limit
+  isSpec: "True"
+  fullName: Seclai.Models.AlertListOptions.Limit
+  nameWithType: AlertListOptions.Limit
+- uid: Seclai.Models.AlertListOptions.Page
+  name: Page
+  href: api/Seclai.Models.AlertListOptions.html#Seclai_Models_AlertListOptions_Page
+  commentId: P:Seclai.Models.AlertListOptions.Page
+  fullName: Seclai.Models.AlertListOptions.Page
+  nameWithType: AlertListOptions.Page
+- uid: Seclai.Models.AlertListOptions.Page*
+  name: Page
+  href: api/Seclai.Models.AlertListOptions.html#Seclai_Models_AlertListOptions_Page_
+  commentId: Overload:Seclai.Models.AlertListOptions.Page
+  isSpec: "True"
+  fullName: Seclai.Models.AlertListOptions.Page
+  nameWithType: AlertListOptions.Page
+- uid: Seclai.Models.AlertListOptions.SourceConnectionId
+  name: SourceConnectionId
+  href: api/Seclai.Models.AlertListOptions.html#Seclai_Models_AlertListOptions_SourceConnectionId
+  commentId: P:Seclai.Models.AlertListOptions.SourceConnectionId
+  fullName: Seclai.Models.AlertListOptions.SourceConnectionId
+  nameWithType: AlertListOptions.SourceConnectionId
+- uid: Seclai.Models.AlertListOptions.SourceConnectionId*
+  name: SourceConnectionId
+  href: api/Seclai.Models.AlertListOptions.html#Seclai_Models_AlertListOptions_SourceConnectionId_
+  commentId: Overload:Seclai.Models.AlertListOptions.SourceConnectionId
+  isSpec: "True"
+  fullName: Seclai.Models.AlertListOptions.SourceConnectionId
+  nameWithType: AlertListOptions.SourceConnectionId
+- uid: Seclai.Models.AlertListOptions.Status
+  name: Status
+  href: api/Seclai.Models.AlertListOptions.html#Seclai_Models_AlertListOptions_Status
+  commentId: P:Seclai.Models.AlertListOptions.Status
+  fullName: Seclai.Models.AlertListOptions.Status
+  nameWithType: AlertListOptions.Status
+- uid: Seclai.Models.AlertListOptions.Status*
+  name: Status
+  href: api/Seclai.Models.AlertListOptions.html#Seclai_Models_AlertListOptions_Status_
+  commentId: Overload:Seclai.Models.AlertListOptions.Status
+  isSpec: "True"
+  fullName: Seclai.Models.AlertListOptions.Status
+  nameWithType: AlertListOptions.Status
+- uid: Seclai.Models.AlertListOptions.TimeFrom
+  name: TimeFrom
+  href: api/Seclai.Models.AlertListOptions.html#Seclai_Models_AlertListOptions_TimeFrom
+  commentId: P:Seclai.Models.AlertListOptions.TimeFrom
+  fullName: Seclai.Models.AlertListOptions.TimeFrom
+  nameWithType: AlertListOptions.TimeFrom
+- uid: Seclai.Models.AlertListOptions.TimeFrom*
+  name: TimeFrom
+  href: api/Seclai.Models.AlertListOptions.html#Seclai_Models_AlertListOptions_TimeFrom_
+  commentId: Overload:Seclai.Models.AlertListOptions.TimeFrom
+  isSpec: "True"
+  fullName: Seclai.Models.AlertListOptions.TimeFrom
+  nameWithType: AlertListOptions.TimeFrom
+- uid: Seclai.Models.AlertListOptions.TimeTo
+  name: TimeTo
+  href: api/Seclai.Models.AlertListOptions.html#Seclai_Models_AlertListOptions_TimeTo
+  commentId: P:Seclai.Models.AlertListOptions.TimeTo
+  fullName: Seclai.Models.AlertListOptions.TimeTo
+  nameWithType: AlertListOptions.TimeTo
+- uid: Seclai.Models.AlertListOptions.TimeTo*
+  name: TimeTo
+  href: api/Seclai.Models.AlertListOptions.html#Seclai_Models_AlertListOptions_TimeTo_
+  commentId: Overload:Seclai.Models.AlertListOptions.TimeTo
+  isSpec: "True"
+  fullName: Seclai.Models.AlertListOptions.TimeTo
+  nameWithType: AlertListOptions.TimeTo
 - uid: Seclai.Models.AlertListResponse
   name: AlertListResponse
   href: api/Seclai.Models.AlertListResponse.html
@@ -4758,6 +5223,51 @@ references:
   isSpec: "True"
   fullName: Seclai.Models.CompactionTestResponse.SurvivingEntries
   nameWithType: CompactionTestResponse.SurvivingEntries
+- uid: Seclai.Models.CompatibleRunListOptions
+  name: CompatibleRunListOptions
+  href: api/Seclai.Models.CompatibleRunListOptions.html
+  commentId: T:Seclai.Models.CompatibleRunListOptions
+  fullName: Seclai.Models.CompatibleRunListOptions
+  nameWithType: CompatibleRunListOptions
+- uid: Seclai.Models.CompatibleRunListOptions.Limit
+  name: Limit
+  href: api/Seclai.Models.CompatibleRunListOptions.html#Seclai_Models_CompatibleRunListOptions_Limit
+  commentId: P:Seclai.Models.CompatibleRunListOptions.Limit
+  fullName: Seclai.Models.CompatibleRunListOptions.Limit
+  nameWithType: CompatibleRunListOptions.Limit
+- uid: Seclai.Models.CompatibleRunListOptions.Limit*
+  name: Limit
+  href: api/Seclai.Models.CompatibleRunListOptions.html#Seclai_Models_CompatibleRunListOptions_Limit_
+  commentId: Overload:Seclai.Models.CompatibleRunListOptions.Limit
+  isSpec: "True"
+  fullName: Seclai.Models.CompatibleRunListOptions.Limit
+  nameWithType: CompatibleRunListOptions.Limit
+- uid: Seclai.Models.CompatibleRunListOptions.Page
+  name: Page
+  href: api/Seclai.Models.CompatibleRunListOptions.html#Seclai_Models_CompatibleRunListOptions_Page
+  commentId: P:Seclai.Models.CompatibleRunListOptions.Page
+  fullName: Seclai.Models.CompatibleRunListOptions.Page
+  nameWithType: CompatibleRunListOptions.Page
+- uid: Seclai.Models.CompatibleRunListOptions.Page*
+  name: Page
+  href: api/Seclai.Models.CompatibleRunListOptions.html#Seclai_Models_CompatibleRunListOptions_Page_
+  commentId: Overload:Seclai.Models.CompatibleRunListOptions.Page
+  isSpec: "True"
+  fullName: Seclai.Models.CompatibleRunListOptions.Page
+  nameWithType: CompatibleRunListOptions.Page
+- uid: Seclai.Models.CompatibleRunListOptions.StartedAfter
+  name: StartedAfter
+  href: api/Seclai.Models.CompatibleRunListOptions.html#Seclai_Models_CompatibleRunListOptions_StartedAfter
+  commentId: P:Seclai.Models.CompatibleRunListOptions.StartedAfter
+  fullName: Seclai.Models.CompatibleRunListOptions.StartedAfter
+  nameWithType: CompatibleRunListOptions.StartedAfter
+- uid: Seclai.Models.CompatibleRunListOptions.StartedAfter*
+  name: StartedAfter
+  href: api/Seclai.Models.CompatibleRunListOptions.html#Seclai_Models_CompatibleRunListOptions_StartedAfter_
+  commentId: Overload:Seclai.Models.CompatibleRunListOptions.StartedAfter
+  isSpec: "True"
+  fullName: Seclai.Models.CompatibleRunListOptions.StartedAfter
+  nameWithType: CompatibleRunListOptions.StartedAfter
 - uid: Seclai.Models.CompatibleRunListResponse
   name: CompatibleRunListResponse
   href: api/Seclai.Models.CompatibleRunListResponse.html
@@ -5826,6 +6336,32 @@ references:
   isSpec: "True"
   fullName: Seclai.Models.CreateAgentRequest.AgentDefinition
   nameWithType: CreateAgentRequest.AgentDefinition
+- uid: Seclai.Models.CreateAgentRequest.AgentTemplate
+  name: AgentTemplate
+  href: api/Seclai.Models.CreateAgentRequest.html#Seclai_Models_CreateAgentRequest_AgentTemplate
+  commentId: P:Seclai.Models.CreateAgentRequest.AgentTemplate
+  fullName: Seclai.Models.CreateAgentRequest.AgentTemplate
+  nameWithType: CreateAgentRequest.AgentTemplate
+- uid: Seclai.Models.CreateAgentRequest.AgentTemplate*
+  name: AgentTemplate
+  href: api/Seclai.Models.CreateAgentRequest.html#Seclai_Models_CreateAgentRequest_AgentTemplate_
+  commentId: Overload:Seclai.Models.CreateAgentRequest.AgentTemplate
+  isSpec: "True"
+  fullName: Seclai.Models.CreateAgentRequest.AgentTemplate
+  nameWithType: CreateAgentRequest.AgentTemplate
+- uid: Seclai.Models.CreateAgentRequest.CreateMissingResources
+  name: CreateMissingResources
+  href: api/Seclai.Models.CreateAgentRequest.html#Seclai_Models_CreateAgentRequest_CreateMissingResources
+  commentId: P:Seclai.Models.CreateAgentRequest.CreateMissingResources
+  fullName: Seclai.Models.CreateAgentRequest.CreateMissingResources
+  nameWithType: CreateAgentRequest.CreateMissingResources
+- uid: Seclai.Models.CreateAgentRequest.CreateMissingResources*
+  name: CreateMissingResources
+  href: api/Seclai.Models.CreateAgentRequest.html#Seclai_Models_CreateAgentRequest_CreateMissingResources_
+  commentId: Overload:Seclai.Models.CreateAgentRequest.CreateMissingResources
+  isSpec: "True"
+  fullName: Seclai.Models.CreateAgentRequest.CreateMissingResources
+  nameWithType: CreateAgentRequest.CreateMissingResources
 - uid: Seclai.Models.CreateAgentRequest.Description
   name: Description
   href: api/Seclai.Models.CreateAgentRequest.html#Seclai_Models_CreateAgentRequest_Description
@@ -5878,6 +6414,19 @@ references:
   isSpec: "True"
   fullName: Seclai.Models.CreateAgentRequest.Name
   nameWithType: CreateAgentRequest.Name
+- uid: Seclai.Models.CreateAgentRequest.ResourceBindings
+  name: ResourceBindings
+  href: api/Seclai.Models.CreateAgentRequest.html#Seclai_Models_CreateAgentRequest_ResourceBindings
+  commentId: P:Seclai.Models.CreateAgentRequest.ResourceBindings
+  fullName: Seclai.Models.CreateAgentRequest.ResourceBindings
+  nameWithType: CreateAgentRequest.ResourceBindings
+- uid: Seclai.Models.CreateAgentRequest.ResourceBindings*
+  name: ResourceBindings
+  href: api/Seclai.Models.CreateAgentRequest.html#Seclai_Models_CreateAgentRequest_ResourceBindings_
+  commentId: Overload:Seclai.Models.CreateAgentRequest.ResourceBindings
+  isSpec: "True"
+  fullName: Seclai.Models.CreateAgentRequest.ResourceBindings
+  nameWithType: CreateAgentRequest.ResourceBindings
 - uid: Seclai.Models.CreateAgentRequest.SolutionId
   name: SolutionId
   href: api/Seclai.Models.CreateAgentRequest.html#Seclai_Models_CreateAgentRequest_SolutionId
@@ -8448,6 +8997,90 @@ references:
   isSpec: "True"
   fullName: Seclai.Models.EvaluationCriteriaResponse.Name
   nameWithType: EvaluationCriteriaResponse.Name
+- uid: Seclai.Models.EvaluationResultListOptions
+  name: EvaluationResultListOptions
+  href: api/Seclai.Models.EvaluationResultListOptions.html
+  commentId: T:Seclai.Models.EvaluationResultListOptions
+  fullName: Seclai.Models.EvaluationResultListOptions
+  nameWithType: EvaluationResultListOptions
+- uid: Seclai.Models.EvaluationResultListOptions.FlaggedOnly
+  name: FlaggedOnly
+  href: api/Seclai.Models.EvaluationResultListOptions.html#Seclai_Models_EvaluationResultListOptions_FlaggedOnly
+  commentId: P:Seclai.Models.EvaluationResultListOptions.FlaggedOnly
+  fullName: Seclai.Models.EvaluationResultListOptions.FlaggedOnly
+  nameWithType: EvaluationResultListOptions.FlaggedOnly
+- uid: Seclai.Models.EvaluationResultListOptions.FlaggedOnly*
+  name: FlaggedOnly
+  href: api/Seclai.Models.EvaluationResultListOptions.html#Seclai_Models_EvaluationResultListOptions_FlaggedOnly_
+  commentId: Overload:Seclai.Models.EvaluationResultListOptions.FlaggedOnly
+  isSpec: "True"
+  fullName: Seclai.Models.EvaluationResultListOptions.FlaggedOnly
+  nameWithType: EvaluationResultListOptions.FlaggedOnly
+- uid: Seclai.Models.EvaluationResultListOptions.Limit
+  name: Limit
+  href: api/Seclai.Models.EvaluationResultListOptions.html#Seclai_Models_EvaluationResultListOptions_Limit
+  commentId: P:Seclai.Models.EvaluationResultListOptions.Limit
+  fullName: Seclai.Models.EvaluationResultListOptions.Limit
+  nameWithType: EvaluationResultListOptions.Limit
+- uid: Seclai.Models.EvaluationResultListOptions.Limit*
+  name: Limit
+  href: api/Seclai.Models.EvaluationResultListOptions.html#Seclai_Models_EvaluationResultListOptions_Limit_
+  commentId: Overload:Seclai.Models.EvaluationResultListOptions.Limit
+  isSpec: "True"
+  fullName: Seclai.Models.EvaluationResultListOptions.Limit
+  nameWithType: EvaluationResultListOptions.Limit
+- uid: Seclai.Models.EvaluationResultListOptions.Page
+  name: Page
+  href: api/Seclai.Models.EvaluationResultListOptions.html#Seclai_Models_EvaluationResultListOptions_Page
+  commentId: P:Seclai.Models.EvaluationResultListOptions.Page
+  fullName: Seclai.Models.EvaluationResultListOptions.Page
+  nameWithType: EvaluationResultListOptions.Page
+- uid: Seclai.Models.EvaluationResultListOptions.Page*
+  name: Page
+  href: api/Seclai.Models.EvaluationResultListOptions.html#Seclai_Models_EvaluationResultListOptions_Page_
+  commentId: Overload:Seclai.Models.EvaluationResultListOptions.Page
+  isSpec: "True"
+  fullName: Seclai.Models.EvaluationResultListOptions.Page
+  nameWithType: EvaluationResultListOptions.Page
+- uid: Seclai.Models.EvaluationResultListOptions.Status
+  name: Status
+  href: api/Seclai.Models.EvaluationResultListOptions.html#Seclai_Models_EvaluationResultListOptions_Status
+  commentId: P:Seclai.Models.EvaluationResultListOptions.Status
+  fullName: Seclai.Models.EvaluationResultListOptions.Status
+  nameWithType: EvaluationResultListOptions.Status
+- uid: Seclai.Models.EvaluationResultListOptions.Status*
+  name: Status
+  href: api/Seclai.Models.EvaluationResultListOptions.html#Seclai_Models_EvaluationResultListOptions_Status_
+  commentId: Overload:Seclai.Models.EvaluationResultListOptions.Status
+  isSpec: "True"
+  fullName: Seclai.Models.EvaluationResultListOptions.Status
+  nameWithType: EvaluationResultListOptions.Status
+- uid: Seclai.Models.EvaluationResultListOptions.TimeFrom
+  name: TimeFrom
+  href: api/Seclai.Models.EvaluationResultListOptions.html#Seclai_Models_EvaluationResultListOptions_TimeFrom
+  commentId: P:Seclai.Models.EvaluationResultListOptions.TimeFrom
+  fullName: Seclai.Models.EvaluationResultListOptions.TimeFrom
+  nameWithType: EvaluationResultListOptions.TimeFrom
+- uid: Seclai.Models.EvaluationResultListOptions.TimeFrom*
+  name: TimeFrom
+  href: api/Seclai.Models.EvaluationResultListOptions.html#Seclai_Models_EvaluationResultListOptions_TimeFrom_
+  commentId: Overload:Seclai.Models.EvaluationResultListOptions.TimeFrom
+  isSpec: "True"
+  fullName: Seclai.Models.EvaluationResultListOptions.TimeFrom
+  nameWithType: EvaluationResultListOptions.TimeFrom
+- uid: Seclai.Models.EvaluationResultListOptions.TimeTo
+  name: TimeTo
+  href: api/Seclai.Models.EvaluationResultListOptions.html#Seclai_Models_EvaluationResultListOptions_TimeTo
+  commentId: P:Seclai.Models.EvaluationResultListOptions.TimeTo
+  fullName: Seclai.Models.EvaluationResultListOptions.TimeTo
+  nameWithType: EvaluationResultListOptions.TimeTo
+- uid: Seclai.Models.EvaluationResultListOptions.TimeTo*
+  name: TimeTo
+  href: api/Seclai.Models.EvaluationResultListOptions.html#Seclai_Models_EvaluationResultListOptions_TimeTo_
+  commentId: Overload:Seclai.Models.EvaluationResultListOptions.TimeTo
+  isSpec: "True"
+  fullName: Seclai.Models.EvaluationResultListOptions.TimeTo
+  nameWithType: EvaluationResultListOptions.TimeTo
 - uid: Seclai.Models.EvaluationResultListResponse
   name: EvaluationResultListResponse
   href: api/Seclai.Models.EvaluationResultListResponse.html
@@ -8862,6 +9495,90 @@ references:
   isSpec: "True"
   fullName: Seclai.Models.EvaluationResultWithCriteriaListResponse.Total
   nameWithType: EvaluationResultWithCriteriaListResponse.Total
+- uid: Seclai.Models.EvaluationRunListOptions
+  name: EvaluationRunListOptions
+  href: api/Seclai.Models.EvaluationRunListOptions.html
+  commentId: T:Seclai.Models.EvaluationRunListOptions
+  fullName: Seclai.Models.EvaluationRunListOptions
+  nameWithType: EvaluationRunListOptions
+- uid: Seclai.Models.EvaluationRunListOptions.Limit
+  name: Limit
+  href: api/Seclai.Models.EvaluationRunListOptions.html#Seclai_Models_EvaluationRunListOptions_Limit
+  commentId: P:Seclai.Models.EvaluationRunListOptions.Limit
+  fullName: Seclai.Models.EvaluationRunListOptions.Limit
+  nameWithType: EvaluationRunListOptions.Limit
+- uid: Seclai.Models.EvaluationRunListOptions.Limit*
+  name: Limit
+  href: api/Seclai.Models.EvaluationRunListOptions.html#Seclai_Models_EvaluationRunListOptions_Limit_
+  commentId: Overload:Seclai.Models.EvaluationRunListOptions.Limit
+  isSpec: "True"
+  fullName: Seclai.Models.EvaluationRunListOptions.Limit
+  nameWithType: EvaluationRunListOptions.Limit
+- uid: Seclai.Models.EvaluationRunListOptions.Page
+  name: Page
+  href: api/Seclai.Models.EvaluationRunListOptions.html#Seclai_Models_EvaluationRunListOptions_Page
+  commentId: P:Seclai.Models.EvaluationRunListOptions.Page
+  fullName: Seclai.Models.EvaluationRunListOptions.Page
+  nameWithType: EvaluationRunListOptions.Page
+- uid: Seclai.Models.EvaluationRunListOptions.Page*
+  name: Page
+  href: api/Seclai.Models.EvaluationRunListOptions.html#Seclai_Models_EvaluationRunListOptions_Page_
+  commentId: Overload:Seclai.Models.EvaluationRunListOptions.Page
+  isSpec: "True"
+  fullName: Seclai.Models.EvaluationRunListOptions.Page
+  nameWithType: EvaluationRunListOptions.Page
+- uid: Seclai.Models.EvaluationRunListOptions.Status
+  name: Status
+  href: api/Seclai.Models.EvaluationRunListOptions.html#Seclai_Models_EvaluationRunListOptions_Status
+  commentId: P:Seclai.Models.EvaluationRunListOptions.Status
+  fullName: Seclai.Models.EvaluationRunListOptions.Status
+  nameWithType: EvaluationRunListOptions.Status
+- uid: Seclai.Models.EvaluationRunListOptions.Status*
+  name: Status
+  href: api/Seclai.Models.EvaluationRunListOptions.html#Seclai_Models_EvaluationRunListOptions_Status_
+  commentId: Overload:Seclai.Models.EvaluationRunListOptions.Status
+  isSpec: "True"
+  fullName: Seclai.Models.EvaluationRunListOptions.Status
+  nameWithType: EvaluationRunListOptions.Status
+- uid: Seclai.Models.EvaluationRunListOptions.Step
+  name: Step
+  href: api/Seclai.Models.EvaluationRunListOptions.html#Seclai_Models_EvaluationRunListOptions_Step
+  commentId: P:Seclai.Models.EvaluationRunListOptions.Step
+  fullName: Seclai.Models.EvaluationRunListOptions.Step
+  nameWithType: EvaluationRunListOptions.Step
+- uid: Seclai.Models.EvaluationRunListOptions.Step*
+  name: Step
+  href: api/Seclai.Models.EvaluationRunListOptions.html#Seclai_Models_EvaluationRunListOptions_Step_
+  commentId: Overload:Seclai.Models.EvaluationRunListOptions.Step
+  isSpec: "True"
+  fullName: Seclai.Models.EvaluationRunListOptions.Step
+  nameWithType: EvaluationRunListOptions.Step
+- uid: Seclai.Models.EvaluationRunListOptions.TimeFrom
+  name: TimeFrom
+  href: api/Seclai.Models.EvaluationRunListOptions.html#Seclai_Models_EvaluationRunListOptions_TimeFrom
+  commentId: P:Seclai.Models.EvaluationRunListOptions.TimeFrom
+  fullName: Seclai.Models.EvaluationRunListOptions.TimeFrom
+  nameWithType: EvaluationRunListOptions.TimeFrom
+- uid: Seclai.Models.EvaluationRunListOptions.TimeFrom*
+  name: TimeFrom
+  href: api/Seclai.Models.EvaluationRunListOptions.html#Seclai_Models_EvaluationRunListOptions_TimeFrom_
+  commentId: Overload:Seclai.Models.EvaluationRunListOptions.TimeFrom
+  isSpec: "True"
+  fullName: Seclai.Models.EvaluationRunListOptions.TimeFrom
+  nameWithType: EvaluationRunListOptions.TimeFrom
+- uid: Seclai.Models.EvaluationRunListOptions.TimeTo
+  name: TimeTo
+  href: api/Seclai.Models.EvaluationRunListOptions.html#Seclai_Models_EvaluationRunListOptions_TimeTo
+  commentId: P:Seclai.Models.EvaluationRunListOptions.TimeTo
+  fullName: Seclai.Models.EvaluationRunListOptions.TimeTo
+  nameWithType: EvaluationRunListOptions.TimeTo
+- uid: Seclai.Models.EvaluationRunListOptions.TimeTo*
+  name: TimeTo
+  href: api/Seclai.Models.EvaluationRunListOptions.html#Seclai_Models_EvaluationRunListOptions_TimeTo_
+  commentId: Overload:Seclai.Models.EvaluationRunListOptions.TimeTo
+  isSpec: "True"
+  fullName: Seclai.Models.EvaluationRunListOptions.TimeTo
+  nameWithType: EvaluationRunListOptions.TimeTo
 - uid: Seclai.Models.EvaluationRunSummaryListResponse
   name: EvaluationRunSummaryListResponse
   href: api/Seclai.Models.EvaluationRunSummaryListResponse.html
@@ -10956,6 +11673,77 @@ references:
   isSpec: "True"
   fullName: Seclai.Models.MemoryBankLastConversationResponse.UserInput
   nameWithType: MemoryBankLastConversationResponse.UserInput
+- uid: Seclai.Models.MemoryBankListOptions
+  name: MemoryBankListOptions
+  href: api/Seclai.Models.MemoryBankListOptions.html
+  commentId: T:Seclai.Models.MemoryBankListOptions
+  fullName: Seclai.Models.MemoryBankListOptions
+  nameWithType: MemoryBankListOptions
+- uid: Seclai.Models.MemoryBankListOptions.Limit
+  name: Limit
+  href: api/Seclai.Models.MemoryBankListOptions.html#Seclai_Models_MemoryBankListOptions_Limit
+  commentId: P:Seclai.Models.MemoryBankListOptions.Limit
+  fullName: Seclai.Models.MemoryBankListOptions.Limit
+  nameWithType: MemoryBankListOptions.Limit
+- uid: Seclai.Models.MemoryBankListOptions.Limit*
+  name: Limit
+  href: api/Seclai.Models.MemoryBankListOptions.html#Seclai_Models_MemoryBankListOptions_Limit_
+  commentId: Overload:Seclai.Models.MemoryBankListOptions.Limit
+  isSpec: "True"
+  fullName: Seclai.Models.MemoryBankListOptions.Limit
+  nameWithType: MemoryBankListOptions.Limit
+- uid: Seclai.Models.MemoryBankListOptions.Order
+  name: Order
+  href: api/Seclai.Models.MemoryBankListOptions.html#Seclai_Models_MemoryBankListOptions_Order
+  commentId: P:Seclai.Models.MemoryBankListOptions.Order
+  fullName: Seclai.Models.MemoryBankListOptions.Order
+  nameWithType: MemoryBankListOptions.Order
+- uid: Seclai.Models.MemoryBankListOptions.Order*
+  name: Order
+  href: api/Seclai.Models.MemoryBankListOptions.html#Seclai_Models_MemoryBankListOptions_Order_
+  commentId: Overload:Seclai.Models.MemoryBankListOptions.Order
+  isSpec: "True"
+  fullName: Seclai.Models.MemoryBankListOptions.Order
+  nameWithType: MemoryBankListOptions.Order
+- uid: Seclai.Models.MemoryBankListOptions.Page
+  name: Page
+  href: api/Seclai.Models.MemoryBankListOptions.html#Seclai_Models_MemoryBankListOptions_Page
+  commentId: P:Seclai.Models.MemoryBankListOptions.Page
+  fullName: Seclai.Models.MemoryBankListOptions.Page
+  nameWithType: MemoryBankListOptions.Page
+- uid: Seclai.Models.MemoryBankListOptions.Page*
+  name: Page
+  href: api/Seclai.Models.MemoryBankListOptions.html#Seclai_Models_MemoryBankListOptions_Page_
+  commentId: Overload:Seclai.Models.MemoryBankListOptions.Page
+  isSpec: "True"
+  fullName: Seclai.Models.MemoryBankListOptions.Page
+  nameWithType: MemoryBankListOptions.Page
+- uid: Seclai.Models.MemoryBankListOptions.Sort
+  name: Sort
+  href: api/Seclai.Models.MemoryBankListOptions.html#Seclai_Models_MemoryBankListOptions_Sort
+  commentId: P:Seclai.Models.MemoryBankListOptions.Sort
+  fullName: Seclai.Models.MemoryBankListOptions.Sort
+  nameWithType: MemoryBankListOptions.Sort
+- uid: Seclai.Models.MemoryBankListOptions.Sort*
+  name: Sort
+  href: api/Seclai.Models.MemoryBankListOptions.html#Seclai_Models_MemoryBankListOptions_Sort_
+  commentId: Overload:Seclai.Models.MemoryBankListOptions.Sort
+  isSpec: "True"
+  fullName: Seclai.Models.MemoryBankListOptions.Sort
+  nameWithType: MemoryBankListOptions.Sort
+- uid: Seclai.Models.MemoryBankListOptions.Type
+  name: Type
+  href: api/Seclai.Models.MemoryBankListOptions.html#Seclai_Models_MemoryBankListOptions_Type
+  commentId: P:Seclai.Models.MemoryBankListOptions.Type
+  fullName: Seclai.Models.MemoryBankListOptions.Type
+  nameWithType: MemoryBankListOptions.Type
+- uid: Seclai.Models.MemoryBankListOptions.Type*
+  name: Type
+  href: api/Seclai.Models.MemoryBankListOptions.html#Seclai_Models_MemoryBankListOptions_Type_
+  commentId: Overload:Seclai.Models.MemoryBankListOptions.Type
+  isSpec: "True"
+  fullName: Seclai.Models.MemoryBankListOptions.Type
+  nameWithType: MemoryBankListOptions.Type
 - uid: Seclai.Models.MemoryBankListResponse
   name: MemoryBankListResponse
   href: api/Seclai.Models.MemoryBankListResponse.html
@@ -11150,6 +11938,51 @@ references:
   isSpec: "True"
   fullName: Seclai.Models.MemoryBankResponse.UpdatedAt
   nameWithType: MemoryBankResponse.UpdatedAt
+- uid: Seclai.Models.MemoryBankStatsOptions
+  name: MemoryBankStatsOptions
+  href: api/Seclai.Models.MemoryBankStatsOptions.html
+  commentId: T:Seclai.Models.MemoryBankStatsOptions
+  fullName: Seclai.Models.MemoryBankStatsOptions
+  nameWithType: MemoryBankStatsOptions
+- uid: Seclai.Models.MemoryBankStatsOptions.Days
+  name: Days
+  href: api/Seclai.Models.MemoryBankStatsOptions.html#Seclai_Models_MemoryBankStatsOptions_Days
+  commentId: P:Seclai.Models.MemoryBankStatsOptions.Days
+  fullName: Seclai.Models.MemoryBankStatsOptions.Days
+  nameWithType: MemoryBankStatsOptions.Days
+- uid: Seclai.Models.MemoryBankStatsOptions.Days*
+  name: Days
+  href: api/Seclai.Models.MemoryBankStatsOptions.html#Seclai_Models_MemoryBankStatsOptions_Days_
+  commentId: Overload:Seclai.Models.MemoryBankStatsOptions.Days
+  isSpec: "True"
+  fullName: Seclai.Models.MemoryBankStatsOptions.Days
+  nameWithType: MemoryBankStatsOptions.Days
+- uid: Seclai.Models.MemoryBankStatsOptions.EndDate
+  name: EndDate
+  href: api/Seclai.Models.MemoryBankStatsOptions.html#Seclai_Models_MemoryBankStatsOptions_EndDate
+  commentId: P:Seclai.Models.MemoryBankStatsOptions.EndDate
+  fullName: Seclai.Models.MemoryBankStatsOptions.EndDate
+  nameWithType: MemoryBankStatsOptions.EndDate
+- uid: Seclai.Models.MemoryBankStatsOptions.EndDate*
+  name: EndDate
+  href: api/Seclai.Models.MemoryBankStatsOptions.html#Seclai_Models_MemoryBankStatsOptions_EndDate_
+  commentId: Overload:Seclai.Models.MemoryBankStatsOptions.EndDate
+  isSpec: "True"
+  fullName: Seclai.Models.MemoryBankStatsOptions.EndDate
+  nameWithType: MemoryBankStatsOptions.EndDate
+- uid: Seclai.Models.MemoryBankStatsOptions.StartDate
+  name: StartDate
+  href: api/Seclai.Models.MemoryBankStatsOptions.html#Seclai_Models_MemoryBankStatsOptions_StartDate
+  commentId: P:Seclai.Models.MemoryBankStatsOptions.StartDate
+  fullName: Seclai.Models.MemoryBankStatsOptions.StartDate
+  nameWithType: MemoryBankStatsOptions.StartDate
+- uid: Seclai.Models.MemoryBankStatsOptions.StartDate*
+  name: StartDate
+  href: api/Seclai.Models.MemoryBankStatsOptions.html#Seclai_Models_MemoryBankStatsOptions_StartDate_
+  commentId: Overload:Seclai.Models.MemoryBankStatsOptions.StartDate
+  isSpec: "True"
+  fullName: Seclai.Models.MemoryBankStatsOptions.StartDate
+  nameWithType: MemoryBankStatsOptions.StartDate
 - uid: Seclai.Models.ModalityRateResponse
   name: ModalityRateResponse
   href: api/Seclai.Models.ModalityRateResponse.html
@@ -11195,6 +12028,64 @@ references:
   isSpec: "True"
   fullName: Seclai.Models.ModalityRateResponse.OutputCreditsPer1000Tokens
   nameWithType: ModalityRateResponse.OutputCreditsPer1000Tokens
+- uid: Seclai.Models.ModelAlertListOptions
+  name: ModelAlertListOptions
+  href: api/Seclai.Models.ModelAlertListOptions.html
+  commentId: T:Seclai.Models.ModelAlertListOptions
+  fullName: Seclai.Models.ModelAlertListOptions
+  nameWithType: ModelAlertListOptions
+- uid: Seclai.Models.ModelAlertListOptions.AgentId
+  name: AgentId
+  href: api/Seclai.Models.ModelAlertListOptions.html#Seclai_Models_ModelAlertListOptions_AgentId
+  commentId: P:Seclai.Models.ModelAlertListOptions.AgentId
+  fullName: Seclai.Models.ModelAlertListOptions.AgentId
+  nameWithType: ModelAlertListOptions.AgentId
+- uid: Seclai.Models.ModelAlertListOptions.AgentId*
+  name: AgentId
+  href: api/Seclai.Models.ModelAlertListOptions.html#Seclai_Models_ModelAlertListOptions_AgentId_
+  commentId: Overload:Seclai.Models.ModelAlertListOptions.AgentId
+  isSpec: "True"
+  fullName: Seclai.Models.ModelAlertListOptions.AgentId
+  nameWithType: ModelAlertListOptions.AgentId
+- uid: Seclai.Models.ModelAlertListOptions.Limit
+  name: Limit
+  href: api/Seclai.Models.ModelAlertListOptions.html#Seclai_Models_ModelAlertListOptions_Limit
+  commentId: P:Seclai.Models.ModelAlertListOptions.Limit
+  fullName: Seclai.Models.ModelAlertListOptions.Limit
+  nameWithType: ModelAlertListOptions.Limit
+- uid: Seclai.Models.ModelAlertListOptions.Limit*
+  name: Limit
+  href: api/Seclai.Models.ModelAlertListOptions.html#Seclai_Models_ModelAlertListOptions_Limit_
+  commentId: Overload:Seclai.Models.ModelAlertListOptions.Limit
+  isSpec: "True"
+  fullName: Seclai.Models.ModelAlertListOptions.Limit
+  nameWithType: ModelAlertListOptions.Limit
+- uid: Seclai.Models.ModelAlertListOptions.Page
+  name: Page
+  href: api/Seclai.Models.ModelAlertListOptions.html#Seclai_Models_ModelAlertListOptions_Page
+  commentId: P:Seclai.Models.ModelAlertListOptions.Page
+  fullName: Seclai.Models.ModelAlertListOptions.Page
+  nameWithType: ModelAlertListOptions.Page
+- uid: Seclai.Models.ModelAlertListOptions.Page*
+  name: Page
+  href: api/Seclai.Models.ModelAlertListOptions.html#Seclai_Models_ModelAlertListOptions_Page_
+  commentId: Overload:Seclai.Models.ModelAlertListOptions.Page
+  isSpec: "True"
+  fullName: Seclai.Models.ModelAlertListOptions.Page
+  nameWithType: ModelAlertListOptions.Page
+- uid: Seclai.Models.ModelAlertListOptions.UnreadOnly
+  name: UnreadOnly
+  href: api/Seclai.Models.ModelAlertListOptions.html#Seclai_Models_ModelAlertListOptions_UnreadOnly
+  commentId: P:Seclai.Models.ModelAlertListOptions.UnreadOnly
+  fullName: Seclai.Models.ModelAlertListOptions.UnreadOnly
+  nameWithType: ModelAlertListOptions.UnreadOnly
+- uid: Seclai.Models.ModelAlertListOptions.UnreadOnly*
+  name: UnreadOnly
+  href: api/Seclai.Models.ModelAlertListOptions.html#Seclai_Models_ModelAlertListOptions_UnreadOnly_
+  commentId: Overload:Seclai.Models.ModelAlertListOptions.UnreadOnly
+  isSpec: "True"
+  fullName: Seclai.Models.ModelAlertListOptions.UnreadOnly
+  nameWithType: ModelAlertListOptions.UnreadOnly
 - uid: Seclai.Models.ModelAlertListResponse
   name: ModelAlertListResponse
   href: api/Seclai.Models.ModelAlertListResponse.html
@@ -11402,6 +12293,148 @@ references:
   isSpec: "True"
   fullName: Seclai.Models.ModelAlertResponse.SuccessorModelName
   nameWithType: ModelAlertResponse.SuccessorModelName
+- uid: Seclai.Models.ModelListOptions
+  name: ModelListOptions
+  href: api/Seclai.Models.ModelListOptions.html
+  commentId: T:Seclai.Models.ModelListOptions
+  fullName: Seclai.Models.ModelListOptions
+  nameWithType: ModelListOptions
+- uid: Seclai.Models.ModelListOptions.Provider
+  name: Provider
+  href: api/Seclai.Models.ModelListOptions.html#Seclai_Models_ModelListOptions_Provider
+  commentId: P:Seclai.Models.ModelListOptions.Provider
+  fullName: Seclai.Models.ModelListOptions.Provider
+  nameWithType: ModelListOptions.Provider
+- uid: Seclai.Models.ModelListOptions.Provider*
+  name: Provider
+  href: api/Seclai.Models.ModelListOptions.html#Seclai_Models_ModelListOptions_Provider_
+  commentId: Overload:Seclai.Models.ModelListOptions.Provider
+  isSpec: "True"
+  fullName: Seclai.Models.ModelListOptions.Provider
+  nameWithType: ModelListOptions.Provider
+- uid: Seclai.Models.ModelListOptions.SupportsInputMedia
+  name: SupportsInputMedia
+  href: api/Seclai.Models.ModelListOptions.html#Seclai_Models_ModelListOptions_SupportsInputMedia
+  commentId: P:Seclai.Models.ModelListOptions.SupportsInputMedia
+  fullName: Seclai.Models.ModelListOptions.SupportsInputMedia
+  nameWithType: ModelListOptions.SupportsInputMedia
+- uid: Seclai.Models.ModelListOptions.SupportsInputMedia*
+  name: SupportsInputMedia
+  href: api/Seclai.Models.ModelListOptions.html#Seclai_Models_ModelListOptions_SupportsInputMedia_
+  commentId: Overload:Seclai.Models.ModelListOptions.SupportsInputMedia
+  isSpec: "True"
+  fullName: Seclai.Models.ModelListOptions.SupportsInputMedia
+  nameWithType: ModelListOptions.SupportsInputMedia
+- uid: Seclai.Models.ModelListOptions.SupportsOutputMedia
+  name: SupportsOutputMedia
+  href: api/Seclai.Models.ModelListOptions.html#Seclai_Models_ModelListOptions_SupportsOutputMedia
+  commentId: P:Seclai.Models.ModelListOptions.SupportsOutputMedia
+  fullName: Seclai.Models.ModelListOptions.SupportsOutputMedia
+  nameWithType: ModelListOptions.SupportsOutputMedia
+- uid: Seclai.Models.ModelListOptions.SupportsOutputMedia*
+  name: SupportsOutputMedia
+  href: api/Seclai.Models.ModelListOptions.html#Seclai_Models_ModelListOptions_SupportsOutputMedia_
+  commentId: Overload:Seclai.Models.ModelListOptions.SupportsOutputMedia
+  isSpec: "True"
+  fullName: Seclai.Models.ModelListOptions.SupportsOutputMedia
+  nameWithType: ModelListOptions.SupportsOutputMedia
+- uid: Seclai.Models.ModelListOptions.SupportsThinking
+  name: SupportsThinking
+  href: api/Seclai.Models.ModelListOptions.html#Seclai_Models_ModelListOptions_SupportsThinking
+  commentId: P:Seclai.Models.ModelListOptions.SupportsThinking
+  fullName: Seclai.Models.ModelListOptions.SupportsThinking
+  nameWithType: ModelListOptions.SupportsThinking
+- uid: Seclai.Models.ModelListOptions.SupportsThinking*
+  name: SupportsThinking
+  href: api/Seclai.Models.ModelListOptions.html#Seclai_Models_ModelListOptions_SupportsThinking_
+  commentId: Overload:Seclai.Models.ModelListOptions.SupportsThinking
+  isSpec: "True"
+  fullName: Seclai.Models.ModelListOptions.SupportsThinking
+  nameWithType: ModelListOptions.SupportsThinking
+- uid: Seclai.Models.ModelListOptions.SupportsToolUse
+  name: SupportsToolUse
+  href: api/Seclai.Models.ModelListOptions.html#Seclai_Models_ModelListOptions_SupportsToolUse
+  commentId: P:Seclai.Models.ModelListOptions.SupportsToolUse
+  fullName: Seclai.Models.ModelListOptions.SupportsToolUse
+  nameWithType: ModelListOptions.SupportsToolUse
+- uid: Seclai.Models.ModelListOptions.SupportsToolUse*
+  name: SupportsToolUse
+  href: api/Seclai.Models.ModelListOptions.html#Seclai_Models_ModelListOptions_SupportsToolUse_
+  commentId: Overload:Seclai.Models.ModelListOptions.SupportsToolUse
+  isSpec: "True"
+  fullName: Seclai.Models.ModelListOptions.SupportsToolUse
+  nameWithType: ModelListOptions.SupportsToolUse
+- uid: Seclai.Models.ModelRecommendationOptions
+  name: ModelRecommendationOptions
+  href: api/Seclai.Models.ModelRecommendationOptions.html
+  commentId: T:Seclai.Models.ModelRecommendationOptions
+  fullName: Seclai.Models.ModelRecommendationOptions
+  nameWithType: ModelRecommendationOptions
+- uid: Seclai.Models.ModelRecommendationOptions.MinContextTokens
+  name: MinContextTokens
+  href: api/Seclai.Models.ModelRecommendationOptions.html#Seclai_Models_ModelRecommendationOptions_MinContextTokens
+  commentId: P:Seclai.Models.ModelRecommendationOptions.MinContextTokens
+  fullName: Seclai.Models.ModelRecommendationOptions.MinContextTokens
+  nameWithType: ModelRecommendationOptions.MinContextTokens
+- uid: Seclai.Models.ModelRecommendationOptions.MinContextTokens*
+  name: MinContextTokens
+  href: api/Seclai.Models.ModelRecommendationOptions.html#Seclai_Models_ModelRecommendationOptions_MinContextTokens_
+  commentId: Overload:Seclai.Models.ModelRecommendationOptions.MinContextTokens
+  isSpec: "True"
+  fullName: Seclai.Models.ModelRecommendationOptions.MinContextTokens
+  nameWithType: ModelRecommendationOptions.MinContextTokens
+- uid: Seclai.Models.ModelRecommendationOptions.MinOutputTokens
+  name: MinOutputTokens
+  href: api/Seclai.Models.ModelRecommendationOptions.html#Seclai_Models_ModelRecommendationOptions_MinOutputTokens
+  commentId: P:Seclai.Models.ModelRecommendationOptions.MinOutputTokens
+  fullName: Seclai.Models.ModelRecommendationOptions.MinOutputTokens
+  nameWithType: ModelRecommendationOptions.MinOutputTokens
+- uid: Seclai.Models.ModelRecommendationOptions.MinOutputTokens*
+  name: MinOutputTokens
+  href: api/Seclai.Models.ModelRecommendationOptions.html#Seclai_Models_ModelRecommendationOptions_MinOutputTokens_
+  commentId: Overload:Seclai.Models.ModelRecommendationOptions.MinOutputTokens
+  isSpec: "True"
+  fullName: Seclai.Models.ModelRecommendationOptions.MinOutputTokens
+  nameWithType: ModelRecommendationOptions.MinOutputTokens
+- uid: Seclai.Models.ModelRecommendationOptions.RequireStructuredOutput
+  name: RequireStructuredOutput
+  href: api/Seclai.Models.ModelRecommendationOptions.html#Seclai_Models_ModelRecommendationOptions_RequireStructuredOutput
+  commentId: P:Seclai.Models.ModelRecommendationOptions.RequireStructuredOutput
+  fullName: Seclai.Models.ModelRecommendationOptions.RequireStructuredOutput
+  nameWithType: ModelRecommendationOptions.RequireStructuredOutput
+- uid: Seclai.Models.ModelRecommendationOptions.RequireStructuredOutput*
+  name: RequireStructuredOutput
+  href: api/Seclai.Models.ModelRecommendationOptions.html#Seclai_Models_ModelRecommendationOptions_RequireStructuredOutput_
+  commentId: Overload:Seclai.Models.ModelRecommendationOptions.RequireStructuredOutput
+  isSpec: "True"
+  fullName: Seclai.Models.ModelRecommendationOptions.RequireStructuredOutput
+  nameWithType: ModelRecommendationOptions.RequireStructuredOutput
+- uid: Seclai.Models.ModelRecommendationOptions.RequireThinking
+  name: RequireThinking
+  href: api/Seclai.Models.ModelRecommendationOptions.html#Seclai_Models_ModelRecommendationOptions_RequireThinking
+  commentId: P:Seclai.Models.ModelRecommendationOptions.RequireThinking
+  fullName: Seclai.Models.ModelRecommendationOptions.RequireThinking
+  nameWithType: ModelRecommendationOptions.RequireThinking
+- uid: Seclai.Models.ModelRecommendationOptions.RequireThinking*
+  name: RequireThinking
+  href: api/Seclai.Models.ModelRecommendationOptions.html#Seclai_Models_ModelRecommendationOptions_RequireThinking_
+  commentId: Overload:Seclai.Models.ModelRecommendationOptions.RequireThinking
+  isSpec: "True"
+  fullName: Seclai.Models.ModelRecommendationOptions.RequireThinking
+  nameWithType: ModelRecommendationOptions.RequireThinking
+- uid: Seclai.Models.ModelRecommendationOptions.RequireToolUse
+  name: RequireToolUse
+  href: api/Seclai.Models.ModelRecommendationOptions.html#Seclai_Models_ModelRecommendationOptions_RequireToolUse
+  commentId: P:Seclai.Models.ModelRecommendationOptions.RequireToolUse
+  fullName: Seclai.Models.ModelRecommendationOptions.RequireToolUse
+  nameWithType: ModelRecommendationOptions.RequireToolUse
+- uid: Seclai.Models.ModelRecommendationOptions.RequireToolUse*
+  name: RequireToolUse
+  href: api/Seclai.Models.ModelRecommendationOptions.html#Seclai_Models_ModelRecommendationOptions_RequireToolUse_
+  commentId: Overload:Seclai.Models.ModelRecommendationOptions.RequireToolUse
+  isSpec: "True"
+  fullName: Seclai.Models.ModelRecommendationOptions.RequireToolUse
+  nameWithType: ModelRecommendationOptions.RequireToolUse
 - uid: Seclai.Models.ModelRecommendationResponse
   name: ModelRecommendationResponse
   href: api/Seclai.Models.ModelRecommendationResponse.html
@@ -11752,6 +12785,64 @@ references:
   isSpec: "True"
   fullName: Seclai.Models.ModelRecommendationsResponse.Upgrades
   nameWithType: ModelRecommendationsResponse.Upgrades
+- uid: Seclai.Models.NonManualEvaluationSummaryOptions
+  name: NonManualEvaluationSummaryOptions
+  href: api/Seclai.Models.NonManualEvaluationSummaryOptions.html
+  commentId: T:Seclai.Models.NonManualEvaluationSummaryOptions
+  fullName: Seclai.Models.NonManualEvaluationSummaryOptions
+  nameWithType: NonManualEvaluationSummaryOptions
+- uid: Seclai.Models.NonManualEvaluationSummaryOptions.AgentId
+  name: AgentId
+  href: api/Seclai.Models.NonManualEvaluationSummaryOptions.html#Seclai_Models_NonManualEvaluationSummaryOptions_AgentId
+  commentId: P:Seclai.Models.NonManualEvaluationSummaryOptions.AgentId
+  fullName: Seclai.Models.NonManualEvaluationSummaryOptions.AgentId
+  nameWithType: NonManualEvaluationSummaryOptions.AgentId
+- uid: Seclai.Models.NonManualEvaluationSummaryOptions.AgentId*
+  name: AgentId
+  href: api/Seclai.Models.NonManualEvaluationSummaryOptions.html#Seclai_Models_NonManualEvaluationSummaryOptions_AgentId_
+  commentId: Overload:Seclai.Models.NonManualEvaluationSummaryOptions.AgentId
+  isSpec: "True"
+  fullName: Seclai.Models.NonManualEvaluationSummaryOptions.AgentId
+  nameWithType: NonManualEvaluationSummaryOptions.AgentId
+- uid: Seclai.Models.NonManualEvaluationSummaryOptions.Days
+  name: Days
+  href: api/Seclai.Models.NonManualEvaluationSummaryOptions.html#Seclai_Models_NonManualEvaluationSummaryOptions_Days
+  commentId: P:Seclai.Models.NonManualEvaluationSummaryOptions.Days
+  fullName: Seclai.Models.NonManualEvaluationSummaryOptions.Days
+  nameWithType: NonManualEvaluationSummaryOptions.Days
+- uid: Seclai.Models.NonManualEvaluationSummaryOptions.Days*
+  name: Days
+  href: api/Seclai.Models.NonManualEvaluationSummaryOptions.html#Seclai_Models_NonManualEvaluationSummaryOptions_Days_
+  commentId: Overload:Seclai.Models.NonManualEvaluationSummaryOptions.Days
+  isSpec: "True"
+  fullName: Seclai.Models.NonManualEvaluationSummaryOptions.Days
+  nameWithType: NonManualEvaluationSummaryOptions.Days
+- uid: Seclai.Models.NonManualEvaluationSummaryOptions.EndDate
+  name: EndDate
+  href: api/Seclai.Models.NonManualEvaluationSummaryOptions.html#Seclai_Models_NonManualEvaluationSummaryOptions_EndDate
+  commentId: P:Seclai.Models.NonManualEvaluationSummaryOptions.EndDate
+  fullName: Seclai.Models.NonManualEvaluationSummaryOptions.EndDate
+  nameWithType: NonManualEvaluationSummaryOptions.EndDate
+- uid: Seclai.Models.NonManualEvaluationSummaryOptions.EndDate*
+  name: EndDate
+  href: api/Seclai.Models.NonManualEvaluationSummaryOptions.html#Seclai_Models_NonManualEvaluationSummaryOptions_EndDate_
+  commentId: Overload:Seclai.Models.NonManualEvaluationSummaryOptions.EndDate
+  isSpec: "True"
+  fullName: Seclai.Models.NonManualEvaluationSummaryOptions.EndDate
+  nameWithType: NonManualEvaluationSummaryOptions.EndDate
+- uid: Seclai.Models.NonManualEvaluationSummaryOptions.StartDate
+  name: StartDate
+  href: api/Seclai.Models.NonManualEvaluationSummaryOptions.html#Seclai_Models_NonManualEvaluationSummaryOptions_StartDate
+  commentId: P:Seclai.Models.NonManualEvaluationSummaryOptions.StartDate
+  fullName: Seclai.Models.NonManualEvaluationSummaryOptions.StartDate
+  nameWithType: NonManualEvaluationSummaryOptions.StartDate
+- uid: Seclai.Models.NonManualEvaluationSummaryOptions.StartDate*
+  name: StartDate
+  href: api/Seclai.Models.NonManualEvaluationSummaryOptions.html#Seclai_Models_NonManualEvaluationSummaryOptions_StartDate_
+  commentId: Overload:Seclai.Models.NonManualEvaluationSummaryOptions.StartDate
+  isSpec: "True"
+  fullName: Seclai.Models.NonManualEvaluationSummaryOptions.StartDate
+  nameWithType: NonManualEvaluationSummaryOptions.StartDate
 - uid: Seclai.Models.NonManualEvaluationSummaryResponse
   name: NonManualEvaluationSummaryResponse
   href: api/Seclai.Models.NonManualEvaluationSummaryResponse.html
@@ -11862,6 +12953,38 @@ references:
   isSpec: "True"
   fullName: Seclai.Models.NonManualEvaluationSummaryResponse.Total
   nameWithType: NonManualEvaluationSummaryResponse.Total
+- uid: Seclai.Models.OrganizationAlertPreferenceListOptions
+  name: OrganizationAlertPreferenceListOptions
+  href: api/Seclai.Models.OrganizationAlertPreferenceListOptions.html
+  commentId: T:Seclai.Models.OrganizationAlertPreferenceListOptions
+  fullName: Seclai.Models.OrganizationAlertPreferenceListOptions
+  nameWithType: OrganizationAlertPreferenceListOptions
+- uid: Seclai.Models.OrganizationAlertPreferenceListOptions.IncludeDefaults
+  name: IncludeDefaults
+  href: api/Seclai.Models.OrganizationAlertPreferenceListOptions.html#Seclai_Models_OrganizationAlertPreferenceListOptions_IncludeDefaults
+  commentId: P:Seclai.Models.OrganizationAlertPreferenceListOptions.IncludeDefaults
+  fullName: Seclai.Models.OrganizationAlertPreferenceListOptions.IncludeDefaults
+  nameWithType: OrganizationAlertPreferenceListOptions.IncludeDefaults
+- uid: Seclai.Models.OrganizationAlertPreferenceListOptions.IncludeDefaults*
+  name: IncludeDefaults
+  href: api/Seclai.Models.OrganizationAlertPreferenceListOptions.html#Seclai_Models_OrganizationAlertPreferenceListOptions_IncludeDefaults_
+  commentId: Overload:Seclai.Models.OrganizationAlertPreferenceListOptions.IncludeDefaults
+  isSpec: "True"
+  fullName: Seclai.Models.OrganizationAlertPreferenceListOptions.IncludeDefaults
+  nameWithType: OrganizationAlertPreferenceListOptions.IncludeDefaults
+- uid: Seclai.Models.OrganizationAlertPreferenceListOptions.OrganizationId
+  name: OrganizationId
+  href: api/Seclai.Models.OrganizationAlertPreferenceListOptions.html#Seclai_Models_OrganizationAlertPreferenceListOptions_OrganizationId
+  commentId: P:Seclai.Models.OrganizationAlertPreferenceListOptions.OrganizationId
+  fullName: Seclai.Models.OrganizationAlertPreferenceListOptions.OrganizationId
+  nameWithType: OrganizationAlertPreferenceListOptions.OrganizationId
+- uid: Seclai.Models.OrganizationAlertPreferenceListOptions.OrganizationId*
+  name: OrganizationId
+  href: api/Seclai.Models.OrganizationAlertPreferenceListOptions.html#Seclai_Models_OrganizationAlertPreferenceListOptions_OrganizationId_
+  commentId: Overload:Seclai.Models.OrganizationAlertPreferenceListOptions.OrganizationId
+  isSpec: "True"
+  fullName: Seclai.Models.OrganizationAlertPreferenceListOptions.OrganizationId
+  nameWithType: OrganizationAlertPreferenceListOptions.OrganizationId
 - uid: Seclai.Models.OrganizationAlertPreferenceListResponse
   name: OrganizationAlertPreferenceListResponse
   href: api/Seclai.Models.OrganizationAlertPreferenceListResponse.html
@@ -13530,6 +14653,194 @@ references:
   isSpec: "True"
   fullName: Seclai.Models.SetEmailTriggerConfigRequest.RunOnAttachmentMismatch
   nameWithType: SetEmailTriggerConfigRequest.RunOnAttachmentMismatch
+- uid: Seclai.Models.SetSlackTriggerConfigRequest
+  name: SetSlackTriggerConfigRequest
+  href: api/Seclai.Models.SetSlackTriggerConfigRequest.html
+  commentId: T:Seclai.Models.SetSlackTriggerConfigRequest
+  fullName: Seclai.Models.SetSlackTriggerConfigRequest
+  nameWithType: SetSlackTriggerConfigRequest
+- uid: Seclai.Models.SetSlackTriggerConfigRequest.Activation
+  name: Activation
+  href: api/Seclai.Models.SetSlackTriggerConfigRequest.html#Seclai_Models_SetSlackTriggerConfigRequest_Activation
+  commentId: P:Seclai.Models.SetSlackTriggerConfigRequest.Activation
+  fullName: Seclai.Models.SetSlackTriggerConfigRequest.Activation
+  nameWithType: SetSlackTriggerConfigRequest.Activation
+- uid: Seclai.Models.SetSlackTriggerConfigRequest.Activation*
+  name: Activation
+  href: api/Seclai.Models.SetSlackTriggerConfigRequest.html#Seclai_Models_SetSlackTriggerConfigRequest_Activation_
+  commentId: Overload:Seclai.Models.SetSlackTriggerConfigRequest.Activation
+  isSpec: "True"
+  fullName: Seclai.Models.SetSlackTriggerConfigRequest.Activation
+  nameWithType: SetSlackTriggerConfigRequest.Activation
+- uid: Seclai.Models.SetSlackTriggerConfigRequest.AllowDms
+  name: AllowDms
+  href: api/Seclai.Models.SetSlackTriggerConfigRequest.html#Seclai_Models_SetSlackTriggerConfigRequest_AllowDms
+  commentId: P:Seclai.Models.SetSlackTriggerConfigRequest.AllowDms
+  fullName: Seclai.Models.SetSlackTriggerConfigRequest.AllowDms
+  nameWithType: SetSlackTriggerConfigRequest.AllowDms
+- uid: Seclai.Models.SetSlackTriggerConfigRequest.AllowDms*
+  name: AllowDms
+  href: api/Seclai.Models.SetSlackTriggerConfigRequest.html#Seclai_Models_SetSlackTriggerConfigRequest_AllowDms_
+  commentId: Overload:Seclai.Models.SetSlackTriggerConfigRequest.AllowDms
+  isSpec: "True"
+  fullName: Seclai.Models.SetSlackTriggerConfigRequest.AllowDms
+  nameWithType: SetSlackTriggerConfigRequest.AllowDms
+- uid: Seclai.Models.SetSlackTriggerConfigRequest.ChannelIds
+  name: ChannelIds
+  href: api/Seclai.Models.SetSlackTriggerConfigRequest.html#Seclai_Models_SetSlackTriggerConfigRequest_ChannelIds
+  commentId: P:Seclai.Models.SetSlackTriggerConfigRequest.ChannelIds
+  fullName: Seclai.Models.SetSlackTriggerConfigRequest.ChannelIds
+  nameWithType: SetSlackTriggerConfigRequest.ChannelIds
+- uid: Seclai.Models.SetSlackTriggerConfigRequest.ChannelIds*
+  name: ChannelIds
+  href: api/Seclai.Models.SetSlackTriggerConfigRequest.html#Seclai_Models_SetSlackTriggerConfigRequest_ChannelIds_
+  commentId: Overload:Seclai.Models.SetSlackTriggerConfigRequest.ChannelIds
+  isSpec: "True"
+  fullName: Seclai.Models.SetSlackTriggerConfigRequest.ChannelIds
+  nameWithType: SetSlackTriggerConfigRequest.ChannelIds
+- uid: Seclai.Models.SetSlackTriggerConfigRequest.Form
+  name: Form
+  href: api/Seclai.Models.SetSlackTriggerConfigRequest.html#Seclai_Models_SetSlackTriggerConfigRequest_Form
+  commentId: P:Seclai.Models.SetSlackTriggerConfigRequest.Form
+  fullName: Seclai.Models.SetSlackTriggerConfigRequest.Form
+  nameWithType: SetSlackTriggerConfigRequest.Form
+- uid: Seclai.Models.SetSlackTriggerConfigRequest.Form*
+  name: Form
+  href: api/Seclai.Models.SetSlackTriggerConfigRequest.html#Seclai_Models_SetSlackTriggerConfigRequest_Form_
+  commentId: Overload:Seclai.Models.SetSlackTriggerConfigRequest.Form
+  isSpec: "True"
+  fullName: Seclai.Models.SetSlackTriggerConfigRequest.Form
+  nameWithType: SetSlackTriggerConfigRequest.Form
+- uid: Seclai.Models.SetSlackTriggerConfigRequest.IncludeInvokerEmail
+  name: IncludeInvokerEmail
+  href: api/Seclai.Models.SetSlackTriggerConfigRequest.html#Seclai_Models_SetSlackTriggerConfigRequest_IncludeInvokerEmail
+  commentId: P:Seclai.Models.SetSlackTriggerConfigRequest.IncludeInvokerEmail
+  fullName: Seclai.Models.SetSlackTriggerConfigRequest.IncludeInvokerEmail
+  nameWithType: SetSlackTriggerConfigRequest.IncludeInvokerEmail
+- uid: Seclai.Models.SetSlackTriggerConfigRequest.IncludeInvokerEmail*
+  name: IncludeInvokerEmail
+  href: api/Seclai.Models.SetSlackTriggerConfigRequest.html#Seclai_Models_SetSlackTriggerConfigRequest_IncludeInvokerEmail_
+  commentId: Overload:Seclai.Models.SetSlackTriggerConfigRequest.IncludeInvokerEmail
+  isSpec: "True"
+  fullName: Seclai.Models.SetSlackTriggerConfigRequest.IncludeInvokerEmail
+  nameWithType: SetSlackTriggerConfigRequest.IncludeInvokerEmail
+- uid: Seclai.Models.SetSlackTriggerConfigRequest.Input
+  name: Input
+  href: api/Seclai.Models.SetSlackTriggerConfigRequest.html#Seclai_Models_SetSlackTriggerConfigRequest_Input
+  commentId: P:Seclai.Models.SetSlackTriggerConfigRequest.Input
+  fullName: Seclai.Models.SetSlackTriggerConfigRequest.Input
+  nameWithType: SetSlackTriggerConfigRequest.Input
+- uid: Seclai.Models.SetSlackTriggerConfigRequest.Input*
+  name: Input
+  href: api/Seclai.Models.SetSlackTriggerConfigRequest.html#Seclai_Models_SetSlackTriggerConfigRequest_Input_
+  commentId: Overload:Seclai.Models.SetSlackTriggerConfigRequest.Input
+  isSpec: "True"
+  fullName: Seclai.Models.SetSlackTriggerConfigRequest.Input
+  nameWithType: SetSlackTriggerConfigRequest.Input
+- uid: Seclai.Models.SetSlackTriggerConfigRequest.MaxTurns
+  name: MaxTurns
+  href: api/Seclai.Models.SetSlackTriggerConfigRequest.html#Seclai_Models_SetSlackTriggerConfigRequest_MaxTurns
+  commentId: P:Seclai.Models.SetSlackTriggerConfigRequest.MaxTurns
+  fullName: Seclai.Models.SetSlackTriggerConfigRequest.MaxTurns
+  nameWithType: SetSlackTriggerConfigRequest.MaxTurns
+- uid: Seclai.Models.SetSlackTriggerConfigRequest.MaxTurns*
+  name: MaxTurns
+  href: api/Seclai.Models.SetSlackTriggerConfigRequest.html#Seclai_Models_SetSlackTriggerConfigRequest_MaxTurns_
+  commentId: Overload:Seclai.Models.SetSlackTriggerConfigRequest.MaxTurns
+  isSpec: "True"
+  fullName: Seclai.Models.SetSlackTriggerConfigRequest.MaxTurns
+  nameWithType: SetSlackTriggerConfigRequest.MaxTurns
+- uid: Seclai.Models.SetSlackTriggerConfigRequest.McpClientId
+  name: McpClientId
+  href: api/Seclai.Models.SetSlackTriggerConfigRequest.html#Seclai_Models_SetSlackTriggerConfigRequest_McpClientId
+  commentId: P:Seclai.Models.SetSlackTriggerConfigRequest.McpClientId
+  fullName: Seclai.Models.SetSlackTriggerConfigRequest.McpClientId
+  nameWithType: SetSlackTriggerConfigRequest.McpClientId
+- uid: Seclai.Models.SetSlackTriggerConfigRequest.McpClientId*
+  name: McpClientId
+  href: api/Seclai.Models.SetSlackTriggerConfigRequest.html#Seclai_Models_SetSlackTriggerConfigRequest_McpClientId_
+  commentId: Overload:Seclai.Models.SetSlackTriggerConfigRequest.McpClientId
+  isSpec: "True"
+  fullName: Seclai.Models.SetSlackTriggerConfigRequest.McpClientId
+  nameWithType: SetSlackTriggerConfigRequest.McpClientId
+- uid: Seclai.Models.SetSlackTriggerConfigRequest.NotifyFailureAfterAnswer
+  name: NotifyFailureAfterAnswer
+  href: api/Seclai.Models.SetSlackTriggerConfigRequest.html#Seclai_Models_SetSlackTriggerConfigRequest_NotifyFailureAfterAnswer
+  commentId: P:Seclai.Models.SetSlackTriggerConfigRequest.NotifyFailureAfterAnswer
+  fullName: Seclai.Models.SetSlackTriggerConfigRequest.NotifyFailureAfterAnswer
+  nameWithType: SetSlackTriggerConfigRequest.NotifyFailureAfterAnswer
+- uid: Seclai.Models.SetSlackTriggerConfigRequest.NotifyFailureAfterAnswer*
+  name: NotifyFailureAfterAnswer
+  href: api/Seclai.Models.SetSlackTriggerConfigRequest.html#Seclai_Models_SetSlackTriggerConfigRequest_NotifyFailureAfterAnswer_
+  commentId: Overload:Seclai.Models.SetSlackTriggerConfigRequest.NotifyFailureAfterAnswer
+  isSpec: "True"
+  fullName: Seclai.Models.SetSlackTriggerConfigRequest.NotifyFailureAfterAnswer
+  nameWithType: SetSlackTriggerConfigRequest.NotifyFailureAfterAnswer
+- uid: Seclai.Models.SetSlackTriggerConfigRequest.Scope
+  name: Scope
+  href: api/Seclai.Models.SetSlackTriggerConfigRequest.html#Seclai_Models_SetSlackTriggerConfigRequest_Scope
+  commentId: P:Seclai.Models.SetSlackTriggerConfigRequest.Scope
+  fullName: Seclai.Models.SetSlackTriggerConfigRequest.Scope
+  nameWithType: SetSlackTriggerConfigRequest.Scope
+- uid: Seclai.Models.SetSlackTriggerConfigRequest.Scope*
+  name: Scope
+  href: api/Seclai.Models.SetSlackTriggerConfigRequest.html#Seclai_Models_SetSlackTriggerConfigRequest_Scope_
+  commentId: Overload:Seclai.Models.SetSlackTriggerConfigRequest.Scope
+  isSpec: "True"
+  fullName: Seclai.Models.SetSlackTriggerConfigRequest.Scope
+  nameWithType: SetSlackTriggerConfigRequest.Scope
+- uid: Seclai.Models.SetSlackTriggerConfigRequest.StartWithoutForm
+  name: StartWithoutForm
+  href: api/Seclai.Models.SetSlackTriggerConfigRequest.html#Seclai_Models_SetSlackTriggerConfigRequest_StartWithoutForm
+  commentId: P:Seclai.Models.SetSlackTriggerConfigRequest.StartWithoutForm
+  fullName: Seclai.Models.SetSlackTriggerConfigRequest.StartWithoutForm
+  nameWithType: SetSlackTriggerConfigRequest.StartWithoutForm
+- uid: Seclai.Models.SetSlackTriggerConfigRequest.StartWithoutForm*
+  name: StartWithoutForm
+  href: api/Seclai.Models.SetSlackTriggerConfigRequest.html#Seclai_Models_SetSlackTriggerConfigRequest_StartWithoutForm_
+  commentId: Overload:Seclai.Models.SetSlackTriggerConfigRequest.StartWithoutForm
+  isSpec: "True"
+  fullName: Seclai.Models.SetSlackTriggerConfigRequest.StartWithoutForm
+  nameWithType: SetSlackTriggerConfigRequest.StartWithoutForm
+- uid: Seclai.Models.SetSlackTriggerConfigRequest.TurnsAnyone
+  name: TurnsAnyone
+  href: api/Seclai.Models.SetSlackTriggerConfigRequest.html#Seclai_Models_SetSlackTriggerConfigRequest_TurnsAnyone
+  commentId: P:Seclai.Models.SetSlackTriggerConfigRequest.TurnsAnyone
+  fullName: Seclai.Models.SetSlackTriggerConfigRequest.TurnsAnyone
+  nameWithType: SetSlackTriggerConfigRequest.TurnsAnyone
+- uid: Seclai.Models.SetSlackTriggerConfigRequest.TurnsAnyone*
+  name: TurnsAnyone
+  href: api/Seclai.Models.SetSlackTriggerConfigRequest.html#Seclai_Models_SetSlackTriggerConfigRequest_TurnsAnyone_
+  commentId: Overload:Seclai.Models.SetSlackTriggerConfigRequest.TurnsAnyone
+  isSpec: "True"
+  fullName: Seclai.Models.SetSlackTriggerConfigRequest.TurnsAnyone
+  nameWithType: SetSlackTriggerConfigRequest.TurnsAnyone
+- uid: Seclai.Models.SetSlackTriggerConfigRequest.TurnsEnabled
+  name: TurnsEnabled
+  href: api/Seclai.Models.SetSlackTriggerConfigRequest.html#Seclai_Models_SetSlackTriggerConfigRequest_TurnsEnabled
+  commentId: P:Seclai.Models.SetSlackTriggerConfigRequest.TurnsEnabled
+  fullName: Seclai.Models.SetSlackTriggerConfigRequest.TurnsEnabled
+  nameWithType: SetSlackTriggerConfigRequest.TurnsEnabled
+- uid: Seclai.Models.SetSlackTriggerConfigRequest.TurnsEnabled*
+  name: TurnsEnabled
+  href: api/Seclai.Models.SetSlackTriggerConfigRequest.html#Seclai_Models_SetSlackTriggerConfigRequest_TurnsEnabled_
+  commentId: Overload:Seclai.Models.SetSlackTriggerConfigRequest.TurnsEnabled
+  isSpec: "True"
+  fullName: Seclai.Models.SetSlackTriggerConfigRequest.TurnsEnabled
+  nameWithType: SetSlackTriggerConfigRequest.TurnsEnabled
+- uid: Seclai.Models.SetSlackTriggerConfigRequest.Visibility
+  name: Visibility
+  href: api/Seclai.Models.SetSlackTriggerConfigRequest.html#Seclai_Models_SetSlackTriggerConfigRequest_Visibility
+  commentId: P:Seclai.Models.SetSlackTriggerConfigRequest.Visibility
+  fullName: Seclai.Models.SetSlackTriggerConfigRequest.Visibility
+  nameWithType: SetSlackTriggerConfigRequest.Visibility
+- uid: Seclai.Models.SetSlackTriggerConfigRequest.Visibility*
+  name: Visibility
+  href: api/Seclai.Models.SetSlackTriggerConfigRequest.html#Seclai_Models_SetSlackTriggerConfigRequest_Visibility_
+  commentId: Overload:Seclai.Models.SetSlackTriggerConfigRequest.Visibility
+  isSpec: "True"
+  fullName: Seclai.Models.SetSlackTriggerConfigRequest.Visibility
+  nameWithType: SetSlackTriggerConfigRequest.Visibility
 - uid: Seclai.Models.SkippedAttachmentResponse
   name: SkippedAttachmentResponse
   href: api/Seclai.Models.SkippedAttachmentResponse.html
@@ -13588,6 +14899,343 @@ references:
   isSpec: "True"
   fullName: Seclai.Models.SkippedAttachmentResponse.SizeBytes
   nameWithType: SkippedAttachmentResponse.SizeBytes
+- uid: Seclai.Models.SlackFormField
+  name: SlackFormField
+  href: api/Seclai.Models.SlackFormField.html
+  commentId: T:Seclai.Models.SlackFormField
+  fullName: Seclai.Models.SlackFormField
+  nameWithType: SlackFormField
+- uid: Seclai.Models.SlackFormField.AdditionalProperties
+  name: AdditionalProperties
+  href: api/Seclai.Models.SlackFormField.html#Seclai_Models_SlackFormField_AdditionalProperties
+  commentId: P:Seclai.Models.SlackFormField.AdditionalProperties
+  fullName: Seclai.Models.SlackFormField.AdditionalProperties
+  nameWithType: SlackFormField.AdditionalProperties
+- uid: Seclai.Models.SlackFormField.AdditionalProperties*
+  name: AdditionalProperties
+  href: api/Seclai.Models.SlackFormField.html#Seclai_Models_SlackFormField_AdditionalProperties_
+  commentId: Overload:Seclai.Models.SlackFormField.AdditionalProperties
+  isSpec: "True"
+  fullName: Seclai.Models.SlackFormField.AdditionalProperties
+  nameWithType: SlackFormField.AdditionalProperties
+- uid: Seclai.Models.SlackFormField.Choices
+  name: Choices
+  href: api/Seclai.Models.SlackFormField.html#Seclai_Models_SlackFormField_Choices
+  commentId: P:Seclai.Models.SlackFormField.Choices
+  fullName: Seclai.Models.SlackFormField.Choices
+  nameWithType: SlackFormField.Choices
+- uid: Seclai.Models.SlackFormField.Choices*
+  name: Choices
+  href: api/Seclai.Models.SlackFormField.html#Seclai_Models_SlackFormField_Choices_
+  commentId: Overload:Seclai.Models.SlackFormField.Choices
+  isSpec: "True"
+  fullName: Seclai.Models.SlackFormField.Choices
+  nameWithType: SlackFormField.Choices
+- uid: Seclai.Models.SlackFormField.Hint
+  name: Hint
+  href: api/Seclai.Models.SlackFormField.html#Seclai_Models_SlackFormField_Hint
+  commentId: P:Seclai.Models.SlackFormField.Hint
+  fullName: Seclai.Models.SlackFormField.Hint
+  nameWithType: SlackFormField.Hint
+- uid: Seclai.Models.SlackFormField.Hint*
+  name: Hint
+  href: api/Seclai.Models.SlackFormField.html#Seclai_Models_SlackFormField_Hint_
+  commentId: Overload:Seclai.Models.SlackFormField.Hint
+  isSpec: "True"
+  fullName: Seclai.Models.SlackFormField.Hint
+  nameWithType: SlackFormField.Hint
+- uid: Seclai.Models.SlackFormField.Key
+  name: Key
+  href: api/Seclai.Models.SlackFormField.html#Seclai_Models_SlackFormField_Key
+  commentId: P:Seclai.Models.SlackFormField.Key
+  fullName: Seclai.Models.SlackFormField.Key
+  nameWithType: SlackFormField.Key
+- uid: Seclai.Models.SlackFormField.Key*
+  name: Key
+  href: api/Seclai.Models.SlackFormField.html#Seclai_Models_SlackFormField_Key_
+  commentId: Overload:Seclai.Models.SlackFormField.Key
+  isSpec: "True"
+  fullName: Seclai.Models.SlackFormField.Key
+  nameWithType: SlackFormField.Key
+- uid: Seclai.Models.SlackFormField.Label
+  name: Label
+  href: api/Seclai.Models.SlackFormField.html#Seclai_Models_SlackFormField_Label
+  commentId: P:Seclai.Models.SlackFormField.Label
+  fullName: Seclai.Models.SlackFormField.Label
+  nameWithType: SlackFormField.Label
+- uid: Seclai.Models.SlackFormField.Label*
+  name: Label
+  href: api/Seclai.Models.SlackFormField.html#Seclai_Models_SlackFormField_Label_
+  commentId: Overload:Seclai.Models.SlackFormField.Label
+  isSpec: "True"
+  fullName: Seclai.Models.SlackFormField.Label
+  nameWithType: SlackFormField.Label
+- uid: Seclai.Models.SlackFormField.MaxLength
+  name: MaxLength
+  href: api/Seclai.Models.SlackFormField.html#Seclai_Models_SlackFormField_MaxLength
+  commentId: P:Seclai.Models.SlackFormField.MaxLength
+  fullName: Seclai.Models.SlackFormField.MaxLength
+  nameWithType: SlackFormField.MaxLength
+- uid: Seclai.Models.SlackFormField.MaxLength*
+  name: MaxLength
+  href: api/Seclai.Models.SlackFormField.html#Seclai_Models_SlackFormField_MaxLength_
+  commentId: Overload:Seclai.Models.SlackFormField.MaxLength
+  isSpec: "True"
+  fullName: Seclai.Models.SlackFormField.MaxLength
+  nameWithType: SlackFormField.MaxLength
+- uid: Seclai.Models.SlackFormField.Required
+  name: Required
+  href: api/Seclai.Models.SlackFormField.html#Seclai_Models_SlackFormField_Required
+  commentId: P:Seclai.Models.SlackFormField.Required
+  fullName: Seclai.Models.SlackFormField.Required
+  nameWithType: SlackFormField.Required
+- uid: Seclai.Models.SlackFormField.Required*
+  name: Required
+  href: api/Seclai.Models.SlackFormField.html#Seclai_Models_SlackFormField_Required_
+  commentId: Overload:Seclai.Models.SlackFormField.Required
+  isSpec: "True"
+  fullName: Seclai.Models.SlackFormField.Required
+  nameWithType: SlackFormField.Required
+- uid: Seclai.Models.SlackFormField.Type
+  name: Type
+  href: api/Seclai.Models.SlackFormField.html#Seclai_Models_SlackFormField_Type
+  commentId: P:Seclai.Models.SlackFormField.Type
+  fullName: Seclai.Models.SlackFormField.Type
+  nameWithType: SlackFormField.Type
+- uid: Seclai.Models.SlackFormField.Type*
+  name: Type
+  href: api/Seclai.Models.SlackFormField.html#Seclai_Models_SlackFormField_Type_
+  commentId: Overload:Seclai.Models.SlackFormField.Type
+  isSpec: "True"
+  fullName: Seclai.Models.SlackFormField.Type
+  nameWithType: SlackFormField.Type
+- uid: Seclai.Models.SlackTriggerConfigResponse
+  name: SlackTriggerConfigResponse
+  href: api/Seclai.Models.SlackTriggerConfigResponse.html
+  commentId: T:Seclai.Models.SlackTriggerConfigResponse
+  fullName: Seclai.Models.SlackTriggerConfigResponse
+  nameWithType: SlackTriggerConfigResponse
+- uid: Seclai.Models.SlackTriggerConfigResponse.Activation
+  name: Activation
+  href: api/Seclai.Models.SlackTriggerConfigResponse.html#Seclai_Models_SlackTriggerConfigResponse_Activation
+  commentId: P:Seclai.Models.SlackTriggerConfigResponse.Activation
+  fullName: Seclai.Models.SlackTriggerConfigResponse.Activation
+  nameWithType: SlackTriggerConfigResponse.Activation
+- uid: Seclai.Models.SlackTriggerConfigResponse.Activation*
+  name: Activation
+  href: api/Seclai.Models.SlackTriggerConfigResponse.html#Seclai_Models_SlackTriggerConfigResponse_Activation_
+  commentId: Overload:Seclai.Models.SlackTriggerConfigResponse.Activation
+  isSpec: "True"
+  fullName: Seclai.Models.SlackTriggerConfigResponse.Activation
+  nameWithType: SlackTriggerConfigResponse.Activation
+- uid: Seclai.Models.SlackTriggerConfigResponse.AgentId
+  name: AgentId
+  href: api/Seclai.Models.SlackTriggerConfigResponse.html#Seclai_Models_SlackTriggerConfigResponse_AgentId
+  commentId: P:Seclai.Models.SlackTriggerConfigResponse.AgentId
+  fullName: Seclai.Models.SlackTriggerConfigResponse.AgentId
+  nameWithType: SlackTriggerConfigResponse.AgentId
+- uid: Seclai.Models.SlackTriggerConfigResponse.AgentId*
+  name: AgentId
+  href: api/Seclai.Models.SlackTriggerConfigResponse.html#Seclai_Models_SlackTriggerConfigResponse_AgentId_
+  commentId: Overload:Seclai.Models.SlackTriggerConfigResponse.AgentId
+  isSpec: "True"
+  fullName: Seclai.Models.SlackTriggerConfigResponse.AgentId
+  nameWithType: SlackTriggerConfigResponse.AgentId
+- uid: Seclai.Models.SlackTriggerConfigResponse.AllowDms
+  name: AllowDms
+  href: api/Seclai.Models.SlackTriggerConfigResponse.html#Seclai_Models_SlackTriggerConfigResponse_AllowDms
+  commentId: P:Seclai.Models.SlackTriggerConfigResponse.AllowDms
+  fullName: Seclai.Models.SlackTriggerConfigResponse.AllowDms
+  nameWithType: SlackTriggerConfigResponse.AllowDms
+- uid: Seclai.Models.SlackTriggerConfigResponse.AllowDms*
+  name: AllowDms
+  href: api/Seclai.Models.SlackTriggerConfigResponse.html#Seclai_Models_SlackTriggerConfigResponse_AllowDms_
+  commentId: Overload:Seclai.Models.SlackTriggerConfigResponse.AllowDms
+  isSpec: "True"
+  fullName: Seclai.Models.SlackTriggerConfigResponse.AllowDms
+  nameWithType: SlackTriggerConfigResponse.AllowDms
+- uid: Seclai.Models.SlackTriggerConfigResponse.ChannelIds
+  name: ChannelIds
+  href: api/Seclai.Models.SlackTriggerConfigResponse.html#Seclai_Models_SlackTriggerConfigResponse_ChannelIds
+  commentId: P:Seclai.Models.SlackTriggerConfigResponse.ChannelIds
+  fullName: Seclai.Models.SlackTriggerConfigResponse.ChannelIds
+  nameWithType: SlackTriggerConfigResponse.ChannelIds
+- uid: Seclai.Models.SlackTriggerConfigResponse.ChannelIds*
+  name: ChannelIds
+  href: api/Seclai.Models.SlackTriggerConfigResponse.html#Seclai_Models_SlackTriggerConfigResponse_ChannelIds_
+  commentId: Overload:Seclai.Models.SlackTriggerConfigResponse.ChannelIds
+  isSpec: "True"
+  fullName: Seclai.Models.SlackTriggerConfigResponse.ChannelIds
+  nameWithType: SlackTriggerConfigResponse.ChannelIds
+- uid: Seclai.Models.SlackTriggerConfigResponse.Form
+  name: Form
+  href: api/Seclai.Models.SlackTriggerConfigResponse.html#Seclai_Models_SlackTriggerConfigResponse_Form
+  commentId: P:Seclai.Models.SlackTriggerConfigResponse.Form
+  fullName: Seclai.Models.SlackTriggerConfigResponse.Form
+  nameWithType: SlackTriggerConfigResponse.Form
+- uid: Seclai.Models.SlackTriggerConfigResponse.Form*
+  name: Form
+  href: api/Seclai.Models.SlackTriggerConfigResponse.html#Seclai_Models_SlackTriggerConfigResponse_Form_
+  commentId: Overload:Seclai.Models.SlackTriggerConfigResponse.Form
+  isSpec: "True"
+  fullName: Seclai.Models.SlackTriggerConfigResponse.Form
+  nameWithType: SlackTriggerConfigResponse.Form
+- uid: Seclai.Models.SlackTriggerConfigResponse.IncludeInvokerEmail
+  name: IncludeInvokerEmail
+  href: api/Seclai.Models.SlackTriggerConfigResponse.html#Seclai_Models_SlackTriggerConfigResponse_IncludeInvokerEmail
+  commentId: P:Seclai.Models.SlackTriggerConfigResponse.IncludeInvokerEmail
+  fullName: Seclai.Models.SlackTriggerConfigResponse.IncludeInvokerEmail
+  nameWithType: SlackTriggerConfigResponse.IncludeInvokerEmail
+- uid: Seclai.Models.SlackTriggerConfigResponse.IncludeInvokerEmail*
+  name: IncludeInvokerEmail
+  href: api/Seclai.Models.SlackTriggerConfigResponse.html#Seclai_Models_SlackTriggerConfigResponse_IncludeInvokerEmail_
+  commentId: Overload:Seclai.Models.SlackTriggerConfigResponse.IncludeInvokerEmail
+  isSpec: "True"
+  fullName: Seclai.Models.SlackTriggerConfigResponse.IncludeInvokerEmail
+  nameWithType: SlackTriggerConfigResponse.IncludeInvokerEmail
+- uid: Seclai.Models.SlackTriggerConfigResponse.MaxTurns
+  name: MaxTurns
+  href: api/Seclai.Models.SlackTriggerConfigResponse.html#Seclai_Models_SlackTriggerConfigResponse_MaxTurns
+  commentId: P:Seclai.Models.SlackTriggerConfigResponse.MaxTurns
+  fullName: Seclai.Models.SlackTriggerConfigResponse.MaxTurns
+  nameWithType: SlackTriggerConfigResponse.MaxTurns
+- uid: Seclai.Models.SlackTriggerConfigResponse.MaxTurns*
+  name: MaxTurns
+  href: api/Seclai.Models.SlackTriggerConfigResponse.html#Seclai_Models_SlackTriggerConfigResponse_MaxTurns_
+  commentId: Overload:Seclai.Models.SlackTriggerConfigResponse.MaxTurns
+  isSpec: "True"
+  fullName: Seclai.Models.SlackTriggerConfigResponse.MaxTurns
+  nameWithType: SlackTriggerConfigResponse.MaxTurns
+- uid: Seclai.Models.SlackTriggerConfigResponse.McpClientId
+  name: McpClientId
+  href: api/Seclai.Models.SlackTriggerConfigResponse.html#Seclai_Models_SlackTriggerConfigResponse_McpClientId
+  commentId: P:Seclai.Models.SlackTriggerConfigResponse.McpClientId
+  fullName: Seclai.Models.SlackTriggerConfigResponse.McpClientId
+  nameWithType: SlackTriggerConfigResponse.McpClientId
+- uid: Seclai.Models.SlackTriggerConfigResponse.McpClientId*
+  name: McpClientId
+  href: api/Seclai.Models.SlackTriggerConfigResponse.html#Seclai_Models_SlackTriggerConfigResponse_McpClientId_
+  commentId: Overload:Seclai.Models.SlackTriggerConfigResponse.McpClientId
+  isSpec: "True"
+  fullName: Seclai.Models.SlackTriggerConfigResponse.McpClientId
+  nameWithType: SlackTriggerConfigResponse.McpClientId
+- uid: Seclai.Models.SlackTriggerConfigResponse.MissingScopes
+  name: MissingScopes
+  href: api/Seclai.Models.SlackTriggerConfigResponse.html#Seclai_Models_SlackTriggerConfigResponse_MissingScopes
+  commentId: P:Seclai.Models.SlackTriggerConfigResponse.MissingScopes
+  fullName: Seclai.Models.SlackTriggerConfigResponse.MissingScopes
+  nameWithType: SlackTriggerConfigResponse.MissingScopes
+- uid: Seclai.Models.SlackTriggerConfigResponse.MissingScopes*
+  name: MissingScopes
+  href: api/Seclai.Models.SlackTriggerConfigResponse.html#Seclai_Models_SlackTriggerConfigResponse_MissingScopes_
+  commentId: Overload:Seclai.Models.SlackTriggerConfigResponse.MissingScopes
+  isSpec: "True"
+  fullName: Seclai.Models.SlackTriggerConfigResponse.MissingScopes
+  nameWithType: SlackTriggerConfigResponse.MissingScopes
+- uid: Seclai.Models.SlackTriggerConfigResponse.NotifyFailureAfterAnswer
+  name: NotifyFailureAfterAnswer
+  href: api/Seclai.Models.SlackTriggerConfigResponse.html#Seclai_Models_SlackTriggerConfigResponse_NotifyFailureAfterAnswer
+  commentId: P:Seclai.Models.SlackTriggerConfigResponse.NotifyFailureAfterAnswer
+  fullName: Seclai.Models.SlackTriggerConfigResponse.NotifyFailureAfterAnswer
+  nameWithType: SlackTriggerConfigResponse.NotifyFailureAfterAnswer
+- uid: Seclai.Models.SlackTriggerConfigResponse.NotifyFailureAfterAnswer*
+  name: NotifyFailureAfterAnswer
+  href: api/Seclai.Models.SlackTriggerConfigResponse.html#Seclai_Models_SlackTriggerConfigResponse_NotifyFailureAfterAnswer_
+  commentId: Overload:Seclai.Models.SlackTriggerConfigResponse.NotifyFailureAfterAnswer
+  isSpec: "True"
+  fullName: Seclai.Models.SlackTriggerConfigResponse.NotifyFailureAfterAnswer
+  nameWithType: SlackTriggerConfigResponse.NotifyFailureAfterAnswer
+- uid: Seclai.Models.SlackTriggerConfigResponse.Scope
+  name: Scope
+  href: api/Seclai.Models.SlackTriggerConfigResponse.html#Seclai_Models_SlackTriggerConfigResponse_Scope
+  commentId: P:Seclai.Models.SlackTriggerConfigResponse.Scope
+  fullName: Seclai.Models.SlackTriggerConfigResponse.Scope
+  nameWithType: SlackTriggerConfigResponse.Scope
+- uid: Seclai.Models.SlackTriggerConfigResponse.Scope*
+  name: Scope
+  href: api/Seclai.Models.SlackTriggerConfigResponse.html#Seclai_Models_SlackTriggerConfigResponse_Scope_
+  commentId: Overload:Seclai.Models.SlackTriggerConfigResponse.Scope
+  isSpec: "True"
+  fullName: Seclai.Models.SlackTriggerConfigResponse.Scope
+  nameWithType: SlackTriggerConfigResponse.Scope
+- uid: Seclai.Models.SlackTriggerConfigResponse.SlackTeamId
+  name: SlackTeamId
+  href: api/Seclai.Models.SlackTriggerConfigResponse.html#Seclai_Models_SlackTriggerConfigResponse_SlackTeamId
+  commentId: P:Seclai.Models.SlackTriggerConfigResponse.SlackTeamId
+  fullName: Seclai.Models.SlackTriggerConfigResponse.SlackTeamId
+  nameWithType: SlackTriggerConfigResponse.SlackTeamId
+- uid: Seclai.Models.SlackTriggerConfigResponse.SlackTeamId*
+  name: SlackTeamId
+  href: api/Seclai.Models.SlackTriggerConfigResponse.html#Seclai_Models_SlackTriggerConfigResponse_SlackTeamId_
+  commentId: Overload:Seclai.Models.SlackTriggerConfigResponse.SlackTeamId
+  isSpec: "True"
+  fullName: Seclai.Models.SlackTriggerConfigResponse.SlackTeamId
+  nameWithType: SlackTriggerConfigResponse.SlackTeamId
+- uid: Seclai.Models.SlackTriggerConfigResponse.StartWithoutForm
+  name: StartWithoutForm
+  href: api/Seclai.Models.SlackTriggerConfigResponse.html#Seclai_Models_SlackTriggerConfigResponse_StartWithoutForm
+  commentId: P:Seclai.Models.SlackTriggerConfigResponse.StartWithoutForm
+  fullName: Seclai.Models.SlackTriggerConfigResponse.StartWithoutForm
+  nameWithType: SlackTriggerConfigResponse.StartWithoutForm
+- uid: Seclai.Models.SlackTriggerConfigResponse.StartWithoutForm*
+  name: StartWithoutForm
+  href: api/Seclai.Models.SlackTriggerConfigResponse.html#Seclai_Models_SlackTriggerConfigResponse_StartWithoutForm_
+  commentId: Overload:Seclai.Models.SlackTriggerConfigResponse.StartWithoutForm
+  isSpec: "True"
+  fullName: Seclai.Models.SlackTriggerConfigResponse.StartWithoutForm
+  nameWithType: SlackTriggerConfigResponse.StartWithoutForm
+- uid: Seclai.Models.SlackTriggerConfigResponse.TriggerId
+  name: TriggerId
+  href: api/Seclai.Models.SlackTriggerConfigResponse.html#Seclai_Models_SlackTriggerConfigResponse_TriggerId
+  commentId: P:Seclai.Models.SlackTriggerConfigResponse.TriggerId
+  fullName: Seclai.Models.SlackTriggerConfigResponse.TriggerId
+  nameWithType: SlackTriggerConfigResponse.TriggerId
+- uid: Seclai.Models.SlackTriggerConfigResponse.TriggerId*
+  name: TriggerId
+  href: api/Seclai.Models.SlackTriggerConfigResponse.html#Seclai_Models_SlackTriggerConfigResponse_TriggerId_
+  commentId: Overload:Seclai.Models.SlackTriggerConfigResponse.TriggerId
+  isSpec: "True"
+  fullName: Seclai.Models.SlackTriggerConfigResponse.TriggerId
+  nameWithType: SlackTriggerConfigResponse.TriggerId
+- uid: Seclai.Models.SlackTriggerConfigResponse.TurnsAnyone
+  name: TurnsAnyone
+  href: api/Seclai.Models.SlackTriggerConfigResponse.html#Seclai_Models_SlackTriggerConfigResponse_TurnsAnyone
+  commentId: P:Seclai.Models.SlackTriggerConfigResponse.TurnsAnyone
+  fullName: Seclai.Models.SlackTriggerConfigResponse.TurnsAnyone
+  nameWithType: SlackTriggerConfigResponse.TurnsAnyone
+- uid: Seclai.Models.SlackTriggerConfigResponse.TurnsAnyone*
+  name: TurnsAnyone
+  href: api/Seclai.Models.SlackTriggerConfigResponse.html#Seclai_Models_SlackTriggerConfigResponse_TurnsAnyone_
+  commentId: Overload:Seclai.Models.SlackTriggerConfigResponse.TurnsAnyone
+  isSpec: "True"
+  fullName: Seclai.Models.SlackTriggerConfigResponse.TurnsAnyone
+  nameWithType: SlackTriggerConfigResponse.TurnsAnyone
+- uid: Seclai.Models.SlackTriggerConfigResponse.TurnsEnabled
+  name: TurnsEnabled
+  href: api/Seclai.Models.SlackTriggerConfigResponse.html#Seclai_Models_SlackTriggerConfigResponse_TurnsEnabled
+  commentId: P:Seclai.Models.SlackTriggerConfigResponse.TurnsEnabled
+  fullName: Seclai.Models.SlackTriggerConfigResponse.TurnsEnabled
+  nameWithType: SlackTriggerConfigResponse.TurnsEnabled
+- uid: Seclai.Models.SlackTriggerConfigResponse.TurnsEnabled*
+  name: TurnsEnabled
+  href: api/Seclai.Models.SlackTriggerConfigResponse.html#Seclai_Models_SlackTriggerConfigResponse_TurnsEnabled_
+  commentId: Overload:Seclai.Models.SlackTriggerConfigResponse.TurnsEnabled
+  isSpec: "True"
+  fullName: Seclai.Models.SlackTriggerConfigResponse.TurnsEnabled
+  nameWithType: SlackTriggerConfigResponse.TurnsEnabled
+- uid: Seclai.Models.SlackTriggerConfigResponse.Visibility
+  name: Visibility
+  href: api/Seclai.Models.SlackTriggerConfigResponse.html#Seclai_Models_SlackTriggerConfigResponse_Visibility
+  commentId: P:Seclai.Models.SlackTriggerConfigResponse.Visibility
+  fullName: Seclai.Models.SlackTriggerConfigResponse.Visibility
+  nameWithType: SlackTriggerConfigResponse.Visibility
+- uid: Seclai.Models.SlackTriggerConfigResponse.Visibility*
+  name: Visibility
+  href: api/Seclai.Models.SlackTriggerConfigResponse.html#Seclai_Models_SlackTriggerConfigResponse_Visibility_
+  commentId: Overload:Seclai.Models.SlackTriggerConfigResponse.Visibility
+  isSpec: "True"
+  fullName: Seclai.Models.SlackTriggerConfigResponse.Visibility
+  nameWithType: SlackTriggerConfigResponse.Visibility
 - uid: Seclai.Models.SolutionConversationResponse
   name: SolutionConversationResponse
   href: api/Seclai.Models.SolutionConversationResponse.html
@@ -13672,6 +15320,77 @@ references:
   isSpec: "True"
   fullName: Seclai.Models.SolutionConversationResponse.UserInput
   nameWithType: SolutionConversationResponse.UserInput
+- uid: Seclai.Models.SolutionListOptions
+  name: SolutionListOptions
+  href: api/Seclai.Models.SolutionListOptions.html
+  commentId: T:Seclai.Models.SolutionListOptions
+  fullName: Seclai.Models.SolutionListOptions
+  nameWithType: SolutionListOptions
+- uid: Seclai.Models.SolutionListOptions.Limit
+  name: Limit
+  href: api/Seclai.Models.SolutionListOptions.html#Seclai_Models_SolutionListOptions_Limit
+  commentId: P:Seclai.Models.SolutionListOptions.Limit
+  fullName: Seclai.Models.SolutionListOptions.Limit
+  nameWithType: SolutionListOptions.Limit
+- uid: Seclai.Models.SolutionListOptions.Limit*
+  name: Limit
+  href: api/Seclai.Models.SolutionListOptions.html#Seclai_Models_SolutionListOptions_Limit_
+  commentId: Overload:Seclai.Models.SolutionListOptions.Limit
+  isSpec: "True"
+  fullName: Seclai.Models.SolutionListOptions.Limit
+  nameWithType: SolutionListOptions.Limit
+- uid: Seclai.Models.SolutionListOptions.Order
+  name: Order
+  href: api/Seclai.Models.SolutionListOptions.html#Seclai_Models_SolutionListOptions_Order
+  commentId: P:Seclai.Models.SolutionListOptions.Order
+  fullName: Seclai.Models.SolutionListOptions.Order
+  nameWithType: SolutionListOptions.Order
+- uid: Seclai.Models.SolutionListOptions.Order*
+  name: Order
+  href: api/Seclai.Models.SolutionListOptions.html#Seclai_Models_SolutionListOptions_Order_
+  commentId: Overload:Seclai.Models.SolutionListOptions.Order
+  isSpec: "True"
+  fullName: Seclai.Models.SolutionListOptions.Order
+  nameWithType: SolutionListOptions.Order
+- uid: Seclai.Models.SolutionListOptions.Page
+  name: Page
+  href: api/Seclai.Models.SolutionListOptions.html#Seclai_Models_SolutionListOptions_Page
+  commentId: P:Seclai.Models.SolutionListOptions.Page
+  fullName: Seclai.Models.SolutionListOptions.Page
+  nameWithType: SolutionListOptions.Page
+- uid: Seclai.Models.SolutionListOptions.Page*
+  name: Page
+  href: api/Seclai.Models.SolutionListOptions.html#Seclai_Models_SolutionListOptions_Page_
+  commentId: Overload:Seclai.Models.SolutionListOptions.Page
+  isSpec: "True"
+  fullName: Seclai.Models.SolutionListOptions.Page
+  nameWithType: SolutionListOptions.Page
+- uid: Seclai.Models.SolutionListOptions.Search
+  name: Search
+  href: api/Seclai.Models.SolutionListOptions.html#Seclai_Models_SolutionListOptions_Search
+  commentId: P:Seclai.Models.SolutionListOptions.Search
+  fullName: Seclai.Models.SolutionListOptions.Search
+  nameWithType: SolutionListOptions.Search
+- uid: Seclai.Models.SolutionListOptions.Search*
+  name: Search
+  href: api/Seclai.Models.SolutionListOptions.html#Seclai_Models_SolutionListOptions_Search_
+  commentId: Overload:Seclai.Models.SolutionListOptions.Search
+  isSpec: "True"
+  fullName: Seclai.Models.SolutionListOptions.Search
+  nameWithType: SolutionListOptions.Search
+- uid: Seclai.Models.SolutionListOptions.Sort
+  name: Sort
+  href: api/Seclai.Models.SolutionListOptions.html#Seclai_Models_SolutionListOptions_Sort
+  commentId: P:Seclai.Models.SolutionListOptions.Sort
+  fullName: Seclai.Models.SolutionListOptions.Sort
+  nameWithType: SolutionListOptions.Sort
+- uid: Seclai.Models.SolutionListOptions.Sort*
+  name: Sort
+  href: api/Seclai.Models.SolutionListOptions.html#Seclai_Models_SolutionListOptions_Sort_
+  commentId: Overload:Seclai.Models.SolutionListOptions.Sort
+  isSpec: "True"
+  fullName: Seclai.Models.SolutionListOptions.Sort
+  nameWithType: SolutionListOptions.Sort
 - uid: Seclai.Models.SolutionListResponse
   name: SolutionListResponse
   href: api/Seclai.Models.SolutionListResponse.html
@@ -14021,6 +15740,19 @@ references:
   isSpec: "True"
   fullName: Seclai.Models.SourceContentStatusResponse.PulledAt
   nameWithType: SourceContentStatusResponse.PulledAt
+- uid: Seclai.Models.SourceContentStatusResponse.ReleaseWaitingReason
+  name: ReleaseWaitingReason
+  href: api/Seclai.Models.SourceContentStatusResponse.html#Seclai_Models_SourceContentStatusResponse_ReleaseWaitingReason
+  commentId: P:Seclai.Models.SourceContentStatusResponse.ReleaseWaitingReason
+  fullName: Seclai.Models.SourceContentStatusResponse.ReleaseWaitingReason
+  nameWithType: SourceContentStatusResponse.ReleaseWaitingReason
+- uid: Seclai.Models.SourceContentStatusResponse.ReleaseWaitingReason*
+  name: ReleaseWaitingReason
+  href: api/Seclai.Models.SourceContentStatusResponse.html#Seclai_Models_SourceContentStatusResponse_ReleaseWaitingReason_
+  commentId: Overload:Seclai.Models.SourceContentStatusResponse.ReleaseWaitingReason
+  isSpec: "True"
+  fullName: Seclai.Models.SourceContentStatusResponse.ReleaseWaitingReason
+  nameWithType: SourceContentStatusResponse.ReleaseWaitingReason
 - uid: Seclai.Models.SourceContentStatusResponse.SourceConnectionContentVersionId
   name: SourceConnectionContentVersionId
   href: api/Seclai.Models.SourceContentStatusResponse.html#Seclai_Models_SourceContentStatusResponse_SourceConnectionContentVersionId
@@ -14079,6 +15811,24 @@ references:
   isSpec: "True"
   fullName: Seclai.Models.SourceEmbeddingMigrationResponse.Status
   nameWithType: SourceEmbeddingMigrationResponse.Status
+- uid: Seclai.Models.SourceField
+  name: SourceField
+  href: api/Seclai.Models.SourceField.html
+  commentId: T:Seclai.Models.SourceField
+  fullName: Seclai.Models.SourceField
+  nameWithType: SourceField
+- uid: Seclai.Models.SourceField.MaxCreditsPerPeriod
+  name: MaxCreditsPerPeriod
+  href: api/Seclai.Models.SourceField.html#Seclai_Models_SourceField_MaxCreditsPerPeriod
+  commentId: F:Seclai.Models.SourceField.MaxCreditsPerPeriod
+  fullName: Seclai.Models.SourceField.MaxCreditsPerPeriod
+  nameWithType: SourceField.MaxCreditsPerPeriod
+- uid: Seclai.Models.SourceField.RetentionDays
+  name: RetentionDays
+  href: api/Seclai.Models.SourceField.html#Seclai_Models_SourceField_RetentionDays
+  commentId: F:Seclai.Models.SourceField.RetentionDays
+  fullName: Seclai.Models.SourceField.RetentionDays
+  nameWithType: SourceField.RetentionDays
 - uid: Seclai.Models.SourceListResponse
   name: SourceListResponse
   href: api/Seclai.Models.SourceListResponse.html
@@ -14442,6 +16192,19 @@ references:
   isSpec: "True"
   fullName: Seclai.Models.SourceResponse.Id
   nameWithType: SourceResponse.Id
+- uid: Seclai.Models.SourceResponse.MaxCreditsPerPeriod
+  name: MaxCreditsPerPeriod
+  href: api/Seclai.Models.SourceResponse.html#Seclai_Models_SourceResponse_MaxCreditsPerPeriod
+  commentId: P:Seclai.Models.SourceResponse.MaxCreditsPerPeriod
+  fullName: Seclai.Models.SourceResponse.MaxCreditsPerPeriod
+  nameWithType: SourceResponse.MaxCreditsPerPeriod
+- uid: Seclai.Models.SourceResponse.MaxCreditsPerPeriod*
+  name: MaxCreditsPerPeriod
+  href: api/Seclai.Models.SourceResponse.html#Seclai_Models_SourceResponse_MaxCreditsPerPeriod_
+  commentId: Overload:Seclai.Models.SourceResponse.MaxCreditsPerPeriod
+  isSpec: "True"
+  fullName: Seclai.Models.SourceResponse.MaxCreditsPerPeriod
+  nameWithType: SourceResponse.MaxCreditsPerPeriod
 - uid: Seclai.Models.SourceResponse.MediaTypes
   name: MediaTypes
   href: api/Seclai.Models.SourceResponse.html#Seclai_Models_SourceResponse_MediaTypes
@@ -14572,6 +16335,45 @@ references:
   isSpec: "True"
   fullName: Seclai.Models.SourceResponse.SourceType
   nameWithType: SourceResponse.SourceType
+- uid: Seclai.Models.SourceResponse.SpendCapAction
+  name: SpendCapAction
+  href: api/Seclai.Models.SourceResponse.html#Seclai_Models_SourceResponse_SpendCapAction
+  commentId: P:Seclai.Models.SourceResponse.SpendCapAction
+  fullName: Seclai.Models.SourceResponse.SpendCapAction
+  nameWithType: SourceResponse.SpendCapAction
+- uid: Seclai.Models.SourceResponse.SpendCapAction*
+  name: SpendCapAction
+  href: api/Seclai.Models.SourceResponse.html#Seclai_Models_SourceResponse_SpendCapAction_
+  commentId: Overload:Seclai.Models.SourceResponse.SpendCapAction
+  isSpec: "True"
+  fullName: Seclai.Models.SourceResponse.SpendCapAction
+  nameWithType: SourceResponse.SpendCapAction
+- uid: Seclai.Models.SourceResponse.SpendCapDeleteOrder
+  name: SpendCapDeleteOrder
+  href: api/Seclai.Models.SourceResponse.html#Seclai_Models_SourceResponse_SpendCapDeleteOrder
+  commentId: P:Seclai.Models.SourceResponse.SpendCapDeleteOrder
+  fullName: Seclai.Models.SourceResponse.SpendCapDeleteOrder
+  nameWithType: SourceResponse.SpendCapDeleteOrder
+- uid: Seclai.Models.SourceResponse.SpendCapDeleteOrder*
+  name: SpendCapDeleteOrder
+  href: api/Seclai.Models.SourceResponse.html#Seclai_Models_SourceResponse_SpendCapDeleteOrder_
+  commentId: Overload:Seclai.Models.SourceResponse.SpendCapDeleteOrder
+  isSpec: "True"
+  fullName: Seclai.Models.SourceResponse.SpendCapDeleteOrder
+  nameWithType: SourceResponse.SpendCapDeleteOrder
+- uid: Seclai.Models.SourceResponse.SpendCapReached
+  name: SpendCapReached
+  href: api/Seclai.Models.SourceResponse.html#Seclai_Models_SourceResponse_SpendCapReached
+  commentId: P:Seclai.Models.SourceResponse.SpendCapReached
+  fullName: Seclai.Models.SourceResponse.SpendCapReached
+  nameWithType: SourceResponse.SpendCapReached
+- uid: Seclai.Models.SourceResponse.SpendCapReached*
+  name: SpendCapReached
+  href: api/Seclai.Models.SourceResponse.html#Seclai_Models_SourceResponse_SpendCapReached_
+  commentId: Overload:Seclai.Models.SourceResponse.SpendCapReached
+  isSpec: "True"
+  fullName: Seclai.Models.SourceResponse.SpendCapReached
+  nameWithType: SourceResponse.SpendCapReached
 - uid: Seclai.Models.SourceResponse.UpdatedAt
   name: UpdatedAt
   href: api/Seclai.Models.SourceResponse.html#Seclai_Models_SourceResponse_UpdatedAt
@@ -15094,6 +16896,19 @@ references:
   isSpec: "True"
   fullName: Seclai.Models.UpdateAgentRequest.AgentDefinition
   nameWithType: UpdateAgentRequest.AgentDefinition
+- uid: Seclai.Models.UpdateAgentRequest.ApplyImportRunLimits
+  name: ApplyImportRunLimits
+  href: api/Seclai.Models.UpdateAgentRequest.html#Seclai_Models_UpdateAgentRequest_ApplyImportRunLimits
+  commentId: P:Seclai.Models.UpdateAgentRequest.ApplyImportRunLimits
+  fullName: Seclai.Models.UpdateAgentRequest.ApplyImportRunLimits
+  nameWithType: UpdateAgentRequest.ApplyImportRunLimits
+- uid: Seclai.Models.UpdateAgentRequest.ApplyImportRunLimits*
+  name: ApplyImportRunLimits
+  href: api/Seclai.Models.UpdateAgentRequest.html#Seclai_Models_UpdateAgentRequest_ApplyImportRunLimits_
+  commentId: Overload:Seclai.Models.UpdateAgentRequest.ApplyImportRunLimits
+  isSpec: "True"
+  fullName: Seclai.Models.UpdateAgentRequest.ApplyImportRunLimits
+  nameWithType: UpdateAgentRequest.ApplyImportRunLimits
 - uid: Seclai.Models.UpdateAgentRequest.Description
   name: Description
   href: api/Seclai.Models.UpdateAgentRequest.html#Seclai_Models_UpdateAgentRequest_Description
@@ -15133,6 +16948,71 @@ references:
   isSpec: "True"
   fullName: Seclai.Models.UpdateAgentRequest.IsPublic
   nameWithType: UpdateAgentRequest.IsPublic
+- uid: Seclai.Models.UpdateAgentRequest.MaxCreditsPerPeriod
+  name: MaxCreditsPerPeriod
+  href: api/Seclai.Models.UpdateAgentRequest.html#Seclai_Models_UpdateAgentRequest_MaxCreditsPerPeriod
+  commentId: P:Seclai.Models.UpdateAgentRequest.MaxCreditsPerPeriod
+  fullName: Seclai.Models.UpdateAgentRequest.MaxCreditsPerPeriod
+  nameWithType: UpdateAgentRequest.MaxCreditsPerPeriod
+- uid: Seclai.Models.UpdateAgentRequest.MaxCreditsPerPeriod*
+  name: MaxCreditsPerPeriod
+  href: api/Seclai.Models.UpdateAgentRequest.html#Seclai_Models_UpdateAgentRequest_MaxCreditsPerPeriod_
+  commentId: Overload:Seclai.Models.UpdateAgentRequest.MaxCreditsPerPeriod
+  isSpec: "True"
+  fullName: Seclai.Models.UpdateAgentRequest.MaxCreditsPerPeriod
+  nameWithType: UpdateAgentRequest.MaxCreditsPerPeriod
+- uid: Seclai.Models.UpdateAgentRequest.MaxCreditsPerRun
+  name: MaxCreditsPerRun
+  href: api/Seclai.Models.UpdateAgentRequest.html#Seclai_Models_UpdateAgentRequest_MaxCreditsPerRun
+  commentId: P:Seclai.Models.UpdateAgentRequest.MaxCreditsPerRun
+  fullName: Seclai.Models.UpdateAgentRequest.MaxCreditsPerRun
+  nameWithType: UpdateAgentRequest.MaxCreditsPerRun
+- uid: Seclai.Models.UpdateAgentRequest.MaxCreditsPerRun*
+  name: MaxCreditsPerRun
+  href: api/Seclai.Models.UpdateAgentRequest.html#Seclai_Models_UpdateAgentRequest_MaxCreditsPerRun_
+  commentId: Overload:Seclai.Models.UpdateAgentRequest.MaxCreditsPerRun
+  isSpec: "True"
+  fullName: Seclai.Models.UpdateAgentRequest.MaxCreditsPerRun
+  nameWithType: UpdateAgentRequest.MaxCreditsPerRun
+- uid: Seclai.Models.UpdateAgentRequest.MaxRunsPerDay
+  name: MaxRunsPerDay
+  href: api/Seclai.Models.UpdateAgentRequest.html#Seclai_Models_UpdateAgentRequest_MaxRunsPerDay
+  commentId: P:Seclai.Models.UpdateAgentRequest.MaxRunsPerDay
+  fullName: Seclai.Models.UpdateAgentRequest.MaxRunsPerDay
+  nameWithType: UpdateAgentRequest.MaxRunsPerDay
+- uid: Seclai.Models.UpdateAgentRequest.MaxRunsPerDay*
+  name: MaxRunsPerDay
+  href: api/Seclai.Models.UpdateAgentRequest.html#Seclai_Models_UpdateAgentRequest_MaxRunsPerDay_
+  commentId: Overload:Seclai.Models.UpdateAgentRequest.MaxRunsPerDay
+  isSpec: "True"
+  fullName: Seclai.Models.UpdateAgentRequest.MaxRunsPerDay
+  nameWithType: UpdateAgentRequest.MaxRunsPerDay
+- uid: Seclai.Models.UpdateAgentRequest.MaxRunsPerHour
+  name: MaxRunsPerHour
+  href: api/Seclai.Models.UpdateAgentRequest.html#Seclai_Models_UpdateAgentRequest_MaxRunsPerHour
+  commentId: P:Seclai.Models.UpdateAgentRequest.MaxRunsPerHour
+  fullName: Seclai.Models.UpdateAgentRequest.MaxRunsPerHour
+  nameWithType: UpdateAgentRequest.MaxRunsPerHour
+- uid: Seclai.Models.UpdateAgentRequest.MaxRunsPerHour*
+  name: MaxRunsPerHour
+  href: api/Seclai.Models.UpdateAgentRequest.html#Seclai_Models_UpdateAgentRequest_MaxRunsPerHour_
+  commentId: Overload:Seclai.Models.UpdateAgentRequest.MaxRunsPerHour
+  isSpec: "True"
+  fullName: Seclai.Models.UpdateAgentRequest.MaxRunsPerHour
+  nameWithType: UpdateAgentRequest.MaxRunsPerHour
+- uid: Seclai.Models.UpdateAgentRequest.MaxRunsTotal
+  name: MaxRunsTotal
+  href: api/Seclai.Models.UpdateAgentRequest.html#Seclai_Models_UpdateAgentRequest_MaxRunsTotal
+  commentId: P:Seclai.Models.UpdateAgentRequest.MaxRunsTotal
+  fullName: Seclai.Models.UpdateAgentRequest.MaxRunsTotal
+  nameWithType: UpdateAgentRequest.MaxRunsTotal
+- uid: Seclai.Models.UpdateAgentRequest.MaxRunsTotal*
+  name: MaxRunsTotal
+  href: api/Seclai.Models.UpdateAgentRequest.html#Seclai_Models_UpdateAgentRequest_MaxRunsTotal_
+  commentId: Overload:Seclai.Models.UpdateAgentRequest.MaxRunsTotal
+  isSpec: "True"
+  fullName: Seclai.Models.UpdateAgentRequest.MaxRunsTotal
+  nameWithType: UpdateAgentRequest.MaxRunsTotal
 - uid: Seclai.Models.UpdateAgentRequest.Name
   name: Name
   href: api/Seclai.Models.UpdateAgentRequest.html#Seclai_Models_UpdateAgentRequest_Name
@@ -15146,6 +17026,71 @@ references:
   isSpec: "True"
   fullName: Seclai.Models.UpdateAgentRequest.Name
   nameWithType: UpdateAgentRequest.Name
+- uid: Seclai.Models.UpdateAgentRequest.SetMaxCreditsPerPeriod
+  name: SetMaxCreditsPerPeriod
+  href: api/Seclai.Models.UpdateAgentRequest.html#Seclai_Models_UpdateAgentRequest_SetMaxCreditsPerPeriod
+  commentId: P:Seclai.Models.UpdateAgentRequest.SetMaxCreditsPerPeriod
+  fullName: Seclai.Models.UpdateAgentRequest.SetMaxCreditsPerPeriod
+  nameWithType: UpdateAgentRequest.SetMaxCreditsPerPeriod
+- uid: Seclai.Models.UpdateAgentRequest.SetMaxCreditsPerPeriod*
+  name: SetMaxCreditsPerPeriod
+  href: api/Seclai.Models.UpdateAgentRequest.html#Seclai_Models_UpdateAgentRequest_SetMaxCreditsPerPeriod_
+  commentId: Overload:Seclai.Models.UpdateAgentRequest.SetMaxCreditsPerPeriod
+  isSpec: "True"
+  fullName: Seclai.Models.UpdateAgentRequest.SetMaxCreditsPerPeriod
+  nameWithType: UpdateAgentRequest.SetMaxCreditsPerPeriod
+- uid: Seclai.Models.UpdateAgentRequest.SetMaxCreditsPerRun
+  name: SetMaxCreditsPerRun
+  href: api/Seclai.Models.UpdateAgentRequest.html#Seclai_Models_UpdateAgentRequest_SetMaxCreditsPerRun
+  commentId: P:Seclai.Models.UpdateAgentRequest.SetMaxCreditsPerRun
+  fullName: Seclai.Models.UpdateAgentRequest.SetMaxCreditsPerRun
+  nameWithType: UpdateAgentRequest.SetMaxCreditsPerRun
+- uid: Seclai.Models.UpdateAgentRequest.SetMaxCreditsPerRun*
+  name: SetMaxCreditsPerRun
+  href: api/Seclai.Models.UpdateAgentRequest.html#Seclai_Models_UpdateAgentRequest_SetMaxCreditsPerRun_
+  commentId: Overload:Seclai.Models.UpdateAgentRequest.SetMaxCreditsPerRun
+  isSpec: "True"
+  fullName: Seclai.Models.UpdateAgentRequest.SetMaxCreditsPerRun
+  nameWithType: UpdateAgentRequest.SetMaxCreditsPerRun
+- uid: Seclai.Models.UpdateAgentRequest.SetMaxRunsPerDay
+  name: SetMaxRunsPerDay
+  href: api/Seclai.Models.UpdateAgentRequest.html#Seclai_Models_UpdateAgentRequest_SetMaxRunsPerDay
+  commentId: P:Seclai.Models.UpdateAgentRequest.SetMaxRunsPerDay
+  fullName: Seclai.Models.UpdateAgentRequest.SetMaxRunsPerDay
+  nameWithType: UpdateAgentRequest.SetMaxRunsPerDay
+- uid: Seclai.Models.UpdateAgentRequest.SetMaxRunsPerDay*
+  name: SetMaxRunsPerDay
+  href: api/Seclai.Models.UpdateAgentRequest.html#Seclai_Models_UpdateAgentRequest_SetMaxRunsPerDay_
+  commentId: Overload:Seclai.Models.UpdateAgentRequest.SetMaxRunsPerDay
+  isSpec: "True"
+  fullName: Seclai.Models.UpdateAgentRequest.SetMaxRunsPerDay
+  nameWithType: UpdateAgentRequest.SetMaxRunsPerDay
+- uid: Seclai.Models.UpdateAgentRequest.SetMaxRunsPerHour
+  name: SetMaxRunsPerHour
+  href: api/Seclai.Models.UpdateAgentRequest.html#Seclai_Models_UpdateAgentRequest_SetMaxRunsPerHour
+  commentId: P:Seclai.Models.UpdateAgentRequest.SetMaxRunsPerHour
+  fullName: Seclai.Models.UpdateAgentRequest.SetMaxRunsPerHour
+  nameWithType: UpdateAgentRequest.SetMaxRunsPerHour
+- uid: Seclai.Models.UpdateAgentRequest.SetMaxRunsPerHour*
+  name: SetMaxRunsPerHour
+  href: api/Seclai.Models.UpdateAgentRequest.html#Seclai_Models_UpdateAgentRequest_SetMaxRunsPerHour_
+  commentId: Overload:Seclai.Models.UpdateAgentRequest.SetMaxRunsPerHour
+  isSpec: "True"
+  fullName: Seclai.Models.UpdateAgentRequest.SetMaxRunsPerHour
+  nameWithType: UpdateAgentRequest.SetMaxRunsPerHour
+- uid: Seclai.Models.UpdateAgentRequest.SetMaxRunsTotal
+  name: SetMaxRunsTotal
+  href: api/Seclai.Models.UpdateAgentRequest.html#Seclai_Models_UpdateAgentRequest_SetMaxRunsTotal
+  commentId: P:Seclai.Models.UpdateAgentRequest.SetMaxRunsTotal
+  fullName: Seclai.Models.UpdateAgentRequest.SetMaxRunsTotal
+  nameWithType: UpdateAgentRequest.SetMaxRunsTotal
+- uid: Seclai.Models.UpdateAgentRequest.SetMaxRunsTotal*
+  name: SetMaxRunsTotal
+  href: api/Seclai.Models.UpdateAgentRequest.html#Seclai_Models_UpdateAgentRequest_SetMaxRunsTotal_
+  commentId: Overload:Seclai.Models.UpdateAgentRequest.SetMaxRunsTotal
+  isSpec: "True"
+  fullName: Seclai.Models.UpdateAgentRequest.SetMaxRunsTotal
+  nameWithType: UpdateAgentRequest.SetMaxRunsTotal
 - uid: Seclai.Models.UpdateAgentRequest.SolutionId
   name: SolutionId
   href: api/Seclai.Models.UpdateAgentRequest.html#Seclai_Models_UpdateAgentRequest_SolutionId
@@ -15727,6 +17672,19 @@ references:
   isSpec: "True"
   fullName: Seclai.Models.UpdateSourceRequest.FeedAttachments
   nameWithType: UpdateSourceRequest.FeedAttachments
+- uid: Seclai.Models.UpdateSourceRequest.MaxCreditsPerPeriod
+  name: MaxCreditsPerPeriod
+  href: api/Seclai.Models.UpdateSourceRequest.html#Seclai_Models_UpdateSourceRequest_MaxCreditsPerPeriod
+  commentId: P:Seclai.Models.UpdateSourceRequest.MaxCreditsPerPeriod
+  fullName: Seclai.Models.UpdateSourceRequest.MaxCreditsPerPeriod
+  nameWithType: UpdateSourceRequest.MaxCreditsPerPeriod
+- uid: Seclai.Models.UpdateSourceRequest.MaxCreditsPerPeriod*
+  name: MaxCreditsPerPeriod
+  href: api/Seclai.Models.UpdateSourceRequest.html#Seclai_Models_UpdateSourceRequest_MaxCreditsPerPeriod_
+  commentId: Overload:Seclai.Models.UpdateSourceRequest.MaxCreditsPerPeriod
+  isSpec: "True"
+  fullName: Seclai.Models.UpdateSourceRequest.MaxCreditsPerPeriod
+  nameWithType: UpdateSourceRequest.MaxCreditsPerPeriod
 - uid: Seclai.Models.UpdateSourceRequest.MediaTypes
   name: MediaTypes
   href: api/Seclai.Models.UpdateSourceRequest.html#Seclai_Models_UpdateSourceRequest_MediaTypes
@@ -15779,6 +17737,32 @@ references:
   isSpec: "True"
   fullName: Seclai.Models.UpdateSourceRequest.RetentionDays
   nameWithType: UpdateSourceRequest.RetentionDays
+- uid: Seclai.Models.UpdateSourceRequest.SpendCapAction
+  name: SpendCapAction
+  href: api/Seclai.Models.UpdateSourceRequest.html#Seclai_Models_UpdateSourceRequest_SpendCapAction
+  commentId: P:Seclai.Models.UpdateSourceRequest.SpendCapAction
+  fullName: Seclai.Models.UpdateSourceRequest.SpendCapAction
+  nameWithType: UpdateSourceRequest.SpendCapAction
+- uid: Seclai.Models.UpdateSourceRequest.SpendCapAction*
+  name: SpendCapAction
+  href: api/Seclai.Models.UpdateSourceRequest.html#Seclai_Models_UpdateSourceRequest_SpendCapAction_
+  commentId: Overload:Seclai.Models.UpdateSourceRequest.SpendCapAction
+  isSpec: "True"
+  fullName: Seclai.Models.UpdateSourceRequest.SpendCapAction
+  nameWithType: UpdateSourceRequest.SpendCapAction
+- uid: Seclai.Models.UpdateSourceRequest.SpendCapDeleteOrder
+  name: SpendCapDeleteOrder
+  href: api/Seclai.Models.UpdateSourceRequest.html#Seclai_Models_UpdateSourceRequest_SpendCapDeleteOrder
+  commentId: P:Seclai.Models.UpdateSourceRequest.SpendCapDeleteOrder
+  fullName: Seclai.Models.UpdateSourceRequest.SpendCapDeleteOrder
+  nameWithType: UpdateSourceRequest.SpendCapDeleteOrder
+- uid: Seclai.Models.UpdateSourceRequest.SpendCapDeleteOrder*
+  name: SpendCapDeleteOrder
+  href: api/Seclai.Models.UpdateSourceRequest.html#Seclai_Models_UpdateSourceRequest_SpendCapDeleteOrder_
+  commentId: Overload:Seclai.Models.UpdateSourceRequest.SpendCapDeleteOrder
+  isSpec: "True"
+  fullName: Seclai.Models.UpdateSourceRequest.SpendCapDeleteOrder
+  nameWithType: UpdateSourceRequest.SpendCapDeleteOrder
 - uid: Seclai.Models.UploadAgentInputResponse
   name: UploadAgentInputResponse
   href: api/Seclai.Models.UploadAgentInputResponse.html
@@ -16269,6 +18253,12 @@ references:
   commentId: F:Seclai.SeclaiApiVersion.V2026_10_21
   fullName: Seclai.SeclaiApiVersion.V2026_10_21
   nameWithType: SeclaiApiVersion.V2026_10_21
+- uid: Seclai.SeclaiApiVersion.V2026_10_28
+  name: V2026_10_28
+  href: api/Seclai.SeclaiApiVersion.html#Seclai_SeclaiApiVersion_V2026_10_28
+  commentId: F:Seclai.SeclaiApiVersion.V2026_10_28
+  fullName: Seclai.SeclaiApiVersion.V2026_10_28
+  nameWithType: SeclaiApiVersion.V2026_10_28
 - uid: Seclai.SeclaiAuth
   name: SeclaiAuth
   href: api/Seclai.SeclaiAuth.html
@@ -16739,6 +18729,38 @@ references:
   isSpec: "True"
   fullName: Seclai.SeclaiClient.ClearEvaluationCriteriaFieldsAsync
   nameWithType: SeclaiClient.ClearEvaluationCriteriaFieldsAsync
+- uid: Seclai.SeclaiClient.ClearSlackTriggerMaxTurnsAsync(System.String,System.String,System.Threading.CancellationToken)
+  name: ClearSlackTriggerMaxTurnsAsync(string, string, CancellationToken)
+  href: api/Seclai.SeclaiClient.html#Seclai_SeclaiClient_ClearSlackTriggerMaxTurnsAsync_System_String_System_String_System_Threading_CancellationToken_
+  commentId: M:Seclai.SeclaiClient.ClearSlackTriggerMaxTurnsAsync(System.String,System.String,System.Threading.CancellationToken)
+  name.vb: ClearSlackTriggerMaxTurnsAsync(String, String, CancellationToken)
+  fullName: Seclai.SeclaiClient.ClearSlackTriggerMaxTurnsAsync(string, string, System.Threading.CancellationToken)
+  fullName.vb: Seclai.SeclaiClient.ClearSlackTriggerMaxTurnsAsync(String, String, System.Threading.CancellationToken)
+  nameWithType: SeclaiClient.ClearSlackTriggerMaxTurnsAsync(string, string, CancellationToken)
+  nameWithType.vb: SeclaiClient.ClearSlackTriggerMaxTurnsAsync(String, String, CancellationToken)
+- uid: Seclai.SeclaiClient.ClearSlackTriggerMaxTurnsAsync*
+  name: ClearSlackTriggerMaxTurnsAsync
+  href: api/Seclai.SeclaiClient.html#Seclai_SeclaiClient_ClearSlackTriggerMaxTurnsAsync_
+  commentId: Overload:Seclai.SeclaiClient.ClearSlackTriggerMaxTurnsAsync
+  isSpec: "True"
+  fullName: Seclai.SeclaiClient.ClearSlackTriggerMaxTurnsAsync
+  nameWithType: SeclaiClient.ClearSlackTriggerMaxTurnsAsync
+- uid: Seclai.SeclaiClient.ClearSourceFieldsAsync(System.String,System.Collections.Generic.IEnumerable{Seclai.Models.SourceField},System.Threading.CancellationToken)
+  name: ClearSourceFieldsAsync(string, IEnumerable<SourceField>, CancellationToken)
+  href: api/Seclai.SeclaiClient.html#Seclai_SeclaiClient_ClearSourceFieldsAsync_System_String_System_Collections_Generic_IEnumerable_Seclai_Models_SourceField__System_Threading_CancellationToken_
+  commentId: M:Seclai.SeclaiClient.ClearSourceFieldsAsync(System.String,System.Collections.Generic.IEnumerable{Seclai.Models.SourceField},System.Threading.CancellationToken)
+  name.vb: ClearSourceFieldsAsync(String, IEnumerable(Of SourceField), CancellationToken)
+  fullName: Seclai.SeclaiClient.ClearSourceFieldsAsync(string, System.Collections.Generic.IEnumerable<Seclai.Models.SourceField>, System.Threading.CancellationToken)
+  fullName.vb: Seclai.SeclaiClient.ClearSourceFieldsAsync(String, System.Collections.Generic.IEnumerable(Of Seclai.Models.SourceField), System.Threading.CancellationToken)
+  nameWithType: SeclaiClient.ClearSourceFieldsAsync(string, IEnumerable<SourceField>, CancellationToken)
+  nameWithType.vb: SeclaiClient.ClearSourceFieldsAsync(String, IEnumerable(Of SourceField), CancellationToken)
+- uid: Seclai.SeclaiClient.ClearSourceFieldsAsync*
+  name: ClearSourceFieldsAsync
+  href: api/Seclai.SeclaiClient.html#Seclai_SeclaiClient_ClearSourceFieldsAsync_
+  commentId: Overload:Seclai.SeclaiClient.ClearSourceFieldsAsync
+  isSpec: "True"
+  fullName: Seclai.SeclaiClient.ClearSourceFieldsAsync
+  nameWithType: SeclaiClient.ClearSourceFieldsAsync
 - uid: Seclai.SeclaiClient.ClearSourceRetentionAsync(System.String,System.Threading.CancellationToken)
   name: ClearSourceRetentionAsync(string, CancellationToken)
   href: api/Seclai.SeclaiClient.html#Seclai_SeclaiClient_ClearSourceRetentionAsync_System_String_System_Threading_CancellationToken_
@@ -17575,6 +19597,12 @@ references:
   isSpec: "True"
   fullName: Seclai.SeclaiClient.GetAgentsUsingMemoryBankAsync
   nameWithType: SeclaiClient.GetAgentsUsingMemoryBankAsync
+- uid: Seclai.SeclaiClient.GetAiAssistantMemoryBankHistoryAsync(Seclai.Models.AiLastConversationOptions,System.Threading.CancellationToken)
+  name: GetAiAssistantMemoryBankHistoryAsync(AiLastConversationOptions, CancellationToken)
+  href: api/Seclai.SeclaiClient.html#Seclai_SeclaiClient_GetAiAssistantMemoryBankHistoryAsync_Seclai_Models_AiLastConversationOptions_System_Threading_CancellationToken_
+  commentId: M:Seclai.SeclaiClient.GetAiAssistantMemoryBankHistoryAsync(Seclai.Models.AiLastConversationOptions,System.Threading.CancellationToken)
+  fullName: Seclai.SeclaiClient.GetAiAssistantMemoryBankHistoryAsync(Seclai.Models.AiLastConversationOptions, System.Threading.CancellationToken)
+  nameWithType: SeclaiClient.GetAiAssistantMemoryBankHistoryAsync(AiLastConversationOptions, CancellationToken)
 - uid: Seclai.SeclaiClient.GetAiAssistantMemoryBankHistoryAsync(System.Threading.CancellationToken)
   name: GetAiAssistantMemoryBankHistoryAsync(CancellationToken)
   href: api/Seclai.SeclaiClient.html#Seclai_SeclaiClient_GetAiAssistantMemoryBankHistoryAsync_System_Threading_CancellationToken_
@@ -17800,6 +19828,12 @@ references:
   isSpec: "True"
   fullName: Seclai.SeclaiClient.GetMeAsync
   nameWithType: SeclaiClient.GetMeAsync
+- uid: Seclai.SeclaiClient.GetMemoryBankAiLastConversationAsync(Seclai.Models.AiLastConversationOptions,System.Threading.CancellationToken)
+  name: GetMemoryBankAiLastConversationAsync(AiLastConversationOptions, CancellationToken)
+  href: api/Seclai.SeclaiClient.html#Seclai_SeclaiClient_GetMemoryBankAiLastConversationAsync_Seclai_Models_AiLastConversationOptions_System_Threading_CancellationToken_
+  commentId: M:Seclai.SeclaiClient.GetMemoryBankAiLastConversationAsync(Seclai.Models.AiLastConversationOptions,System.Threading.CancellationToken)
+  fullName: Seclai.SeclaiClient.GetMemoryBankAiLastConversationAsync(Seclai.Models.AiLastConversationOptions, System.Threading.CancellationToken)
+  nameWithType: SeclaiClient.GetMemoryBankAiLastConversationAsync(AiLastConversationOptions, CancellationToken)
 - uid: Seclai.SeclaiClient.GetMemoryBankAiLastConversationAsync(System.Threading.CancellationToken)
   name: GetMemoryBankAiLastConversationAsync(CancellationToken)
   href: api/Seclai.SeclaiClient.html#Seclai_SeclaiClient_GetMemoryBankAiLastConversationAsync_System_Threading_CancellationToken_
@@ -17829,6 +19863,15 @@ references:
   isSpec: "True"
   fullName: Seclai.SeclaiClient.GetMemoryBankAsync
   nameWithType: SeclaiClient.GetMemoryBankAsync
+- uid: Seclai.SeclaiClient.GetMemoryBankStatsAsync(System.String,Seclai.Models.MemoryBankStatsOptions,System.Threading.CancellationToken)
+  name: GetMemoryBankStatsAsync(string, MemoryBankStatsOptions, CancellationToken)
+  href: api/Seclai.SeclaiClient.html#Seclai_SeclaiClient_GetMemoryBankStatsAsync_System_String_Seclai_Models_MemoryBankStatsOptions_System_Threading_CancellationToken_
+  commentId: M:Seclai.SeclaiClient.GetMemoryBankStatsAsync(System.String,Seclai.Models.MemoryBankStatsOptions,System.Threading.CancellationToken)
+  name.vb: GetMemoryBankStatsAsync(String, MemoryBankStatsOptions, CancellationToken)
+  fullName: Seclai.SeclaiClient.GetMemoryBankStatsAsync(string, Seclai.Models.MemoryBankStatsOptions, System.Threading.CancellationToken)
+  fullName.vb: Seclai.SeclaiClient.GetMemoryBankStatsAsync(String, Seclai.Models.MemoryBankStatsOptions, System.Threading.CancellationToken)
+  nameWithType: SeclaiClient.GetMemoryBankStatsAsync(string, MemoryBankStatsOptions, CancellationToken)
+  nameWithType.vb: SeclaiClient.GetMemoryBankStatsAsync(String, MemoryBankStatsOptions, CancellationToken)
 - uid: Seclai.SeclaiClient.GetMemoryBankStatsAsync(System.String,System.Threading.CancellationToken)
   name: GetMemoryBankStatsAsync(string, CancellationToken)
   href: api/Seclai.SeclaiClient.html#Seclai_SeclaiClient_GetMemoryBankStatsAsync_System_String_System_Threading_CancellationToken_
@@ -17861,6 +19904,15 @@ references:
   isSpec: "True"
   fullName: Seclai.SeclaiClient.GetModelAsync
   nameWithType: SeclaiClient.GetModelAsync
+- uid: Seclai.SeclaiClient.GetModelRecommendationsAsync(System.String,Seclai.Models.ModelRecommendationOptions,System.Threading.CancellationToken)
+  name: GetModelRecommendationsAsync(string, ModelRecommendationOptions, CancellationToken)
+  href: api/Seclai.SeclaiClient.html#Seclai_SeclaiClient_GetModelRecommendationsAsync_System_String_Seclai_Models_ModelRecommendationOptions_System_Threading_CancellationToken_
+  commentId: M:Seclai.SeclaiClient.GetModelRecommendationsAsync(System.String,Seclai.Models.ModelRecommendationOptions,System.Threading.CancellationToken)
+  name.vb: GetModelRecommendationsAsync(String, ModelRecommendationOptions, CancellationToken)
+  fullName: Seclai.SeclaiClient.GetModelRecommendationsAsync(string, Seclai.Models.ModelRecommendationOptions, System.Threading.CancellationToken)
+  fullName.vb: Seclai.SeclaiClient.GetModelRecommendationsAsync(String, Seclai.Models.ModelRecommendationOptions, System.Threading.CancellationToken)
+  nameWithType: SeclaiClient.GetModelRecommendationsAsync(string, ModelRecommendationOptions, CancellationToken)
+  nameWithType.vb: SeclaiClient.GetModelRecommendationsAsync(String, ModelRecommendationOptions, CancellationToken)
 - uid: Seclai.SeclaiClient.GetModelRecommendationsAsync(System.String,System.Threading.CancellationToken)
   name: GetModelRecommendationsAsync(string, CancellationToken)
   href: api/Seclai.SeclaiClient.html#Seclai_SeclaiClient_GetModelRecommendationsAsync_System_String_System_Threading_CancellationToken_
@@ -17877,6 +19929,12 @@ references:
   isSpec: "True"
   fullName: Seclai.SeclaiClient.GetModelRecommendationsAsync
   nameWithType: SeclaiClient.GetModelRecommendationsAsync
+- uid: Seclai.SeclaiClient.GetNonManualEvaluationSummaryAsync(Seclai.Models.NonManualEvaluationSummaryOptions,System.Threading.CancellationToken)
+  name: GetNonManualEvaluationSummaryAsync(NonManualEvaluationSummaryOptions, CancellationToken)
+  href: api/Seclai.SeclaiClient.html#Seclai_SeclaiClient_GetNonManualEvaluationSummaryAsync_Seclai_Models_NonManualEvaluationSummaryOptions_System_Threading_CancellationToken_
+  commentId: M:Seclai.SeclaiClient.GetNonManualEvaluationSummaryAsync(Seclai.Models.NonManualEvaluationSummaryOptions,System.Threading.CancellationToken)
+  fullName: Seclai.SeclaiClient.GetNonManualEvaluationSummaryAsync(Seclai.Models.NonManualEvaluationSummaryOptions, System.Threading.CancellationToken)
+  nameWithType: SeclaiClient.GetNonManualEvaluationSummaryAsync(NonManualEvaluationSummaryOptions, CancellationToken)
 - uid: Seclai.SeclaiClient.GetNonManualEvaluationSummaryAsync(System.String,System.Threading.CancellationToken)
   name: GetNonManualEvaluationSummaryAsync(string?, CancellationToken)
   href: api/Seclai.SeclaiClient.html#Seclai_SeclaiClient_GetNonManualEvaluationSummaryAsync_System_String_System_Threading_CancellationToken_
@@ -18050,6 +20108,15 @@ references:
   isSpec: "True"
   fullName: Seclai.SeclaiClient.ListAgentEmailOptOutsAsync
   nameWithType: SeclaiClient.ListAgentEmailOptOutsAsync
+- uid: Seclai.SeclaiClient.ListAgentEvaluationResultsAsync(System.String,Seclai.Models.AgentEvaluationResultListOptions,System.Threading.CancellationToken)
+  name: ListAgentEvaluationResultsAsync(string, AgentEvaluationResultListOptions, CancellationToken)
+  href: api/Seclai.SeclaiClient.html#Seclai_SeclaiClient_ListAgentEvaluationResultsAsync_System_String_Seclai_Models_AgentEvaluationResultListOptions_System_Threading_CancellationToken_
+  commentId: M:Seclai.SeclaiClient.ListAgentEvaluationResultsAsync(System.String,Seclai.Models.AgentEvaluationResultListOptions,System.Threading.CancellationToken)
+  name.vb: ListAgentEvaluationResultsAsync(String, AgentEvaluationResultListOptions, CancellationToken)
+  fullName: Seclai.SeclaiClient.ListAgentEvaluationResultsAsync(string, Seclai.Models.AgentEvaluationResultListOptions, System.Threading.CancellationToken)
+  fullName.vb: Seclai.SeclaiClient.ListAgentEvaluationResultsAsync(String, Seclai.Models.AgentEvaluationResultListOptions, System.Threading.CancellationToken)
+  nameWithType: SeclaiClient.ListAgentEvaluationResultsAsync(string, AgentEvaluationResultListOptions, CancellationToken)
+  nameWithType.vb: SeclaiClient.ListAgentEvaluationResultsAsync(String, AgentEvaluationResultListOptions, CancellationToken)
 - uid: Seclai.SeclaiClient.ListAgentEvaluationResultsAsync(System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.Threading.CancellationToken)
   name: ListAgentEvaluationResultsAsync(string, int?, int?, CancellationToken)
   href: api/Seclai.SeclaiClient.html#Seclai_SeclaiClient_ListAgentEvaluationResultsAsync_System_String_System_Nullable_System_Int32__System_Nullable_System_Int32__System_Threading_CancellationToken_
@@ -18066,6 +20133,31 @@ references:
   isSpec: "True"
   fullName: Seclai.SeclaiClient.ListAgentEvaluationResultsAsync
   nameWithType: SeclaiClient.ListAgentEvaluationResultsAsync
+- uid: Seclai.SeclaiClient.ListAgentExamplesAsync(System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.Threading.CancellationToken)
+  name: ListAgentExamplesAsync(string?, string?, int?, int?, CancellationToken)
+  href: api/Seclai.SeclaiClient.html#Seclai_SeclaiClient_ListAgentExamplesAsync_System_String_System_String_System_Nullable_System_Int32__System_Nullable_System_Int32__System_Threading_CancellationToken_
+  commentId: M:Seclai.SeclaiClient.ListAgentExamplesAsync(System.String,System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.Threading.CancellationToken)
+  name.vb: ListAgentExamplesAsync(String, String, Integer?, Integer?, CancellationToken)
+  fullName: Seclai.SeclaiClient.ListAgentExamplesAsync(string?, string?, int?, int?, System.Threading.CancellationToken)
+  fullName.vb: Seclai.SeclaiClient.ListAgentExamplesAsync(String, String, Integer?, Integer?, System.Threading.CancellationToken)
+  nameWithType: SeclaiClient.ListAgentExamplesAsync(string?, string?, int?, int?, CancellationToken)
+  nameWithType.vb: SeclaiClient.ListAgentExamplesAsync(String, String, Integer?, Integer?, CancellationToken)
+- uid: Seclai.SeclaiClient.ListAgentExamplesAsync*
+  name: ListAgentExamplesAsync
+  href: api/Seclai.SeclaiClient.html#Seclai_SeclaiClient_ListAgentExamplesAsync_
+  commentId: Overload:Seclai.SeclaiClient.ListAgentExamplesAsync
+  isSpec: "True"
+  fullName: Seclai.SeclaiClient.ListAgentExamplesAsync
+  nameWithType: SeclaiClient.ListAgentExamplesAsync
+- uid: Seclai.SeclaiClient.ListAgentRunsAsync(System.String,Seclai.Models.AgentRunListOptions,System.Threading.CancellationToken)
+  name: ListAgentRunsAsync(string, AgentRunListOptions, CancellationToken)
+  href: api/Seclai.SeclaiClient.html#Seclai_SeclaiClient_ListAgentRunsAsync_System_String_Seclai_Models_AgentRunListOptions_System_Threading_CancellationToken_
+  commentId: M:Seclai.SeclaiClient.ListAgentRunsAsync(System.String,Seclai.Models.AgentRunListOptions,System.Threading.CancellationToken)
+  name.vb: ListAgentRunsAsync(String, AgentRunListOptions, CancellationToken)
+  fullName: Seclai.SeclaiClient.ListAgentRunsAsync(string, Seclai.Models.AgentRunListOptions, System.Threading.CancellationToken)
+  fullName.vb: Seclai.SeclaiClient.ListAgentRunsAsync(String, Seclai.Models.AgentRunListOptions, System.Threading.CancellationToken)
+  nameWithType: SeclaiClient.ListAgentRunsAsync(string, AgentRunListOptions, CancellationToken)
+  nameWithType.vb: SeclaiClient.ListAgentRunsAsync(String, AgentRunListOptions, CancellationToken)
 - uid: Seclai.SeclaiClient.ListAgentRunsAsync(System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.Threading.CancellationToken)
   name: ListAgentRunsAsync(string, int?, int?, CancellationToken)
   href: api/Seclai.SeclaiClient.html#Seclai_SeclaiClient_ListAgentRunsAsync_System_String_System_Nullable_System_Int32__System_Nullable_System_Int32__System_Threading_CancellationToken_
@@ -18098,6 +20190,12 @@ references:
   isSpec: "True"
   fullName: Seclai.SeclaiClient.ListAgentsAsync
   nameWithType: SeclaiClient.ListAgentsAsync
+- uid: Seclai.SeclaiClient.ListAlertConfigsAsync(Seclai.Models.AlertConfigListOptions,System.Threading.CancellationToken)
+  name: ListAlertConfigsAsync(AlertConfigListOptions, CancellationToken)
+  href: api/Seclai.SeclaiClient.html#Seclai_SeclaiClient_ListAlertConfigsAsync_Seclai_Models_AlertConfigListOptions_System_Threading_CancellationToken_
+  commentId: M:Seclai.SeclaiClient.ListAlertConfigsAsync(Seclai.Models.AlertConfigListOptions,System.Threading.CancellationToken)
+  fullName: Seclai.SeclaiClient.ListAlertConfigsAsync(Seclai.Models.AlertConfigListOptions, System.Threading.CancellationToken)
+  nameWithType: SeclaiClient.ListAlertConfigsAsync(AlertConfigListOptions, CancellationToken)
 - uid: Seclai.SeclaiClient.ListAlertConfigsAsync(System.Nullable{System.Int32},System.Nullable{System.Int32},System.Threading.CancellationToken)
   name: ListAlertConfigsAsync(int?, int?, CancellationToken)
   href: api/Seclai.SeclaiClient.html#Seclai_SeclaiClient_ListAlertConfigsAsync_System_Nullable_System_Int32__System_Nullable_System_Int32__System_Threading_CancellationToken_
@@ -18114,6 +20212,12 @@ references:
   isSpec: "True"
   fullName: Seclai.SeclaiClient.ListAlertConfigsAsync
   nameWithType: SeclaiClient.ListAlertConfigsAsync
+- uid: Seclai.SeclaiClient.ListAlertsAsync(Seclai.Models.AlertListOptions,System.Threading.CancellationToken)
+  name: ListAlertsAsync(AlertListOptions, CancellationToken)
+  href: api/Seclai.SeclaiClient.html#Seclai_SeclaiClient_ListAlertsAsync_Seclai_Models_AlertListOptions_System_Threading_CancellationToken_
+  commentId: M:Seclai.SeclaiClient.ListAlertsAsync(Seclai.Models.AlertListOptions,System.Threading.CancellationToken)
+  fullName: Seclai.SeclaiClient.ListAlertsAsync(Seclai.Models.AlertListOptions, System.Threading.CancellationToken)
+  nameWithType: SeclaiClient.ListAlertsAsync(AlertListOptions, CancellationToken)
 - uid: Seclai.SeclaiClient.ListAlertsAsync(System.Nullable{System.Int32},System.Nullable{System.Int32},System.String,System.String,System.Threading.CancellationToken)
   name: ListAlertsAsync(int?, int?, string?, string?, CancellationToken)
   href: api/Seclai.SeclaiClient.html#Seclai_SeclaiClient_ListAlertsAsync_System_Nullable_System_Int32__System_Nullable_System_Int32__System_String_System_String_System_Threading_CancellationToken_
@@ -18188,6 +20292,15 @@ references:
   isSpec: "True"
   fullName: Seclai.SeclaiClient.ListCloudDrivesAsync
   nameWithType: SeclaiClient.ListCloudDrivesAsync
+- uid: Seclai.SeclaiClient.ListCompatibleRunsAsync(System.String,Seclai.Models.CompatibleRunListOptions,System.Threading.CancellationToken)
+  name: ListCompatibleRunsAsync(string, CompatibleRunListOptions, CancellationToken)
+  href: api/Seclai.SeclaiClient.html#Seclai_SeclaiClient_ListCompatibleRunsAsync_System_String_Seclai_Models_CompatibleRunListOptions_System_Threading_CancellationToken_
+  commentId: M:Seclai.SeclaiClient.ListCompatibleRunsAsync(System.String,Seclai.Models.CompatibleRunListOptions,System.Threading.CancellationToken)
+  name.vb: ListCompatibleRunsAsync(String, CompatibleRunListOptions, CancellationToken)
+  fullName: Seclai.SeclaiClient.ListCompatibleRunsAsync(string, Seclai.Models.CompatibleRunListOptions, System.Threading.CancellationToken)
+  fullName.vb: Seclai.SeclaiClient.ListCompatibleRunsAsync(String, Seclai.Models.CompatibleRunListOptions, System.Threading.CancellationToken)
+  nameWithType: SeclaiClient.ListCompatibleRunsAsync(string, CompatibleRunListOptions, CancellationToken)
+  nameWithType.vb: SeclaiClient.ListCompatibleRunsAsync(String, CompatibleRunListOptions, CancellationToken)
 - uid: Seclai.SeclaiClient.ListCompatibleRunsAsync(System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.Threading.CancellationToken)
   name: ListCompatibleRunsAsync(string, int?, int?, CancellationToken)
   href: api/Seclai.SeclaiClient.html#Seclai_SeclaiClient_ListCompatibleRunsAsync_System_String_System_Nullable_System_Int32__System_Nullable_System_Int32__System_Threading_CancellationToken_
@@ -18329,6 +20442,15 @@ references:
   isSpec: "True"
   fullName: Seclai.SeclaiClient.ListEvaluationCriteriaPageAsync
   nameWithType: SeclaiClient.ListEvaluationCriteriaPageAsync
+- uid: Seclai.SeclaiClient.ListEvaluationResultsAsync(System.String,Seclai.Models.EvaluationResultListOptions,System.Threading.CancellationToken)
+  name: ListEvaluationResultsAsync(string, EvaluationResultListOptions, CancellationToken)
+  href: api/Seclai.SeclaiClient.html#Seclai_SeclaiClient_ListEvaluationResultsAsync_System_String_Seclai_Models_EvaluationResultListOptions_System_Threading_CancellationToken_
+  commentId: M:Seclai.SeclaiClient.ListEvaluationResultsAsync(System.String,Seclai.Models.EvaluationResultListOptions,System.Threading.CancellationToken)
+  name.vb: ListEvaluationResultsAsync(String, EvaluationResultListOptions, CancellationToken)
+  fullName: Seclai.SeclaiClient.ListEvaluationResultsAsync(string, Seclai.Models.EvaluationResultListOptions, System.Threading.CancellationToken)
+  fullName.vb: Seclai.SeclaiClient.ListEvaluationResultsAsync(String, Seclai.Models.EvaluationResultListOptions, System.Threading.CancellationToken)
+  nameWithType: SeclaiClient.ListEvaluationResultsAsync(string, EvaluationResultListOptions, CancellationToken)
+  nameWithType.vb: SeclaiClient.ListEvaluationResultsAsync(String, EvaluationResultListOptions, CancellationToken)
 - uid: Seclai.SeclaiClient.ListEvaluationResultsAsync(System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.Threading.CancellationToken)
   name: ListEvaluationResultsAsync(string, int?, int?, CancellationToken)
   href: api/Seclai.SeclaiClient.html#Seclai_SeclaiClient_ListEvaluationResultsAsync_System_String_System_Nullable_System_Int32__System_Nullable_System_Int32__System_Threading_CancellationToken_
@@ -18345,6 +20467,15 @@ references:
   isSpec: "True"
   fullName: Seclai.SeclaiClient.ListEvaluationResultsAsync
   nameWithType: SeclaiClient.ListEvaluationResultsAsync
+- uid: Seclai.SeclaiClient.ListEvaluationRunsAsync(System.String,Seclai.Models.EvaluationRunListOptions,System.Threading.CancellationToken)
+  name: ListEvaluationRunsAsync(string, EvaluationRunListOptions, CancellationToken)
+  href: api/Seclai.SeclaiClient.html#Seclai_SeclaiClient_ListEvaluationRunsAsync_System_String_Seclai_Models_EvaluationRunListOptions_System_Threading_CancellationToken_
+  commentId: M:Seclai.SeclaiClient.ListEvaluationRunsAsync(System.String,Seclai.Models.EvaluationRunListOptions,System.Threading.CancellationToken)
+  name.vb: ListEvaluationRunsAsync(String, EvaluationRunListOptions, CancellationToken)
+  fullName: Seclai.SeclaiClient.ListEvaluationRunsAsync(string, Seclai.Models.EvaluationRunListOptions, System.Threading.CancellationToken)
+  fullName.vb: Seclai.SeclaiClient.ListEvaluationRunsAsync(String, Seclai.Models.EvaluationRunListOptions, System.Threading.CancellationToken)
+  nameWithType: SeclaiClient.ListEvaluationRunsAsync(string, EvaluationRunListOptions, CancellationToken)
+  nameWithType.vb: SeclaiClient.ListEvaluationRunsAsync(String, EvaluationRunListOptions, CancellationToken)
 - uid: Seclai.SeclaiClient.ListEvaluationRunsAsync(System.String,System.Nullable{System.Int32},System.Nullable{System.Int32},System.Threading.CancellationToken)
   name: ListEvaluationRunsAsync(string, int?, int?, CancellationToken)
   href: api/Seclai.SeclaiClient.html#Seclai_SeclaiClient_ListEvaluationRunsAsync_System_String_System_Nullable_System_Int32__System_Nullable_System_Int32__System_Threading_CancellationToken_
@@ -18377,6 +20508,15 @@ references:
   isSpec: "True"
   fullName: Seclai.SeclaiClient.ListExperimentsAsync
   nameWithType: SeclaiClient.ListExperimentsAsync
+- uid: Seclai.SeclaiClient.ListGovernanceAiConversationsAsync(System.Int32,System.Threading.CancellationToken)
+  name: ListGovernanceAiConversationsAsync(int, CancellationToken)
+  href: api/Seclai.SeclaiClient.html#Seclai_SeclaiClient_ListGovernanceAiConversationsAsync_System_Int32_System_Threading_CancellationToken_
+  commentId: M:Seclai.SeclaiClient.ListGovernanceAiConversationsAsync(System.Int32,System.Threading.CancellationToken)
+  name.vb: ListGovernanceAiConversationsAsync(Integer, CancellationToken)
+  fullName: Seclai.SeclaiClient.ListGovernanceAiConversationsAsync(int, System.Threading.CancellationToken)
+  fullName.vb: Seclai.SeclaiClient.ListGovernanceAiConversationsAsync(Integer, System.Threading.CancellationToken)
+  nameWithType: SeclaiClient.ListGovernanceAiConversationsAsync(int, CancellationToken)
+  nameWithType.vb: SeclaiClient.ListGovernanceAiConversationsAsync(Integer, CancellationToken)
 - uid: Seclai.SeclaiClient.ListGovernanceAiConversationsAsync(System.Threading.CancellationToken)
   name: ListGovernanceAiConversationsAsync(CancellationToken)
   href: api/Seclai.SeclaiClient.html#Seclai_SeclaiClient_ListGovernanceAiConversationsAsync_System_Threading_CancellationToken_
@@ -18435,6 +20575,12 @@ references:
   isSpec: "True"
   fullName: Seclai.SeclaiClient.ListMemoryBankTemplatesAsync
   nameWithType: SeclaiClient.ListMemoryBankTemplatesAsync
+- uid: Seclai.SeclaiClient.ListMemoryBanksAsync(Seclai.Models.MemoryBankListOptions,System.Threading.CancellationToken)
+  name: ListMemoryBanksAsync(MemoryBankListOptions, CancellationToken)
+  href: api/Seclai.SeclaiClient.html#Seclai_SeclaiClient_ListMemoryBanksAsync_Seclai_Models_MemoryBankListOptions_System_Threading_CancellationToken_
+  commentId: M:Seclai.SeclaiClient.ListMemoryBanksAsync(Seclai.Models.MemoryBankListOptions,System.Threading.CancellationToken)
+  fullName: Seclai.SeclaiClient.ListMemoryBanksAsync(Seclai.Models.MemoryBankListOptions, System.Threading.CancellationToken)
+  nameWithType: SeclaiClient.ListMemoryBanksAsync(MemoryBankListOptions, CancellationToken)
 - uid: Seclai.SeclaiClient.ListMemoryBanksAsync(System.Nullable{System.Int32},System.Nullable{System.Int32},System.String,System.String,System.Threading.CancellationToken)
   name: ListMemoryBanksAsync(int?, int?, string?, string?, CancellationToken)
   href: api/Seclai.SeclaiClient.html#Seclai_SeclaiClient_ListMemoryBanksAsync_System_Nullable_System_Int32__System_Nullable_System_Int32__System_String_System_String_System_Threading_CancellationToken_
@@ -18451,6 +20597,12 @@ references:
   isSpec: "True"
   fullName: Seclai.SeclaiClient.ListMemoryBanksAsync
   nameWithType: SeclaiClient.ListMemoryBanksAsync
+- uid: Seclai.SeclaiClient.ListModelAlertsAsync(Seclai.Models.ModelAlertListOptions,System.Threading.CancellationToken)
+  name: ListModelAlertsAsync(ModelAlertListOptions, CancellationToken)
+  href: api/Seclai.SeclaiClient.html#Seclai_SeclaiClient_ListModelAlertsAsync_Seclai_Models_ModelAlertListOptions_System_Threading_CancellationToken_
+  commentId: M:Seclai.SeclaiClient.ListModelAlertsAsync(Seclai.Models.ModelAlertListOptions,System.Threading.CancellationToken)
+  fullName: Seclai.SeclaiClient.ListModelAlertsAsync(Seclai.Models.ModelAlertListOptions, System.Threading.CancellationToken)
+  nameWithType: SeclaiClient.ListModelAlertsAsync(ModelAlertListOptions, CancellationToken)
 - uid: Seclai.SeclaiClient.ListModelAlertsAsync(System.Nullable{System.Int32},System.Nullable{System.Int32},System.Threading.CancellationToken)
   name: ListModelAlertsAsync(int?, int?, CancellationToken)
   href: api/Seclai.SeclaiClient.html#Seclai_SeclaiClient_ListModelAlertsAsync_System_Nullable_System_Int32__System_Nullable_System_Int32__System_Threading_CancellationToken_
@@ -18467,6 +20619,12 @@ references:
   isSpec: "True"
   fullName: Seclai.SeclaiClient.ListModelAlertsAsync
   nameWithType: SeclaiClient.ListModelAlertsAsync
+- uid: Seclai.SeclaiClient.ListModelsAsync(Seclai.Models.ModelListOptions,System.Threading.CancellationToken)
+  name: ListModelsAsync(ModelListOptions, CancellationToken)
+  href: api/Seclai.SeclaiClient.html#Seclai_SeclaiClient_ListModelsAsync_Seclai_Models_ModelListOptions_System_Threading_CancellationToken_
+  commentId: M:Seclai.SeclaiClient.ListModelsAsync(Seclai.Models.ModelListOptions,System.Threading.CancellationToken)
+  fullName: Seclai.SeclaiClient.ListModelsAsync(Seclai.Models.ModelListOptions, System.Threading.CancellationToken)
+  nameWithType: SeclaiClient.ListModelsAsync(ModelListOptions, CancellationToken)
 - uid: Seclai.SeclaiClient.ListModelsAsync(System.String,System.Nullable{System.Boolean},System.Nullable{System.Boolean},System.Threading.CancellationToken)
   name: ListModelsAsync(string?, bool?, bool?, CancellationToken)
   href: api/Seclai.SeclaiClient.html#Seclai_SeclaiClient_ListModelsAsync_System_String_System_Nullable_System_Boolean__System_Nullable_System_Boolean__System_Threading_CancellationToken_
@@ -18483,6 +20641,12 @@ references:
   isSpec: "True"
   fullName: Seclai.SeclaiClient.ListModelsAsync
   nameWithType: SeclaiClient.ListModelsAsync
+- uid: Seclai.SeclaiClient.ListOrganizationAlertPreferencesAsync(Seclai.Models.OrganizationAlertPreferenceListOptions,System.Threading.CancellationToken)
+  name: ListOrganizationAlertPreferencesAsync(OrganizationAlertPreferenceListOptions, CancellationToken)
+  href: api/Seclai.SeclaiClient.html#Seclai_SeclaiClient_ListOrganizationAlertPreferencesAsync_Seclai_Models_OrganizationAlertPreferenceListOptions_System_Threading_CancellationToken_
+  commentId: M:Seclai.SeclaiClient.ListOrganizationAlertPreferencesAsync(Seclai.Models.OrganizationAlertPreferenceListOptions,System.Threading.CancellationToken)
+  fullName: Seclai.SeclaiClient.ListOrganizationAlertPreferencesAsync(Seclai.Models.OrganizationAlertPreferenceListOptions, System.Threading.CancellationToken)
+  nameWithType: SeclaiClient.ListOrganizationAlertPreferencesAsync(OrganizationAlertPreferenceListOptions, CancellationToken)
 - uid: Seclai.SeclaiClient.ListOrganizationAlertPreferencesAsync(System.Threading.CancellationToken)
   name: ListOrganizationAlertPreferencesAsync(CancellationToken)
   href: api/Seclai.SeclaiClient.html#Seclai_SeclaiClient_ListOrganizationAlertPreferencesAsync_System_Threading_CancellationToken_
@@ -18541,6 +20705,12 @@ references:
   isSpec: "True"
   fullName: Seclai.SeclaiClient.ListSolutionConversationsAsync
   nameWithType: SeclaiClient.ListSolutionConversationsAsync
+- uid: Seclai.SeclaiClient.ListSolutionsAsync(Seclai.Models.SolutionListOptions,System.Threading.CancellationToken)
+  name: ListSolutionsAsync(SolutionListOptions, CancellationToken)
+  href: api/Seclai.SeclaiClient.html#Seclai_SeclaiClient_ListSolutionsAsync_Seclai_Models_SolutionListOptions_System_Threading_CancellationToken_
+  commentId: M:Seclai.SeclaiClient.ListSolutionsAsync(Seclai.Models.SolutionListOptions,System.Threading.CancellationToken)
+  fullName: Seclai.SeclaiClient.ListSolutionsAsync(Seclai.Models.SolutionListOptions, System.Threading.CancellationToken)
+  nameWithType: SeclaiClient.ListSolutionsAsync(SolutionListOptions, CancellationToken)
 - uid: Seclai.SeclaiClient.ListSolutionsAsync(System.Nullable{System.Int32},System.Nullable{System.Int32},System.String,System.String,System.Threading.CancellationToken)
   name: ListSolutionsAsync(int?, int?, string?, string?, CancellationToken)
   href: api/Seclai.SeclaiClient.html#Seclai_SeclaiClient_ListSolutionsAsync_System_Nullable_System_Int32__System_Nullable_System_Int32__System_String_System_String_System_Threading_CancellationToken_
@@ -18926,6 +21096,22 @@ references:
   isSpec: "True"
   fullName: Seclai.SeclaiClient.SetPrimaryEmailDomainAsync
   nameWithType: SeclaiClient.SetPrimaryEmailDomainAsync
+- uid: Seclai.SeclaiClient.SetSlackTriggerConfigAsync(System.String,System.String,Seclai.Models.SetSlackTriggerConfigRequest,System.Threading.CancellationToken)
+  name: SetSlackTriggerConfigAsync(string, string, SetSlackTriggerConfigRequest, CancellationToken)
+  href: api/Seclai.SeclaiClient.html#Seclai_SeclaiClient_SetSlackTriggerConfigAsync_System_String_System_String_Seclai_Models_SetSlackTriggerConfigRequest_System_Threading_CancellationToken_
+  commentId: M:Seclai.SeclaiClient.SetSlackTriggerConfigAsync(System.String,System.String,Seclai.Models.SetSlackTriggerConfigRequest,System.Threading.CancellationToken)
+  name.vb: SetSlackTriggerConfigAsync(String, String, SetSlackTriggerConfigRequest, CancellationToken)
+  fullName: Seclai.SeclaiClient.SetSlackTriggerConfigAsync(string, string, Seclai.Models.SetSlackTriggerConfigRequest, System.Threading.CancellationToken)
+  fullName.vb: Seclai.SeclaiClient.SetSlackTriggerConfigAsync(String, String, Seclai.Models.SetSlackTriggerConfigRequest, System.Threading.CancellationToken)
+  nameWithType: SeclaiClient.SetSlackTriggerConfigAsync(string, string, SetSlackTriggerConfigRequest, CancellationToken)
+  nameWithType.vb: SeclaiClient.SetSlackTriggerConfigAsync(String, String, SetSlackTriggerConfigRequest, CancellationToken)
+- uid: Seclai.SeclaiClient.SetSlackTriggerConfigAsync*
+  name: SetSlackTriggerConfigAsync
+  href: api/Seclai.SeclaiClient.html#Seclai_SeclaiClient_SetSlackTriggerConfigAsync_
+  commentId: Overload:Seclai.SeclaiClient.SetSlackTriggerConfigAsync
+  isSpec: "True"
+  fullName: Seclai.SeclaiClient.SetSlackTriggerConfigAsync
+  nameWithType: SeclaiClient.SetSlackTriggerConfigAsync
 - uid: Seclai.SeclaiClient.StartSourceEmbeddingMigrationAsync(System.String,Seclai.Models.StartSourceEmbeddingMigrationRequest,System.Threading.CancellationToken)
   name: StartSourceEmbeddingMigrationAsync(string, StartSourceEmbeddingMigrationRequest, CancellationToken)
   href: api/Seclai.SeclaiClient.html#Seclai_SeclaiClient_StartSourceEmbeddingMigrationAsync_System_String_Seclai_Models_StartSourceEmbeddingMigrationRequest_System_Threading_CancellationToken_
@@ -19770,6 +21956,15 @@ references:
   isSpec: "True"
   fullName: Seclai.SeclaiTypedClient.GetModelAsync
   nameWithType: SeclaiTypedClient.GetModelAsync
+- uid: Seclai.SeclaiTypedClient.GetModelRecommendationsAsync(System.String,Seclai.Models.ModelRecommendationOptions,System.Threading.CancellationToken)
+  name: GetModelRecommendationsAsync(string, ModelRecommendationOptions, CancellationToken)
+  href: api/Seclai.SeclaiTypedClient.html#Seclai_SeclaiTypedClient_GetModelRecommendationsAsync_System_String_Seclai_Models_ModelRecommendationOptions_System_Threading_CancellationToken_
+  commentId: M:Seclai.SeclaiTypedClient.GetModelRecommendationsAsync(System.String,Seclai.Models.ModelRecommendationOptions,System.Threading.CancellationToken)
+  name.vb: GetModelRecommendationsAsync(String, ModelRecommendationOptions, CancellationToken)
+  fullName: Seclai.SeclaiTypedClient.GetModelRecommendationsAsync(string, Seclai.Models.ModelRecommendationOptions, System.Threading.CancellationToken)
+  fullName.vb: Seclai.SeclaiTypedClient.GetModelRecommendationsAsync(String, Seclai.Models.ModelRecommendationOptions, System.Threading.CancellationToken)
+  nameWithType: SeclaiTypedClient.GetModelRecommendationsAsync(string, ModelRecommendationOptions, CancellationToken)
+  nameWithType.vb: SeclaiTypedClient.GetModelRecommendationsAsync(String, ModelRecommendationOptions, CancellationToken)
 - uid: Seclai.SeclaiTypedClient.GetModelRecommendationsAsync(System.String,System.Threading.CancellationToken)
   name: GetModelRecommendationsAsync(string, CancellationToken)
   href: api/Seclai.SeclaiTypedClient.html#Seclai_SeclaiTypedClient_GetModelRecommendationsAsync_System_String_System_Threading_CancellationToken_
@@ -19799,6 +21994,12 @@ references:
   isSpec: "True"
   fullName: Seclai.SeclaiTypedClient.GetUnreadModelAlertCountAsync
   nameWithType: SeclaiTypedClient.GetUnreadModelAlertCountAsync
+- uid: Seclai.SeclaiTypedClient.ListAlertConfigsAsync(Seclai.Models.AlertConfigListOptions,System.Threading.CancellationToken)
+  name: ListAlertConfigsAsync(AlertConfigListOptions, CancellationToken)
+  href: api/Seclai.SeclaiTypedClient.html#Seclai_SeclaiTypedClient_ListAlertConfigsAsync_Seclai_Models_AlertConfigListOptions_System_Threading_CancellationToken_
+  commentId: M:Seclai.SeclaiTypedClient.ListAlertConfigsAsync(Seclai.Models.AlertConfigListOptions,System.Threading.CancellationToken)
+  fullName: Seclai.SeclaiTypedClient.ListAlertConfigsAsync(Seclai.Models.AlertConfigListOptions, System.Threading.CancellationToken)
+  nameWithType: SeclaiTypedClient.ListAlertConfigsAsync(AlertConfigListOptions, CancellationToken)
 - uid: Seclai.SeclaiTypedClient.ListAlertConfigsAsync(System.Nullable{System.Int32},System.Nullable{System.Int32},System.Threading.CancellationToken)
   name: ListAlertConfigsAsync(int?, int?, CancellationToken)
   href: api/Seclai.SeclaiTypedClient.html#Seclai_SeclaiTypedClient_ListAlertConfigsAsync_System_Nullable_System_Int32__System_Nullable_System_Int32__System_Threading_CancellationToken_
@@ -19815,6 +22016,12 @@ references:
   isSpec: "True"
   fullName: Seclai.SeclaiTypedClient.ListAlertConfigsAsync
   nameWithType: SeclaiTypedClient.ListAlertConfigsAsync
+- uid: Seclai.SeclaiTypedClient.ListAlertsAsync(Seclai.Models.AlertListOptions,System.Threading.CancellationToken)
+  name: ListAlertsAsync(AlertListOptions, CancellationToken)
+  href: api/Seclai.SeclaiTypedClient.html#Seclai_SeclaiTypedClient_ListAlertsAsync_Seclai_Models_AlertListOptions_System_Threading_CancellationToken_
+  commentId: M:Seclai.SeclaiTypedClient.ListAlertsAsync(Seclai.Models.AlertListOptions,System.Threading.CancellationToken)
+  fullName: Seclai.SeclaiTypedClient.ListAlertsAsync(Seclai.Models.AlertListOptions, System.Threading.CancellationToken)
+  nameWithType: SeclaiTypedClient.ListAlertsAsync(AlertListOptions, CancellationToken)
 - uid: Seclai.SeclaiTypedClient.ListAlertsAsync(System.Nullable{System.Int32},System.Nullable{System.Int32},System.String,System.String,System.Threading.CancellationToken)
   name: ListAlertsAsync(int?, int?, string?, string?, CancellationToken)
   href: api/Seclai.SeclaiTypedClient.html#Seclai_SeclaiTypedClient_ListAlertsAsync_System_Nullable_System_Int32__System_Nullable_System_Int32__System_String_System_String_System_Threading_CancellationToken_
@@ -19860,6 +22067,12 @@ references:
   isSpec: "True"
   fullName: Seclai.SeclaiTypedClient.ListMemoryBankTemplatesAsync
   nameWithType: SeclaiTypedClient.ListMemoryBankTemplatesAsync
+- uid: Seclai.SeclaiTypedClient.ListModelAlertsAsync(Seclai.Models.ModelAlertListOptions,System.Threading.CancellationToken)
+  name: ListModelAlertsAsync(ModelAlertListOptions, CancellationToken)
+  href: api/Seclai.SeclaiTypedClient.html#Seclai_SeclaiTypedClient_ListModelAlertsAsync_Seclai_Models_ModelAlertListOptions_System_Threading_CancellationToken_
+  commentId: M:Seclai.SeclaiTypedClient.ListModelAlertsAsync(Seclai.Models.ModelAlertListOptions,System.Threading.CancellationToken)
+  fullName: Seclai.SeclaiTypedClient.ListModelAlertsAsync(Seclai.Models.ModelAlertListOptions, System.Threading.CancellationToken)
+  nameWithType: SeclaiTypedClient.ListModelAlertsAsync(ModelAlertListOptions, CancellationToken)
 - uid: Seclai.SeclaiTypedClient.ListModelAlertsAsync(System.Nullable{System.Int32},System.Nullable{System.Int32},System.Threading.CancellationToken)
   name: ListModelAlertsAsync(int?, int?, CancellationToken)
   href: api/Seclai.SeclaiTypedClient.html#Seclai_SeclaiTypedClient_ListModelAlertsAsync_System_Nullable_System_Int32__System_Nullable_System_Int32__System_Threading_CancellationToken_
@@ -19876,6 +22089,12 @@ references:
   isSpec: "True"
   fullName: Seclai.SeclaiTypedClient.ListModelAlertsAsync
   nameWithType: SeclaiTypedClient.ListModelAlertsAsync
+- uid: Seclai.SeclaiTypedClient.ListModelsAsync(Seclai.Models.ModelListOptions,System.Threading.CancellationToken)
+  name: ListModelsAsync(ModelListOptions, CancellationToken)
+  href: api/Seclai.SeclaiTypedClient.html#Seclai_SeclaiTypedClient_ListModelsAsync_Seclai_Models_ModelListOptions_System_Threading_CancellationToken_
+  commentId: M:Seclai.SeclaiTypedClient.ListModelsAsync(Seclai.Models.ModelListOptions,System.Threading.CancellationToken)
+  fullName: Seclai.SeclaiTypedClient.ListModelsAsync(Seclai.Models.ModelListOptions, System.Threading.CancellationToken)
+  nameWithType: SeclaiTypedClient.ListModelsAsync(ModelListOptions, CancellationToken)
 - uid: Seclai.SeclaiTypedClient.ListModelsAsync(System.String,System.Nullable{System.Boolean},System.Nullable{System.Boolean},System.Threading.CancellationToken)
   name: ListModelsAsync(string?, bool?, bool?, CancellationToken)
   href: api/Seclai.SeclaiTypedClient.html#Seclai_SeclaiTypedClient_ListModelsAsync_System_String_System_Nullable_System_Boolean__System_Nullable_System_Boolean__System_Threading_CancellationToken_

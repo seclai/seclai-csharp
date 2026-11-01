@@ -152,6 +152,33 @@ public Dictionary&lt;string, JsonElement&gt;? AgentDefinition { get; set; }</cod
   </table>
 
 
+  <a id="Seclai_Models_UpdateAgentRequest_ApplyImportRunLimits_" data-uid="Seclai.Models.UpdateAgentRequest.ApplyImportRunLimits*"></a>
+  <h4 id="Seclai_Models_UpdateAgentRequest_ApplyImportRunLimits" data-uid="Seclai.Models.UpdateAgentRequest.ApplyImportRunLimits">ApplyImportRunLimits</h4>
+  <div class="markdown level1 summary"><p>With <a class="xref" href="Seclai.Models.UpdateAgentRequest.html#Seclai_Models_UpdateAgentRequest_AgentDefinition">AgentDefinition</a>, also replace the agent's run limits with the payload's (a null there removes a limit). Off by default: the agent keeps its limits.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;apply_import_run_limits&quot;)]
+public bool? ApplyImportRunLimits { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a>?</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
   <a id="Seclai_Models_UpdateAgentRequest_Description_" data-uid="Seclai.Models.UpdateAgentRequest.Description*"></a>
   <h4 id="Seclai_Models_UpdateAgentRequest_Description" data-uid="Seclai.Models.UpdateAgentRequest.Description">Description</h4>
   <div class="markdown level1 summary"></div>
@@ -232,6 +259,141 @@ public bool? IsPublic { get; set; }</code></pre>
   </table>
 
 
+  <a id="Seclai_Models_UpdateAgentRequest_MaxCreditsPerPeriod_" data-uid="Seclai.Models.UpdateAgentRequest.MaxCreditsPerPeriod*"></a>
+  <h4 id="Seclai_Models_UpdateAgentRequest_MaxCreditsPerPeriod" data-uid="Seclai.Models.UpdateAgentRequest.MaxCreditsPerPeriod">MaxCreditsPerPeriod</h4>
+  <div class="markdown level1 summary"><p>Credit limit per billing period of the paying account: once reached, runs stop at their next step and new runs are refused. Leave null to keep it; to remove it, leave this null and set <a class="xref" href="Seclai.Models.UpdateAgentRequest.html#Seclai_Models_UpdateAgentRequest_SetMaxCreditsPerPeriod">SetMaxCreditsPerPeriod</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;max_credits_per_period&quot;)]
+public double? MaxCreditsPerPeriod { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a>?</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_Models_UpdateAgentRequest_MaxCreditsPerRun_" data-uid="Seclai.Models.UpdateAgentRequest.MaxCreditsPerRun*"></a>
+  <h4 id="Seclai_Models_UpdateAgentRequest_MaxCreditsPerRun" data-uid="Seclai.Models.UpdateAgentRequest.MaxCreditsPerRun">MaxCreditsPerRun</h4>
+  <div class="markdown level1 summary"><p>Credit limit per run: a run that reaches it is stopped before its next step. Leave null to keep it; to remove it, leave this null and set <a class="xref" href="Seclai.Models.UpdateAgentRequest.html#Seclai_Models_UpdateAgentRequest_SetMaxCreditsPerRun">SetMaxCreditsPerRun</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;max_credits_per_run&quot;)]
+public double? MaxCreditsPerRun { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a>?</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_Models_UpdateAgentRequest_MaxRunsPerDay_" data-uid="Seclai.Models.UpdateAgentRequest.MaxRunsPerDay*"></a>
+  <h4 id="Seclai_Models_UpdateAgentRequest_MaxRunsPerDay" data-uid="Seclai.Models.UpdateAgentRequest.MaxRunsPerDay">MaxRunsPerDay</h4>
+  <div class="markdown level1 summary"><p>Runs per day; at most the plan's run quota. Leave null to keep it; to remove it, leave this null and set <a class="xref" href="Seclai.Models.UpdateAgentRequest.html#Seclai_Models_UpdateAgentRequest_SetMaxRunsPerDay">SetMaxRunsPerDay</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;max_runs_per_day&quot;)]
+public int? MaxRunsPerDay { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>?</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_Models_UpdateAgentRequest_MaxRunsPerHour_" data-uid="Seclai.Models.UpdateAgentRequest.MaxRunsPerHour*"></a>
+  <h4 id="Seclai_Models_UpdateAgentRequest_MaxRunsPerHour" data-uid="Seclai.Models.UpdateAgentRequest.MaxRunsPerHour">MaxRunsPerHour</h4>
+  <div class="markdown level1 summary"><p>Runs per hour; at most the plan's run quota. Leave null to keep it; to remove it, leave this null and set <a class="xref" href="Seclai.Models.UpdateAgentRequest.html#Seclai_Models_UpdateAgentRequest_SetMaxRunsPerHour">SetMaxRunsPerHour</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;max_runs_per_hour&quot;)]
+public int? MaxRunsPerHour { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>?</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_Models_UpdateAgentRequest_MaxRunsTotal_" data-uid="Seclai.Models.UpdateAgentRequest.MaxRunsTotal*"></a>
+  <h4 id="Seclai_Models_UpdateAgentRequest_MaxRunsTotal" data-uid="Seclai.Models.UpdateAgentRequest.MaxRunsTotal">MaxRunsTotal</h4>
+  <div class="markdown level1 summary"><p>Runs in total; once reached, new runs are refused. Leave null to keep it; to remove it, leave this null and set <a class="xref" href="Seclai.Models.UpdateAgentRequest.html#Seclai_Models_UpdateAgentRequest_SetMaxRunsTotal">SetMaxRunsTotal</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;max_runs_total&quot;)]
+public int? MaxRunsTotal { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>?</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
   <a id="Seclai_Models_UpdateAgentRequest_Name_" data-uid="Seclai.Models.UpdateAgentRequest.Name*"></a>
   <h4 id="Seclai_Models_UpdateAgentRequest_Name" data-uid="Seclai.Models.UpdateAgentRequest.Name">Name</h4>
   <div class="markdown level1 summary"></div>
@@ -252,6 +414,141 @@ public string? Name { get; set; }</code></pre>
     <tbody>
       <tr>
         <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_Models_UpdateAgentRequest_SetMaxCreditsPerPeriod_" data-uid="Seclai.Models.UpdateAgentRequest.SetMaxCreditsPerPeriod*"></a>
+  <h4 id="Seclai_Models_UpdateAgentRequest_SetMaxCreditsPerPeriod" data-uid="Seclai.Models.UpdateAgentRequest.SetMaxCreditsPerPeriod">SetMaxCreditsPerPeriod</h4>
+  <div class="markdown level1 summary"><p>When true and <a class="xref" href="Seclai.Models.UpdateAgentRequest.html#Seclai_Models_UpdateAgentRequest_MaxCreditsPerPeriod">MaxCreditsPerPeriod</a> is null, removes that limit.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;set_max_credits_per_period&quot;)]
+public bool? SetMaxCreditsPerPeriod { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a>?</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_Models_UpdateAgentRequest_SetMaxCreditsPerRun_" data-uid="Seclai.Models.UpdateAgentRequest.SetMaxCreditsPerRun*"></a>
+  <h4 id="Seclai_Models_UpdateAgentRequest_SetMaxCreditsPerRun" data-uid="Seclai.Models.UpdateAgentRequest.SetMaxCreditsPerRun">SetMaxCreditsPerRun</h4>
+  <div class="markdown level1 summary"><p>When true and <a class="xref" href="Seclai.Models.UpdateAgentRequest.html#Seclai_Models_UpdateAgentRequest_MaxCreditsPerRun">MaxCreditsPerRun</a> is null, removes that limit.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;set_max_credits_per_run&quot;)]
+public bool? SetMaxCreditsPerRun { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a>?</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_Models_UpdateAgentRequest_SetMaxRunsPerDay_" data-uid="Seclai.Models.UpdateAgentRequest.SetMaxRunsPerDay*"></a>
+  <h4 id="Seclai_Models_UpdateAgentRequest_SetMaxRunsPerDay" data-uid="Seclai.Models.UpdateAgentRequest.SetMaxRunsPerDay">SetMaxRunsPerDay</h4>
+  <div class="markdown level1 summary"><p>When true and <a class="xref" href="Seclai.Models.UpdateAgentRequest.html#Seclai_Models_UpdateAgentRequest_MaxRunsPerDay">MaxRunsPerDay</a> is null, removes that limit.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;set_max_runs_per_day&quot;)]
+public bool? SetMaxRunsPerDay { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a>?</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_Models_UpdateAgentRequest_SetMaxRunsPerHour_" data-uid="Seclai.Models.UpdateAgentRequest.SetMaxRunsPerHour*"></a>
+  <h4 id="Seclai_Models_UpdateAgentRequest_SetMaxRunsPerHour" data-uid="Seclai.Models.UpdateAgentRequest.SetMaxRunsPerHour">SetMaxRunsPerHour</h4>
+  <div class="markdown level1 summary"><p>When true and <a class="xref" href="Seclai.Models.UpdateAgentRequest.html#Seclai_Models_UpdateAgentRequest_MaxRunsPerHour">MaxRunsPerHour</a> is null, removes that limit.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;set_max_runs_per_hour&quot;)]
+public bool? SetMaxRunsPerHour { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a>?</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_Models_UpdateAgentRequest_SetMaxRunsTotal_" data-uid="Seclai.Models.UpdateAgentRequest.SetMaxRunsTotal*"></a>
+  <h4 id="Seclai_Models_UpdateAgentRequest_SetMaxRunsTotal" data-uid="Seclai.Models.UpdateAgentRequest.SetMaxRunsTotal">SetMaxRunsTotal</h4>
+  <div class="markdown level1 summary"><p>When true and <a class="xref" href="Seclai.Models.UpdateAgentRequest.html#Seclai_Models_UpdateAgentRequest_MaxRunsTotal">MaxRunsTotal</a> is null, removes that limit.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;set_max_runs_total&quot;)]
+public bool? SetMaxRunsTotal { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a>?</td>
         <td></td>
       </tr>
     </tbody>

@@ -179,6 +179,60 @@ public Dictionary&lt;string, JsonElement&gt;? AgentDefinition { get; set; }</cod
   </table>
 
 
+  <a id="Seclai_Models_CreateAgentRequest_AgentTemplate_" data-uid="Seclai.Models.CreateAgentRequest.AgentTemplate*"></a>
+  <h4 id="Seclai_Models_CreateAgentRequest_AgentTemplate" data-uid="Seclai.Models.CreateAgentRequest.AgentTemplate">AgentTemplate</h4>
+  <div class="markdown level1 summary"><p>Agent gallery entry to start from: a <a class="xref" href="Seclai.SeclaiClient.html#Seclai_SeclaiClient_ListAgentExamplesAsync_System_String_System_String_System_Nullable_System_Int32__System_Nullable_System_Int32__System_Threading_CancellationToken_">ListAgentExamplesAsync(string?, string?, int?, int?, CancellationToken)</a> entry's <code>key</code>, or <code>blank</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;agent_template&quot;)]
+public string? AgentTemplate { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_Models_CreateAgentRequest_CreateMissingResources_" data-uid="Seclai.Models.CreateAgentRequest.CreateMissingResources*"></a>
+  <h4 id="Seclai_Models_CreateAgentRequest_CreateMissingResources" data-uid="Seclai.Models.CreateAgentRequest.CreateMissingResources">CreateMissingResources</h4>
+  <div class="markdown level1 summary"><p>For an <a class="xref" href="Seclai.Models.CreateAgentRequest.html#Seclai_Models_CreateAgentRequest_AgentTemplate">AgentTemplate</a>: create each creatable resource slot left out of <a class="xref" href="Seclai.Models.CreateAgentRequest.html#Seclai_Models_CreateAgentRequest_ResourceBindings">ResourceBindings</a>, and group the agent with them in a new solution. When false (the server default), an unbound slot the template needs is an error. The created ids come back in <a class="xref" href="Seclai.Models.AgentSummaryResponse.html#Seclai_Models_AgentSummaryResponse_CreatedResources">CreatedResources</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;create_missing_resources&quot;)]
+public bool? CreateMissingResources { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a>?</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
   <a id="Seclai_Models_CreateAgentRequest_Description_" data-uid="Seclai.Models.CreateAgentRequest.Description*"></a>
   <h4 id="Seclai_Models_CreateAgentRequest_Description" data-uid="Seclai.Models.CreateAgentRequest.Description">Description</h4>
   <div class="markdown level1 summary"></div>
@@ -282,6 +336,33 @@ public string? Name { get; set; }</code></pre>
     <tbody>
       <tr>
         <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_Models_CreateAgentRequest_ResourceBindings_" data-uid="Seclai.Models.CreateAgentRequest.ResourceBindings*"></a>
+  <h4 id="Seclai_Models_CreateAgentRequest_ResourceBindings" data-uid="Seclai.Models.CreateAgentRequest.ResourceBindings">ResourceBindings</h4>
+  <div class="markdown level1 summary"><p>For an <a class="xref" href="Seclai.Models.CreateAgentRequest.html#Seclai_Models_CreateAgentRequest_AgentTemplate">AgentTemplate</a>: the existing resource to use for each of the template's resource slots, as <code>{slot: resource_id}</code>. <a class="xref" href="Seclai.SeclaiClient.html#Seclai_SeclaiClient_ListAgentExamplesAsync_System_String_System_String_System_Nullable_System_Int32__System_Nullable_System_Int32__System_Threading_CancellationToken_">ListAgentExamplesAsync(string?, string?, int?, int?, CancellationToken)</a> lists each template's slots.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;resource_bindings&quot;)]
+public Dictionary&lt;string, string&gt;? ResourceBindings { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.dictionary-2">Dictionary</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</td>
         <td></td>
       </tr>
     </tbody>

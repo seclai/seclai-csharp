@@ -667,6 +667,59 @@ issued is identical by construction and the two surfaces cannot drift apart.</p>
 
 
   <a id="Seclai_SeclaiTypedClient_GetModelRecommendationsAsync_" data-uid="Seclai.SeclaiTypedClient.GetModelRecommendationsAsync*"></a>
+  <h4 id="Seclai_SeclaiTypedClient_GetModelRecommendationsAsync_System_String_Seclai_Models_ModelRecommendationOptions_System_Threading_CancellationToken_" data-uid="Seclai.SeclaiTypedClient.GetModelRecommendationsAsync(System.String,Seclai.Models.ModelRecommendationOptions,System.Threading.CancellationToken)">GetModelRecommendationsAsync(string, ModelRecommendationOptions, CancellationToken)</h4>
+  <div class="markdown level1 summary"><p>Retrieves recommendations for a model, limited to models that meet <code class="paramref">options</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;ModelRecommendationsResponse&gt; GetModelRecommendationsAsync(string modelId, ModelRecommendationOptions options, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
+        <td><span class="parametername">modelId</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="Seclai.Models.ModelRecommendationOptions.html">ModelRecommendationOptions</a></td>
+        <td><span class="parametername">options</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></td>
+        <td><span class="parametername">cancellationToken</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Seclai.Models.ModelRecommendationsResponse.html">ModelRecommendationsResponse</a>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_SeclaiTypedClient_GetModelRecommendationsAsync_" data-uid="Seclai.SeclaiTypedClient.GetModelRecommendationsAsync*"></a>
   <h4 id="Seclai_SeclaiTypedClient_GetModelRecommendationsAsync_System_String_System_Threading_CancellationToken_" data-uid="Seclai.SeclaiTypedClient.GetModelRecommendationsAsync(System.String,System.Threading.CancellationToken)">GetModelRecommendationsAsync(string, CancellationToken)</h4>
   <div class="markdown level1 summary"><p>Retrieves recommendations for a model.</p>
 </div>
@@ -758,6 +811,57 @@ issued is identical by construction and the two surfaces cannot drift apart.</p>
 
 
   <a id="Seclai_SeclaiTypedClient_ListAlertConfigsAsync_" data-uid="Seclai.SeclaiTypedClient.ListAlertConfigsAsync*"></a>
+  <h4 id="Seclai_SeclaiTypedClient_ListAlertConfigsAsync_Seclai_Models_AlertConfigListOptions_System_Threading_CancellationToken_" data-uid="Seclai.SeclaiTypedClient.ListAlertConfigsAsync(Seclai.Models.AlertConfigListOptions,System.Threading.CancellationToken)">ListAlertConfigsAsync(AlertConfigListOptions, CancellationToken)</h4>
+  <div class="markdown level1 summary"><p>Lists alert configurations, filtered by <code class="paramref">options</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;AlertConfigListResponse&gt; ListAlertConfigsAsync(AlertConfigListOptions options, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Seclai.Models.AlertConfigListOptions.html">AlertConfigListOptions</a></td>
+        <td><span class="parametername">options</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></td>
+        <td><span class="parametername">cancellationToken</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Seclai.Models.AlertConfigListResponse.html">AlertConfigListResponse</a>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="Seclai_SeclaiTypedClient_ListAlertConfigsAsync_Seclai_Models_AlertConfigListOptions_System_Threading_CancellationToken__remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>The response shape follows <a class="xref" href="Seclai.SeclaiClientOptions.html#Seclai_SeclaiClientOptions_ApiVersion">ApiVersion</a> as described on the other overload.</p>
+</div>
+
+
+  <a id="Seclai_SeclaiTypedClient_ListAlertConfigsAsync_" data-uid="Seclai.SeclaiTypedClient.ListAlertConfigsAsync*"></a>
   <h4 id="Seclai_SeclaiTypedClient_ListAlertConfigsAsync_System_Nullable_System_Int32__System_Nullable_System_Int32__System_Threading_CancellationToken_" data-uid="Seclai.SeclaiTypedClient.ListAlertConfigsAsync(System.Nullable{System.Int32},System.Nullable{System.Int32},System.Threading.CancellationToken)">ListAlertConfigsAsync(int?, int?, CancellationToken)</h4>
   <div class="markdown level1 summary"><p>Lists alert configurations.</p>
 </div>
@@ -816,6 +920,54 @@ the endpoint returns the canonical <code>{data, pagination}</code> envelope
 instead, so the top-level key changes — and it returns one page, 50 items
 unless <code>limit</code> is passed, where the default returns every configuration.</p>
 </div>
+
+
+  <a id="Seclai_SeclaiTypedClient_ListAlertsAsync_" data-uid="Seclai.SeclaiTypedClient.ListAlertsAsync*"></a>
+  <h4 id="Seclai_SeclaiTypedClient_ListAlertsAsync_Seclai_Models_AlertListOptions_System_Threading_CancellationToken_" data-uid="Seclai.SeclaiTypedClient.ListAlertsAsync(Seclai.Models.AlertListOptions,System.Threading.CancellationToken)">ListAlertsAsync(AlertListOptions, CancellationToken)</h4>
+  <div class="markdown level1 summary"><p>Lists alerts, filtered by <code class="paramref">options</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;AlertListResponse&gt; ListAlertsAsync(AlertListOptions options, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Seclai.Models.AlertListOptions.html">AlertListOptions</a></td>
+        <td><span class="parametername">options</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></td>
+        <td><span class="parametername">cancellationToken</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Seclai.Models.AlertListResponse.html">AlertListResponse</a>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
 
 
   <a id="Seclai_SeclaiTypedClient_ListAlertsAsync_" data-uid="Seclai.SeclaiTypedClient.ListAlertsAsync*"></a>
@@ -1008,6 +1160,57 @@ later. Accepted and dropped so existing call sites keep working.</p>
 
 
   <a id="Seclai_SeclaiTypedClient_ListModelAlertsAsync_" data-uid="Seclai.SeclaiTypedClient.ListModelAlertsAsync*"></a>
+  <h4 id="Seclai_SeclaiTypedClient_ListModelAlertsAsync_Seclai_Models_ModelAlertListOptions_System_Threading_CancellationToken_" data-uid="Seclai.SeclaiTypedClient.ListModelAlertsAsync(Seclai.Models.ModelAlertListOptions,System.Threading.CancellationToken)">ListModelAlertsAsync(ModelAlertListOptions, CancellationToken)</h4>
+  <div class="markdown level1 summary"><p>Lists model alerts, filtered by <code class="paramref">options</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;ModelAlertListResponse&gt; ListModelAlertsAsync(ModelAlertListOptions options, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Seclai.Models.ModelAlertListOptions.html">ModelAlertListOptions</a></td>
+        <td><span class="parametername">options</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></td>
+        <td><span class="parametername">cancellationToken</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Seclai.Models.ModelAlertListResponse.html">ModelAlertListResponse</a>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="Seclai_SeclaiTypedClient_ListModelAlertsAsync_Seclai_Models_ModelAlertListOptions_System_Threading_CancellationToken__remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>Paging and the response shape are as described on the other overload.</p>
+</div>
+
+
+  <a id="Seclai_SeclaiTypedClient_ListModelAlertsAsync_" data-uid="Seclai.SeclaiTypedClient.ListModelAlertsAsync*"></a>
   <h4 id="Seclai_SeclaiTypedClient_ListModelAlertsAsync_System_Nullable_System_Int32__System_Nullable_System_Int32__System_Threading_CancellationToken_" data-uid="Seclai.SeclaiTypedClient.ListModelAlertsAsync(System.Nullable{System.Int32},System.Nullable{System.Int32},System.Threading.CancellationToken)">ListModelAlertsAsync(int?, int?, CancellationToken)</h4>
   <div class="markdown level1 summary"><p>Lists model alerts.</p>
 </div>
@@ -1066,6 +1269,57 @@ the first previously returned page 1.</p>
 <p>Returns the response body as sent: <code>{alerts, total}</code> by default, and the canonical
 <code>{data, pagination}</code> envelope once <a class="xref" href="Seclai.SeclaiClientOptions.html#Seclai_SeclaiClientOptions_ApiVersion">ApiVersion</a> is
 <code>2026-07-27</code> or later. The <a class="xref" href="Seclai.SeclaiClient.html#Seclai_SeclaiClient_Typed">Typed</a> form reads both.</p>
+</div>
+
+
+  <a id="Seclai_SeclaiTypedClient_ListModelsAsync_" data-uid="Seclai.SeclaiTypedClient.ListModelsAsync*"></a>
+  <h4 id="Seclai_SeclaiTypedClient_ListModelsAsync_Seclai_Models_ModelListOptions_System_Threading_CancellationToken_" data-uid="Seclai.SeclaiTypedClient.ListModelsAsync(Seclai.Models.ModelListOptions,System.Threading.CancellationToken)">ListModelsAsync(ModelListOptions, CancellationToken)</h4>
+  <div class="markdown level1 summary"><p>Lists enabled LLM models grouped by provider, filtered by <code class="paramref">options</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;List&lt;ProviderGroupResponse&gt;&gt; ListModelsAsync(ModelListOptions options, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Seclai.Models.ModelListOptions.html">ModelListOptions</a></td>
+        <td><span class="parametername">options</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></td>
+        <td><span class="parametername">cancellationToken</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.list-1">List</a>&lt;<a class="xref" href="Seclai.Models.ProviderGroupResponse.html">ProviderGroupResponse</a>&gt;&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="Seclai_SeclaiTypedClient_ListModelsAsync_Seclai_Models_ModelListOptions_System_Threading_CancellationToken__remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>The response shape is as described on the other overload.</p>
 </div>
 
 

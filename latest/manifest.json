@@ -246,6 +246,34 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.AgentEvaluationResultListOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.AgentEvaluationResultListOptions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.AgentEvaluationResultListOptions",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.AgentEvaluationResultListOptions.yml\" sourcestartlinenumber=\"1\">Filters and paging for <xref href=\"Seclai.SeclaiClient.ListAgentEvaluationResultsAsync(System.String%2cSeclai.Models.AgentEvaluationResultListOptions%2cSystem.Threading.CancellationToken)\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.AgentExampleListResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.AgentExampleListResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.AgentExampleListResponse",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.AgentExampleListResponse.yml\" sourcestartlinenumber=\"1\">A page of the agent gallery. Pass an entry's <code>key</code> as <xref href=\"Seclai.Models.CreateAgentRequest.AgentTemplate\" data-throw-if-not-resolved=\"false\"></xref>,\nwith <xref href=\"Seclai.Models.CreateAgentRequest.ResourceBindings\" data-throw-if-not-resolved=\"false\"></xref> for the resources it needs.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "build/api/Seclai.Models.AgentExportResponse.yml",
       "output": {
         ".html": {
@@ -341,6 +369,20 @@
       "IsMRef": true,
       "Title": "Seclai.Models.AgentRunFileResponse",
       "Summary": "<p sourcefile=\"build/api/Seclai.Models.AgentRunFileResponse.yml\" sourcestartlinenumber=\"1\">A file in a run's or a step's output.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.AgentRunListOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.AgentRunListOptions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.AgentRunListOptions",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.AgentRunListOptions.yml\" sourcestartlinenumber=\"1\">Filters and paging for <xref href=\"Seclai.SeclaiClient.ListAgentRunsAsync(System.String%2cSeclai.Models.AgentRunListOptions%2cSystem.Threading.CancellationToken)\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -610,6 +652,20 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.AiLastConversationOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.AiLastConversationOptions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.AiLastConversationOptions",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.AiLastConversationOptions.yml\" sourcestartlinenumber=\"1\">Paging for the memory bank AI assistant's last conversation.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "build/api/Seclai.Models.AlertCommentResponse.yml",
       "output": {
         ".html": {
@@ -621,6 +677,20 @@
       "IsMRef": true,
       "Title": "Seclai.Models.AlertCommentResponse",
       "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.AlertConfigListOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.AlertConfigListOptions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.AlertConfigListOptions",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.AlertConfigListOptions.yml\" sourcestartlinenumber=\"1\">Filters and paging for <xref href=\"Seclai.SeclaiClient.ListAlertConfigsAsync(Seclai.Models.AlertConfigListOptions%2cSystem.Threading.CancellationToken)\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -677,6 +747,20 @@
       "IsMRef": true,
       "Title": "Seclai.Models.AlertHistoryEntryResponse",
       "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.AlertListOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.AlertListOptions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.AlertListOptions",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.AlertListOptions.yml\" sourcestartlinenumber=\"1\">Filters and paging for <xref href=\"Seclai.SeclaiClient.ListAlertsAsync(Seclai.Models.AlertListOptions%2cSystem.Threading.CancellationToken)\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -943,6 +1027,20 @@
       "IsMRef": true,
       "Title": "Seclai.Models.CompactionTestResponse",
       "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.CompatibleRunListOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.CompatibleRunListOptions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.CompatibleRunListOptions",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.CompatibleRunListOptions.yml\" sourcestartlinenumber=\"1\">Filters and paging for <xref href=\"Seclai.SeclaiClient.ListCompatibleRunsAsync(System.String%2cSeclai.Models.CompatibleRunListOptions%2cSystem.Threading.CancellationToken)\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -1492,6 +1590,20 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.EvaluationResultListOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.EvaluationResultListOptions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.EvaluationResultListOptions",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.EvaluationResultListOptions.yml\" sourcestartlinenumber=\"1\">Filters and paging for <xref href=\"Seclai.SeclaiClient.ListEvaluationResultsAsync(System.String%2cSeclai.Models.EvaluationResultListOptions%2cSystem.Threading.CancellationToken)\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "build/api/Seclai.Models.EvaluationResultListResponse.yml",
       "output": {
         ".html": {
@@ -1545,6 +1657,20 @@
       "IsMRef": true,
       "Title": "Seclai.Models.EvaluationResultWithCriteriaListResponse",
       "Summary": "<p sourcefile=\"build/api/Seclai.Models.EvaluationResultWithCriteriaListResponse.yml\" sourcestartlinenumber=\"1\">A page of evaluation results with criteria context.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.EvaluationRunListOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.EvaluationRunListOptions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.EvaluationRunListOptions",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.EvaluationRunListOptions.yml\" sourcestartlinenumber=\"1\">Filters and paging for <xref href=\"Seclai.SeclaiClient.ListEvaluationRunsAsync(System.String%2cSeclai.Models.EvaluationRunListOptions%2cSystem.Threading.CancellationToken)\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -2066,6 +2192,20 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.MemoryBankListOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.MemoryBankListOptions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.MemoryBankListOptions",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.MemoryBankListOptions.yml\" sourcestartlinenumber=\"1\">Filters, sorting and paging for <xref href=\"Seclai.SeclaiClient.ListMemoryBanksAsync(Seclai.Models.MemoryBankListOptions%2cSystem.Threading.CancellationToken)\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "build/api/Seclai.Models.MemoryBankListResponse.yml",
       "output": {
         ".html": {
@@ -2094,6 +2234,20 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.MemoryBankStatsOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.MemoryBankStatsOptions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.MemoryBankStatsOptions",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.MemoryBankStatsOptions.yml\" sourcestartlinenumber=\"1\">Period for <xref href=\"Seclai.SeclaiClient.GetMemoryBankStatsAsync(System.String%2cSeclai.Models.MemoryBankStatsOptions%2cSystem.Threading.CancellationToken)\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "build/api/Seclai.Models.ModalityRateResponse.yml",
       "output": {
         ".html": {
@@ -2105,6 +2259,20 @@
       "IsMRef": true,
       "Title": "Seclai.Models.ModalityRateResponse",
       "Summary": "<p sourcefile=\"build/api/Seclai.Models.ModalityRateResponse.yml\" sourcestartlinenumber=\"1\">Per-modality rate for an LLM that prices image/audio/video output (or input) at a rate distinct from the default text rate. Example: Gemini 3.1 Flash Image charges $3/1M output tokens for text but $60/1M output tokens for generated images. The image rate surfaces here with <code sourcefile=\"build/api/Seclai.Models.ModalityRateResponse.yml\" sourcestartlinenumber=\"1\">modality=&quot;image&quot;</code> and <code sourcefile=\"build/api/Seclai.Models.ModalityRateResponse.yml\" sourcestartlinenumber=\"1\">output_credits_per_1000_tokens</code> set; the default text rate stays on the parent model fields.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.ModelAlertListOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.ModelAlertListOptions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.ModelAlertListOptions",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.ModelAlertListOptions.yml\" sourcestartlinenumber=\"1\">Filters and paging for <xref href=\"Seclai.SeclaiClient.ListModelAlertsAsync(Seclai.Models.ModelAlertListOptions%2cSystem.Threading.CancellationToken)\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -2136,6 +2304,34 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.ModelListOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.ModelListOptions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.ModelListOptions",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.ModelListOptions.yml\" sourcestartlinenumber=\"1\">Filters for <xref href=\"Seclai.SeclaiClient.ListModelsAsync(Seclai.Models.ModelListOptions%2cSystem.Threading.CancellationToken)\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.ModelRecommendationOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.ModelRecommendationOptions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.ModelRecommendationOptions",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.ModelRecommendationOptions.yml\" sourcestartlinenumber=\"1\">Requirements for <xref href=\"Seclai.SeclaiClient.GetModelRecommendationsAsync(System.String%2cSeclai.Models.ModelRecommendationOptions%2cSystem.Threading.CancellationToken)\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "build/api/Seclai.Models.ModelRecommendationResponse.yml",
       "output": {
         ".html": {
@@ -2164,6 +2360,20 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.NonManualEvaluationSummaryOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.NonManualEvaluationSummaryOptions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.NonManualEvaluationSummaryOptions",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.NonManualEvaluationSummaryOptions.yml\" sourcestartlinenumber=\"1\">Scope and period for <xref href=\"Seclai.SeclaiClient.GetNonManualEvaluationSummaryAsync(Seclai.Models.NonManualEvaluationSummaryOptions%2cSystem.Threading.CancellationToken)\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "build/api/Seclai.Models.NonManualEvaluationSummaryResponse.yml",
       "output": {
         ".html": {
@@ -2175,6 +2385,20 @@
       "IsMRef": true,
       "Title": "Seclai.Models.NonManualEvaluationSummaryResponse",
       "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.OrganizationAlertPreferenceListOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.OrganizationAlertPreferenceListOptions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.OrganizationAlertPreferenceListOptions",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.OrganizationAlertPreferenceListOptions.yml\" sourcestartlinenumber=\"1\">Filters for <xref href=\"Seclai.SeclaiClient.ListOrganizationAlertPreferencesAsync(Seclai.Models.OrganizationAlertPreferenceListOptions%2cSystem.Threading.CancellationToken)\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -2430,6 +2654,20 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.SetSlackTriggerConfigRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.SetSlackTriggerConfigRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.SetSlackTriggerConfigRequest",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.SetSlackTriggerConfigRequest.yml\" sourcestartlinenumber=\"1\">Slack connection, form, channels, visibility and conversation settings for an agent's\nSLACK_COMMAND trigger, which people run from Slack with <code>/seclai</code> or the message shortcut.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "build/api/Seclai.Models.SkippedAttachmentResponse.yml",
       "output": {
         ".html": {
@@ -2444,6 +2682,34 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.SlackFormField.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.SlackFormField.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.SlackFormField",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.SlackFormField.yml\" sourcestartlinenumber=\"1\">One field of a SLACK_COMMAND trigger's form, in <xref href=\"Seclai.Models.SetSlackTriggerConfigRequest.Form\" data-throw-if-not-resolved=\"false\"></xref> and\n<xref href=\"Seclai.Models.SlackTriggerConfigResponse.Form\" data-throw-if-not-resolved=\"false\"></xref>. The value a person enters reaches the run as\n<code>{{metadata.&lt;key&gt;}}</code>.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.SlackTriggerConfigResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.SlackTriggerConfigResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.SlackTriggerConfigResponse",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.SlackTriggerConfigResponse.yml\" sourcestartlinenumber=\"1\">The settings of an agent's SLACK_COMMAND trigger, as returned by <xref href=\"Seclai.SeclaiClient.SetSlackTriggerConfigAsync(System.String%2cSystem.String%2cSeclai.Models.SetSlackTriggerConfigRequest%2cSystem.Threading.CancellationToken)\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "build/api/Seclai.Models.SolutionConversationResponse.yml",
       "output": {
         ".html": {
@@ -2455,6 +2721,20 @@
       "IsMRef": true,
       "Title": "Seclai.Models.SolutionConversationResponse",
       "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.SolutionListOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.SolutionListOptions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.SolutionListOptions",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.SolutionListOptions.yml\" sourcestartlinenumber=\"1\">Filters, sorting and paging for <xref href=\"Seclai.SeclaiClient.ListSolutionsAsync(Seclai.Models.SolutionListOptions%2cSystem.Threading.CancellationToken)\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -2525,6 +2805,20 @@
       "IsMRef": true,
       "Title": "Seclai.Models.SourceEmbeddingMigrationResponse",
       "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.SourceField.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.SourceField.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.SourceField",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.SourceField.yml\" sourcestartlinenumber=\"1\">A source setting that <xref href=\"Seclai.SeclaiClient.ClearSourceFieldsAsync(System.String%2cSystem.Collections.Generic.IEnumerable%7bSeclai.Models.SourceField%7d%2cSystem.Threading.CancellationToken)\" data-throw-if-not-resolved=\"false\"></xref>\ncan clear by sending it as <code>null</code>.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -2978,11 +3272,11 @@
       "type": "Toc",
       "source_relative_path": "build/api/toc.yml",
       "output": {
-        ".html": {
-          "relative_path": "api/toc.html"
-        },
         ".json": {
           "relative_path": "api/toc.json"
+        },
+        ".html": {
+          "relative_path": "api/toc.html"
         }
       },
       "version": ""
@@ -3001,11 +3295,11 @@
       "type": "Toc",
       "source_relative_path": "docs/toc.yml",
       "output": {
-        ".html": {
-          "relative_path": "toc.html"
-        },
         ".json": {
           "relative_path": "toc.json"
+        },
+        ".html": {
+          "relative_path": "toc.html"
         }
       },
       "version": ""

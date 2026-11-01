@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+
+  <head>
+    <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+      <title>Class EmbeddingModelResponse | Seclai C# SDK </title>
+      <meta name="viewport" content="width=device-width">
+      <meta name="title" content="Class EmbeddingModelResponse | Seclai C# SDK ">
+    
+    <meta name="description" content="Information about an embedding model.">
+      <link rel="shortcut icon" href="../favicon.ico">
+      <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
+      <link rel="stylesheet" href="../styles/docfx.css">
+      <link rel="stylesheet" href="../styles/main.css">
+      <meta property="docfx:navrel" content="../toc.html">
+      <meta property="docfx:tocrel" content="toc.html">
+    
+    <meta property="docfx:rel" content="../">
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div class="container body-content">
+
+        <div id="search-results">
+          <div class="search-list">Search Results for <span></span></div>
+          <div class="sr-items">
+            <p><i class="glyphicon glyphicon-refresh index-loading"></i></p>
+          </div>
+          <ul id="pagination" data-first=First data-prev=Previous data-next=Next data-last=Last></ul>
+        </div>
+      </div>
+      <div role="main" class="container body-content hide-when-search">
+
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="Seclai.Models.EmbeddingModelResponse">
+
+
+
+  <h1 id="Seclai_Models_EmbeddingModelResponse" data-uid="Seclai.Models.EmbeddingModelResponse" class="text-break">Class EmbeddingModelResponse</h1>
+  <div class="markdown level0 summary"><p>Information about an embedding model.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object">object</a></div>
+    <div class="level1"><span class="xref">EmbeddingModelResponse</span></div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object)">object.Equals(object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.equals#system-object-equals(system-object-system-object)">object.Equals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gethashcode">object.GetHashCode()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.gettype">object.GetType()</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.referenceequals">object.ReferenceEquals(object, object)</a>
+    </div>
+    <div>
+      <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.object.tostring">object.ToString()</a>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="Seclai.html">Seclai</a>.<a class="xref" href="Seclai.Models.html">Models</a></h6>
+  <h6><strong>Assembly</strong>: Seclai.dll</h6>
+  <h5 id="Seclai_Models_EmbeddingModelResponse_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class EmbeddingModelResponse</code></pre>
+  </div>
+  <h3 id="properties">Properties
+</h3>
+
+
+  <a id="Seclai_Models_EmbeddingModelResponse_Credits_" data-uid="Seclai.Models.EmbeddingModelResponse.Credits*"></a>
+  <h4 id="Seclai_Models_EmbeddingModelResponse_Credits" data-uid="Seclai.Models.EmbeddingModelResponse.Credits">Credits</h4>
+  <div class="markdown level1 summary"><p>Estimated credits per 1,000 English words</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;credits&quot;)]
+public double Credits { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_Models_EmbeddingModelResponse_Description_" data-uid="Seclai.Models.EmbeddingModelResponse.Description*"></a>
+  <h4 id="Seclai_Models_EmbeddingModelResponse_Description" data-uid="Seclai.Models.EmbeddingModelResponse.Description">Description</h4>
+  <div class="markdown level1 summary"><p>Model description</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;description&quot;)]
+public string? Description { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_Models_EmbeddingModelResponse_Dimensions_" data-uid="Seclai.Models.EmbeddingModelResponse.Dimensions*"></a>
+  <h4 id="Seclai_Models_EmbeddingModelResponse_Dimensions" data-uid="Seclai.Models.EmbeddingModelResponse.Dimensions">Dimensions</h4>
+  <div class="markdown level1 summary"><p>Dimensions options</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;dimensions&quot;)]
+public List&lt;int&gt; Dimensions { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.list-1">List</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_Models_EmbeddingModelResponse_IsNew_" data-uid="Seclai.Models.EmbeddingModelResponse.IsNew*"></a>
+  <h4 id="Seclai_Models_EmbeddingModelResponse_IsNew" data-uid="Seclai.Models.EmbeddingModelResponse.IsNew">IsNew</h4>
+  <div class="markdown level1 summary"><p>Whether the model is newly released</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;is_new&quot;)]
+public bool IsNew { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_Models_EmbeddingModelResponse_MaxInputTokens_" data-uid="Seclai.Models.EmbeddingModelResponse.MaxInputTokens*"></a>
+  <h4 id="Seclai_Models_EmbeddingModelResponse_MaxInputTokens" data-uid="Seclai.Models.EmbeddingModelResponse.MaxInputTokens">MaxInputTokens</h4>
+  <div class="markdown level1 summary"><p>Max input tokens per request</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;max_input_tokens&quot;)]
+public int? MaxInputTokens { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>?</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_Models_EmbeddingModelResponse_ModelId_" data-uid="Seclai.Models.EmbeddingModelResponse.ModelId*"></a>
+  <h4 id="Seclai_Models_EmbeddingModelResponse_ModelId" data-uid="Seclai.Models.EmbeddingModelResponse.ModelId">ModelId</h4>
+  <div class="markdown level1 summary"><p>Model identifier</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;model_id&quot;)]
+public string ModelId { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_Models_EmbeddingModelResponse_ModelType_" data-uid="Seclai.Models.EmbeddingModelResponse.ModelType*"></a>
+  <h4 id="Seclai_Models_EmbeddingModelResponse_ModelType" data-uid="Seclai.Models.EmbeddingModelResponse.ModelType">ModelType</h4>
+  <div class="markdown level1 summary"><p>Full model type identifier (enum value). This is the value to send as embedding_model
+when creating a source.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;model_type&quot;)]
+public string ModelType { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_Models_EmbeddingModelResponse_MtebRetrievalScore_" data-uid="Seclai.Models.EmbeddingModelResponse.MtebRetrievalScore*"></a>
+  <h4 id="Seclai_Models_EmbeddingModelResponse_MtebRetrievalScore" data-uid="Seclai.Models.EmbeddingModelResponse.MtebRetrievalScore">MtebRetrievalScore</h4>
+  <div class="markdown level1 summary"><p>MTEB retrieval score</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;mteb_retrieval_score&quot;)]
+public double? MtebRetrievalScore { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a>?</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_Models_EmbeddingModelResponse_Name_" data-uid="Seclai.Models.EmbeddingModelResponse.Name*"></a>
+  <h4 id="Seclai_Models_EmbeddingModelResponse_Name" data-uid="Seclai.Models.EmbeddingModelResponse.Name">Name</h4>
+  <div class="markdown level1 summary"><p>Human-readable model name</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;name&quot;)]
+public string? Name { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_Models_EmbeddingModelResponse_PerModalityRates_" data-uid="Seclai.Models.EmbeddingModelResponse.PerModalityRates*"></a>
+  <h4 id="Seclai_Models_EmbeddingModelResponse_PerModalityRates" data-uid="Seclai.Models.EmbeddingModelResponse.PerModalityRates">PerModalityRates</h4>
+  <div class="markdown level1 summary"><p>Non-text rates the vendor charges for this embedder (image, video, audio). Empty for
+text-only embedders.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;per_modality_rates&quot;)]
+public List&lt;EmbeddingModalityRateResponse&gt;? PerModalityRates { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.list-1">List</a>&lt;<a class="xref" href="Seclai.Models.EmbeddingModalityRateResponse.html">EmbeddingModalityRateResponse</a>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_Models_EmbeddingModelResponse_Provider_" data-uid="Seclai.Models.EmbeddingModelResponse.Provider*"></a>
+  <h4 id="Seclai_Models_EmbeddingModelResponse_Provider" data-uid="Seclai.Models.EmbeddingModelResponse.Provider">Provider</h4>
+  <div class="markdown level1 summary"><p>Model provider identifier</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;provider&quot;)]
+public string? Provider { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_Models_EmbeddingModelResponse_Speed_" data-uid="Seclai.Models.EmbeddingModelResponse.Speed*"></a>
+  <h4 id="Seclai_Models_EmbeddingModelResponse_Speed" data-uid="Seclai.Models.EmbeddingModelResponse.Speed">Speed</h4>
+  <div class="markdown level1 summary"><p>Model processing speed</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;speed&quot;)]
+public string? Speed { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_Models_EmbeddingModelResponse_SupportedInputMedia_" data-uid="Seclai.Models.EmbeddingModelResponse.SupportedInputMedia*"></a>
+  <h4 id="Seclai_Models_EmbeddingModelResponse_SupportedInputMedia" data-uid="Seclai.Models.EmbeddingModelResponse.SupportedInputMedia">SupportedInputMedia</h4>
+  <div class="markdown level1 summary"><p>Modalities the embedder accepts on input (short kinds like text / image / video, or full
+MIMEs). null means text-only. A source only honours a media_types entry its embedder
+lists here.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;supported_input_media&quot;)]
+public List&lt;string&gt;? SupportedInputMedia { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.list-1">List</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_Models_EmbeddingModelResponse_SupportedLanguages_" data-uid="Seclai.Models.EmbeddingModelResponse.SupportedLanguages*"></a>
+  <h4 id="Seclai_Models_EmbeddingModelResponse_SupportedLanguages" data-uid="Seclai.Models.EmbeddingModelResponse.SupportedLanguages">SupportedLanguages</h4>
+  <div class="markdown level1 summary"><p>Supported languages</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;supported_languages&quot;)]
+public List&lt;string&gt;? SupportedLanguages { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.list-1">List</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_Models_EmbeddingModelResponse_Url_" data-uid="Seclai.Models.EmbeddingModelResponse.Url*"></a>
+  <h4 id="Seclai_Models_EmbeddingModelResponse_Url" data-uid="Seclai.Models.EmbeddingModelResponse.Url">Url</h4>
+  <div class="markdown level1 summary"><p>Model documentation URL</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;url&quot;)]
+public string? Url { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+</article>
+          </div>
+
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+                <h5>In this article</h5>
+                <div></div>
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+      
+      <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+
+    <script type="text/javascript" src="../styles/docfx.vendor.min.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>
