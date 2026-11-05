@@ -22,4 +22,16 @@ public sealed class AgentRunStreamRequest
     /// </summary>
     [JsonPropertyName("include_reasoning")]
     public bool? IncludeReasoning { get; set; }
+
+    /// <summary>ID of a previously uploaded file to use as the run input for a dynamic-input trigger. Mutually exclusive with <see cref="InputUploadIds"/>; may be combined with <see cref="Input"/>. Must fit the trigger's <c>accepted_attachments</c>, as on <see cref="AgentRunRequest.InputUploadId"/>.</summary>
+    [JsonPropertyName("input_upload_id")]
+    public string? InputUploadId { get; set; }
+
+    /// <summary>IDs of several previously uploaded files, at most 20. See <see cref="AgentRunRequest.InputUploadIds"/>: the batch must fit the trigger's <c>accepted_attachments</c> (else HTTP 400) and may be combined with <see cref="Input"/>.</summary>
+    [JsonPropertyName("input_upload_ids")]
+    public List<string>? InputUploadIds { get; set; }
+
+    /// <summary>Re-run reusing a prior run's uploaded input files, re-resolved server-side from that run (which must belong to this account and agent). A fresh upload batch takes precedence. Files the trigger's <c>accepted_attachments</c> no longer accepts are left out.</summary>
+    [JsonPropertyName("replay_of_run_id")]
+    public string? ReplayOfRunId { get; set; }
 }

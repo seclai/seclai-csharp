@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
@@ -19,12 +20,23 @@ public sealed class SetSlackTriggerConfigRequest
 
     /// <summary>
     /// The form a person fills in before a run (see <see cref="SlackFormField"/>). Each value reaches the run as
-    /// <c>{{metadata.&lt;key&gt;}}</c>. An empty list removes the form; null leaves it unchanged.
+    /// <c>{{metadata.&lt;key&gt;}}</c>, not in the run's input. An empty list removes the form; null leaves it unchanged.
     /// </summary>
     [JsonPropertyName("form")]
     public List<SlackFormField>? Form { get; set; }
 
-    /// <summary>The trigger's input template. Each <c>{{metadata.&lt;key&gt;}}</c> in it must be a form field key or a platform key; it is checked together with <see cref="Form"/>.</summary>
+    /// <summary>
+    /// The name people type after <c>/seclai</c> to run this agent: lowercase letters, digits and hyphens, starting
+    /// with a letter, unique in the Slack workspace. Generated from the agent's name when not set or empty.
+    /// </summary>
+    [JsonPropertyName("alias")]
+    public string? Alias { get; set; }
+
+    /// <summary>
+    /// No longer used: the API ignores it. A Slack run's input is the text after <c>/seclai &lt;alias&gt;</c>, or the
+    /// message the shortcut was used on, and its files; form values reach the run as <c>{{metadata.&lt;key&gt;}}</c>.
+    /// </summary>
+    [Obsolete("Ignored by the API since November 2026: a Slack run's input is the text after /seclai <alias>. Use Alias to set the command name.")]
     [JsonPropertyName("input")]
     public string? Input { get; set; }
 

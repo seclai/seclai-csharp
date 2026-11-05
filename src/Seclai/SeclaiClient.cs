@@ -1594,6 +1594,20 @@ public sealed class SeclaiClient : IDisposable
         return await SendJsonAsync<KnowledgeBaseResponse>(HttpMethod.Get, $"/knowledge_bases/{Uri.EscapeDataString(knowledgeBaseId)}", query: null, body: null, cancellationToken).ConfigureAwait(false);
     }
 
+    /// <summary>
+    /// Reports how often each item-metadata key appears on a knowledge base's content items, over all time and
+    /// the last 30 and 7 days, for declaring a content trigger's metadata keys with
+    /// <see cref="SetMetadataKeysAsync"/>. An item is counted once, at its latest version; a null value counts
+    /// as absent, and reserved keys and keys the platform sets are left out.
+    /// </summary>
+    /// <param name="knowledgeBaseId">Knowledge base identifier.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    public async Task<KnowledgeBaseMetadataKeyStatsResponse> GetKnowledgeBaseMetadataKeyStatsAsync(string knowledgeBaseId, CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(knowledgeBaseId)) throw new ArgumentException("knowledgeBaseId is required", nameof(knowledgeBaseId));
+        return await SendJsonAsync<KnowledgeBaseMetadataKeyStatsResponse>(HttpMethod.Get, $"/knowledge_bases/{Uri.EscapeDataString(knowledgeBaseId)}/metadata-key-stats", query: null, body: null, cancellationToken).ConfigureAwait(false);
+    }
+
     /// <summary>Updates a knowledge base.</summary>
     public async Task<KnowledgeBaseResponse> UpdateKnowledgeBaseAsync(string knowledgeBaseId, UpdateKnowledgeBaseRequest body, CancellationToken cancellationToken = default)
     {
@@ -2695,6 +2709,39 @@ public sealed class SeclaiClient : IDisposable
         if (string.IsNullOrWhiteSpace(triggerId)) throw new ArgumentException("triggerId is required", nameof(triggerId));
         if (body is null) throw new ArgumentNullException(nameof(body));
         return await SendJsonAsync<AcceptedAttachmentsResponse>(HttpMethod.Put, $"/agents/{Uri.EscapeDataString(agentId)}/triggers/{Uri.EscapeDataString(triggerId)}/accepted-attachments", null, body, cancellationToken).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Gets the run metadata keys an agent's trigger declares, each required or optional, and the system and
+    /// source keys its type could declare. A run started with a custom key the trigger does not declare, or
+    /// without a required one, is refused with HTTP 400.
+    /// </summary>
+    /// <param name="agentId">Agent identifier.</param>
+    /// <param name="triggerId">The trigger's id, from <see cref="AgentSummaryResponse.TriggerId"/>.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    public async Task<MetadataKeysResponse> GetMetadataKeysAsync(string agentId, string triggerId, CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(agentId)) throw new ArgumentException("agentId is required", nameof(agentId));
+        if (string.IsNullOrWhiteSpace(triggerId)) throw new ArgumentException("triggerId is required", nameof(triggerId));
+        return await SendJsonAsync<MetadataKeysResponse>(HttpMethod.Get, $"/agents/{Uri.EscapeDataString(agentId)}/triggers/{Uri.EscapeDataString(triggerId)}/metadata-keys", null, null, cancellationToken).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Replaces the run metadata keys an agent's trigger declares. Steps reference a key as
+    /// <c>{{metadata.&lt;key&gt;}}</c>. The API answers 400 when the agent references a key no trigger of its
+    /// branch then declares. <see cref="MetadataKeysResponse.Warnings"/> lists agents whose <c>call_agent</c>
+    /// mapping no longer fits the new declaration.
+    /// </summary>
+    /// <param name="agentId">Agent identifier.</param>
+    /// <param name="triggerId">The trigger's id, from <see cref="AgentSummaryResponse.TriggerId"/>.</param>
+    /// <param name="body">The whole new declaration.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    public async Task<MetadataKeysResponse> SetMetadataKeysAsync(string agentId, string triggerId, SetMetadataKeysRequest body, CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(agentId)) throw new ArgumentException("agentId is required", nameof(agentId));
+        if (string.IsNullOrWhiteSpace(triggerId)) throw new ArgumentException("triggerId is required", nameof(triggerId));
+        if (body is null) throw new ArgumentNullException(nameof(body));
+        return await SendJsonAsync<MetadataKeysResponse>(HttpMethod.Put, $"/agents/{Uri.EscapeDataString(agentId)}/triggers/{Uri.EscapeDataString(triggerId)}/metadata-keys", null, body, cancellationToken).ConfigureAwait(false);
     }
 
     // ── Agent Slack Triggers ──────────────────────────────────────────────────

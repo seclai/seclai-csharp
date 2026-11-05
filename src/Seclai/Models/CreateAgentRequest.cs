@@ -60,4 +60,8 @@ public sealed class CreateAgentRequest
     /// <summary>For an <see cref="AgentTemplate"/>: create each creatable resource slot left out of <see cref="ResourceBindings"/>, and group the agent with them in a new solution. When false (the server default), an unbound slot the template needs is an error. The created ids come back in <see cref="AgentSummaryResponse.CreatedResources"/>.</summary>
     [JsonPropertyName("create_missing_resources")]
     public bool? CreateMissingResources { get; set; }
+
+    /// <summary>The agent's trigger type. Omitted when null, which gives <c>dynamic_input</c>, or the template's own trigger type for an <see cref="AgentTemplate"/> without <see cref="AgentDefinition"/>.</summary>
+    [JsonPropertyName("trigger_type")]
+    public string? TriggerType { get; set; }
 }

@@ -17,4 +17,28 @@ public sealed class GenerateAgentStepsResponse
     /// </summary>
     [JsonPropertyName("intent_assessment")]
     public string? IntentAssessment { get; set; }
+
+    /// <summary>Conversation turn ID, for tracking.</summary>
+    [JsonPropertyName("conversation_id")]
+    public string? ConversationId { get; set; }
+
+    /// <summary>Whether steps were generated.</summary>
+    [JsonPropertyName("success")]
+    public bool Success { get; set; }
+
+    /// <summary>The assistant's explanation of the proposed workflow, or its clarifying question.</summary>
+    [JsonPropertyName("note")]
+    public string? Note { get; set; }
+
+    /// <summary>
+    /// Suggested agent-level configuration, if any. For an <c>email_received</c> agent it may carry <c>email_run_on_attachment_mismatch</c>, which
+    /// the caller applies through the trigger's email-config endpoint. For a <c>dynamic_input</c> or <c>email_received</c> agent it may carry
+    /// <c>accepted_attachments</c>, which the caller passes with the steps to <see cref="SeclaiClient.UpdateAgentDefinitionAsync"/> so both save together.
+    /// </summary>
+    [JsonPropertyName("agent_config")]
+    public Dictionary<string, JsonElement>? AgentConfig { get; set; }
+
+    /// <summary>Example prompts that show what the assistant can do in this mode.</summary>
+    [JsonPropertyName("example_prompts")]
+    public List<ExamplePrompt>? ExamplePrompts { get; set; }
 }

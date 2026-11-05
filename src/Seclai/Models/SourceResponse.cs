@@ -142,4 +142,16 @@ public sealed class SourceResponse
     /// <summary>True while the spend limit refuses uploads and email to this source.</summary>
     [JsonPropertyName("spend_cap_reached")]
     public bool? SpendCapReached { get; set; }
+
+    /// <summary>Index mode for a <c>custom_index</c> source: <c>fast_and_cheap</c>, <c>balanced</c>, <c>slow_and_thorough</c>, or <c>custom</c>.</summary>
+    [JsonPropertyName("index_mode")]
+    public string? IndexMode { get; set; }
+
+    /// <summary>Days content is stored for free before billing applies.</summary>
+    [JsonPropertyName("free_retention_days")]
+    public int? FreeRetentionDays { get; set; }
+
+    /// <summary>Whether the system manages this source automatically (for example, agent traces).</summary>
+    [JsonPropertyName("system_managed")]
+    public bool SystemManaged { get; set; }
 }

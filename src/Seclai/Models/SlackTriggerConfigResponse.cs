@@ -20,6 +20,10 @@ public sealed class SlackTriggerConfigResponse
     [JsonPropertyName("slack_team_id")]
     public string? SlackTeamId { get; set; }
 
+    /// <summary>The name people type after <c>/seclai</c> to run this agent.</summary>
+    [JsonPropertyName("alias")]
+    public string? Alias { get; set; }
+
     [JsonPropertyName("form")]
     public List<SlackFormField> Form { get; set; } = new();
 

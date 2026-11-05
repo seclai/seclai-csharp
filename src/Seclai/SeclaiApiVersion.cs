@@ -55,17 +55,23 @@ public static class SeclaiApiVersion
     /// <summary>The <c>2026-10-28</c> API version.</summary>
     public const string V2026_10_28 = "2026-10-28";
 
+    /// <summary>The <c>2026-11-02</c> API version.</summary>
+    public const string V2026_11_02 = "2026-11-02";
+
+    /// <summary>The <c>2026-11-04</c> API version.</summary>
+    public const string V2026_11_04 = "2026-11-04";
+
     /// <summary>Every version this release was built against, oldest first.</summary>
     public static readonly string[] Known =
     {
         V2026_07_01, V2026_07_27, V2026_08_03, V2026_08_21, V2026_09_28, V2026_09_30, V2026_10_03,
         V2026_10_05, V2026_10_13, V2026_10_16, V2026_10_18, V2026_10_19, V2026_10_21,
-        V2026_10_28,
+        V2026_10_28, V2026_11_02, V2026_11_04,
     };
 
     /// <summary>Baseline applied to an unpinned, header-less caller.</summary>
     public const string Default = V2026_07_01;
 
     /// <summary>Newest version known to this SDK release. May lag the server.</summary>
-    public const string Latest = V2026_10_28;
+    public const string Latest = V2026_11_04;
 }

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace Seclai.Models;
@@ -78,4 +79,40 @@ public sealed class AgentSummaryResponse
     /// <summary>Limit on runs in total; null when none.</summary>
     [JsonPropertyName("max_runs_total")]
     public int? MaxRunsTotal { get; set; }
+
+    /// <summary>Trigger type for the agent.</summary>
+    [JsonPropertyName("trigger_type")]
+    public string? TriggerType { get; set; }
+
+    /// <summary>Default evaluation tier: <c>fast</c>, <c>balanced</c>, or <c>thorough</c>; null for the system default.</summary>
+    [JsonPropertyName("default_evaluation_tier")]
+    public string? DefaultEvaluationTier { get; set; }
+
+    /// <summary>Evaluation mode: <c>output_expectation</c> or <c>sample_and_flag</c> (the server default).</summary>
+    [JsonPropertyName("evaluation_mode")]
+    public string? EvaluationMode { get; set; }
+
+    /// <summary>Sampling configuration for <c>sample_and_flag</c> mode; null when none.</summary>
+    [JsonPropertyName("sampling_config")]
+    public Dictionary<string, JsonElement>? SamplingConfig { get; set; }
+
+    /// <summary>Auto-upgrade strategy for the agent's prompt models: <c>none</c> (the server default), <c>early_adopter</c>, <c>middle_of_road</c>, or <c>cautious_adopter</c>.</summary>
+    [JsonPropertyName("prompt_model_auto_upgrade_strategy")]
+    public string? PromptModelAutoUpgradeStrategy { get; set; }
+
+    /// <summary>Whether automatic rollback is enabled for upgraded models.</summary>
+    [JsonPropertyName("prompt_model_auto_rollback_enabled")]
+    public bool? PromptModelAutoRollbackEnabled { get; set; }
+
+    /// <summary>Failure signals that trigger rollback. Null means the defaults: <c>governance_block</c>, <c>agent_run_failed</c>.</summary>
+    [JsonPropertyName("prompt_model_auto_rollback_triggers")]
+    public List<string>? PromptModelAutoRollbackTriggers { get; set; }
+
+    /// <summary>Has no effect: the API reports it for compatibility only.</summary>
+    [JsonPropertyName("max_retries")]
+    public int? MaxRetries { get; set; }
+
+    /// <summary>Has no effect: the API reports it for compatibility only.</summary>
+    [JsonPropertyName("retry_on_failure")]
+    public bool? RetryOnFailure { get; set; }
 }

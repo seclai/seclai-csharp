@@ -76,4 +76,8 @@ public sealed class CreateSourceRequest
     /// <summary>Kinds of file listed beside a feed item's content to attach to the item and index, on an RSS source. Subset of <c>enclosures</c>, <c>item_image</c>, <c>media_rss</c>; any other value is refused. None are attached unless chosen.</summary>
     [JsonPropertyName("feed_attachments")]
     public List<string>? FeedAttachments { get; set; }
+
+    /// <summary>Index mode for a <c>custom_index</c> source: <c>fast_and_cheap</c> (the default), <c>balanced</c>, <c>slow_and_thorough</c>, or <c>custom</c>.</summary>
+    [JsonPropertyName("index_mode")]
+    public string? IndexMode { get; set; }
 }

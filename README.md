@@ -228,6 +228,8 @@ every one:
 | `2026-10-19` | `CreateSourceAsync` accepts `PollingMaxItems` on RSS sources only; any other source type rejects it with a 400 |
 | `2026-10-21` | A result whose evaluator returned no verdict (`error`) is counted only in `Error` by `GetNonManualEvaluationSummaryAsync`, not in `Failed` or either rate, and `GetEvaluationCriteriaSummaryAsync` averages `AverageScore` over passed and failed results only. `TestDraftEvaluationAsync` receives a null score and verdict for an `error` result, which this client reads as `Score` 0 and `Passed` false (earlier versions send 0.5 and false), so check `Status` |
 | `2026-10-28` | An `if_else` or `switch` step's `AgentRunStepResponse.Output` is the result of the arm it took (its input when that arm is empty or it took none) rather than the decision object. The arm taken is in `AgentRunStepResponse.Decision` on every version |
+| `2026-11-02` | A definition or sampling-rule write (other than an import) that references a metadata key no trigger declares is refused (`UpdateAgentDefinitionAsync` answers 400); older versions declare each such key optional instead. Declare keys with `SetMetadataKeysAsync` |
+| `2026-11-04` | The API refuses the agent evaluation mode `eval_and_retry`, a new evaluation criterion `StepId` that does not name a result step (`display_result` or `streaming_result`), and `CreateEvaluationResultRequest.RetryTriggered = true`, each with a 400. Older versions store `eval_and_retry` as `sample_and_flag` and accept any step id |
 
 ## Typed responses
 
@@ -294,6 +296,20 @@ var fromTemplate = await client.CreateAgentAsync(new CreateAgentRequest
 // SetMax… flag and leave the value null.
 await client.UpdateAgentAsync(agent.Id, new UpdateAgentRequest { MaxRunsPerDay = 100 });
 await client.UpdateAgentAsync(agent.Id, new UpdateAgentRequest { SetMaxRunsPerDay = true });
+
+// Evaluation and prompt-model settings. SetSamplingConfig (or SetDefaultEvaluationTier,
+// SetPromptModelAutoRollbackTriggers) with a null value clears it.
+var sampling = JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(
+    "{\"combinator\": \"or\", \"rules\": [{\"type\": \"percentage\", \"value\": 10}]}")!;
+await client.UpdateAgentAsync(agent.Id, new UpdateAgentRequest
+{
+    EvaluationMode = "sample_and_flag",   // eval_and_retry is refused from API version 2026-11-04
+    SamplingConfig = sampling,
+    DefaultEvaluationTier = "balanced",
+    PromptModelAutoUpgradeStrategy = "cautious_adopter",
+    PromptModelAutoRollbackEnabled = true,
+});
+await client.UpdateAgentAsync(agent.Id, new UpdateAgentRequest { SetSamplingConfig = true });
 
 // Pause / resume — a disabled agent stops firing from every trigger path
 var callers = await client.GetAgentCallersAsync("a1");  // live agents calling this one
@@ -367,6 +383,33 @@ foreach (var slot in refs.AcceptedAttachments ?? new()) Console.WriteLine($"{slo
 `CreateAgentRequest.AcceptedAttachments` and `UpdateAgentDefinitionRequest.AcceptedAttachments`
 declare the same slots in the same save; left `null`, they are omitted.
 
+#### Metadata keys
+
+A trigger declares the run metadata keys its agent's steps may reference as
+`{{metadata.<key>}}`, each required or optional. `system` and `source` keys are written by
+the platform; `custom` keys are sent by the caller, and only a custom key can be required. A
+run you start is refused with a 400 when it lacks a required key or sends a custom key the
+trigger does not declare.
+
+```csharp
+var keys = await client.GetMetadataKeysAsync(agent.Id!, agent.TriggerId!);
+foreach (var k in keys.DeclarableKeys) Console.WriteLine($"{k.Key} ({k.Origin}) always present: {k.AlwaysPresent}");
+
+// Replaces the whole declaration. Refused with a 400 if the agent references a key it leaves out.
+var updated = await client.SetMetadataKeysAsync(agent.Id!, agent.TriggerId!, new SetMetadataKeysRequest
+{
+    MetadataKeys = new List<MetadataKeyDeclaration>
+    {
+        new() { Key = "customer_id", Origin = "custom", Required = true },
+        new() { Key = "title", Origin = "source" },   // Required omitted: false
+    },
+});
+foreach (var w in updated.Warnings) Console.WriteLine(w);   // callers whose call_agent mapping no longer fits
+```
+
+For a content trigger, `GetKnowledgeBaseMetadataKeyStatsAsync` (under Knowledge Bases) shows which
+item-metadata keys its content actually carries.
+
 ### Agent Runs
 
 ```csharp
@@ -377,6 +420,8 @@ var run = await client.RunAgentAsync("ag1", new AgentRunRequest { Input = "hello
 var runs = await client.ListAgentRunsAsync("ag1", page: 1, limit: 20);
 var failedRuns = await client.ListAgentRunsAsync("ag1", new AgentRunListOptions { Status = "failed" });
 var detail = await client.GetAgentRunAsync("run1", includeStepOutputs: true);
+// detail.ResultReportedAt is set once the run reported success; from then on Output is final,
+// even though Status keeps following the remaining steps.
 await client.CancelAgentRunAsync("run1");
 await client.DeleteAgentRunAsync("run1");
 
@@ -575,9 +620,21 @@ await client.DeleteSourceExportAsync("s1", export.Id);
 
 ```csharp
 var kbs = await client.ListKnowledgeBasesAsync(sort: "created_at");
-var kb = await client.CreateKnowledgeBaseAsync(new CreateKnowledgeBaseRequest { Name = "KB" });
+var kb = await client.CreateKnowledgeBaseAsync(new CreateKnowledgeBaseRequest
+{
+    Name = "KB",
+    SourceIds = new List<string> { "s1" },  // at least one source is required
+});
+// kb.Sources lists the linked sources.
 await client.UpdateKnowledgeBaseAsync(kb.Id, new UpdateKnowledgeBaseRequest { Name = "Renamed" });
 await client.DeleteKnowledgeBaseAsync(kb.Id);
+
+// How often each item-metadata key appears on the knowledge base's content, over all time and
+// the last 30 and 7 days, for declaring a content trigger's metadata keys.
+var stats = await client.GetKnowledgeBaseMetadataKeyStatsAsync(kb.Id);
+foreach (var window in stats.Windows)
+    foreach (var key in window.Keys)
+        Console.WriteLine($"{window.Window}: {key.Key} on {key.Items}/{window.TotalItems} items, {key.DistinctValues} values");
 ```
 
 ### Memory Banks
@@ -712,14 +769,18 @@ await client.SetEmailTriggerConfigAsync("a1", "t1",
 
 ### Agent Slack Triggers
 
-A SLACK_COMMAND trigger runs the agent from Slack with `/seclai` or the message shortcut.
-As with email triggers, a property left `null` is omitted and stays as it is.
+A SLACK_COMMAND trigger runs the agent from Slack with `/seclai <alias>` or the message shortcut.
+The run's input is the text after the alias, or the message the shortcut was used on, and its
+files; form values reach the run as `{{metadata.<key>}}`. As with email triggers, a property left
+`null` is omitted and stays as it is. `SetSlackTriggerConfigRequest.Input` is obsolete and ignored
+by the API.
 
 ```csharp
 var slack = await client.SetSlackTriggerConfigAsync("a1", "t1",
     new SetSlackTriggerConfigRequest
     {
         McpClientId = "mcp1",            // the account's Slack (Bot) connection
+        Alias = "triage",                // people type /seclai triage; generated from the agent's name when unset
         Scope = "selected_channels",
         ChannelIds = new List<string> { "C0123" },
         Visibility = "private",          // reply in the person's DM
