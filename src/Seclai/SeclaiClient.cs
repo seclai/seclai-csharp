@@ -382,7 +382,7 @@ public sealed class SeclaiClient : IDisposable
                 throw new StreamingException("Stream ended before receiving a 'done' event.");
             }
 
-            var reported = latest?.ResultReportedAt is not null
+            var reported = !string.IsNullOrEmpty(latest?.ResultReportedAt)
                 ? "the run had reported its result, which is in Run"
                 : "the run had not reported a result";
             var reason = ct.IsCancellationRequested ? timedOut
@@ -2812,13 +2812,11 @@ public sealed class SeclaiClient : IDisposable
     /// <param name="triggerId">The trigger's id, from <see cref="AgentSummaryResponse.TriggerId"/>.</param>
     /// <param name="body">The whole new declaration. An empty <see cref="SetMetadataKeysRequest.MetadataKeys"/> list declares no keys.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
-    /// <exception cref="ArgumentException"><see cref="SetMetadataKeysRequest.MetadataKeys"/> is null. Nothing is sent, so a request built without it cannot wipe the declaration.</exception>
     public async Task<MetadataKeysResponse> SetMetadataKeysAsync(string agentId, string triggerId, SetMetadataKeysRequest body, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(agentId)) throw new ArgumentException("agentId is required", nameof(agentId));
         if (string.IsNullOrWhiteSpace(triggerId)) throw new ArgumentException("triggerId is required", nameof(triggerId));
         if (body is null) throw new ArgumentNullException(nameof(body));
-        if (body.MetadataKeys is null) throw new ArgumentException("body.MetadataKeys is required; set an empty list to declare no keys", nameof(body));
         return await SendJsonAsync<MetadataKeysResponse>(HttpMethod.Put, $"/agents/{Uri.EscapeDataString(agentId)}/triggers/{Uri.EscapeDataString(triggerId)}/metadata-keys", null, body, cancellationToken).ConfigureAwait(false);
     }
 
@@ -3262,14 +3260,14 @@ public sealed class SeclaiClient : IDisposable
     /// <see cref="RunAgentAndPollOptions.ReturnOnResult"/>, until it reports its result.
     /// </summary>
     /// <remarks>
-    /// <see cref="RunAgentAndPollOptions.Timeout"/> bounds the whole call, including the request that starts the run.
-    /// With <see cref="RunAgentAndPollOptions.IncludeStepOutputs"/>, the run is fetched with its step outputs right
-    /// after it starts, so the returned snapshot always carries them, even when the run ended at once.
+    /// <see cref="RunAgentAndPollOptions.Timeout"/> bounds the wait once the run has started, not the request that
+    /// starts it, which only <paramref name="cancellationToken"/> can cancel: the server may already have created the
+    /// run. With <see cref="RunAgentAndPollOptions.IncludeStepOutputs"/>, a start response that would end the poll is
+    /// fetched again with its step outputs, so the returned snapshot carries them even when the run ended at once.
     /// </remarks>
     /// <exception cref="StreamingException">
     /// With <see cref="RunAgentAndPollOptions.ThrowOnIncomplete"/>, <see cref="RunAgentAndPollOptions.Timeout"/>
-    /// elapsed before the run finished. <see cref="StreamingException.Run"/> holds the last polled snapshot (null if
-    /// the run had not started); when its <see cref="AgentRunResponse.ResultReportedAt"/> is set,
+    /// elapsed before the run finished. <see cref="StreamingException.Run"/> holds the last polled snapshot; when its <see cref="AgentRunResponse.ResultReportedAt"/> is set,
     /// <see cref="AgentRunResponse.Output"/> is the answer.
     /// </exception>
     /// <exception cref="OperationCanceledException">
@@ -3285,18 +3283,26 @@ public sealed class SeclaiClient : IDisposable
         if (string.IsNullOrWhiteSpace(agentId)) throw new ArgumentException("agentId is required", nameof(agentId));
 
         var interval = options.PollInterval ?? TimeSpan.FromSeconds(2);
+
+        // The timeout bounds only the wait once the run exists: cancelling the start request could leave a run the
+        // server created, with no RunId to find it by.
+        var run = await RunAgentAsync(agentId, body, cancellationToken).ConfigureAwait(false);
+
         using var cts = options.Timeout.HasValue
             ? CancellationTokenSource.CreateLinkedTokenSource(cancellationToken)
             : null;
         if (cts is not null) cts.CancelAfter(options.Timeout!.Value);
         var ct = cts?.Token ?? cancellationToken;
 
-        AgentRunResponse? run = null;
         try
         {
-            run = await RunAgentAsync(agentId, body, ct).ConfigureAwait(false);
-            // The start response carries no step outputs, so it cannot end the poll when they were asked for.
-            if (options.IncludeStepOutputs) run = await GetAgentRunAsync(run.RunId!, true, ct).ConfigureAwait(false);
+            // The start response carries no step outputs, so when it would end the poll, fetch them first.
+            if (options.IncludeStepOutputs &&
+                (run.Status == "completed" || run.Status == "failed" ||
+                 (options.ReturnOnResult && !string.IsNullOrEmpty(run.ResultReportedAt))))
+            {
+                run = await GetAgentRunAsync(run.RunId!, true, ct).ConfigureAwait(false);
+            }
             while (true)
             {
                 switch (run.Status)
@@ -3314,7 +3320,7 @@ public sealed class SeclaiClient : IDisposable
         catch (OperationCanceledException ex) when (
             options.ThrowOnIncomplete && ct.IsCancellationRequested && !cancellationToken.IsCancellationRequested)
         {
-            var reported = run?.ResultReportedAt is not null
+            var reported = !string.IsNullOrEmpty(run.ResultReportedAt)
                 ? "the run had reported its result, which is in Run"
                 : "the run had not reported a result";
             throw new StreamingException(

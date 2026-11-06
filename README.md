@@ -392,8 +392,8 @@ run you start is refused with a 400 when it lacks a required key or sends a cust
 trigger does not declare, on every API version, so declare custom keys with `SetMetadataKeysAsync`
 before sending them in a run's metadata.
 
-`SetMetadataKeysRequest` is built with its list, and its constructor throws
-`ArgumentNullException` on null, so a request cannot go out without a declaration and wipe it.
+`SetMetadataKeysRequest` is built with its list, and its constructor and `MetadataKeys` setter
+throw `ArgumentNullException` on null, so a request cannot go out without a declaration and wipe it.
 To declare no keys, pass an empty list.
 
 ```csharp
@@ -491,8 +491,8 @@ ends without a `done` event it returns the latest snapshot (the `result` one if 
 else `init`), so check `Status` and `ResultReportedAt`. A connection cut mid-stream throws the
 transport's `IOException` or `HttpRequestException`. Its own timeout, or cancelling your
 `CancellationToken`, throws `StreamingException`. `RunAgentAndPollAsync`'s timeout throws
-`OperationCanceledException`, and `RunAgentAndPollOptions.Timeout` covers the request that starts the
-run too.
+`OperationCanceledException`. `RunAgentAndPollOptions.Timeout` bounds the wait once the run has
+started, not the request that starts it, which only your `CancellationToken` cancels.
 
 We recommend setting `ThrowOnIncomplete`, which becomes the default in the next major version. With
 it, neither helper returns an unfinished run: its own timeout, or a stream that ends or breaks

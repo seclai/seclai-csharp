@@ -13,15 +13,16 @@ public struct RunAgentAndPollOptions
     public TimeSpan? PollInterval { get; set; }
 
     /// <summary>
-    /// Maximum time for the whole call, including the request that starts the run; null waits until the run ends.
+    /// Maximum time to wait once the run has started; null waits until the run ends. The request that starts the run
+    /// is not bounded by it, since the server may already have created the run; only the caller's token cancels it.
     /// When it elapses before the run finished, <see cref="System.OperationCanceledException"/> is thrown, or, with
     /// <see cref="ThrowOnIncomplete"/>, <see cref="Seclai.Exceptions.StreamingException"/>.
     /// </summary>
     public TimeSpan? Timeout { get; set; }
 
     /// <summary>
-    /// Whether each poll asks for step outputs. The response that starts the run carries none, so the run is then
-    /// fetched at least once, even when it ended at once.
+    /// Whether each poll asks for step outputs. The response that starts the run carries none, so when that response
+    /// would end the poll, the run is fetched once more with them.
     /// </summary>
     public bool IncludeStepOutputs { get; set; }
 

@@ -2347,21 +2347,23 @@ public sealed class SeclaiClientTests
     }
 
     [Fact]
-    public async Task RunAgentAndPoll_TimeoutCoversStartRequest()
+    public async Task RunAgentAndPoll_TimeoutDoesNotCancelStartRequest()
     {
-        // The request that starts the run hangs past the timeout.
+        // The request that starts the run takes longer than the timeout. Cancelling it could leave a run the server
+        // created with no RunId, so only the wait after it is bounded.
         var handler = new FakeHttpMessageHandler(async (req, ct) =>
         {
-            await Task.Delay(TimeSpan.FromSeconds(2), ct);
-            return JsonResponse("{\"run_id\":\"r1\",\"status\":\"completed\",\"attempts\":[],\"error_count\":0,\"priority\":false}");
+            if (req.Method == HttpMethod.Post) await Task.Delay(TimeSpan.FromMilliseconds(300), ct);
+            return JsonResponse(req.Method == HttpMethod.Post
+                ? "{\"run_id\":\"r1\",\"status\":\"processing\",\"attempts\":[],\"error_count\":0,\"priority\":false}"
+                : "{\"run_id\":\"r1\",\"status\":\"completed\",\"attempts\":[],\"error_count\":0,\"priority\":false}");
         });
-        await Assert.ThrowsAnyAsync<OperationCanceledException>(() =>
-            MakeClient(handler).RunAgentAndPollAsync("a1", new AgentRunRequest { Input = "go" },
-                new RunAgentAndPollOptions { Timeout = TimeSpan.FromMilliseconds(50) }));
-        var ex = await Assert.ThrowsAsync<StreamingException>(() =>
-            MakeClient(handler).RunAgentAndPollAsync("a1", new AgentRunRequest { Input = "go" },
-                new RunAgentAndPollOptions { Timeout = TimeSpan.FromMilliseconds(50), ThrowOnIncomplete = true }));
-        Assert.Null(ex.Run);
+        foreach (var throwOnIncomplete in new[] { false, true })
+        {
+            var res = await MakeClient(handler).RunAgentAndPollAsync("a1", new AgentRunRequest { Input = "go" },
+                new RunAgentAndPollOptions { PollInterval = TimeSpan.FromMilliseconds(10), Timeout = TimeSpan.FromMilliseconds(100), ThrowOnIncomplete = throwOnIncomplete });
+            Assert.Equal("completed", res.Status);
+        }
     }
 
     private const string PollRunning = "{\"run_id\":\"r1\",\"status\":\"processing\",\"attempts\":[],\"error_count\":0,\"priority\":false}";
@@ -2435,6 +2437,23 @@ public sealed class SeclaiClientTests
         gets = 0;
         res = await MakeClient(handler).RunAgentAndPollAsync("a1", new AgentRunRequest { Input = "go" },
             new RunAgentAndPollOptions { PollInterval = TimeSpan.FromSeconds(30) });
+        Assert.Equal(0, gets);
+    }
+
+    [Fact]
+    public async Task RunAgentAndPoll_IncludeStepOutputs_NoExtraFetchWhenStartResponseIsProcessing()
+    {
+        // A processing start response does not end the poll, so the first GET waits for the poll interval.
+        var gets = 0;
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            if (req.Method != HttpMethod.Post) gets++;
+            return JsonResponse(PollRunning);
+        });
+        using var cts = new CancellationTokenSource(TimeSpan.FromMilliseconds(200));
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(() =>
+            MakeClient(handler).RunAgentAndPollAsync("a1", new AgentRunRequest { Input = "go" },
+                new RunAgentAndPollOptions { PollInterval = TimeSpan.FromSeconds(30), IncludeStepOutputs = true }, cts.Token));
         Assert.Equal(0, gets);
     }
 
@@ -5161,19 +5180,13 @@ public sealed class SeclaiClientTests
     }
 
     [Fact]
-    public async Task SetMetadataKeys_RejectsRequestWithoutMetadataKeys()
+    public void SetMetadataKeysRequest_RejectsNullMetadataKeys()
     {
-        // A request whose MetadataKeys was set to null must not go out as a declaration that wipes every key.
-        var requests = 0;
-        var handler = new FakeHttpMessageHandler(req =>
-        {
-            requests++;
-            return JsonResponse("{\"trigger_id\":\"t1\",\"agent_id\":\"a1\",\"accepts_any_source_key\":false,\"metadata_keys\":[],\"declarable_keys\":[],\"warnings\":[]}");
-        });
-        var client = MakeClient(handler);
-        var ex = await Assert.ThrowsAsync<ArgumentException>(() => client.SetMetadataKeysAsync("a1", "t1", new SetMetadataKeysRequest(new List<MetadataKeyDeclaration>()) { MetadataKeys = null! }));
-        Assert.Equal("body", ex.ParamName);
-        Assert.Equal(0, requests);
+        // A request whose MetadataKeys is null would go out as a declaration that wipes every key.
+        var request = new SetMetadataKeysRequest(new List<MetadataKeyDeclaration>());
+        var ex = Assert.Throws<ArgumentNullException>(() => request.MetadataKeys = null!);
+        Assert.Equal("MetadataKeys", ex.ParamName);
+        Assert.NotNull(request.MetadataKeys);
     }
 
     [Fact]

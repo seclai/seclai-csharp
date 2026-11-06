@@ -12,14 +12,19 @@ public sealed class SetMetadataKeysRequest
     /// <exception cref="ArgumentNullException"><paramref name="metadataKeys"/> is null.</exception>
     public SetMetadataKeysRequest(List<MetadataKeyDeclaration> metadataKeys)
     {
-        MetadataKeys = metadataKeys ?? throw new ArgumentNullException(nameof(metadataKeys));
+        _metadataKeys = metadataKeys ?? throw new ArgumentNullException(nameof(metadataKeys));
     }
+
+    private List<MetadataKeyDeclaration> _metadataKeys;
 
     /// <summary>
     /// The whole declaration; it replaces the trigger's current one. To declare no keys, use an empty list.
-    /// <see cref="SeclaiClient.SetMetadataKeysAsync"/> still throws <see cref="ArgumentException"/> if it is set to
-    /// null afterwards, so such a request cannot wipe the declaration.
     /// </summary>
+    /// <exception cref="ArgumentNullException">Set to null, which would wipe the declaration.</exception>
     [JsonPropertyName("metadata_keys")]
-    public List<MetadataKeyDeclaration> MetadataKeys { get; set; }
+    public List<MetadataKeyDeclaration> MetadataKeys
+    {
+        get => _metadataKeys;
+        set => _metadataKeys = value ?? throw new ArgumentNullException(nameof(MetadataKeys));
+    }
 }
