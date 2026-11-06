@@ -2378,10 +2378,9 @@ public sealed class SeclaiClientTests
             if (req.Method == HttpMethod.Post) return JsonResponse(PollRunning);
             throw new TaskCanceledException("HttpClient timeout");
         });
-        var ex = await Assert.ThrowsAsync<TaskCanceledException>(() => MakeClient(handler).RunAgentAndPollAsync("a1",
+        await Assert.ThrowsAsync<TaskCanceledException>(() => MakeClient(handler).RunAgentAndPollAsync("a1",
             new AgentRunRequest { Input = "go" },
             new RunAgentAndPollOptions { PollInterval = TimeSpan.FromMilliseconds(10), Timeout = TimeSpan.FromMinutes(5), ThrowOnIncomplete = true }));
-        Assert.IsAssignableFrom<OperationCanceledException>(ex);
     }
 
     [Fact]
