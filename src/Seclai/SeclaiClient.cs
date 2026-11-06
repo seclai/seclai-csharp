@@ -3260,10 +3260,12 @@ public sealed class SeclaiClient : IDisposable
     /// <see cref="RunAgentAndPollOptions.ReturnOnResult"/>, until it reports its result.
     /// </summary>
     /// <remarks>
-    /// <see cref="RunAgentAndPollOptions.Timeout"/> bounds the wait once the run has started, not the request that
-    /// starts it, which only <paramref name="cancellationToken"/> can cancel: the server may already have created the
-    /// run. With <see cref="RunAgentAndPollOptions.IncludeStepOutputs"/>, a start response that would end the poll is
-    /// fetched again with its step outputs, so the returned snapshot carries them even when the run ended at once.
+    /// <see cref="RunAgentAndPollOptions.Timeout"/> bounds only waiting for an unfinished run. The request that starts
+    /// the run is bounded, as in 1.7.0, by the <see cref="HttpClient"/> timeout (<see cref="SeclaiClientOptions.Timeout"/>)
+    /// and <paramref name="cancellationToken"/>, since the server may already have created the run. With
+    /// <see cref="RunAgentAndPollOptions.IncludeStepOutputs"/>, a start response that would end the poll is fetched
+    /// again with its step outputs, so the returned snapshot carries them even when the run ended at once; that fetch
+    /// is not bounded by <see cref="RunAgentAndPollOptions.Timeout"/> either.
     /// </remarks>
     /// <exception cref="StreamingException">
     /// With <see cref="RunAgentAndPollOptions.ThrowOnIncomplete"/>, <see cref="RunAgentAndPollOptions.Timeout"/>
@@ -3284,9 +3286,18 @@ public sealed class SeclaiClient : IDisposable
 
         var interval = options.PollInterval ?? TimeSpan.FromSeconds(2);
 
-        // The timeout bounds only the wait once the run exists: cancelling the start request could leave a run the
+        // The timeout bounds only waiting for an unfinished run: cancelling the start request could leave a run the
         // server created, with no RunId to find it by.
         var run = await RunAgentAsync(agentId, body, cancellationToken).ConfigureAwait(false);
+
+        // The start response carries no step outputs, so when it would end the poll, fetch them first. This is not
+        // waiting for the run, so the timeout does not apply: it cannot turn a finished run into a timeout.
+        if (options.IncludeStepOutputs &&
+            (run.Status == "completed" || run.Status == "failed" ||
+             (options.ReturnOnResult && !string.IsNullOrEmpty(run.ResultReportedAt))))
+        {
+            run = await GetAgentRunAsync(run.RunId!, true, cancellationToken).ConfigureAwait(false);
+        }
 
         using var cts = options.Timeout.HasValue
             ? CancellationTokenSource.CreateLinkedTokenSource(cancellationToken)
@@ -3296,13 +3307,6 @@ public sealed class SeclaiClient : IDisposable
 
         try
         {
-            // The start response carries no step outputs, so when it would end the poll, fetch them first.
-            if (options.IncludeStepOutputs &&
-                (run.Status == "completed" || run.Status == "failed" ||
-                 (options.ReturnOnResult && !string.IsNullOrEmpty(run.ResultReportedAt))))
-            {
-                run = await GetAgentRunAsync(run.RunId!, true, ct).ConfigureAwait(false);
-            }
             while (true)
             {
                 switch (run.Status)

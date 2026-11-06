@@ -2441,6 +2441,41 @@ public sealed class SeclaiClientTests
     }
 
     [Fact]
+    public async Task RunAgentAndPoll_IncludeStepOutputs_SlowFetchOfFinishedRunIsNotATimeout()
+    {
+        // The run ended in the start response; fetching its step outputs takes longer than Timeout.
+        var handler = new FakeHttpMessageHandler(async (req, ct) =>
+        {
+            if (req.Method != HttpMethod.Post) await Task.Delay(TimeSpan.FromMilliseconds(300), ct);
+            return JsonResponse("{\"run_id\":\"r1\",\"status\":\"completed\",\"output\":\"answer\",\"attempts\":[],\"error_count\":0,\"priority\":false}");
+        });
+        foreach (var throwOnIncomplete in new[] { false, true })
+        {
+            var res = await MakeClient(handler).RunAgentAndPollAsync("a1", new AgentRunRequest { Input = "go" },
+                new RunAgentAndPollOptions { Timeout = TimeSpan.FromMilliseconds(50), IncludeStepOutputs = true, ThrowOnIncomplete = throwOnIncomplete });
+            Assert.Equal("completed", res.Status);
+        }
+    }
+
+    [Fact]
+    public async Task RunAgentAndPoll_IncludeStepOutputs_FetchesWhenStartResponseReportedResult()
+    {
+        // ReturnOnResult with a reported result in the start response ends the poll, so step outputs are fetched first.
+        var gets = 0;
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            if (req.Method == HttpMethod.Post) return JsonResponse(PollReported);
+            gets++;
+            Assert.Equal("include_step_outputs=true", req.RequestUri!.Query.TrimStart('?'));
+            return JsonResponse(PollReported);
+        });
+        var res = await MakeClient(handler).RunAgentAndPollAsync("a1", new AgentRunRequest { Input = "go" },
+            new RunAgentAndPollOptions { PollInterval = TimeSpan.FromSeconds(30), IncludeStepOutputs = true, ReturnOnResult = true });
+        Assert.Equal(1, gets);
+        Assert.Equal("answer", res.Output);
+    }
+
+    [Fact]
     public async Task RunAgentAndPoll_IncludeStepOutputs_NoExtraFetchWhenStartResponseIsProcessing()
     {
         // A processing start response does not end the poll, so the first GET waits for the poll interval.
