@@ -492,8 +492,10 @@ else `init`), so check `Status` and `ResultReportedAt`. A connection cut mid-str
 transport's `IOException` or `HttpRequestException`. Its own timeout, or cancelling your
 `CancellationToken`, throws `StreamingException`. `RunAgentAndPollAsync`'s timeout throws
 `OperationCanceledException`. `RunAgentAndPollOptions.Timeout` bounds only waiting for an unfinished
-run. As in 1.7.0, the request that starts the run is bounded by the `HttpClient` timeout
-(`SeclaiClientOptions.Timeout`) and your `CancellationToken`, not by `Timeout`.
+run. As in 1.7.0, the request that starts the run is bounded by the `HttpClient`'s timeout
+(`SeclaiClientOptions.Timeout` when the SDK creates the client) and your `CancellationToken`, not by
+`Timeout`. With `IncludeStepOutputs`, if fetching the step outputs of a run that ended at once fails,
+the run is returned without them.
 
 We recommend setting `ThrowOnIncomplete`, which becomes the default in the next major version. With
 it, neither helper returns an unfinished run: its own timeout, or a stream that ends or breaks

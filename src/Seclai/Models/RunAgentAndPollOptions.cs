@@ -14,8 +14,8 @@ public struct RunAgentAndPollOptions
 
     /// <summary>
     /// Maximum time to wait for an unfinished run; null waits until the run ends. The request that starts the run is
-    /// not bounded by it, since the server may already have created the run: as in 1.7.0, the <c>HttpClient</c>
-    /// timeout (<see cref="SeclaiClientOptions.Timeout"/>) and the caller's token bound it. Nor is the fetch of step
+    /// not bounded by it, since the server may already have created the run: as in 1.7.0, the <c>HttpClient</c>'s
+    /// timeout (<see cref="SeclaiClientOptions.Timeout"/> when the SDK creates the client) and the caller's token bound it. Nor is the fetch of step
     /// outputs for a run that ended at once.
     /// When it elapses before the run finished, <see cref="System.OperationCanceledException"/> is thrown, or, with
     /// <see cref="ThrowOnIncomplete"/>, <see cref="Seclai.Exceptions.StreamingException"/>.
@@ -24,7 +24,9 @@ public struct RunAgentAndPollOptions
 
     /// <summary>
     /// Whether each poll asks for step outputs. The response that starts the run carries none, so when that response
-    /// would end the poll, the run is fetched once more with them.
+    /// would end the poll, the run is fetched once more with them. If that fetch fails for any reason other than the
+    /// caller's cancellation (an API error, a transport error, the <c>HttpClient</c>'s timeout), the start snapshot is
+    /// returned without step outputs, so a finished run is not lost.
     /// </summary>
     public bool IncludeStepOutputs { get; set; }
 

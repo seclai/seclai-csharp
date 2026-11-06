@@ -33,7 +33,7 @@
 ### Fixed
 
 - Throw `StreamingException` from `RunStreamingAgentAndWaitAsync` when its timeout elapses or the caller cancels while the closed stream reads as ended, as documented, where it could return the `init` snapshot instead. An event whose lines arrived before the timeout but whose closing blank line had not is now read, so a `done` received in time is returned
-- Return step outputs from `RunAgentAndPollAsync` with `includeStepOutputs` when the run has already ended in the response that starts it, by fetching the run once. That response carries no step outputs, and it used to be returned as is
+- Return step outputs from `RunAgentAndPollAsync` with `includeStepOutputs` when the run has already ended in the response that starts it, by fetching the run once. That response carries no step outputs, and it used to be returned as is. If that fetch fails for any reason other than the caller's cancellation, the run is still returned, without step outputs
 - Fill `Total` on `AgentListResponse`, `ExportListResponse` and `SolutionListResponse` from the response's `pagination`. The API sends no top-level `total` there, so it was always 0
 - Add `CreateKnowledgeBaseRequest.SourceIds`. The API requires at least one source, and there was no way to send it
 - Read the plan from `GenerateGovernanceAiPlanAsync`: `GovernanceAiAssistantResponse` now has `ConversationId`, `Note`, `Success`, `ProposedActions` (a list of the new `ProposedPolicyActionResponse`), `PromptCallId` and `ExamplePrompts`. Its only property was `AssistantResponse`, which the API does not send
