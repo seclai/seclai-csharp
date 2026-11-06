@@ -1,5 +1,44 @@
 # Changelog
 
+## [1.8.0] - 2026-11-05
+
+### Changed
+
+- Return the `result` snapshot from `RunStreamingAgentAndWaitAsync` when the stream ends after the `result` event (sent once `ResultReportedAt` is set and `Output` is the answer) but before `done`, where it returned the `init` snapshot. It still returns rather than throws; set `ThrowOnIncomplete` to throw instead
+- Move `SeclaiApiVersion.Latest` from `2026-10-28` to `2026-11-04`, which opts a client that sends `Latest` into two more versions: from `2026-11-02` a definition or sampling-rule write (other than an import) that references a metadata key no trigger declares is refused (400 from `UpdateAgentDefinitionAsync`), where older versions declare each such key optional instead; from `2026-11-04` the API refuses the agent evaluation mode `eval_and_retry`, a new evaluation criterion `StepId` that does not name a result step (`display_result` or `streaming_result`), and `CreateEvaluationResultRequest.RetryTriggered = true`, each with a 400, where older versions store `eval_and_retry` as `sample_and_flag` and accept any step id. It is a `const`, so code compiled against an earlier release keeps the old value until it is rebuilt
+- Note server-side changes that apply on every API version, whatever `ApiVersion` a client sends: a run whose `metadata` has a custom key its trigger does not declare, or lacks a required one, is refused with a 400, so declare custom keys with `SetMetadataKeysAsync` first; an agent definition holding a `gate` or `retry` step is rejected (use `if_else`, or `repeat_until` to run steps again); the `agent_eval_fail` rollback trigger is accepted, never fires, and is no longer in the default rollback triggers; `MaxRetries` and `RetryOnFailure` are accepted and have no effect; and `AgentSummaryResponse.EvaluationMode` defaults to `sample_and_flag` server-side instead of `eval_and_retry`
+- Deprecate `SetSlackTriggerConfigRequest.Input`. The API now ignores it: a Slack run's input is the text after `/seclai <alias>`, or the message the shortcut was used on, and its files. Set the command name with the new `Alias`
+
+### Added
+
+- Add a `RunAgentAndPollAsync` overload taking `RunAgentAndPollOptions` (`PollInterval`, `Timeout`, `IncludeStepOutputs`, `ReturnOnResult` and `ThrowOnIncomplete`), and `RunStreamingAgentAndWaitWithOptionsAsync` taking `RunStreamingAgentAndWaitOptions` (`Timeout`, `ReturnOnResult` and `ThrowOnIncomplete`). With `ReturnOnResult` each returns as soon as the run reports its result (the `result` event, or `ResultReportedAt` set on a poll), while `Status` may still be `processing` and the run can still fail
+- Add `ThrowOnIncomplete` to both options types, so these helpers never return a run that has not finished. `RunStreamingAgentAndWaitWithOptionsAsync` then throws `StreamingException` when the stream ends without a `done` event, or breaks with an `IOException` or `HttpRequestException`, instead of returning the latest snapshot or letting the transport exception through, and cancelling the caller's token throws `OperationCanceledException`; `RunAgentAndPollAsync` throws `StreamingException` when its timeout elapses, instead of `OperationCanceledException`. The exception's `Run` holds the latest snapshot. It is off by default and will become the default in the next major version
+- Add `StreamingException.Run`, the latest snapshot of the unfinished run, and a constructor that sets it. The timeout `StreamingException` of `RunStreamingAgentAndWaitAsync` carries it too
+- Add `GetMetadataKeysAsync` and `SetMetadataKeysAsync` to read and replace the run metadata keys an agent's trigger declares, with `SetMetadataKeysRequest`, `MetadataKeyDeclaration`, `DeclarableMetadataKey` and `MetadataKeysResponse`. `SetMetadataKeysRequest` is built with its list (`new SetMetadataKeysRequest(keys)`); its constructor and `MetadataKeys` setter throw `ArgumentNullException` on null, and an empty list declares no keys. `MetadataKeyDeclaration.Required` is omitted when `null`, which the API treats as false
+- Add `GetKnowledgeBaseMetadataKeyStatsAsync` to report how often each item-metadata key appears on a knowledge base's content over all time and the last 30 and 7 days, returning `KnowledgeBaseMetadataKeyStatsResponse` with `MetadataKeyWindowResponse`, `MetadataKeyCountResponse` and `MetadataValueCountResponse`
+- Add `Alias` to `SetSlackTriggerConfigRequest` and `SlackTriggerConfigResponse`, the name people type after `/seclai` to run the agent
+- Add `ResultReportedAt` to `AgentRunResponse`, when the run reported success; from then on `Output` is final
+- Add the `SeclaiApiVersion.V2026_11_02` and `V2026_11_04` constants, so those versions are accepted as `ApiVersion`
+- Add agent evaluation and prompt-model settings to `UpdateAgentRequest` and `AgentSummaryResponse`: `EvaluationMode`, `SamplingConfig`, `DefaultEvaluationTier`, `PromptModelAutoUpgradeStrategy`, `PromptModelAutoRollbackEnabled` and `PromptModelAutoRollbackTriggers`, plus `TriggerType` on the response. On the request, a null property is not sent and leaves the setting unchanged; to clear the sampling config, tier or rollback triggers, set `SetSamplingConfig`, `SetDefaultEvaluationTier` or `SetPromptModelAutoRollbackTriggers` and leave the value null. `MaxRetries` and `RetryOnFailure` are included for completeness and have no effect
+- Add `InputUploadId`, `InputUploadIds` and `ReplayOfRunId` to `AgentRunRequest` and `AgentRunStreamRequest`, to run an agent on uploaded files or rerun it on a prior run's files; add `AgentRunStepResponse.Input` and `CreateAgentRequest.TriggerType`
+- Add the AI assistants' conversation and plan details: `HistorySince` on `AiAssistantGenerateRequest` and `MemoryBankAiAssistantRequest` to scope context to the current session; `Mode`, `AgentSteps`, `AgentDescription` and `TriggerType` on `GenerateAgentStepsRequest` to refine an existing workflow; `ConversationId`, `Success`, `Note`, `AgentConfig` and `ExamplePrompts` on `GenerateAgentStepsResponse`; `ConversationId` and `ResultingConfig` on `MemoryBankConversationTurnResponse`; and `ProposedActionResponse.Preview`, the dry run of a proposed agent action
+- Add knowledge-base retrieval defaults: `RerankerModel`, `DefaultTopK`, `DefaultTopN` and `DefaultScoreThreshold` on `CreateKnowledgeBaseRequest` and `KnowledgeBaseResponse`, and `Sources` (a list of the new `SourceConnectionResponse`) and `Readonly` on the response
+- Add memory-bank embedding and compaction settings to `CreateMemoryBankRequest` and `MemoryBankResponse`: `Mode`, `EmbeddingModel`, `Dimensions`, `ChunkSize`, `ChunkOverlap`, `CompactionPrompt`, `MaxSizeTokens` and `MaxTurns`, and the deprecated `MaxAgeDays`; add `RetentionDays` and `SourceConnectionId` to the response
+- Add `DateFrom`, `DateTo`, `MetadataFilter` and `QueryFilter` to `CreateExportRequest`, to export part of a source, and the export's filters, sizes, progress, error and requester to `ExportResponse`
+- Add `IndexMode` to `CreateSourceRequest` and `SourceResponse`, and `FreeRetentionDays` and `SystemManaged` to `SourceResponse`
+- Add the criterion's agent, step, mode, prompt, tier, expectation config, pass threshold, result summary, `Enabled` and timestamps to `EvaluationCriteriaResponse`
+- Add `Agents`, `KnowledgeBases` and `SourceConnections` to `SolutionResponse`, with the new `SolutionAgentResponse`, `SolutionKnowledgeBaseResponse` and `SolutionSourceConnectionResponse`
+- Add `Pagination` to `AgentListResponse`, `ExportListResponse` and `SolutionListResponse`
+
+### Fixed
+
+- Throw `StreamingException` from `RunStreamingAgentAndWaitAsync` when its timeout elapses or the caller cancels while the closed stream reads as ended, as documented, where it could return the `init` snapshot instead. An event whose lines arrived before the timeout but whose closing blank line had not is now read, so a `done` received in time is returned
+- Return step outputs from `RunAgentAndPollAsync` with `includeStepOutputs` when the run has already ended in the response that starts it, by fetching the run once. That response carries no step outputs, and it used to be returned as is
+- Fill `Total` on `AgentListResponse`, `ExportListResponse` and `SolutionListResponse` from the response's `pagination`. The API sends no top-level `total` there, so it was always 0
+- Add `CreateKnowledgeBaseRequest.SourceIds`. The API requires at least one source, and there was no way to send it
+- Read the plan from `GenerateGovernanceAiPlanAsync`: `GovernanceAiAssistantResponse` now has `ConversationId`, `Note`, `Success`, `ProposedActions` (a list of the new `ProposedPolicyActionResponse`), `PromptCallId` and `ExamplePrompts`. Its only property was `AssistantResponse`, which the API does not send
+- Read the embedding migration from `GetSourceEmbeddingMigrationAsync`, `StartSourceEmbeddingMigrationAsync` and `CancelSourceEmbeddingMigrationAsync`: `SourceEmbeddingMigrationResponse` now has `Id`, `Phase`, progress, target model and dimensions, failure message and timestamps. `MigrationId` stays, but the API does not send it
+
 ## [1.7.0] - 2026-10-31
 
 ### Changed
@@ -242,6 +281,7 @@ _Stable release. Packaging only; no API changes since 0.0.1._
 
 _Initial release._
 
+[1.8.0]: https://github.com/seclai/seclai-csharp/releases/tag/1.8.0
 [1.7.0]: https://github.com/seclai/seclai-csharp/releases/tag/1.7.0
 [1.6.0]: https://github.com/seclai/seclai-csharp/releases/tag/1.6.0
 [1.5.1]: https://github.com/seclai/seclai-csharp/releases/tag/1.5.1

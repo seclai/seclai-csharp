@@ -5,7 +5,7 @@ namespace Seclai.Models;
 /// </summary>
 public sealed class AgentRunEvent
 {
-    /// <summary>The SSE event type (e.g. "init", "update", "done").</summary>
+    /// <summary>The SSE event type (e.g. "init", "stream_token", "result", "done").</summary>
     public string? Event { get; set; }
 
     /// <summary>The raw JSON data payload.</summary>

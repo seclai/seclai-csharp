@@ -56,4 +56,8 @@ public sealed class AgentRunStepResponse
     /// </summary>
     [JsonPropertyName("decision")]
     public string? Decision { get; set; }
+
+    /// <summary>Input text provided to the step, if any. Below <c>Seclai-Version: 2026-09-30</c>, the manifest JSON when the step that produced it output files and is not a <c>for_each</c>.</summary>
+    [JsonPropertyName("input")]
+    public string? Input { get; set; }
 }

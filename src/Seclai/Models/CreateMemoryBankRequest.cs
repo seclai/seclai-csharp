@@ -36,4 +36,40 @@ public sealed class CreateMemoryBankRequest
     /// </summary>
     [JsonIgnore]
     public bool RetainIndefinitely { get; set; }
+
+    /// <summary>Embedding quality / cost trade-off: <c>fast_and_cheap</c> (the server default), <c>balanced</c>, <c>slow_and_thorough</c>, or <c>custom</c>.</summary>
+    [JsonPropertyName("mode")]
+    public string? Mode { get; set; }
+
+    /// <summary>Embedding model (<c>custom</c> mode only).</summary>
+    [JsonPropertyName("embedding_model")]
+    public string? EmbeddingModel { get; set; }
+
+    /// <summary>Embedding dimensions (<c>custom</c> mode only).</summary>
+    [JsonPropertyName("dimensions")]
+    public int? Dimensions { get; set; }
+
+    /// <summary>Chunk size (<c>custom</c> mode only).</summary>
+    [JsonPropertyName("chunk_size")]
+    public int? ChunkSize { get; set; }
+
+    /// <summary>Chunk overlap (<c>custom</c> mode only).</summary>
+    [JsonPropertyName("chunk_overlap")]
+    public int? ChunkOverlap { get; set; }
+
+    /// <summary>Custom prompt used when compacting older entries. When set, entries that exceed a threshold are summarized into a new entry before being soft-deleted.</summary>
+    [JsonPropertyName("compaction_prompt")]
+    public string? CompactionPrompt { get; set; }
+
+    /// <summary>Max total tokens per partition before compaction. Checked inline after each write and by the hourly background sweep.</summary>
+    [JsonPropertyName("max_size_tokens")]
+    public int? MaxSizeTokens { get; set; }
+
+    /// <summary>Max conversation turns per partition before compaction. Checked inline after each write and by the hourly background sweep.</summary>
+    [JsonPropertyName("max_turns")]
+    public int? MaxTurns { get; set; }
+
+    /// <summary>Deprecated and no longer applied: age belongs to <see cref="RetentionDays"/>, which deletes. Refused with HTTP 400 from <c>Seclai-Version: 2026-08-03</c>; stored but inert on older versions. Leave it null.</summary>
+    [JsonPropertyName("max_age_days")]
+    public int? MaxAgeDays { get; set; }
 }

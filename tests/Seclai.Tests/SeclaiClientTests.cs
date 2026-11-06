@@ -420,6 +420,224 @@ public sealed class SeclaiClientTests
             ));
     }
 
+    private static HttpResponseMessage SseResponse(System.IO.Stream stream)
+    {
+        var resp = new HttpResponseMessage(HttpStatusCode.OK) { Content = new StreamContent(stream) };
+        resp.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("text/event-stream");
+        return resp;
+    }
+
+    private const string SseInit =
+        "event: init\n" +
+        "data: {\"run_id\":\"run_1\",\"status\":\"processing\",\"attempts\":[],\"error_count\":0,\"priority\":false}\n\n";
+
+    private const string SseResult =
+        "event: result\n" +
+        "data: {\"run_id\":\"run_1\",\"status\":\"processing\",\"output\":\"answer\",\"result_reported_at\":\"2026-11-05T00:00:00Z\",\"attempts\":[],\"error_count\":0,\"priority\":false}\n\n";
+
+    private static readonly RunStreamingAgentAndWaitOptions ThrowOnIncomplete = new() { ThrowOnIncomplete = true };
+
+    private static AgentRunStreamRequest Hi => new() { Input = "hi" };
+
+    // ── Default (ThrowOnIncomplete off): the 1.7.0 behaviour ──────────────
+
+    [Fact]
+    public async Task RunStreamingAgentAndWait_Default_StreamEndsWithoutDone_ReturnsLastSnapshot()
+    {
+        var handler = new FakeHttpMessageHandler(_ =>
+            SseResponse(new System.IO.MemoryStream(Encoding.UTF8.GetBytes(SseInit))));
+        var res = await MakeClient(handler).RunStreamingAgentAndWaitAsync("a", Hi);
+        Assert.Equal("processing", res.Status);
+
+        handler = new FakeHttpMessageHandler(_ => SseResponse(new System.IO.MemoryStream(Encoding.UTF8.GetBytes(": keepalive\n\n"))));
+        await Assert.ThrowsAsync<StreamingException>(() => MakeClient(handler).RunStreamingAgentAndWaitAsync("a", Hi));
+    }
+
+    [Fact]
+    public async Task RunStreamingAgentAndWait_Default_StreamEndsAfterResult_ReturnsResultSnapshot()
+    {
+        var handler = new FakeHttpMessageHandler(_ =>
+            SseResponse(new System.IO.MemoryStream(Encoding.UTF8.GetBytes(SseInit + SseResult))));
+        var res = await MakeClient(handler).RunStreamingAgentAndWaitAsync("a", Hi);
+        Assert.Equal("answer", res.Output);
+        Assert.Equal("2026-11-05T00:00:00Z", res.ResultReportedAt);
+    }
+
+    [Fact]
+    public async Task RunStreamingAgentAndWait_Default_TransportErrorMidStream_Propagates()
+    {
+        var handler = new FakeHttpMessageHandler(_ => SseResponse(new NeverEndingStream(
+            Encoding.UTF8.GetBytes(SseInit), failAfterPrefix: new System.IO.IOException("connection reset"))));
+        await Assert.ThrowsAsync<System.IO.IOException>(() => MakeClient(handler).RunStreamingAgentAndWaitAsync("a", Hi));
+    }
+
+    [Fact]
+    public async Task RunStreamingAgentAndWait_Default_Timeout_ThrowsStreamingException()
+    {
+        var handler = new FakeHttpMessageHandler(_ =>
+            SseResponse(new NeverEndingStream(Encoding.UTF8.GetBytes(SseInit))));
+        var ex = await Assert.ThrowsAsync<StreamingException>(() =>
+            MakeClient(handler).RunStreamingAgentAndWaitAsync("a", Hi, timeout: TimeSpan.FromMilliseconds(100)));
+        Assert.StartsWith("Timed out", ex.Message);
+    }
+
+    [Fact]
+    public async Task RunStreamingAgentAndWait_Default_CallerCancellation_ThrowsStreamingException()
+    {
+        var handler = new FakeHttpMessageHandler(_ =>
+            SseResponse(new NeverEndingStream(Encoding.UTF8.GetBytes(SseInit))));
+        using var cts = new CancellationTokenSource(TimeSpan.FromMilliseconds(100));
+        var ex = await Assert.ThrowsAsync<StreamingException>(() => MakeClient(handler).RunStreamingAgentAndWaitAsync(
+            "a", Hi, timeout: TimeSpan.FromSeconds(30), cancellationToken: cts.Token));
+        Assert.StartsWith("Timed out", ex.Message);
+    }
+
+    [Fact]
+    public async Task RunStreamingAgentAndWait_Default_CancellationReadAsEndOfStream_IsNotTreatedAsEof()
+    {
+        // Disposing this stream makes reads return 0, so cancellation surfaces as a clean end of stream.
+        var handler = new FakeHttpMessageHandler(_ =>
+            SseResponse(new NeverEndingStream(Encoding.UTF8.GetBytes(SseInit), eofOnDispose: true)));
+        var ex = await Assert.ThrowsAsync<StreamingException>(() =>
+            MakeClient(handler).RunStreamingAgentAndWaitAsync("a", Hi, timeout: TimeSpan.FromMilliseconds(100)));
+        Assert.StartsWith("Timed out", ex.Message);
+        Assert.Equal("processing", ex.Run!.Status);
+
+        using var cts = new CancellationTokenSource(TimeSpan.FromMilliseconds(100));
+        ex = await Assert.ThrowsAsync<StreamingException>(() => MakeClient(handler).RunStreamingAgentAndWaitAsync(
+            "a", Hi, timeout: TimeSpan.FromSeconds(30), cancellationToken: cts.Token));
+        Assert.StartsWith("Timed out", ex.Message);
+    }
+
+    [Fact]
+    public async Task RunStreamingAgentAndWait_DoneWinsOverResult()
+    {
+        var sse = SseInit + SseResult +
+            "event: done\n" +
+            "data: {\"run_id\":\"run_1\",\"status\":\"failed\",\"output\":\"answer\",\"result_reported_at\":\"2026-11-05T00:00:00Z\",\"attempts\":[],\"error_count\":1,\"priority\":false}\n\n";
+        var handler = new FakeHttpMessageHandler(_ => SseResponse(new System.IO.MemoryStream(Encoding.UTF8.GetBytes(sse))));
+        var res = await MakeClient(handler).RunStreamingAgentAndWaitAsync("a", Hi);
+        Assert.Equal("failed", res.Status);
+        Assert.Equal(1, res.ErrorCount);
+    }
+
+    [Fact]
+    public async Task RunStreamingAgentAndWait_TimeoutKeepsBufferedResult()
+    {
+        // The result event's lines arrived, but not the blank line that ends it.
+        var unterminated = SseResult.Substring(0, SseResult.Length - 1);
+        var handler = new FakeHttpMessageHandler(_ =>
+            SseResponse(new NeverEndingStream(Encoding.UTF8.GetBytes(SseInit + unterminated))));
+        var ex = await Assert.ThrowsAsync<StreamingException>(() => MakeClient(handler).RunStreamingAgentAndWaitAsync(
+            "a", Hi, timeout: TimeSpan.FromMilliseconds(100)));
+        Assert.Equal("answer", ex.Run!.Output);
+    }
+
+    // ── ThrowOnIncomplete ──────────────────────────────────────────────────
+
+    [Fact]
+    public async Task RunStreamingAgentAndWait_ThrowOnIncomplete_StreamEndsWithoutDone_ThrowsWithLatestSnapshot()
+    {
+        // After result: the result snapshot is attached, not returned.
+        var handler = new FakeHttpMessageHandler(_ =>
+            SseResponse(new System.IO.MemoryStream(Encoding.UTF8.GetBytes(SseInit + SseResult))));
+        var ex = await Assert.ThrowsAsync<StreamingException>(() =>
+            MakeClient(handler).RunStreamingAgentAndWaitWithOptionsAsync("a", Hi, ThrowOnIncomplete));
+        Assert.Equal("answer", ex.Run!.Output);
+        Assert.Equal("2026-11-05T00:00:00Z", ex.Run.ResultReportedAt);
+        Assert.Contains("reported its result", ex.Message);
+
+        // Before result: the init snapshot is attached.
+        handler = new FakeHttpMessageHandler(_ =>
+            SseResponse(new System.IO.MemoryStream(Encoding.UTF8.GetBytes(SseInit))));
+        ex = await Assert.ThrowsAsync<StreamingException>(() =>
+            MakeClient(handler).RunStreamingAgentAndWaitWithOptionsAsync("a", Hi, ThrowOnIncomplete));
+        Assert.Equal("processing", ex.Run!.Status);
+        Assert.Contains("not reported a result", ex.Message);
+    }
+
+    [Fact]
+    public async Task RunStreamingAgentAndWait_ThrowOnIncomplete_TimeoutAfterResult_ThrowsWithResult()
+    {
+        var handler = new FakeHttpMessageHandler(_ =>
+            SseResponse(new NeverEndingStream(Encoding.UTF8.GetBytes(SseInit + SseResult))));
+        var ex = await Assert.ThrowsAsync<StreamingException>(() => MakeClient(handler).RunStreamingAgentAndWaitWithOptionsAsync(
+            "a", Hi, new RunStreamingAgentAndWaitOptions { Timeout = TimeSpan.FromMilliseconds(100), ThrowOnIncomplete = true }));
+        Assert.Equal("answer", ex.Run!.Output);
+        Assert.StartsWith("Timed out", ex.Message);
+    }
+
+    [Fact]
+    public async Task RunStreamingAgentAndWait_ThrowOnIncomplete_CallerCancellation_ThrowsOperationCanceled()
+    {
+        var handler = new FakeHttpMessageHandler(_ =>
+            SseResponse(new NeverEndingStream(Encoding.UTF8.GetBytes(SseInit + SseResult))));
+        using var cts = new CancellationTokenSource(TimeSpan.FromMilliseconds(100));
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(() => MakeClient(handler).RunStreamingAgentAndWaitWithOptionsAsync(
+            "a", Hi, new RunStreamingAgentAndWaitOptions { Timeout = TimeSpan.FromSeconds(30), ThrowOnIncomplete = true }, cts.Token));
+    }
+
+    [Fact]
+    public async Task RunStreamingAgentAndWait_ThrowOnIncomplete_CancellationReadAsEndOfStream_IsNotTreatedAsEof()
+    {
+        // Disposing this stream makes reads return 0, so cancellation surfaces as a clean end of stream.
+        var handler = new FakeHttpMessageHandler(_ =>
+            SseResponse(new NeverEndingStream(Encoding.UTF8.GetBytes(SseInit + SseResult), eofOnDispose: true)));
+        using var cts = new CancellationTokenSource(TimeSpan.FromMilliseconds(100));
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(() => MakeClient(handler).RunStreamingAgentAndWaitWithOptionsAsync(
+            "a", Hi, new RunStreamingAgentAndWaitOptions { Timeout = TimeSpan.FromSeconds(30), ThrowOnIncomplete = true }, cts.Token));
+
+        handler = new FakeHttpMessageHandler(_ =>
+            SseResponse(new NeverEndingStream(Encoding.UTF8.GetBytes(SseInit), eofOnDispose: true)));
+        var ex = await Assert.ThrowsAsync<StreamingException>(() => MakeClient(handler).RunStreamingAgentAndWaitWithOptionsAsync(
+            "a", Hi, new RunStreamingAgentAndWaitOptions { Timeout = TimeSpan.FromMilliseconds(100), ThrowOnIncomplete = true }));
+        Assert.StartsWith("Timed out", ex.Message);
+        Assert.Equal("processing", ex.Run!.Status);
+    }
+
+    [Fact]
+    public async Task RunStreamingAgentAndWait_ThrowOnIncomplete_TransportErrorMidStream_ThrowsWithLatestSnapshot()
+    {
+        var handler = new FakeHttpMessageHandler(_ => SseResponse(new NeverEndingStream(
+            Encoding.UTF8.GetBytes(SseInit + SseResult), failAfterPrefix: new System.IO.IOException("connection reset"))));
+        var ex = await Assert.ThrowsAsync<StreamingException>(() =>
+            MakeClient(handler).RunStreamingAgentAndWaitWithOptionsAsync("a", Hi, ThrowOnIncomplete));
+        Assert.Equal("answer", ex.Run!.Output);
+        Assert.IsType<System.IO.IOException>(ex.InnerException);
+    }
+
+    [Fact]
+    public async Task RunStreamingAgentAndWait_ReturnOnResult_ReturnsResultWithoutWaitingForDone()
+    {
+        var handler = new FakeHttpMessageHandler(_ =>
+            SseResponse(new NeverEndingStream(Encoding.UTF8.GetBytes(SseInit + SseResult))));
+        var res = await MakeClient(handler).RunStreamingAgentAndWaitWithOptionsAsync("a", Hi,
+            new RunStreamingAgentAndWaitOptions { Timeout = TimeSpan.FromSeconds(30), ReturnOnResult = true });
+        Assert.Equal("answer", res.Output);
+        Assert.Equal("processing", res.Status);
+    }
+
+    [Fact]
+    public async Task RunStreamingAgentAndWait_ExistingCallShapesStillCompile()
+    {
+        var sse = "event: done\ndata: {\"run_id\":\"run_1\",\"status\":\"completed\",\"attempts\":[],\"error_count\":0,\"priority\":false}\n\n";
+        var handler = new FakeHttpMessageHandler(_ => SseResponse(new System.IO.MemoryStream(Encoding.UTF8.GetBytes(sse))));
+        var client = MakeClient(handler);
+        var body = Hi;
+        var token = CancellationToken.None;
+        // Each of these compiled against 1.7.0 and must still compile and bind to the original overload.
+        Assert.Equal("completed", (await client.RunStreamingAgentAndWaitAsync("a", body)).Status);
+        Assert.Equal("completed", (await client.RunStreamingAgentAndWaitAsync("a", body, null)).Status);
+        Assert.Equal("completed", (await client.RunStreamingAgentAndWaitAsync("a", body, default)).Status);
+        Assert.Equal("completed", (await client.RunStreamingAgentAndWaitAsync("a", body, null, token)).Status);
+        Assert.Equal("completed", (await client.RunStreamingAgentAndWaitAsync("a", body, default, token)).Status);
+        Assert.Equal("completed", (await client.RunStreamingAgentAndWaitAsync("a", body, default, default)).Status);
+        Assert.Equal("completed", (await client.RunStreamingAgentAndWaitAsync("a", body, default, cancellationToken: token)).Status);
+        Assert.Equal("completed", (await client.RunStreamingAgentAndWaitAsync("a", body, TimeSpan.FromSeconds(5), token)).Status);
+        Assert.Equal("completed", (await client.RunStreamingAgentAndWaitAsync("a", body, timeout: default)).Status);
+        Assert.Equal("completed", (await client.RunStreamingAgentAndWaitAsync("a", body, cancellationToken: token)).Status);
+    }
+
     [Fact]
     public async Task UploadFileToSource_SendsMetadataMultipartField()
     {
@@ -2111,6 +2329,227 @@ public sealed class SeclaiClientTests
                 new AgentRunRequest { Input = "go" },
                 pollInterval: TimeSpan.FromMilliseconds(10),
                 timeout: TimeSpan.FromMilliseconds(50)));
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(() =>
+            client.RunAgentAndPollAsync("a1", new AgentRunRequest { Input = "go" },
+                new RunAgentAndPollOptions { PollInterval = TimeSpan.FromMilliseconds(10), Timeout = TimeSpan.FromMilliseconds(50) }));
+    }
+
+    [Fact]
+    public async Task RunAgentAndPoll_ThrowOnIncomplete_TimesOut()
+    {
+        var handler = new FakeHttpMessageHandler(_ =>
+            JsonResponse("{\"run_id\":\"r1\",\"status\":\"running\",\"attempts\":[],\"error_count\":0,\"priority\":false}"));
+        var ex = await Assert.ThrowsAsync<StreamingException>(() =>
+            MakeClient(handler).RunAgentAndPollAsync("a1", new AgentRunRequest { Input = "go" },
+                new RunAgentAndPollOptions { PollInterval = TimeSpan.FromMilliseconds(10), Timeout = TimeSpan.FromMilliseconds(50), ThrowOnIncomplete = true }));
+        Assert.Equal("running", ex.Run!.Status);
+        Assert.Contains("not reported a result", ex.Message);
+    }
+
+    [Fact]
+    public async Task RunAgentAndPoll_TimeoutDoesNotCancelStartRequest()
+    {
+        // The request that starts the run takes longer than the timeout. Cancelling it could leave a run the server
+        // created with no RunId, so only the wait after it is bounded.
+        var handler = new FakeHttpMessageHandler(async (req, ct) =>
+        {
+            if (req.Method == HttpMethod.Post) await Task.Delay(TimeSpan.FromMilliseconds(300), ct);
+            return JsonResponse(req.Method == HttpMethod.Post
+                ? "{\"run_id\":\"r1\",\"status\":\"processing\",\"attempts\":[],\"error_count\":0,\"priority\":false}"
+                : "{\"run_id\":\"r1\",\"status\":\"completed\",\"attempts\":[],\"error_count\":0,\"priority\":false}");
+        });
+        foreach (var throwOnIncomplete in new[] { false, true })
+        {
+            var res = await MakeClient(handler).RunAgentAndPollAsync("a1", new AgentRunRequest { Input = "go" },
+                new RunAgentAndPollOptions { PollInterval = TimeSpan.FromMilliseconds(10), Timeout = TimeSpan.FromMilliseconds(100), ThrowOnIncomplete = throwOnIncomplete });
+            Assert.Equal("completed", res.Status);
+        }
+    }
+
+    private const string PollRunning = "{\"run_id\":\"r1\",\"status\":\"processing\",\"attempts\":[],\"error_count\":0,\"priority\":false}";
+    private const string PollReported = "{\"run_id\":\"r1\",\"status\":\"processing\",\"output\":\"answer\",\"result_reported_at\":\"2026-11-05T00:00:00Z\",\"attempts\":[],\"error_count\":0,\"priority\":false}";
+
+    [Fact]
+    public async Task RunAgentAndPoll_ThrowOnIncomplete_HttpClientTimeoutIsNotWrapped()
+    {
+        // A request's own timeout (HttpClient throws TaskCanceledException) is not the helper's Timeout.
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            if (req.Method == HttpMethod.Post) return JsonResponse(PollRunning);
+            throw new TaskCanceledException("HttpClient timeout");
+        });
+        await Assert.ThrowsAsync<TaskCanceledException>(() => MakeClient(handler).RunAgentAndPollAsync("a1",
+            new AgentRunRequest { Input = "go" },
+            new RunAgentAndPollOptions { PollInterval = TimeSpan.FromMilliseconds(10), Timeout = TimeSpan.FromMinutes(5), ThrowOnIncomplete = true }));
+    }
+
+    [Fact]
+    public async Task RunAgentAndPoll_ThrowOnIncomplete_TimeoutAfterResult_ThrowsWithLastSnapshot()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+            JsonResponse(req.Method == HttpMethod.Post ? PollRunning : PollReported));
+        var ex = await Assert.ThrowsAsync<StreamingException>(() => MakeClient(handler).RunAgentAndPollAsync("a1",
+            new AgentRunRequest { Input = "go" },
+            new RunAgentAndPollOptions { PollInterval = TimeSpan.FromMilliseconds(10), Timeout = TimeSpan.FromMilliseconds(100), ThrowOnIncomplete = true }));
+        Assert.Equal("answer", ex.Run!.Output);
+        Assert.Equal("2026-11-05T00:00:00Z", ex.Run.ResultReportedAt);
+        Assert.Contains("reported its result", ex.Message);
+    }
+
+    [Fact]
+    public async Task RunAgentAndPoll_CallerCancellationAfterResult_Throws()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+            JsonResponse(req.Method == HttpMethod.Post ? PollRunning : PollReported));
+        using var cts = new CancellationTokenSource(TimeSpan.FromMilliseconds(100));
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(() =>
+            MakeClient(handler).RunAgentAndPollAsync("a1",
+                new AgentRunRequest { Input = "go" },
+                pollInterval: TimeSpan.FromMilliseconds(10),
+                timeout: TimeSpan.FromSeconds(30),
+                cancellationToken: cts.Token));
+    }
+
+    [Fact]
+    public async Task RunAgentAndPoll_ReturnOnResult_ReturnsOnceResultReported()
+    {
+        var gets = 0;
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            if (req.Method == HttpMethod.Post) return JsonResponse(PollRunning);
+            gets++;
+            Assert.Equal("include_step_outputs=true", req.RequestUri!.Query.TrimStart('?'));
+            return JsonResponse(gets == 1 ? PollReported
+                : "{\"run_id\":\"r1\",\"status\":\"completed\",\"output\":\"answer\",\"attempts\":[],\"error_count\":0,\"priority\":false}");
+        });
+        var res = await MakeClient(handler).RunAgentAndPollAsync("a1",
+            new AgentRunRequest { Input = "go" },
+            new RunAgentAndPollOptions { PollInterval = TimeSpan.FromMilliseconds(10), IncludeStepOutputs = true, ReturnOnResult = true });
+        Assert.Equal("processing", res.Status);
+        Assert.Equal("answer", res.Output);
+        Assert.Equal(1, gets);
+    }
+
+    [Fact]
+    public async Task RunAgentAndPoll_IncludeStepOutputs_FetchesEvenWhenStartResponseIsTerminal()
+    {
+        var gets = 0;
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            if (req.Method == HttpMethod.Post)
+                return JsonResponse("{\"run_id\":\"r1\",\"status\":\"completed\",\"output\":\"answer\",\"attempts\":[],\"error_count\":0,\"priority\":false}");
+            gets++;
+            Assert.Equal("include_step_outputs=true", req.RequestUri!.Query.TrimStart('?'));
+            return JsonResponse("{\"run_id\":\"r1\",\"status\":\"completed\",\"output\":\"answer\",\"steps\":[{\"step_id\":\"s1\",\"output\":\"step\"}],\"attempts\":[],\"error_count\":0,\"priority\":false}");
+        });
+        var res = await MakeClient(handler).RunAgentAndPollAsync("a1", new AgentRunRequest { Input = "go" },
+            new RunAgentAndPollOptions { PollInterval = TimeSpan.FromSeconds(30), IncludeStepOutputs = true, ReturnOnResult = true });
+        Assert.Equal(1, gets);
+        Assert.Equal("completed", res.Status);
+
+        // Without step outputs, a terminal start response ends the poll at once.
+        gets = 0;
+        res = await MakeClient(handler).RunAgentAndPollAsync("a1", new AgentRunRequest { Input = "go" },
+            new RunAgentAndPollOptions { PollInterval = TimeSpan.FromSeconds(30) });
+        Assert.Equal(0, gets);
+    }
+
+    [Fact]
+    public async Task RunAgentAndPoll_IncludeStepOutputs_SlowFetchOfFinishedRunIsNotATimeout()
+    {
+        // The run ended in the start response; fetching its step outputs takes longer than Timeout.
+        var handler = new FakeHttpMessageHandler(async (req, ct) =>
+        {
+            if (req.Method != HttpMethod.Post) await Task.Delay(TimeSpan.FromMilliseconds(300), ct);
+            return JsonResponse("{\"run_id\":\"r1\",\"status\":\"completed\",\"output\":\"answer\",\"attempts\":[],\"error_count\":0,\"priority\":false}");
+        });
+        foreach (var throwOnIncomplete in new[] { false, true })
+        {
+            var res = await MakeClient(handler).RunAgentAndPollAsync("a1", new AgentRunRequest { Input = "go" },
+                new RunAgentAndPollOptions { Timeout = TimeSpan.FromMilliseconds(50), IncludeStepOutputs = true, ThrowOnIncomplete = throwOnIncomplete });
+            Assert.Equal("completed", res.Status);
+        }
+    }
+
+    [Fact]
+    public async Task RunAgentAndPoll_IncludeStepOutputs_FailedFetchThrows()
+    {
+        // The step-outputs fetch fails like any other request: a server error is not swallowed.
+        var handler = new FakeHttpMessageHandler(req => req.Method == HttpMethod.Post
+            ? JsonResponse("{\"run_id\":\"r1\",\"status\":\"completed\",\"output\":\"answer\",\"attempts\":[],\"error_count\":0,\"priority\":false}")
+            : new HttpResponseMessage(HttpStatusCode.InternalServerError) { Content = new StringContent("{\"detail\":\"boom\"}", Encoding.UTF8, "application/json") });
+        await Assert.ThrowsAnyAsync<ApiException>(() => MakeClient(handler).RunAgentAndPollAsync("a1",
+            new AgentRunRequest { Input = "go" }, new RunAgentAndPollOptions { IncludeStepOutputs = true }));
+    }
+
+    [Fact]
+    public async Task RunAgentAndPoll_IncludeStepOutputs_FetchesWhenStartResponseReportedResult()
+    {
+        // ReturnOnResult with a reported result in the start response ends the poll, so step outputs are fetched first.
+        var gets = 0;
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            if (req.Method == HttpMethod.Post) return JsonResponse(PollReported);
+            gets++;
+            Assert.Equal("include_step_outputs=true", req.RequestUri!.Query.TrimStart('?'));
+            return JsonResponse(PollReported);
+        });
+        var res = await MakeClient(handler).RunAgentAndPollAsync("a1", new AgentRunRequest { Input = "go" },
+            new RunAgentAndPollOptions { PollInterval = TimeSpan.FromSeconds(30), IncludeStepOutputs = true, ReturnOnResult = true });
+        Assert.Equal(1, gets);
+        Assert.Equal("answer", res.Output);
+    }
+
+    [Fact]
+    public async Task RunAgentAndPoll_IncludeStepOutputs_NoExtraFetchWhenStartResponseIsProcessing()
+    {
+        // A processing start response does not end the poll, so the first GET waits for the poll interval.
+        var gets = 0;
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            if (req.Method != HttpMethod.Post) gets++;
+            return JsonResponse(PollRunning);
+        });
+        using var cts = new CancellationTokenSource(TimeSpan.FromMilliseconds(200));
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(() =>
+            MakeClient(handler).RunAgentAndPollAsync("a1", new AgentRunRequest { Input = "go" },
+                new RunAgentAndPollOptions { PollInterval = TimeSpan.FromSeconds(30), IncludeStepOutputs = true }, cts.Token));
+        Assert.Equal(0, gets);
+    }
+
+    [Fact]
+    public async Task RunAgentAndPoll_WaitsForTerminalStatusByDefault()
+    {
+        var gets = 0;
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            if (req.Method == HttpMethod.Post) return JsonResponse(PollRunning);
+            gets++;
+            return JsonResponse(gets == 1 ? PollReported
+                : "{\"run_id\":\"r1\",\"status\":\"completed\",\"output\":\"answer\",\"attempts\":[],\"error_count\":0,\"priority\":false}");
+        });
+        var res = await MakeClient(handler).RunAgentAndPollAsync("a1", new AgentRunRequest { Input = "go" },
+            new RunAgentAndPollOptions { PollInterval = TimeSpan.FromMilliseconds(10) });
+        Assert.Equal("completed", res.Status);
+        Assert.Equal(2, gets);
+    }
+
+    [Fact]
+    public async Task RunAgentAndPoll_OptionsOverloadLeavesExistingCallsUnambiguous()
+    {
+        var handler = new FakeHttpMessageHandler(_ =>
+            JsonResponse("{\"run_id\":\"r1\",\"status\":\"completed\",\"attempts\":[],\"error_count\":0,\"priority\":false}"));
+        var client = MakeClient(handler);
+        var body = new AgentRunRequest { Input = "go" };
+        // Each of these compiled against 1.7.0 and must still compile: a bare `null` binds to the original
+        // overload, and a bare `default` to the options overload, whose default polls exactly as the original's.
+        Assert.Equal("completed", (await client.RunAgentAndPollAsync("a1", body, null)).Status);
+        Assert.Equal("completed", (await client.RunAgentAndPollAsync("a1", body, null, null)).Status);
+        Assert.Equal("completed", (await client.RunAgentAndPollAsync("a1", body, default)).Status);
+        Assert.Equal("completed", (await client.RunAgentAndPollAsync("a1", body, default, default)).Status);
+        Assert.Equal("completed", (await client.RunAgentAndPollAsync("a1", body, default, default, default)).Status);
+        Assert.Equal("completed", (await client.RunAgentAndPollAsync("a1", body, cancellationToken: default)).Status);
+        Assert.Equal("completed", (await client.RunAgentAndPollAsync("a1", body, default, cancellationToken: default)).Status);
     }
 
     // ── Helpers ─────────────────────────────────────────────────────────────
@@ -2740,10 +3179,10 @@ public sealed class SeclaiClientTests
                 SeclaiApiVersion.V2026_07_01, SeclaiApiVersion.V2026_07_27, SeclaiApiVersion.V2026_08_03, SeclaiApiVersion.V2026_08_21,
                 SeclaiApiVersion.V2026_09_28, SeclaiApiVersion.V2026_09_30, SeclaiApiVersion.V2026_10_03, SeclaiApiVersion.V2026_10_05,
                 SeclaiApiVersion.V2026_10_13, SeclaiApiVersion.V2026_10_16, SeclaiApiVersion.V2026_10_18, SeclaiApiVersion.V2026_10_19,
-                SeclaiApiVersion.V2026_10_21, SeclaiApiVersion.V2026_10_28,
+                SeclaiApiVersion.V2026_10_21, SeclaiApiVersion.V2026_10_28, SeclaiApiVersion.V2026_11_02, SeclaiApiVersion.V2026_11_04,
             },
             SeclaiApiVersion.Known);
-        Assert.Equal(SeclaiApiVersion.V2026_10_28, SeclaiApiVersion.Latest);
+        Assert.Equal(SeclaiApiVersion.V2026_11_04, SeclaiApiVersion.Latest);
     }
 
     [Fact]
@@ -4142,6 +4581,321 @@ public sealed class SeclaiClientTests
         Assert.Equal("{\"apply_import_run_limits\":true,\"max_runs_per_day\":100,\"set_max_runs_total\":true}", bodies[2]);
     }
 
+    // Requests built only from properties that existed before the 1.8.0 model sync serialize as they did then.
+    [Fact]
+    public void SyncedRequestModels_SerializeExistingFieldsUnchanged()
+    {
+        var o = ClientJsonOptions();
+        Assert.Equal("{\"input\":\"hi\",\"priority\":true}", JsonSerializer.Serialize(new AgentRunRequest { Input = "hi", Priority = true }, o));
+        Assert.Equal("{\"input\":\"hi\",\"include_reasoning\":true}", JsonSerializer.Serialize(new AgentRunStreamRequest { Input = "hi", IncludeReasoning = true }, o));
+        Assert.Equal("{\"user_input\":\"u\"}", JsonSerializer.Serialize(new AiAssistantGenerateRequest { UserInput = "u" }, o));
+        Assert.Equal("{\"user_input\":\"u\",\"conversation_id\":\"c1\"}", JsonSerializer.Serialize(new MemoryBankAiAssistantRequest { UserInput = "u", ConversationId = "c1" }, o));
+        Assert.Equal("{\"name\":\"a\"}", JsonSerializer.Serialize(new CreateAgentRequest { Name = "a" }, o));
+        Assert.Equal("{\"format\":\"json\"}", JsonSerializer.Serialize(new CreateExportRequest { Format = "json" }, o));
+        Assert.Equal("{\"name\":\"kb\",\"solution_id\":\"s1\"}", JsonSerializer.Serialize(new CreateKnowledgeBaseRequest { Name = "kb", SolutionId = "s1" }, o));
+        Assert.Equal("{\"name\":\"m\",\"type\":\"general\",\"retention_days\":7}", JsonSerializer.Serialize(new CreateMemoryBankRequest { Name = "m", Type = "general", RetentionDays = 7 }, o));
+        Assert.Equal("{\"name\":\"s\",\"source_type\":\"rss\"}", JsonSerializer.Serialize(new CreateSourceRequest { Name = "s", SourceType = "rss" }, o));
+        Assert.Equal("{\"user_input\":\"u\"}", JsonSerializer.Serialize(new GenerateAgentStepsRequest { UserInput = "u" }, o));
+        Assert.Equal("{\"text\":\"t\"}", JsonSerializer.Serialize(new InlineTextReplaceRequest { Text = "t" }, o));
+        Assert.Equal("{\"text\":\"t\",\"title\":\"T\"}", JsonSerializer.Serialize(new InlineTextUploadRequest { Text = "t", Title = "T" }, o));
+    }
+
+    [Fact]
+    public async Task SyncedRequestModels_SendNewFields()
+    {
+        var o = ClientJsonOptions();
+        var obj = JsonSerializer.Deserialize<Dictionary<string, JsonElement>>("{\"k\":\"v\"}")!;
+
+        Assert.Equal(
+            "{\"input\":\"hi\",\"input_upload_ids\":[\"u1\",\"u2\"],\"replay_of_run_id\":\"r0\"}",
+            JsonSerializer.Serialize(new AgentRunRequest { Input = "hi", InputUploadIds = new List<string> { "u1", "u2" }, ReplayOfRunId = "r0" }, o));
+        Assert.Equal("{\"input_upload_id\":\"u1\"}", JsonSerializer.Serialize(new AgentRunRequest { InputUploadId = "u1" }, o));
+        Assert.Equal(
+            "{\"input_upload_id\":\"u1\",\"replay_of_run_id\":\"r0\"}",
+            JsonSerializer.Serialize(new AgentRunStreamRequest { InputUploadId = "u1", ReplayOfRunId = "r0" }, o));
+        Assert.Equal("{\"input_upload_ids\":[\"u1\"]}", JsonSerializer.Serialize(new AgentRunStreamRequest { InputUploadIds = new List<string> { "u1" } }, o));
+        Assert.Equal(
+            "{\"user_input\":\"u\",\"history_since\":\"2026-11-05T10:00:00Z\"}",
+            JsonSerializer.Serialize(new AiAssistantGenerateRequest { UserInput = "u", HistorySince = "2026-11-05T10:00:00Z" }, o));
+        Assert.Equal(
+            "{\"user_input\":\"u\",\"history_since\":\"2026-11-05T10:00:00Z\"}",
+            JsonSerializer.Serialize(new MemoryBankAiAssistantRequest { UserInput = "u", HistorySince = "2026-11-05T10:00:00Z" }, o));
+        Assert.Equal("{\"name\":\"a\",\"trigger_type\":\"content_added\"}", JsonSerializer.Serialize(new CreateAgentRequest { Name = "a", TriggerType = "content_added" }, o));
+        Assert.Equal(
+            "{\"format\":\"json\",\"date_from\":\"2026-01-01T00:00:00Z\",\"date_to\":\"2026-02-01T00:00:00Z\",\"metadata_filter\":{\"k\":\"v\"},\"query_filter\":\"report\"}",
+            JsonSerializer.Serialize(new CreateExportRequest { Format = "json", DateFrom = "2026-01-01T00:00:00Z", DateTo = "2026-02-01T00:00:00Z", MetadataFilter = obj, QueryFilter = "report" }, o));
+        Assert.Equal(
+            "{\"name\":\"kb\",\"source_ids\":[\"s1\"],\"reranker_model\":\"none\",\"default_top_k\":20,\"default_top_n\":5,\"default_score_threshold\":0.25}",
+            JsonSerializer.Serialize(new CreateKnowledgeBaseRequest { Name = "kb", SourceIds = new List<string> { "s1" }, RerankerModel = "none", DefaultTopK = 20, DefaultTopN = 5, DefaultScoreThreshold = 0.25 }, o));
+        Assert.Equal(
+            "{\"name\":\"m\",\"mode\":\"custom\",\"embedding_model\":\"e\",\"dimensions\":256,\"chunk_size\":1000,\"chunk_overlap\":100,"
+            + "\"compaction_prompt\":\"p\",\"max_size_tokens\":5000,\"max_turns\":40,\"max_age_days\":9}",
+            JsonSerializer.Serialize(new CreateMemoryBankRequest
+            {
+                Name = "m", Mode = "custom", EmbeddingModel = "e", Dimensions = 256, ChunkSize = 1000, ChunkOverlap = 100,
+                CompactionPrompt = "p", MaxSizeTokens = 5000, MaxTurns = 40, MaxAgeDays = 9,
+            }, o));
+        Assert.Equal("{\"name\":\"s\",\"source_type\":\"custom_index\",\"index_mode\":\"balanced\"}", JsonSerializer.Serialize(new CreateSourceRequest { Name = "s", SourceType = "custom_index", IndexMode = "balanced" }, o));
+        Assert.Equal(
+            "{\"user_input\":\"u\",\"mode\":\"modify_workflow\",\"agent_steps\":[{\"k\":\"v\"}],\"agent_description\":\"d\",\"trigger_type\":\"dynamic_input\"}",
+            JsonSerializer.Serialize(new GenerateAgentStepsRequest { UserInput = "u", Mode = "modify_workflow", AgentSteps = new List<Dictionary<string, JsonElement>> { obj }, AgentDescription = "d", TriggerType = "dynamic_input" }, o));
+        Assert.Equal(
+            "{\"text\":\"t\",\"title\":\"T\",\"content_type\":\"text/markdown\",\"metadata\":{\"k\":\"v\"}}",
+            JsonSerializer.Serialize(new InlineTextReplaceRequest { Text = "t", Title = "T", ContentType = "text/markdown", Metadata = new Dictionary<string, object?> { ["k"] = "v" } }, o));
+        Assert.Equal("{\"text\":\"t\",\"content_type\":\"text/markdown\"}", JsonSerializer.Serialize(new InlineTextUploadRequest { Text = "t", ContentType = "text/markdown" }, o));
+
+        // CreateMemoryBankAsync rewrites the body for RetainIndefinitely; the new fields survive that.
+        var bodies = new List<string>();
+        var client = MakeClient(new FakeHttpMessageHandler(req =>
+        {
+            bodies.Add(req.Content!.ReadAsStringAsync().GetAwaiter().GetResult());
+            return JsonResponse("{\"id\":\"m1\"}");
+        }));
+        await client.CreateMemoryBankAsync(new CreateMemoryBankRequest { Name = "m", Mode = "balanced", MaxTurns = 40, RetainIndefinitely = true });
+        Assert.Equal("{\"name\":\"m\",\"mode\":\"balanced\",\"max_turns\":40,\"retention_days\":null}", bodies[0]);
+    }
+
+    [Fact]
+    public void SyncedListResponses_ReadPaginationIntoTotal()
+    {
+        var o = ClientJsonOptions();
+        const string page = "{\"data\":[],\"pagination\":{\"page\":2,\"limit\":10,\"total\":31,\"pages\":4,\"has_next\":true,\"has_prev\":true}}";
+
+        var agents = JsonSerializer.Deserialize<AgentListResponse>(page, o)!;
+        Assert.Equal(31, agents.Total);
+        Assert.Equal(2, agents.Pagination!.Page);
+        Assert.Equal(4, agents.Pagination.Pages);
+        Assert.True(agents.Pagination.HasNext);
+
+        var exports = JsonSerializer.Deserialize<ExportListResponse>(page, o)!;
+        Assert.Equal(31, exports.Total);
+        Assert.Equal(10, exports.Pagination!.Limit);
+
+        var solutions = JsonSerializer.Deserialize<SolutionListResponse>(page, o)!;
+        Assert.Equal(31, solutions.Total);
+        Assert.True(solutions.Pagination!.HasPrev);
+
+        // A body with only total still reads it.
+        var legacy = JsonSerializer.Deserialize<AgentListResponse>("{\"data\":[],\"total\":3}", o)!;
+        Assert.Equal(3, legacy.Total);
+        Assert.Null(legacy.Pagination);
+    }
+
+    [Fact]
+    public void SyncedResponseModels_ReadNewFields()
+    {
+        var o = ClientJsonOptions();
+
+        var step = JsonSerializer.Deserialize<AgentRunStepResponse>("{\"agent_step_id\":\"st1\",\"input\":\"in\"}", o)!;
+        Assert.Equal("in", step.Input);
+
+        var crit = JsonSerializer.Deserialize<EvaluationCriteriaResponse>(
+            "{\"id\":\"c1\",\"agent_id\":\"a1\",\"account_id\":\"acc\",\"step_id\":\"st1\",\"enabled\":true,\"evaluation_mode\":\"output_expectation\","
+            + "\"evaluation_prompt\":\"p\",\"evaluation_tier\":\"fast\",\"expectation_config\":{\"k\":1},\"pass_threshold\":0.7,"
+            + "\"result_summary\":{\"passed\":4,\"failed\":1},\"max_retries\":3,\"retry_on_failure\":true,\"created_at\":\"c\",\"updated_at\":\"u\"}", o)!;
+        Assert.Equal("a1", crit.AgentId);
+        Assert.Equal("acc", crit.AccountId);
+        Assert.Equal("st1", crit.StepId);
+        Assert.True(crit.Enabled);
+        Assert.Equal("output_expectation", crit.EvaluationMode);
+        Assert.Equal("p", crit.EvaluationPrompt);
+        Assert.Equal("fast", crit.EvaluationTier);
+        Assert.Equal(1, crit.ExpectationConfig!["k"].GetInt32());
+        Assert.Equal(0.7, crit.PassThreshold);
+        Assert.Equal(4, crit.ResultSummary!["passed"]);
+        Assert.Equal(3, crit.MaxRetries);
+        Assert.True(crit.RetryOnFailure);
+        Assert.Equal("c", crit.CreatedAt);
+        Assert.Equal("u", crit.UpdatedAt);
+
+        var export = JsonSerializer.Deserialize<ExportResponse>(
+            "{\"id\":\"e1\",\"source_connection_id\":\"s1\",\"account_id\":\"acc\",\"destination\":\"s3\",\"date_from\":\"df\",\"date_to\":\"dt\","
+            + "\"metadata_filter\":{\"k\":\"v\"},\"query_filter\":\"q\",\"estimated_size_bytes\":5000000000,\"file_size_bytes\":4000000000,"
+            + "\"item_count\":12,\"progress_current\":6,\"progress_total\":12,\"error\":\"boom\",\"storage_key\":\"key\","
+            + "\"requested_by_user_id\":\"u1\",\"requested_by_user_name\":\"Kim\",\"started_at\":\"sa\",\"completed_at\":\"ca\",\"updated_at\":\"ua\"}", o)!;
+        Assert.Equal("s1", export.SourceConnectionId);
+        Assert.Equal("acc", export.AccountId);
+        Assert.Equal("s3", export.Destination);
+        Assert.Equal("df", export.DateFrom);
+        Assert.Equal("dt", export.DateTo);
+        Assert.Equal("v", export.MetadataFilter!["k"].GetString());
+        Assert.Equal("q", export.QueryFilter);
+        Assert.Equal(5000000000L, export.EstimatedSizeBytes);
+        Assert.Equal(4000000000L, export.FileSizeBytes);
+        Assert.Equal(12, export.ItemCount);
+        Assert.Equal(6, export.ProgressCurrent);
+        Assert.Equal(12, export.ProgressTotal);
+        Assert.Equal("boom", export.Error);
+        Assert.Equal("key", export.StorageKey);
+        Assert.Equal("u1", export.RequestedByUserId);
+        Assert.Equal("Kim", export.RequestedByUserName);
+        Assert.Equal("sa", export.StartedAt);
+        Assert.Equal("ca", export.CompletedAt);
+        Assert.Equal("ua", export.UpdatedAt);
+
+        var steps = JsonSerializer.Deserialize<GenerateAgentStepsResponse>(
+            "{\"conversation_id\":\"t1\",\"steps\":[],\"note\":\"n\",\"success\":true,\"agent_config\":{\"accepted_attachments\":[]},"
+            + "\"example_prompts\":[{\"text\":\"x\",\"label\":\"X\"}]}", o)!;
+        Assert.Equal("t1", steps.ConversationId);
+        Assert.Equal("n", steps.Note);
+        Assert.True(steps.Success);
+        Assert.Equal(JsonValueKind.Array, steps.AgentConfig!["accepted_attachments"].ValueKind);
+        Assert.Equal("x", steps.ExamplePrompts![0].Text);
+
+        var gov = JsonSerializer.Deserialize<GovernanceAiAssistantResponse>(
+            "{\"conversation_id\":\"g1\",\"note\":\"n\",\"success\":true,\"prompt_call_id\":\"pc\","
+            + "\"proposed_actions\":[{\"action_type\":\"create\",\"description\":\"d\",\"params\":{\"policy_document_id\":\"p1\"}}],"
+            + "\"example_prompts\":[{\"text\":\"x\"}]}", o)!;
+        Assert.Equal("g1", gov.ConversationId);
+        Assert.Equal("n", gov.Note);
+        Assert.True(gov.Success);
+        Assert.Equal("pc", gov.PromptCallId);
+        Assert.Equal("create", gov.ProposedActions[0].ActionType);
+        Assert.Equal("d", gov.ProposedActions[0].Description);
+        Assert.Equal("p1", gov.ProposedActions[0].Params!["policy_document_id"].GetString());
+        Assert.Equal("x", gov.ExamplePrompts![0].Text);
+
+        var kb = JsonSerializer.Deserialize<KnowledgeBaseResponse>(
+            "{\"id\":\"kb1\",\"name\":\"n\",\"reranker_model\":\"r\",\"default_top_k\":20,\"default_top_n\":5,\"default_score_threshold\":0.3,\"readonly\":true,"
+            + "\"sources\":[{\"id\":\"s1\",\"name\":\"S\",\"url\":\"https://x\",\"source_type\":\"rss\",\"polling\":\"daily\"}]}", o)!;
+        Assert.Equal("r", kb.RerankerModel);
+        Assert.Equal(20, kb.DefaultTopK);
+        Assert.Equal(5, kb.DefaultTopN);
+        Assert.Equal(0.3, kb.DefaultScoreThreshold);
+        Assert.True(kb.Readonly);
+        var src = Assert.Single(kb.Sources!);
+        Assert.Equal(("s1", "S", "https://x", "rss", "daily"), (src.Id, src.Name, src.Url, src.SourceType, src.Polling));
+
+        var turn = JsonSerializer.Deserialize<MemoryBankConversationTurnResponse>("{\"user_input\":\"u\",\"conversation_id\":\"t1\",\"resulting_config\":{\"mode\":\"balanced\"}}", o)!;
+        Assert.Equal("t1", turn.ConversationId);
+        Assert.Equal("balanced", turn.ResultingConfig!["mode"].GetString());
+
+        var bank = JsonSerializer.Deserialize<MemoryBankResponse>(
+            "{\"id\":\"m1\",\"mode\":\"custom\",\"embedding_model\":\"e\",\"dimensions\":256,\"chunk_size\":1000,\"chunk_overlap\":100,\"compaction_prompt\":\"p\","
+            + "\"max_size_tokens\":5000,\"max_turns\":40,\"max_age_days\":9,\"retention_days\":90,\"source_connection_id\":\"s1\"}", o)!;
+        Assert.Equal("custom", bank.Mode);
+        Assert.Equal("e", bank.EmbeddingModel);
+        Assert.Equal(256, bank.Dimensions);
+        Assert.Equal(1000, bank.ChunkSize);
+        Assert.Equal(100, bank.ChunkOverlap);
+        Assert.Equal("p", bank.CompactionPrompt);
+        Assert.Equal(5000, bank.MaxSizeTokens);
+        Assert.Equal(40, bank.MaxTurns);
+        Assert.Equal(9, bank.MaxAgeDays);
+        Assert.Equal(90, bank.RetentionDays);
+        Assert.Equal("s1", bank.SourceConnectionId);
+
+        var action = JsonSerializer.Deserialize<ProposedActionResponse>("{\"action_type\":\"create_agent\",\"params\":{},\"description\":\"d\",\"preview\":{\"step_count\":3}}", o)!;
+        Assert.Equal(3, action.Preview!["step_count"].GetInt32());
+
+        var solution = JsonSerializer.Deserialize<SolutionResponse>(
+            "{\"id\":\"sol\",\"name\":\"n\",\"agents\":[{\"id\":\"a1\",\"name\":\"A\",\"knowledge_base_ids\":[\"kb1\"]}],"
+            + "\"knowledge_bases\":[{\"id\":\"kb1\",\"name\":\"K\",\"source_connection_ids\":[\"s1\"]}],"
+            + "\"source_connections\":[{\"id\":\"s1\",\"name\":\"S\"}]}", o)!;
+        Assert.Equal(("a1", "A", "kb1"), (solution.Agents[0].Id, solution.Agents[0].Name, solution.Agents[0].KnowledgeBaseIds![0]));
+        Assert.Equal(("kb1", "K", "s1"), (solution.KnowledgeBases[0].Id, solution.KnowledgeBases[0].Name, solution.KnowledgeBases[0].SourceConnectionIds![0]));
+        Assert.Equal(("s1", "S"), (solution.SourceConnections[0].Id, solution.SourceConnections[0].Name));
+        Assert.Empty(JsonSerializer.Deserialize<SolutionResponse>("{\"id\":\"sol\"}", o)!.Agents);
+
+        var mig = JsonSerializer.Deserialize<SourceEmbeddingMigrationResponse>(
+            "{\"id\":\"mg\",\"source_connection_id\":\"s1\",\"source_id_old\":\"o\",\"source_id_new\":\"n\",\"target_embedding_model\":\"e\","
+            + "\"target_dimensions\":1024,\"status\":\"running\",\"phase\":\"reindex\",\"progress_current\":5,\"progress_total\":10,"
+            + "\"progress_message\":\"pm\",\"failure_message\":\"fm\",\"notification_recipients\":[\"a@b.c\"],\"task_execution_id\":\"t\","
+            + "\"started_at\":\"sa\",\"completed_at\":\"ca\",\"created_at\":\"cr\",\"updated_at\":\"ua\"}", o)!;
+        Assert.Equal("mg", mig.Id);
+        Assert.Equal("s1", mig.SourceConnectionId);
+        Assert.Equal("o", mig.SourceIdOld);
+        Assert.Equal("n", mig.SourceIdNew);
+        Assert.Equal("e", mig.TargetEmbeddingModel);
+        Assert.Equal(1024, mig.TargetDimensions);
+        Assert.Equal("reindex", mig.Phase);
+        Assert.Equal(5, mig.ProgressCurrent);
+        Assert.Equal(10, mig.ProgressTotal);
+        Assert.Equal("pm", mig.ProgressMessage);
+        Assert.Equal("fm", mig.FailureMessage);
+        Assert.Equal("a@b.c", mig.NotificationRecipients![0]);
+        Assert.Equal("t", mig.TaskExecutionId);
+        Assert.Equal(("sa", "ca", "cr", "ua"), (mig.StartedAt, mig.CompletedAt, mig.CreatedAt, mig.UpdatedAt));
+
+        var source = JsonSerializer.Deserialize<SourceResponse>("{\"id\":\"s1\",\"index_mode\":\"slow_and_thorough\",\"free_retention_days\":30,\"system_managed\":true}", o)!;
+        Assert.Equal("slow_and_thorough", source.IndexMode);
+        Assert.Equal(30, source.FreeRetentionDays);
+        Assert.True(source.SystemManaged);
+    }
+
+    [Fact]
+    public async Task UpdateAgent_SendsEvaluationAndPromptModelSettings()
+    {
+        var bodies = new List<string>();
+        var client = MakeClient(new FakeHttpMessageHandler(req =>
+        {
+            bodies.Add(req.Content!.ReadAsStringAsync().GetAwaiter().GetResult());
+            return JsonResponse("{\"id\":\"a1\",\"name\":\"n\"}");
+        }));
+        var sampling = JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(
+            "{\"combinator\":\"or\",\"rules\":[{\"type\":\"percentage\",\"value\":10}]}")!;
+
+        await client.UpdateAgentAsync("a1", new UpdateAgentRequest { Name = "x" });
+        await client.UpdateAgentAsync("a1", new UpdateAgentRequest
+        {
+            DefaultEvaluationTier = "thorough",
+            EvaluationMode = "sample_and_flag",
+            SamplingConfig = sampling,
+            PromptModelAutoUpgradeStrategy = "cautious_adopter",
+            PromptModelAutoRollbackEnabled = true,
+            PromptModelAutoRollbackTriggers = new List<string> { "governance_block", "agent_run_failed" },
+            MaxRetries = 2,
+            RetryOnFailure = false,
+        });
+        // Clearing: the flag is sent and the null value is omitted, which the API reads as "clear".
+        await client.UpdateAgentAsync("a1", new UpdateAgentRequest
+        {
+            SetSamplingConfig = true,
+            SetDefaultEvaluationTier = true,
+            SetPromptModelAutoRollbackTriggers = true,
+        });
+
+        // Unchanged from before these properties existed.
+        Assert.Equal("{\"name\":\"x\"}", bodies[0]);
+        Assert.Equal(
+            "{\"default_evaluation_tier\":\"thorough\",\"evaluation_mode\":\"sample_and_flag\","
+            + "\"sampling_config\":{\"combinator\":\"or\",\"rules\":[{\"type\":\"percentage\",\"value\":10}]},"
+            + "\"prompt_model_auto_upgrade_strategy\":\"cautious_adopter\",\"prompt_model_auto_rollback_enabled\":true,"
+            + "\"prompt_model_auto_rollback_triggers\":[\"governance_block\",\"agent_run_failed\"],"
+            + "\"max_retries\":2,\"retry_on_failure\":false}",
+            bodies[1]);
+        Assert.Equal(
+            "{\"set_default_evaluation_tier\":true,\"set_sampling_config\":true,\"set_prompt_model_auto_rollback_triggers\":true}",
+            bodies[2]);
+    }
+
+    [Fact]
+    public void AgentSummaryResponse_ReadsEvaluationAndPromptModelSettings()
+    {
+        var agent = JsonSerializer.Deserialize<AgentSummaryResponse>(
+            "{\"id\":\"a1\",\"name\":\"n\",\"description\":\"\",\"created_at\":\"\",\"updated_at\":\"\","
+            + "\"trigger_type\":\"email\",\"default_evaluation_tier\":\"balanced\",\"evaluation_mode\":\"output_expectation\","
+            + "\"sampling_config\":{\"combinator\":\"and\",\"rules\":[]},\"prompt_model_auto_upgrade_strategy\":\"early_adopter\","
+            + "\"prompt_model_auto_rollback_enabled\":true,\"prompt_model_auto_rollback_triggers\":[\"governance_flag\"],"
+            + "\"max_retries\":3,\"retry_on_failure\":true}", ClientJsonOptions())!;
+
+        Assert.Equal("email", agent.TriggerType);
+        Assert.Equal("balanced", agent.DefaultEvaluationTier);
+        Assert.Equal("output_expectation", agent.EvaluationMode);
+        Assert.Equal("and", agent.SamplingConfig!["combinator"].GetString());
+        Assert.Equal(0, agent.SamplingConfig["rules"].GetArrayLength());
+        Assert.Equal("early_adopter", agent.PromptModelAutoUpgradeStrategy);
+        Assert.True(agent.PromptModelAutoRollbackEnabled);
+        Assert.Equal(new[] { "governance_flag" }, agent.PromptModelAutoRollbackTriggers);
+        Assert.Equal(3, agent.MaxRetries);
+        Assert.True(agent.RetryOnFailure);
+
+        var bare = JsonSerializer.Deserialize<AgentSummaryResponse>("{\"id\":\"a1\",\"sampling_config\":null,\"prompt_model_auto_rollback_triggers\":null}", ClientJsonOptions())!;
+        Assert.Null(bare.SamplingConfig);
+        Assert.Null(bare.PromptModelAutoRollbackTriggers);
+        Assert.Null(bare.EvaluationMode);
+    }
+
     [Fact]
     public void NewResponseFields_AreRead()
     {
@@ -4391,16 +5145,198 @@ public sealed class SeclaiClientTests
         return multipart.Substring(start, end - start).TrimEnd('\r', '\n');
     }
 
+    // ── 2026-11-05 sync: trigger metadata keys, KB metadata-key stats, Slack alias ──
+
+    [Fact]
+    public async Task GetMetadataKeys_GetsDeclaration()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Get, req.Method);
+            Assert.Equal("/agents/a%201/triggers/t1/metadata-keys", req.RequestUri!.AbsolutePath);
+            Assert.Equal("", req.RequestUri!.Query);
+            Assert.Null(req.Content);
+            return JsonResponse("{\"trigger_id\":\"t1\",\"agent_id\":\"a 1\",\"accepts_any_source_key\":true,"
+                + "\"metadata_keys\":[{\"key\":\"customer\",\"origin\":\"custom\",\"required\":true},{\"key\":\"title\",\"origin\":\"source\",\"required\":false}],"
+                + "\"declarable_keys\":[{\"key\":\"run_id\",\"origin\":\"system\",\"always_present\":true}],\"warnings\":[]}");
+        });
+        var res = await MakeClient(handler).GetMetadataKeysAsync("a 1", "t1");
+        Assert.Equal("t1", res.TriggerId);
+        Assert.Equal("a 1", res.AgentId);
+        Assert.True(res.AcceptsAnySourceKey);
+        Assert.Equal(2, res.MetadataKeys.Count);
+        Assert.Equal("customer", res.MetadataKeys[0].Key);
+        Assert.Equal("custom", res.MetadataKeys[0].Origin);
+        Assert.True(res.MetadataKeys[0].Required);
+        Assert.False(res.MetadataKeys[1].Required);
+        var declarable = Assert.Single(res.DeclarableKeys);
+        Assert.Equal("run_id", declarable.Key);
+        Assert.Equal("system", declarable.Origin);
+        Assert.True(declarable.AlwaysPresent);
+        Assert.Empty(res.Warnings);
+    }
+
+    [Fact]
+    public async Task GetMetadataKeys_DefaultsWarningsWhenAbsent()
+    {
+        var handler = new FakeHttpMessageHandler(req => JsonResponse(
+            "{\"trigger_id\":\"t1\",\"agent_id\":\"a1\",\"accepts_any_source_key\":false,\"metadata_keys\":[],\"declarable_keys\":[]}"));
+        var res = await MakeClient(handler).GetMetadataKeysAsync("a1", "t1");
+        Assert.Empty(res.Warnings);
+        Assert.Empty(res.MetadataKeys);
+        await Assert.ThrowsAsync<ArgumentException>(() => MakeClient(handler).GetMetadataKeysAsync(" ", "t1"));
+        await Assert.ThrowsAsync<ArgumentException>(() => MakeClient(handler).GetMetadataKeysAsync("a1", ""));
+    }
+
+    [Fact]
+    public async Task SetMetadataKeys_PutsWholeDeclaration()
+    {
+        string? body = null;
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Put, req.Method);
+            Assert.Equal("/agents/a1/triggers/t1/metadata-keys", req.RequestUri!.AbsolutePath);
+            Assert.Equal("", req.RequestUri!.Query);
+            body = req.Content!.ReadAsStringAsync().GetAwaiter().GetResult();
+            return JsonResponse("{\"trigger_id\":\"t1\",\"agent_id\":\"a1\",\"accepts_any_source_key\":false,"
+                + "\"metadata_keys\":[{\"key\":\"customer\",\"origin\":\"custom\",\"required\":true},{\"key\":\"run_id\",\"origin\":\"system\",\"required\":false}],"
+                + "\"declarable_keys\":[],\"warnings\":[\"agent caller1 maps a key the declaration no longer has\"]}");
+        });
+        var res = await MakeClient(handler).SetMetadataKeysAsync("a1", "t1", new SetMetadataKeysRequest(new List<MetadataKeyDeclaration>
+        {
+            new() { Key = "customer", Origin = "custom", Required = true },
+            new() { Key = "run_id", Origin = "system" },
+        }));
+        Assert.Equal("{\"metadata_keys\":[{\"key\":\"customer\",\"origin\":\"custom\",\"required\":true},{\"key\":\"run_id\",\"origin\":\"system\"}]}", body);
+        Assert.Equal(2, res.MetadataKeys.Count);
+        Assert.Equal("agent caller1 maps a key the declaration no longer has", Assert.Single(res.Warnings));
+    }
+
+    [Fact]
+    public async Task SetMetadataKeys_EmptyDeclarationAndValidation()
+    {
+        string? body = null;
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            body = req.Content!.ReadAsStringAsync().GetAwaiter().GetResult();
+            return JsonResponse("{\"trigger_id\":\"t1\",\"agent_id\":\"a1\",\"accepts_any_source_key\":false,\"metadata_keys\":[],\"declarable_keys\":[],\"warnings\":[]}");
+        });
+        var client = MakeClient(handler);
+        await client.SetMetadataKeysAsync("a1", "t1", new SetMetadataKeysRequest(new List<MetadataKeyDeclaration>()));
+        Assert.Equal("{\"metadata_keys\":[]}", body);
+        await Assert.ThrowsAsync<ArgumentNullException>(() => client.SetMetadataKeysAsync("a1", "t1", null!));
+        await Assert.ThrowsAsync<ArgumentException>(() => client.SetMetadataKeysAsync("a1", " ", new SetMetadataKeysRequest(new List<MetadataKeyDeclaration>())));
+    }
+
+    [Fact]
+    public void SetMetadataKeysRequest_IsBuiltWithItsList()
+    {
+        // The list is set by the constructor, so building it up incrementally cannot hit a null list.
+        var request = new SetMetadataKeysRequest(new List<MetadataKeyDeclaration>());
+        request.MetadataKeys.Add(new MetadataKeyDeclaration { Key = "customer", Origin = "custom" });
+        Assert.Single(request.MetadataKeys);
+        var ex = Assert.Throws<ArgumentNullException>(() => new SetMetadataKeysRequest(null!));
+        Assert.Equal("metadataKeys", ex.ParamName);
+    }
+
+    [Fact]
+    public void SetMetadataKeysRequest_RejectsNullMetadataKeys()
+    {
+        // A request whose MetadataKeys is null would go out as a declaration that wipes every key.
+        var request = new SetMetadataKeysRequest(new List<MetadataKeyDeclaration>());
+        var ex = Assert.Throws<ArgumentNullException>(() => request.MetadataKeys = null!);
+        Assert.Equal("MetadataKeys", ex.ParamName);
+        Assert.NotNull(request.MetadataKeys);
+    }
+
+    [Fact]
+    public async Task GetKnowledgeBaseMetadataKeyStats_GetsWindows()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            Assert.Equal(HttpMethod.Get, req.Method);
+            Assert.Equal("/knowledge_bases/kb1/metadata-key-stats", req.RequestUri!.AbsolutePath);
+            Assert.Equal("", req.RequestUri!.Query);
+            return JsonResponse("{\"knowledge_base_id\":\"kb1\",\"windows\":["
+                + "{\"window\":\"all_time\",\"since\":null,\"total_items\":120,\"keys\":[{\"key\":\"author\",\"items\":80,\"distinct_values\":3,"
+                + "\"top_values\":[{\"value\":\"Ada\",\"items\":50},{\"value\":\"{…}\",\"items\":30}]}]},"
+                + "{\"window\":\"last_7_days\",\"since\":\"2026-10-29T00:00:00Z\",\"total_items\":0,\"keys\":[]}]}");
+        });
+        var res = await MakeClient(handler).GetKnowledgeBaseMetadataKeyStatsAsync("kb1");
+        Assert.Equal("kb1", res.KnowledgeBaseId);
+        Assert.Equal(2, res.Windows.Count);
+        var all = res.Windows[0];
+        Assert.Equal("all_time", all.Window);
+        Assert.Null(all.Since);
+        Assert.Equal(120, all.TotalItems);
+        var key = Assert.Single(all.Keys);
+        Assert.Equal("author", key.Key);
+        Assert.Equal(80, key.Items);
+        Assert.Equal(3, key.DistinctValues);
+        Assert.Equal("Ada", key.TopValues[0].Value);
+        Assert.Equal(50, key.TopValues[0].Items);
+        Assert.Equal("{…}", key.TopValues[1].Value);
+        Assert.Equal("2026-10-29T00:00:00Z", res.Windows[1].Since);
+        Assert.Empty(res.Windows[1].Keys);
+        await Assert.ThrowsAsync<ArgumentException>(() => MakeClient(handler).GetKnowledgeBaseMetadataKeyStatsAsync(" "));
+    }
+
+    [Fact]
+    public async Task SetSlackTriggerConfig_SendsAliasAndReadsIt()
+    {
+        string? body = null;
+        var client = MakeClient(new FakeHttpMessageHandler(req =>
+        {
+            body = req.Content!.ReadAsStringAsync().GetAwaiter().GetResult();
+            return JsonResponse("{\"trigger_id\":\"t1\",\"agent_id\":\"a1\",\"mcp_client_id\":null,\"slack_team_id\":null,\"alias\":\"triage-bot\","
+                + "\"form\":[],\"scope\":\"bot_channels\",\"allow_dms\":false,\"activation\":\"everywhere\",\"visibility\":\"channel\","
+                + "\"start_without_form\":false,\"turns_enabled\":false,\"turns_anyone\":false,\"max_turns\":null,\"include_invoker_email\":false,"
+                + "\"notify_failure_after_answer\":false,\"channel_ids\":[],\"missing_scopes\":[]}");
+        }));
+        var res = await client.SetSlackTriggerConfigAsync("a1", "t1", new SetSlackTriggerConfigRequest { Alias = "triage-bot" });
+        Assert.Equal("{\"alias\":\"triage-bot\"}", body);
+        Assert.Equal("triage-bot", res.Alias);
+    }
+
+    [Fact]
+    public void SetSlackTriggerConfigRequest_KeepsObsoleteInputForCompatibility()
+    {
+#pragma warning disable CS0618 // Input is obsolete; this asserts it is still there and serializes as before.
+        var o = new JsonSerializerOptions { DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull };
+        var prop = typeof(SetSlackTriggerConfigRequest).GetProperty(nameof(SetSlackTriggerConfigRequest.Input))!;
+        Assert.NotNull(prop.GetCustomAttributes(typeof(ObsoleteAttribute), false).SingleOrDefault());
+        Assert.Equal("{\"input\":\"x\"}", JsonSerializer.Serialize(new SetSlackTriggerConfigRequest { Input = "x" }, o));
+#pragma warning restore CS0618
+    }
+
+    [Fact]
+    public async Task GetAgentRun_ReadsResultReportedAt()
+    {
+        var handler = new FakeHttpMessageHandler(req => JsonResponse(
+            "{\"run_id\":\"r1\",\"status\":\"processing\",\"output\":\"answer\",\"result_reported_at\":\"2026-11-04T12:00:00Z\"}"));
+        var run = await MakeClient(handler).GetAgentRunAsync("r1");
+        Assert.Equal("2026-11-04T12:00:00Z", run.ResultReportedAt);
+        var none = await MakeClient(new FakeHttpMessageHandler(req => JsonResponse("{\"run_id\":\"r1\",\"status\":\"failed\"}"))).GetAgentRunAsync("r1");
+        Assert.Null(none.ResultReportedAt);
+    }
+
     private sealed class NeverEndingStream : System.IO.Stream
     {
         private readonly byte[] _prefix;
+        private readonly bool _eofOnDispose;
+        private readonly Exception? _failAfterPrefix;
         private int _offset;
         private volatile bool _disposed;
         private readonly ManualResetEventSlim _disposedEvent = new(false);
 
-        public NeverEndingStream(byte[] prefix)
+        /// <param name="prefix">Bytes served before the stream blocks.</param>
+        /// <param name="eofOnDispose">Once disposed, read as a clean end (0) rather than throw, as some .NET HTTP content streams do.</param>
+        /// <param name="failAfterPrefix">Thrown by the first read after the prefix, instead of blocking: a transport error.</param>
+        public NeverEndingStream(byte[] prefix, bool eofOnDispose = false, Exception? failAfterPrefix = null)
         {
             _prefix = prefix;
+            _eofOnDispose = eofOnDispose;
+            _failAfterPrefix = failAfterPrefix;
         }
 
         public override bool CanRead => true;
@@ -4411,7 +5347,7 @@ public sealed class SeclaiClientTests
 
         public override int Read(byte[] buffer, int offset, int count)
         {
-            if (_disposed) throw new ObjectDisposedException(nameof(NeverEndingStream));
+            if (_disposed) return _eofOnDispose ? 0 : throw new ObjectDisposedException(nameof(NeverEndingStream));
 
             if (_offset < _prefix.Length)
             {
@@ -4422,12 +5358,14 @@ public sealed class SeclaiClientTests
                 return toCopy;
             }
 
+            if (_failAfterPrefix is not null) throw _failAfterPrefix;
+
             // Block until disposed.
             while (!_disposed)
             {
                 _disposedEvent.Wait(5);
             }
-            throw new ObjectDisposedException(nameof(NeverEndingStream));
+            return _eofOnDispose ? 0 : throw new ObjectDisposedException(nameof(NeverEndingStream));
         }
 
         protected override void Dispose(bool disposing)

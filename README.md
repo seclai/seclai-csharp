@@ -228,6 +228,8 @@ every one:
 | `2026-10-19` | `CreateSourceAsync` accepts `PollingMaxItems` on RSS sources only; any other source type rejects it with a 400 |
 | `2026-10-21` | A result whose evaluator returned no verdict (`error`) is counted only in `Error` by `GetNonManualEvaluationSummaryAsync`, not in `Failed` or either rate, and `GetEvaluationCriteriaSummaryAsync` averages `AverageScore` over passed and failed results only. `TestDraftEvaluationAsync` receives a null score and verdict for an `error` result, which this client reads as `Score` 0 and `Passed` false (earlier versions send 0.5 and false), so check `Status` |
 | `2026-10-28` | An `if_else` or `switch` step's `AgentRunStepResponse.Output` is the result of the arm it took (its input when that arm is empty or it took none) rather than the decision object. The arm taken is in `AgentRunStepResponse.Decision` on every version |
+| `2026-11-02` | A definition or sampling-rule write (other than an import) that references a metadata key no trigger declares is refused (`UpdateAgentDefinitionAsync` answers 400); older versions declare each such key optional instead. Declare keys with `SetMetadataKeysAsync` |
+| `2026-11-04` | The API refuses the agent evaluation mode `eval_and_retry`, a new evaluation criterion `StepId` that does not name a result step (`display_result` or `streaming_result`), and `CreateEvaluationResultRequest.RetryTriggered = true`, each with a 400. Older versions store `eval_and_retry` as `sample_and_flag` and accept any step id |
 
 ## Typed responses
 
@@ -294,6 +296,20 @@ var fromTemplate = await client.CreateAgentAsync(new CreateAgentRequest
 // SetMax… flag and leave the value null.
 await client.UpdateAgentAsync(agent.Id, new UpdateAgentRequest { MaxRunsPerDay = 100 });
 await client.UpdateAgentAsync(agent.Id, new UpdateAgentRequest { SetMaxRunsPerDay = true });
+
+// Evaluation and prompt-model settings. SetSamplingConfig (or SetDefaultEvaluationTier,
+// SetPromptModelAutoRollbackTriggers) with a null value clears it.
+var sampling = JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(
+    "{\"combinator\": \"or\", \"rules\": [{\"type\": \"percentage\", \"value\": 10}]}")!;
+await client.UpdateAgentAsync(agent.Id, new UpdateAgentRequest
+{
+    EvaluationMode = "sample_and_flag",   // eval_and_retry is refused from API version 2026-11-04
+    SamplingConfig = sampling,
+    DefaultEvaluationTier = "balanced",
+    PromptModelAutoUpgradeStrategy = "cautious_adopter",
+    PromptModelAutoRollbackEnabled = true,
+});
+await client.UpdateAgentAsync(agent.Id, new UpdateAgentRequest { SetSamplingConfig = true });
 
 // Pause / resume — a disabled agent stops firing from every trigger path
 var callers = await client.GetAgentCallersAsync("a1");  // live agents calling this one
@@ -367,6 +383,35 @@ foreach (var slot in refs.AcceptedAttachments ?? new()) Console.WriteLine($"{slo
 `CreateAgentRequest.AcceptedAttachments` and `UpdateAgentDefinitionRequest.AcceptedAttachments`
 declare the same slots in the same save; left `null`, they are omitted.
 
+#### Metadata keys
+
+A trigger declares the run metadata keys its agent's steps may reference as
+`{{metadata.<key>}}`, each required or optional. `system` and `source` keys are written by
+the platform; `custom` keys are sent by the caller, and only a custom key can be required. A
+run you start is refused with a 400 when it lacks a required key or sends a custom key the
+trigger does not declare, on every API version, so declare custom keys with `SetMetadataKeysAsync`
+before sending them in a run's metadata.
+
+`SetMetadataKeysRequest` is built with its list, and its constructor and `MetadataKeys` setter
+throw `ArgumentNullException` on null, so a request cannot go out without a declaration and wipe it.
+To declare no keys, pass an empty list.
+
+```csharp
+var keys = await client.GetMetadataKeysAsync(agent.Id!, agent.TriggerId!);
+foreach (var k in keys.DeclarableKeys) Console.WriteLine($"{k.Key} ({k.Origin}) always present: {k.AlwaysPresent}");
+
+// Replaces the whole declaration. Refused with a 400 if the agent references a key it leaves out.
+var updated = await client.SetMetadataKeysAsync(agent.Id!, agent.TriggerId!, new SetMetadataKeysRequest(new List<MetadataKeyDeclaration>
+{
+    new() { Key = "customer_id", Origin = "custom", Required = true },
+    new() { Key = "title", Origin = "source" },   // Required omitted: false
+}));
+foreach (var w in updated.Warnings) Console.WriteLine(w);   // callers whose call_agent mapping no longer fits
+```
+
+For a content trigger, `GetKnowledgeBaseMetadataKeyStatsAsync` (under Knowledge Bases) shows which
+item-metadata keys its content actually carries.
+
 ### Agent Runs
 
 ```csharp
@@ -377,6 +422,8 @@ var run = await client.RunAgentAsync("ag1", new AgentRunRequest { Input = "hello
 var runs = await client.ListAgentRunsAsync("ag1", page: 1, limit: 20);
 var failedRuns = await client.ListAgentRunsAsync("ag1", new AgentRunListOptions { Status = "failed" });
 var detail = await client.GetAgentRunAsync("run1", includeStepOutputs: true);
+// detail.ResultReportedAt is set once the run reported success; from then on Output is final,
+// even though Status keeps following the remaining steps.
 await client.CancelAgentRunAsync("run1");
 await client.DeleteAgentRunAsync("run1");
 
@@ -408,18 +455,72 @@ await foreach (var evt in client.RunStreamingAgentAsync("ag1",
     Console.WriteLine($"[{evt.Event}] {evt.Run?.Status}");
 }
 
-// Wait for the final result from the SSE stream. It reads only the init and done
+// Wait for the done event of the SSE stream. It reads only the init, result and done
 // events, so it does not send IncludeReasoning.
 var final = await client.RunStreamingAgentAndWaitAsync("ag1",
     new AgentRunStreamRequest { Input = "hello" },
     timeout: TimeSpan.FromSeconds(120));
 
-// Poll-based alternative
+// Recommended: ThrowOnIncomplete never returns a run that has not finished.
+// ReturnOnResult returns the result event's snapshot without waiting for done.
+var answer = await client.RunStreamingAgentAndWaitWithOptionsAsync("ag1",
+    new AgentRunStreamRequest { Input = "hello" },
+    new RunStreamingAgentAndWaitOptions
+    {
+        Timeout = TimeSpan.FromSeconds(120),
+        ReturnOnResult = true,
+        ThrowOnIncomplete = true,
+    });
+
+// Poll-based alternative, with the same two options.
 var polled = await client.RunAgentAndPollAsync("ag1",
     new AgentRunRequest { Input = "hello" },
     pollInterval: TimeSpan.FromSeconds(2),
     timeout: TimeSpan.FromMinutes(5));
+var early = await client.RunAgentAndPollAsync("ag1",
+    new AgentRunRequest { Input = "hello" },
+    new RunAgentAndPollOptions { Timeout = TimeSpan.FromMinutes(5), ReturnOnResult = true, ThrowOnIncomplete = true });
 ```
+
+A run returned because of `ReturnOnResult` may still be in progress: its `Status` is not
+terminal yet and the run can still fail. Check `ResultReportedAt`, not `Status`; once it is set,
+`Output` is the answer.
+
+By default `RunStreamingAgentAndWaitAsync` can return a run that has not finished: when the stream
+ends without a `done` event it returns the latest snapshot (the `result` one if that event arrived,
+else `init`), so check `Status` and `ResultReportedAt`. A connection cut mid-stream throws the
+transport's `IOException` or `HttpRequestException`. Its own timeout, or cancelling your
+`CancellationToken`, throws `StreamingException`. `RunAgentAndPollAsync`'s timeout throws
+`OperationCanceledException`. `RunAgentAndPollOptions.Timeout` bounds only waiting for an unfinished
+run. As in 1.7.0, the request that starts the run is bounded by the `HttpClient`'s timeout
+(`SeclaiClientOptions.Timeout` when the SDK creates the client) and your `CancellationToken`, not by
+`Timeout`. The `HttpClient`'s timeout on any request `RunAgentAndPollAsync` makes throws
+`OperationCanceledException` (a `TaskCanceledException`), with or without `ThrowOnIncomplete`, even
+when your token was not cancelled.
+
+We recommend setting `ThrowOnIncomplete`, which becomes the default in the next major version. With
+it, neither helper returns an unfinished run: its own timeout, or a stream that ends or breaks
+without `done`, throws `StreamingException`, whose `Run` holds the latest snapshot (for polling, the
+last poll). Cancelling your `CancellationToken` throws `OperationCanceledException`.
+
+```csharp
+try
+{
+    var run = await client.RunStreamingAgentAndWaitWithOptionsAsync("ag1",
+        new AgentRunStreamRequest { Input = "hello" },
+        new RunStreamingAgentAndWaitOptions { Timeout = TimeSpan.FromSeconds(30), ThrowOnIncomplete = true });
+    Console.WriteLine(run.Output);
+}
+catch (StreamingException ex) when (ex.Run?.ResultReportedAt is not null)
+{
+    Console.WriteLine(ex.Run.Output);   // the answer, though the run had not finished
+}
+```
+
+`RunStreamingAgentAsync` yields a `result` event once the run has reported its result: take the
+answer from it rather than from `stream_token` events. `done.Status` says whether the whole run
+succeeded, which can still fail after its result. When the server answers with plain JSON instead of
+an SSE stream, `RunStreamingAgentAsync` yields only a `done` event, so read the answer from it.
 
 ### Sources & Content
 
@@ -575,9 +676,21 @@ await client.DeleteSourceExportAsync("s1", export.Id);
 
 ```csharp
 var kbs = await client.ListKnowledgeBasesAsync(sort: "created_at");
-var kb = await client.CreateKnowledgeBaseAsync(new CreateKnowledgeBaseRequest { Name = "KB" });
+var kb = await client.CreateKnowledgeBaseAsync(new CreateKnowledgeBaseRequest
+{
+    Name = "KB",
+    SourceIds = new List<string> { "s1" },  // at least one source is required
+});
+// kb.Sources lists the linked sources.
 await client.UpdateKnowledgeBaseAsync(kb.Id, new UpdateKnowledgeBaseRequest { Name = "Renamed" });
 await client.DeleteKnowledgeBaseAsync(kb.Id);
+
+// How often each item-metadata key appears on the knowledge base's content, over all time and
+// the last 30 and 7 days, for declaring a content trigger's metadata keys.
+var stats = await client.GetKnowledgeBaseMetadataKeyStatsAsync(kb.Id);
+foreach (var window in stats.Windows)
+    foreach (var key in window.Keys)
+        Console.WriteLine($"{window.Window}: {key.Key} on {key.Items}/{window.TotalItems} items, {key.DistinctValues} values");
 ```
 
 ### Memory Banks
@@ -712,14 +825,18 @@ await client.SetEmailTriggerConfigAsync("a1", "t1",
 
 ### Agent Slack Triggers
 
-A SLACK_COMMAND trigger runs the agent from Slack with `/seclai` or the message shortcut.
-As with email triggers, a property left `null` is omitted and stays as it is.
+A SLACK_COMMAND trigger runs the agent from Slack with `/seclai <alias>` or the message shortcut.
+The run's input is the text after the alias, or the message the shortcut was used on, and its
+files; form values reach the run as `{{metadata.<key>}}`. As with email triggers, a property left
+`null` is omitted and stays as it is. `SetSlackTriggerConfigRequest.Input` is obsolete and ignored
+by the API.
 
 ```csharp
 var slack = await client.SetSlackTriggerConfigAsync("a1", "t1",
     new SetSlackTriggerConfigRequest
     {
         McpClientId = "mcp1",            // the account's Slack (Bot) connection
+        Alias = "triage",                // people type /seclai triage; generated from the agent's name when unset
         Scope = "selected_channels",
         ChannelIds = new List<string> { "C0123" },
         Visibility = "private",          // reply in the person's DM

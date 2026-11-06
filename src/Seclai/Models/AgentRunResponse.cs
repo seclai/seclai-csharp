@@ -88,4 +88,14 @@ public sealed class AgentRunResponse
     /// <summary>When this run's trace content was deleted under the account's agent-trace retention window. Non-null means the run's and every step's input and output are null by design: the run aged out, it did not fail.</summary>
     [JsonPropertyName("trace_purged_at")]
     public string? TracePurgedAt { get; set; }
+
+    /// <summary>
+    /// When the run reported success (ISO 8601): for an agent whose <c>report_success</c> is <c>on_result</c>, once
+    /// its result step published, or once its run started if it has no result step; otherwise when the run completed.
+    /// From then on <see cref="Output"/> is the run's answer and never changes, so stop polling here if you only need
+    /// the answer. <see cref="Status"/> still follows every step, so a run can report success and later fail.
+    /// Null until the run reports, for a run that failed before reporting, and for runs that ended before this field existed.
+    /// </summary>
+    [JsonPropertyName("result_reported_at")]
+    public string? ResultReportedAt { get; set; }
 }

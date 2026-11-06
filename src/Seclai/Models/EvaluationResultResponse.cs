@@ -37,9 +37,11 @@ public sealed class EvaluationResultResponse
     [JsonPropertyName("comment")]
     public string? Comment { get; set; }
 
+    /// <summary>Deprecated: evaluations never retry a step.</summary>
     [JsonPropertyName("retry_triggered")]
     public bool RetryTriggered { get; set; }
 
+    /// <summary>Deprecated: evaluations never retry a step.</summary>
     [JsonPropertyName("retry_count")]
     public int RetryCount { get; set; }
 

@@ -14,4 +14,8 @@ public sealed class MemoryBankAiAssistantRequest
 
     [JsonPropertyName("current_config")]
     public Dictionary<string, JsonElement>? CurrentConfig { get; set; }
+
+    /// <summary>Optional ISO 8601 timestamp. When set, only conversation turns created at or after it are loaded as context, scoping history to the current session so the assistant remembers earlier turns in a multi-turn refinement.</summary>
+    [JsonPropertyName("history_since")]
+    public string? HistorySince { get; set; }
 }
