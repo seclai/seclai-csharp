@@ -3262,16 +3262,16 @@ public sealed class SeclaiClient : IDisposable
     /// <remarks>
     /// <see cref="RunAgentAndPollOptions.Timeout"/> bounds only waiting for an unfinished run. The request that starts
     /// the run is bounded, as in 1.7.0, by the <see cref="HttpClient"/>'s timeout
-    /// (<see cref="SeclaiClientOptions.Timeout"/> when the SDK creates the client) and <paramref name="cancellationToken"/>, since the server may already have created the run. With
+    /// (<see cref="SeclaiClientOptions.Timeout"/> when the SDK creates the client) and
+    /// <paramref name="cancellationToken"/>, since the server may already have created the run. With
     /// <see cref="RunAgentAndPollOptions.IncludeStepOutputs"/>, a start response that would end the poll is fetched
     /// again with its step outputs, so the returned snapshot carries them even when the run ended at once; that fetch
-    /// is not bounded by <see cref="RunAgentAndPollOptions.Timeout"/> either, and if it fails for any reason other than
-    /// cancelling <paramref name="cancellationToken"/>, the start snapshot is returned without step outputs.
+    /// is not bounded by <see cref="RunAgentAndPollOptions.Timeout"/> either.
     /// </remarks>
     /// <exception cref="StreamingException">
     /// With <see cref="RunAgentAndPollOptions.ThrowOnIncomplete"/>, <see cref="RunAgentAndPollOptions.Timeout"/>
-    /// elapsed before the run finished. <see cref="StreamingException.Run"/> holds the last polled snapshot; when its <see cref="AgentRunResponse.ResultReportedAt"/> is set,
-    /// <see cref="AgentRunResponse.Output"/> is the answer.
+    /// elapsed before the run finished. <see cref="StreamingException.Run"/> holds the last polled snapshot; when its
+    /// <see cref="AgentRunResponse.ResultReportedAt"/> is set, <see cref="AgentRunResponse.Output"/> is the answer.
     /// </exception>
     /// <exception cref="OperationCanceledException">
     /// <paramref name="cancellationToken"/> was cancelled, or, without
@@ -3297,14 +3297,7 @@ public sealed class SeclaiClient : IDisposable
             (run.Status == "completed" || run.Status == "failed" ||
              (options.ReturnOnResult && !string.IsNullOrEmpty(run.ResultReportedAt))))
         {
-            try
-            {
-                run = await GetAgentRunAsync(run.RunId!, true, cancellationToken).ConfigureAwait(false);
-            }
-            catch (Exception) when (!cancellationToken.IsCancellationRequested)
-            {
-                // Step outputs are an extra: if the fetch fails, return the start snapshot rather than lose the run.
-            }
+            run = await GetAgentRunAsync(run.RunId!, true, cancellationToken).ConfigureAwait(false);
         }
 
         using var cts = options.Timeout.HasValue

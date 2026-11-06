@@ -2458,16 +2458,14 @@ public sealed class SeclaiClientTests
     }
 
     [Fact]
-    public async Task RunAgentAndPoll_IncludeStepOutputs_FailedFetchReturnsFinishedStartRun()
+    public async Task RunAgentAndPoll_IncludeStepOutputs_FailedFetchThrows()
     {
-        // The run ended in the start response; fetching its step outputs fails. The finished run must not be lost.
+        // The step-outputs fetch fails like any other request, so an auth or config error is never swallowed.
         var handler = new FakeHttpMessageHandler(req => req.Method == HttpMethod.Post
             ? JsonResponse("{\"run_id\":\"r1\",\"status\":\"completed\",\"output\":\"answer\",\"attempts\":[],\"error_count\":0,\"priority\":false}")
             : new HttpResponseMessage(HttpStatusCode.InternalServerError) { Content = new StringContent("{\"detail\":\"boom\"}", Encoding.UTF8, "application/json") });
-        var res = await MakeClient(handler).RunAgentAndPollAsync("a1", new AgentRunRequest { Input = "go" },
-            new RunAgentAndPollOptions { IncludeStepOutputs = true });
-        Assert.Equal("completed", res.Status);
-        Assert.Equal("answer", res.Output);
+        await Assert.ThrowsAnyAsync<ApiException>(() => MakeClient(handler).RunAgentAndPollAsync("a1",
+            new AgentRunRequest { Input = "go" }, new RunAgentAndPollOptions { IncludeStepOutputs = true }));
     }
 
     [Fact]
