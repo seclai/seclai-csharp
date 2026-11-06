@@ -124,8 +124,8 @@
   <div class="markdown level1 summary"><p>Receive <code>stream_reasoning</code> events carrying the model's reasoning while it thinks. They are sent
 only for a <code>streaming_result</code> step whose author enabled <code>show_reasoning</code>, and never when a
 governance policy redacts that step. Null omits the field (server default false). It applies to
-<a class="xref" href="Seclai.SeclaiClient.html#Seclai_SeclaiClient_RunStreamingAgentAsync_System_String_Seclai_Models_AgentRunStreamRequest_System_Threading_CancellationToken_">RunStreamingAgentAsync(string, AgentRunStreamRequest, CancellationToken)</a>. <a class="xref" href="Seclai.SeclaiClient.html#Seclai_SeclaiClient_RunStreamingAgentAndWaitAsync_System_String_Seclai_Models_AgentRunStreamRequest_System_Nullable_System_TimeSpan__System_Threading_CancellationToken_">RunStreamingAgentAndWaitAsync(string, AgentRunStreamRequest, TimeSpan?, CancellationToken)</a>
-reads only the <code>init</code> and <code>done</code> events and does not send this field, so reasoning events never
+<a class="xref" href="Seclai.SeclaiClient.html#Seclai_SeclaiClient_RunStreamingAgentAsync_System_String_Seclai_Models_AgentRunStreamRequest_System_Threading_CancellationToken_">RunStreamingAgentAsync(string, AgentRunStreamRequest, CancellationToken)</a>. <code>RunStreamingAgentAndWaitAsync</code>
+reads only the <code>init</code>, <code>result</code> and <code>done</code> events and does not send this field, so reasoning events never
 count against its timeout.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
@@ -177,6 +177,60 @@ public string? Input { get; set; }</code></pre>
   </table>
 
 
+  <a id="Seclai_Models_AgentRunStreamRequest_InputUploadId_" data-uid="Seclai.Models.AgentRunStreamRequest.InputUploadId*"></a>
+  <h4 id="Seclai_Models_AgentRunStreamRequest_InputUploadId" data-uid="Seclai.Models.AgentRunStreamRequest.InputUploadId">InputUploadId</h4>
+  <div class="markdown level1 summary"><p>ID of a previously uploaded file to use as the run input for a dynamic-input trigger. Mutually exclusive with <a class="xref" href="Seclai.Models.AgentRunStreamRequest.html#Seclai_Models_AgentRunStreamRequest_InputUploadIds">InputUploadIds</a>; may be combined with <a class="xref" href="Seclai.Models.AgentRunStreamRequest.html#Seclai_Models_AgentRunStreamRequest_Input">Input</a>. Must fit the trigger's <code>accepted_attachments</code>, as on <a class="xref" href="Seclai.Models.AgentRunRequest.html#Seclai_Models_AgentRunRequest_InputUploadId">InputUploadId</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;input_upload_id&quot;)]
+public string? InputUploadId { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_Models_AgentRunStreamRequest_InputUploadIds_" data-uid="Seclai.Models.AgentRunStreamRequest.InputUploadIds*"></a>
+  <h4 id="Seclai_Models_AgentRunStreamRequest_InputUploadIds" data-uid="Seclai.Models.AgentRunStreamRequest.InputUploadIds">InputUploadIds</h4>
+  <div class="markdown level1 summary"><p>IDs of several previously uploaded files, at most 20. See <a class="xref" href="Seclai.Models.AgentRunRequest.html#Seclai_Models_AgentRunRequest_InputUploadIds">InputUploadIds</a>: the batch must fit the trigger's <code>accepted_attachments</code> (else HTTP 400) and may be combined with <a class="xref" href="Seclai.Models.AgentRunStreamRequest.html#Seclai_Models_AgentRunStreamRequest_Input">Input</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;input_upload_ids&quot;)]
+public List&lt;string&gt;? InputUploadIds { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.list-1">List</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
   <a id="Seclai_Models_AgentRunStreamRequest_Metadata_" data-uid="Seclai.Models.AgentRunStreamRequest.Metadata*"></a>
   <h4 id="Seclai_Models_AgentRunStreamRequest_Metadata" data-uid="Seclai.Models.AgentRunStreamRequest.Metadata">Metadata</h4>
   <div class="markdown level1 summary"></div>
@@ -197,6 +251,33 @@ public Dictionary&lt;string, JsonElement&gt;? Metadata { get; set; }</code></pre
     <tbody>
       <tr>
         <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.dictionary-2">Dictionary</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.json.jsonelement">JsonElement</a>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_Models_AgentRunStreamRequest_ReplayOfRunId_" data-uid="Seclai.Models.AgentRunStreamRequest.ReplayOfRunId*"></a>
+  <h4 id="Seclai_Models_AgentRunStreamRequest_ReplayOfRunId" data-uid="Seclai.Models.AgentRunStreamRequest.ReplayOfRunId">ReplayOfRunId</h4>
+  <div class="markdown level1 summary"><p>Re-run reusing a prior run's uploaded input files, re-resolved server-side from that run (which must belong to this account and agent). A fresh upload batch takes precedence. Files the trigger's <code>accepted_attachments</code> no longer accepts are left out.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;replay_of_run_id&quot;)]
+public string? ReplayOfRunId { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
         <td></td>
       </tr>
     </tbody>

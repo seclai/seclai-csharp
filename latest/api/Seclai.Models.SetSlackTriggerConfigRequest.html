@@ -152,6 +152,34 @@ public string? Activation { get; set; }</code></pre>
   </table>
 
 
+  <a id="Seclai_Models_SetSlackTriggerConfigRequest_Alias_" data-uid="Seclai.Models.SetSlackTriggerConfigRequest.Alias*"></a>
+  <h4 id="Seclai_Models_SetSlackTriggerConfigRequest_Alias" data-uid="Seclai.Models.SetSlackTriggerConfigRequest.Alias">Alias</h4>
+  <div class="markdown level1 summary"><p>The name people type after <code>/seclai</code> to run this agent: lowercase letters, digits and hyphens, starting
+with a letter, unique in the Slack workspace. Generated from the agent's name when not set or empty.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;alias&quot;)]
+public string? Alias { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
   <a id="Seclai_Models_SetSlackTriggerConfigRequest_AllowDms_" data-uid="Seclai.Models.SetSlackTriggerConfigRequest.AllowDms*"></a>
   <h4 id="Seclai_Models_SetSlackTriggerConfigRequest_AllowDms" data-uid="Seclai.Models.SetSlackTriggerConfigRequest.AllowDms">AllowDms</h4>
   <div class="markdown level1 summary"><p>Whether the trigger can be run in direct messages with the app. Needs the <code>im:read</code> scope.</p>
@@ -209,7 +237,7 @@ public List&lt;string&gt;? ChannelIds { get; set; }</code></pre>
   <a id="Seclai_Models_SetSlackTriggerConfigRequest_Form_" data-uid="Seclai.Models.SetSlackTriggerConfigRequest.Form*"></a>
   <h4 id="Seclai_Models_SetSlackTriggerConfigRequest_Form" data-uid="Seclai.Models.SetSlackTriggerConfigRequest.Form">Form</h4>
   <div class="markdown level1 summary"><p>The form a person fills in before a run (see <a class="xref" href="Seclai.Models.SlackFormField.html">SlackFormField</a>). Each value reaches the run as
-<code>{{metadata.&lt;key&gt;}}</code>. An empty list removes the form; null leaves it unchanged.</p>
+<code>{{metadata.&lt;key&gt;}}</code>, not in the run's input. An empty list removes the form; null leaves it unchanged.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="declaration">Declaration</h5>
@@ -263,12 +291,14 @@ public bool? IncludeInvokerEmail { get; set; }</code></pre>
 
   <a id="Seclai_Models_SetSlackTriggerConfigRequest_Input_" data-uid="Seclai.Models.SetSlackTriggerConfigRequest.Input*"></a>
   <h4 id="Seclai_Models_SetSlackTriggerConfigRequest_Input" data-uid="Seclai.Models.SetSlackTriggerConfigRequest.Input">Input</h4>
-  <div class="markdown level1 summary"><p>The trigger's input template. Each <code>{{metadata.&lt;key&gt;}}</code> in it must be a form field key or a platform key; it is checked together with <a class="xref" href="Seclai.Models.SetSlackTriggerConfigRequest.html#Seclai_Models_SetSlackTriggerConfigRequest_Form">Form</a>.</p>
+  <div class="markdown level1 summary"><p>The API ignores it. A Slack run's input is the text after <code>/seclai &lt;alias&gt;</code>, or the
+message the shortcut was used on, and its files; form values reach the run as <code>{{metadata.&lt;key&gt;}}</code>.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="declaration">Declaration</h5>
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;input&quot;)]
+    <pre><code class="lang-csharp hljs">[Obsolete(&quot;Ignored by the API since November 2026: a Slack run&#39;s input is the text after /seclai &lt;alias&gt;. Use Alias to set the command name.&quot;)]
+[JsonPropertyName(&quot;input&quot;)]
 public string? Input { get; set; }</code></pre>
   </div>
   <h5 class="propertyValue">Property Value</h5>

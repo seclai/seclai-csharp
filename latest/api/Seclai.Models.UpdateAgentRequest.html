@@ -179,6 +179,33 @@ public bool? ApplyImportRunLimits { get; set; }</code></pre>
   </table>
 
 
+  <a id="Seclai_Models_UpdateAgentRequest_DefaultEvaluationTier_" data-uid="Seclai.Models.UpdateAgentRequest.DefaultEvaluationTier*"></a>
+  <h4 id="Seclai_Models_UpdateAgentRequest_DefaultEvaluationTier" data-uid="Seclai.Models.UpdateAgentRequest.DefaultEvaluationTier">DefaultEvaluationTier</h4>
+  <div class="markdown level1 summary"><p>Default evaluation tier: <code>fast</code>, <code>balanced</code>, or <code>thorough</code>. Leave null to keep it; to clear it (system default), leave this null and set <a class="xref" href="Seclai.Models.UpdateAgentRequest.html#Seclai_Models_UpdateAgentRequest_SetDefaultEvaluationTier">SetDefaultEvaluationTier</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;default_evaluation_tier&quot;)]
+public string? DefaultEvaluationTier { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
   <a id="Seclai_Models_UpdateAgentRequest_Description_" data-uid="Seclai.Models.UpdateAgentRequest.Description*"></a>
   <h4 id="Seclai_Models_UpdateAgentRequest_Description" data-uid="Seclai.Models.UpdateAgentRequest.Description">Description</h4>
   <div class="markdown level1 summary"></div>
@@ -227,6 +254,35 @@ public Dictionary&lt;string, string&gt;? EntityRemap { get; set; }</code></pre>
     <tbody>
       <tr>
         <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.dictionary-2">Dictionary</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_Models_UpdateAgentRequest_EvaluationMode_" data-uid="Seclai.Models.UpdateAgentRequest.EvaluationMode*"></a>
+  <h4 id="Seclai_Models_UpdateAgentRequest_EvaluationMode" data-uid="Seclai.Models.UpdateAgentRequest.EvaluationMode">EvaluationMode</h4>
+  <div class="markdown level1 summary"><p>Evaluation mode: <code>output_expectation</code> or <code>sample_and_flag</code>. Leave null to keep it.
+From <code>Seclai-Version</code> <code>2026-11-04</code> (<a class="xref" href="Seclai.SeclaiApiVersion.html#Seclai_SeclaiApiVersion_V2026_11_04">V2026_11_04</a>), <code>eval_and_retry</code> is refused with HTTP 400;
+earlier versions store it as <code>sample_and_flag</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;evaluation_mode&quot;)]
+public string? EvaluationMode { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
         <td></td>
       </tr>
     </tbody>
@@ -307,6 +363,33 @@ public double? MaxCreditsPerRun { get; set; }</code></pre>
     <tbody>
       <tr>
         <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a>?</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_Models_UpdateAgentRequest_MaxRetries_" data-uid="Seclai.Models.UpdateAgentRequest.MaxRetries*"></a>
+  <h4 id="Seclai_Models_UpdateAgentRequest_MaxRetries" data-uid="Seclai.Models.UpdateAgentRequest.MaxRetries">MaxRetries</h4>
+  <div class="markdown level1 summary"><p>Accepted for compatibility and has no effect: the API ignores it.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;max_retries&quot;)]
+public int? MaxRetries { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>?</td>
         <td></td>
       </tr>
     </tbody>
@@ -414,6 +497,173 @@ public string? Name { get; set; }</code></pre>
     <tbody>
       <tr>
         <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_Models_UpdateAgentRequest_PromptModelAutoRollbackEnabled_" data-uid="Seclai.Models.UpdateAgentRequest.PromptModelAutoRollbackEnabled*"></a>
+  <h4 id="Seclai_Models_UpdateAgentRequest_PromptModelAutoRollbackEnabled" data-uid="Seclai.Models.UpdateAgentRequest.PromptModelAutoRollbackEnabled">PromptModelAutoRollbackEnabled</h4>
+  <div class="markdown level1 summary"><p>Enable or disable automatic rollback for upgraded models. Leave null to keep it.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;prompt_model_auto_rollback_enabled&quot;)]
+public bool? PromptModelAutoRollbackEnabled { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a>?</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_Models_UpdateAgentRequest_PromptModelAutoRollbackTriggers_" data-uid="Seclai.Models.UpdateAgentRequest.PromptModelAutoRollbackTriggers*"></a>
+  <h4 id="Seclai_Models_UpdateAgentRequest_PromptModelAutoRollbackTriggers" data-uid="Seclai.Models.UpdateAgentRequest.PromptModelAutoRollbackTriggers">PromptModelAutoRollbackTriggers</h4>
+  <div class="markdown level1 summary"><p>Failure signals that trigger rollback: <code>governance_flag</code>, <code>governance_block</code>, <code>agent_run_failed</code>.
+<code>agent_eval_fail</code> is accepted and never fires; when it is in the list, a run with a failed evaluation is
+never picked as the rollback target. Leave null to keep it; to revert to the system defaults, leave this null
+and set <a class="xref" href="Seclai.Models.UpdateAgentRequest.html#Seclai_Models_UpdateAgentRequest_SetPromptModelAutoRollbackTriggers">SetPromptModelAutoRollbackTriggers</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;prompt_model_auto_rollback_triggers&quot;)]
+public List&lt;string&gt;? PromptModelAutoRollbackTriggers { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.list-1">List</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_Models_UpdateAgentRequest_PromptModelAutoUpgradeStrategy_" data-uid="Seclai.Models.UpdateAgentRequest.PromptModelAutoUpgradeStrategy*"></a>
+  <h4 id="Seclai_Models_UpdateAgentRequest_PromptModelAutoUpgradeStrategy" data-uid="Seclai.Models.UpdateAgentRequest.PromptModelAutoUpgradeStrategy">PromptModelAutoUpgradeStrategy</h4>
+  <div class="markdown level1 summary"><p>Auto-upgrade strategy for the agent's prompt models: <code>none</code>, <code>early_adopter</code>, <code>middle_of_road</code>, or <code>cautious_adopter</code>. Leave null to keep it.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;prompt_model_auto_upgrade_strategy&quot;)]
+public string? PromptModelAutoUpgradeStrategy { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_Models_UpdateAgentRequest_RetryOnFailure_" data-uid="Seclai.Models.UpdateAgentRequest.RetryOnFailure*"></a>
+  <h4 id="Seclai_Models_UpdateAgentRequest_RetryOnFailure" data-uid="Seclai.Models.UpdateAgentRequest.RetryOnFailure">RetryOnFailure</h4>
+  <div class="markdown level1 summary"><p>Accepted for compatibility and has no effect: the API ignores it.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;retry_on_failure&quot;)]
+public bool? RetryOnFailure { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a>?</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_Models_UpdateAgentRequest_SamplingConfig_" data-uid="Seclai.Models.UpdateAgentRequest.SamplingConfig*"></a>
+  <h4 id="Seclai_Models_UpdateAgentRequest_SamplingConfig" data-uid="Seclai.Models.UpdateAgentRequest.SamplingConfig">SamplingConfig</h4>
+  <div class="markdown level1 summary"><p>Sampling configuration for <code>sample_and_flag</code> mode, in the form
+<code>{&quot;combinator&quot;: &quot;and&quot;|&quot;or&quot;, &quot;rules&quot;: [...]}</code>. Leave null to keep it; to clear it,
+leave this null and set <a class="xref" href="Seclai.Models.UpdateAgentRequest.html#Seclai_Models_UpdateAgentRequest_SetSamplingConfig">SetSamplingConfig</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;sampling_config&quot;)]
+public Dictionary&lt;string, JsonElement&gt;? SamplingConfig { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.dictionary-2">Dictionary</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.json.jsonelement">JsonElement</a>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_Models_UpdateAgentRequest_SetDefaultEvaluationTier_" data-uid="Seclai.Models.UpdateAgentRequest.SetDefaultEvaluationTier*"></a>
+  <h4 id="Seclai_Models_UpdateAgentRequest_SetDefaultEvaluationTier" data-uid="Seclai.Models.UpdateAgentRequest.SetDefaultEvaluationTier">SetDefaultEvaluationTier</h4>
+  <div class="markdown level1 summary"><p>When true and <a class="xref" href="Seclai.Models.UpdateAgentRequest.html#Seclai_Models_UpdateAgentRequest_DefaultEvaluationTier">DefaultEvaluationTier</a> is null, clears the tier to null (system default).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;set_default_evaluation_tier&quot;)]
+public bool? SetDefaultEvaluationTier { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a>?</td>
         <td></td>
       </tr>
     </tbody>
@@ -537,6 +787,60 @@ public bool? SetMaxRunsPerHour { get; set; }</code></pre>
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;set_max_runs_total&quot;)]
 public bool? SetMaxRunsTotal { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a>?</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_Models_UpdateAgentRequest_SetPromptModelAutoRollbackTriggers_" data-uid="Seclai.Models.UpdateAgentRequest.SetPromptModelAutoRollbackTriggers*"></a>
+  <h4 id="Seclai_Models_UpdateAgentRequest_SetPromptModelAutoRollbackTriggers" data-uid="Seclai.Models.UpdateAgentRequest.SetPromptModelAutoRollbackTriggers">SetPromptModelAutoRollbackTriggers</h4>
+  <div class="markdown level1 summary"><p>When true and <a class="xref" href="Seclai.Models.UpdateAgentRequest.html#Seclai_Models_UpdateAgentRequest_PromptModelAutoRollbackTriggers">PromptModelAutoRollbackTriggers</a> is null, clears the list to null (system defaults).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;set_prompt_model_auto_rollback_triggers&quot;)]
+public bool? SetPromptModelAutoRollbackTriggers { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a>?</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_Models_UpdateAgentRequest_SetSamplingConfig_" data-uid="Seclai.Models.UpdateAgentRequest.SetSamplingConfig*"></a>
+  <h4 id="Seclai_Models_UpdateAgentRequest_SetSamplingConfig" data-uid="Seclai.Models.UpdateAgentRequest.SetSamplingConfig">SetSamplingConfig</h4>
+  <div class="markdown level1 summary"><p>When true and <a class="xref" href="Seclai.Models.UpdateAgentRequest.html#Seclai_Models_UpdateAgentRequest_SamplingConfig">SamplingConfig</a> is null, clears the config to null.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;set_sampling_config&quot;)]
+public bool? SetSamplingConfig { get; set; }</code></pre>
   </div>
   <h5 class="propertyValue">Property Value</h5>
   <table class="table table-bordered table-condensed">

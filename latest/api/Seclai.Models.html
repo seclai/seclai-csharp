@@ -282,6 +282,9 @@ only happen on commit.</p>
       <section></section>
       <h4><a class="xref" href="Seclai.Models.CreateSourceRequest.html">CreateSourceRequest</a></h4>
       <section></section>
+      <h4><a class="xref" href="Seclai.Models.DeclarableMetadataKey.html">DeclarableMetadataKey</a></h4>
+      <section><p>A system or source metadata key that a trigger's type can declare.</p>
+</section>
       <h4><a class="xref" href="Seclai.Models.DmarcFailingSourceResponse.html">DmarcFailingSourceResponse</a></h4>
       <section></section>
       <h4><a class="xref" href="Seclai.Models.DmarcSummaryResponse.html">DmarcSummaryResponse</a></h4>
@@ -405,6 +408,10 @@ accepts an <code>agent_definition</code> payload.</p>
       <h4><a class="xref" href="Seclai.Models.KnowledgeBaseListResponse.html">KnowledgeBaseListResponse</a></h4>
       <section><p>A page of knowledge bases.</p>
 </section>
+      <h4><a class="xref" href="Seclai.Models.KnowledgeBaseMetadataKeyStatsResponse.html">KnowledgeBaseMetadataKeyStatsResponse</a></h4>
+      <section><p>How often each item-metadata key appears on a knowledge base's content items, per time window.
+Returned by <a class="xref" href="Seclai.SeclaiClient.html#Seclai_SeclaiClient_GetKnowledgeBaseMetadataKeyStatsAsync_System_String_System_Threading_CancellationToken_">GetKnowledgeBaseMetadataKeyStatsAsync(string, CancellationToken)</a>.</p>
+</section>
       <h4><a class="xref" href="Seclai.Models.KnowledgeBaseResponse.html">KnowledgeBaseResponse</a></h4>
       <section></section>
       <h4><a class="xref" href="Seclai.Models.LinkResourcesRequest.html">LinkResourcesRequest</a></h4>
@@ -430,6 +437,22 @@ accepts an <code>agent_definition</code> payload.</p>
 </section>
       <h4><a class="xref" href="Seclai.Models.MemoryBankResponse.html">MemoryBankResponse</a></h4>
       <section></section>
+      <h4><a class="xref" href="Seclai.Models.MetadataKeyCountResponse.html">MetadataKeyCountResponse</a></h4>
+      <section><p>How often one item-metadata key appears in a window.</p>
+</section>
+      <h4><a class="xref" href="Seclai.Models.MetadataKeyDeclaration.html">MetadataKeyDeclaration</a></h4>
+      <section><p>One run metadata key a trigger declares. The agent's steps reference it as
+<code>{{metadata.&lt;key&gt;}}</code>.</p>
+</section>
+      <h4><a class="xref" href="Seclai.Models.MetadataKeyWindowResponse.html">MetadataKeyWindowResponse</a></h4>
+      <section><p>Item-metadata key counts over one time window.</p>
+</section>
+      <h4><a class="xref" href="Seclai.Models.MetadataKeysResponse.html">MetadataKeysResponse</a></h4>
+      <section><p>The run metadata keys a trigger declares, and the ones it could declare.</p>
+</section>
+      <h4><a class="xref" href="Seclai.Models.MetadataValueCountResponse.html">MetadataValueCountResponse</a></h4>
+      <section><p>One value of an item-metadata key, and how many items carry it.</p>
+</section>
       <h4><a class="xref" href="Seclai.Models.ModalityRateResponse.html">ModalityRateResponse</a></h4>
       <section><p>Per-modality rate for an LLM that prices image/audio/video output (or input) at a rate distinct from the default text rate. Example: Gemini 3.1 Flash Image charges $3/1M output tokens for text but $60/1M output tokens for generated images. The image rate surfaces here with <code>modality=&quot;image&quot;</code> and <code>output_credits_per_1000_tokens</code> set; the default text rate stays on the parent model fields.</p>
 </section>
@@ -460,6 +483,9 @@ accepts an <code>agent_definition</code> payload.</p>
 </section>
       <h4><a class="xref" href="Seclai.Models.ProposedActionResponse.html">ProposedActionResponse</a></h4>
       <section></section>
+      <h4><a class="xref" href="Seclai.Models.ProposedPolicyActionResponse.html">ProposedPolicyActionResponse</a></h4>
+      <section><p>A governance policy action proposed by <a class="xref" href="Seclai.SeclaiClient.html#Seclai_SeclaiClient_GenerateGovernanceAiPlanAsync_Seclai_Models_GovernanceAiAssistantRequest_System_Threading_CancellationToken_">GenerateGovernanceAiPlanAsync(GovernanceAiAssistantRequest, CancellationToken)</a>.</p>
+</section>
       <h4><a class="xref" href="Seclai.Models.ProviderGroupResponse.html">ProviderGroupResponse</a></h4>
       <section><p>Response model for provider group with models</p>
 </section>
@@ -489,6 +515,9 @@ accepts an <code>agent_definition</code> payload.</p>
       <h4><a class="xref" href="Seclai.Models.SetEmailTriggerConfigRequest.html">SetEmailTriggerConfigRequest</a></h4>
       <section><p>Alias, sender allowlist and inbound-handling flags for an EMAIL_RECEIVED trigger.</p>
 </section>
+      <h4><a class="xref" href="Seclai.Models.SetMetadataKeysRequest.html">SetMetadataKeysRequest</a></h4>
+      <section><p>Replaces the run metadata keys a trigger declares.</p>
+</section>
       <h4><a class="xref" href="Seclai.Models.SetSlackTriggerConfigRequest.html">SetSlackTriggerConfigRequest</a></h4>
       <section><p>Slack connection, form, channels, visibility and conversation settings for an agent's
 SLACK_COMMAND trigger, which people run from Slack with <code>/seclai</code> or the message shortcut.</p>
@@ -504,12 +533,24 @@ SLACK_COMMAND trigger, which people run from Slack with <code>/seclai</code> or 
       <h4><a class="xref" href="Seclai.Models.SlackTriggerConfigResponse.html">SlackTriggerConfigResponse</a></h4>
       <section><p>The settings of an agent's SLACK_COMMAND trigger, as returned by <a class="xref" href="Seclai.SeclaiClient.html#Seclai_SeclaiClient_SetSlackTriggerConfigAsync_System_String_System_String_Seclai_Models_SetSlackTriggerConfigRequest_System_Threading_CancellationToken_">SetSlackTriggerConfigAsync(string, string, SetSlackTriggerConfigRequest, CancellationToken)</a>.</p>
 </section>
+      <h4><a class="xref" href="Seclai.Models.SolutionAgentResponse.html">SolutionAgentResponse</a></h4>
+      <section><p>An agent linked to a solution, as listed in <a class="xref" href="Seclai.Models.SolutionResponse.html#Seclai_Models_SolutionResponse_Agents">Agents</a>.</p>
+</section>
       <h4><a class="xref" href="Seclai.Models.SolutionConversationResponse.html">SolutionConversationResponse</a></h4>
       <section></section>
+      <h4><a class="xref" href="Seclai.Models.SolutionKnowledgeBaseResponse.html">SolutionKnowledgeBaseResponse</a></h4>
+      <section><p>A knowledge base linked to a solution, as listed in <a class="xref" href="Seclai.Models.SolutionResponse.html#Seclai_Models_SolutionResponse_KnowledgeBases">KnowledgeBases</a>.</p>
+</section>
       <h4><a class="xref" href="Seclai.Models.SolutionListResponse.html">SolutionListResponse</a></h4>
       <section></section>
       <h4><a class="xref" href="Seclai.Models.SolutionResponse.html">SolutionResponse</a></h4>
       <section></section>
+      <h4><a class="xref" href="Seclai.Models.SolutionSourceConnectionResponse.html">SolutionSourceConnectionResponse</a></h4>
+      <section><p>A source connection linked to a solution, as listed in <a class="xref" href="Seclai.Models.SolutionResponse.html#Seclai_Models_SolutionResponse_SourceConnections">SourceConnections</a>.</p>
+</section>
+      <h4><a class="xref" href="Seclai.Models.SourceConnectionResponse.html">SourceConnectionResponse</a></h4>
+      <section><p>A source connection linked to a knowledge base, as listed in <a class="xref" href="Seclai.Models.KnowledgeBaseResponse.html#Seclai_Models_KnowledgeBaseResponse_Sources">Sources</a>.</p>
+</section>
       <h4><a class="xref" href="Seclai.Models.SourceContentStatusListResponse.html">SourceContentStatusListResponse</a></h4>
       <section><p>Response model for a paginated per-item indexing status list.</p>
 </section>
@@ -614,6 +655,12 @@ Structs
 </section>
       <h4><a class="xref" href="Seclai.Models.OrganizationAlertPreferenceListOptions.html">OrganizationAlertPreferenceListOptions</a></h4>
       <section><p>Filters for <a class="xref" href="Seclai.SeclaiClient.html#Seclai_SeclaiClient_ListOrganizationAlertPreferencesAsync_Seclai_Models_OrganizationAlertPreferenceListOptions_System_Threading_CancellationToken_">ListOrganizationAlertPreferencesAsync(OrganizationAlertPreferenceListOptions, CancellationToken)</a>.</p>
+</section>
+      <h4><a class="xref" href="Seclai.Models.RunAgentAndPollOptions.html">RunAgentAndPollOptions</a></h4>
+      <section><p>Options for <a class="xref" href="Seclai.SeclaiClient.html#Seclai_SeclaiClient_RunAgentAndPollAsync_System_String_Seclai_Models_AgentRunRequest_Seclai_Models_RunAgentAndPollOptions_System_Threading_CancellationToken_">RunAgentAndPollAsync(string, AgentRunRequest, RunAgentAndPollOptions, CancellationToken)</a>.</p>
+</section>
+      <h4><a class="xref" href="Seclai.Models.RunStreamingAgentAndWaitOptions.html">RunStreamingAgentAndWaitOptions</a></h4>
+      <section><p>Options for <a class="xref" href="Seclai.SeclaiClient.html#Seclai_SeclaiClient_RunStreamingAgentAndWaitWithOptionsAsync_System_String_Seclai_Models_AgentRunStreamRequest_Seclai_Models_RunStreamingAgentAndWaitOptions_System_Threading_CancellationToken_">RunStreamingAgentAndWaitWithOptionsAsync(string, AgentRunStreamRequest, RunStreamingAgentAndWaitOptions, CancellationToken)</a>.</p>
 </section>
       <h4><a class="xref" href="Seclai.Models.SolutionListOptions.html">SolutionListOptions</a></h4>
       <section><p>Filters, sorting and paging for <a class="xref" href="Seclai.SeclaiClient.html#Seclai_SeclaiClient_ListSolutionsAsync_Seclai_Models_SolutionListOptions_System_Threading_CancellationToken_">ListSolutionsAsync(SolutionListOptions, CancellationToken)</a>.</p>

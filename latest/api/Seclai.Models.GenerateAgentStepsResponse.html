@@ -119,6 +119,89 @@
 </h3>
 
 
+  <a id="Seclai_Models_GenerateAgentStepsResponse_AgentConfig_" data-uid="Seclai.Models.GenerateAgentStepsResponse.AgentConfig*"></a>
+  <h4 id="Seclai_Models_GenerateAgentStepsResponse_AgentConfig" data-uid="Seclai.Models.GenerateAgentStepsResponse.AgentConfig">AgentConfig</h4>
+  <div class="markdown level1 summary"><p>Suggested agent-level configuration, if any. For an <code>email_received</code> agent it may carry <code>email_run_on_attachment_mismatch</code>, which
+the caller applies through the trigger's email-config endpoint. For a <code>dynamic_input</code> or <code>email_received</code> agent it may carry
+<code>accepted_attachments</code>, which the caller passes with the steps to <a class="xref" href="Seclai.SeclaiClient.html#Seclai_SeclaiClient_UpdateAgentDefinitionAsync_System_String_Seclai_Models_UpdateAgentDefinitionRequest_System_Threading_CancellationToken_">UpdateAgentDefinitionAsync(string, UpdateAgentDefinitionRequest, CancellationToken)</a> so both save together.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;agent_config&quot;)]
+public Dictionary&lt;string, JsonElement&gt;? AgentConfig { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.dictionary-2">Dictionary</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.json.jsonelement">JsonElement</a>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_Models_GenerateAgentStepsResponse_ConversationId_" data-uid="Seclai.Models.GenerateAgentStepsResponse.ConversationId*"></a>
+  <h4 id="Seclai_Models_GenerateAgentStepsResponse_ConversationId" data-uid="Seclai.Models.GenerateAgentStepsResponse.ConversationId">ConversationId</h4>
+  <div class="markdown level1 summary"><p>Conversation turn ID, for tracking.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;conversation_id&quot;)]
+public string? ConversationId { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_Models_GenerateAgentStepsResponse_ExamplePrompts_" data-uid="Seclai.Models.GenerateAgentStepsResponse.ExamplePrompts*"></a>
+  <h4 id="Seclai_Models_GenerateAgentStepsResponse_ExamplePrompts" data-uid="Seclai.Models.GenerateAgentStepsResponse.ExamplePrompts">ExamplePrompts</h4>
+  <div class="markdown level1 summary"><p>Example prompts that show what the assistant can do in this mode.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;example_prompts&quot;)]
+public List&lt;ExamplePrompt&gt;? ExamplePrompts { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.list-1">List</a>&lt;<a class="xref" href="Seclai.Models.ExamplePrompt.html">ExamplePrompt</a>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
   <a id="Seclai_Models_GenerateAgentStepsResponse_IntentAssessment_" data-uid="Seclai.Models.GenerateAgentStepsResponse.IntentAssessment*"></a>
   <h4 id="Seclai_Models_GenerateAgentStepsResponse_IntentAssessment" data-uid="Seclai.Models.GenerateAgentStepsResponse.IntentAssessment">IntentAssessment</h4>
   <div class="markdown level1 summary"><p>How the assistant interpreted the request: <code>clear</code> when steps were generated,
@@ -131,6 +214,33 @@ clarification pause apart from a hard failure.</p>
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;intent_assessment&quot;)]
 public string? IntentAssessment { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_Models_GenerateAgentStepsResponse_Note_" data-uid="Seclai.Models.GenerateAgentStepsResponse.Note*"></a>
+  <h4 id="Seclai_Models_GenerateAgentStepsResponse_Note" data-uid="Seclai.Models.GenerateAgentStepsResponse.Note">Note</h4>
+  <div class="markdown level1 summary"><p>The assistant's explanation of the proposed workflow, or its clarifying question.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;note&quot;)]
+public string? Note { get; set; }</code></pre>
   </div>
   <h5 class="propertyValue">Property Value</h5>
   <table class="table table-bordered table-condensed">
@@ -169,6 +279,33 @@ public List&lt;Dictionary&lt;string, JsonElement&gt;&gt;? Steps { get; set; }</c
     <tbody>
       <tr>
         <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.list-1">List</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.dictionary-2">Dictionary</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>, <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.json.jsonelement">JsonElement</a>&gt;&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_Models_GenerateAgentStepsResponse_Success_" data-uid="Seclai.Models.GenerateAgentStepsResponse.Success*"></a>
+  <h4 id="Seclai_Models_GenerateAgentStepsResponse_Success" data-uid="Seclai.Models.GenerateAgentStepsResponse.Success">Success</h4>
+  <div class="markdown level1 summary"><p>Whether steps were generated.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;success&quot;)]
+public bool Success { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></td>
         <td></td>
       </tr>
     </tbody>

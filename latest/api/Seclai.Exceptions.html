@@ -98,8 +98,8 @@ Contains the status code, HTTP method, request URL, and raw response body.</p>
 or invalid configuration (e.g. no API key).</p>
 </section>
       <h4><a class="xref" href="Seclai.Exceptions.StreamingException.html">StreamingException</a></h4>
-      <section><p>Thrown when an SSE streaming agent run encounters an error, such as a timeout
-or an unexpected end of stream.</p>
+      <section><p>Thrown when an agent run helper gives up before the run finished: an SSE streaming run times out, its stream
+ends without a <code>done</code> event or breaks mid-stream, or a polled run's own timeout elapses.</p>
 </section>
 
 

@@ -144,6 +144,168 @@ public string? AssistantResponse { get; set; }</code></pre>
     </tbody>
   </table>
 
+
+  <a id="Seclai_Models_GovernanceAiAssistantResponse_ConversationId_" data-uid="Seclai.Models.GovernanceAiAssistantResponse.ConversationId*"></a>
+  <h4 id="Seclai_Models_GovernanceAiAssistantResponse_ConversationId" data-uid="Seclai.Models.GovernanceAiAssistantResponse.ConversationId">ConversationId</h4>
+  <div class="markdown level1 summary"><p>Conversation ID to accept or decline this plan with.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;conversation_id&quot;)]
+public string? ConversationId { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_Models_GovernanceAiAssistantResponse_ExamplePrompts_" data-uid="Seclai.Models.GovernanceAiAssistantResponse.ExamplePrompts*"></a>
+  <h4 id="Seclai_Models_GovernanceAiAssistantResponse_ExamplePrompts" data-uid="Seclai.Models.GovernanceAiAssistantResponse.ExamplePrompts">ExamplePrompts</h4>
+  <div class="markdown level1 summary"><p>Example prompts that show what the governance assistant can do.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;example_prompts&quot;)]
+public List&lt;ExamplePrompt&gt;? ExamplePrompts { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.list-1">List</a>&lt;<a class="xref" href="Seclai.Models.ExamplePrompt.html">ExamplePrompt</a>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_Models_GovernanceAiAssistantResponse_Note_" data-uid="Seclai.Models.GovernanceAiAssistantResponse.Note*"></a>
+  <h4 id="Seclai_Models_GovernanceAiAssistantResponse_Note" data-uid="Seclai.Models.GovernanceAiAssistantResponse.Note">Note</h4>
+  <div class="markdown level1 summary"><p>Summary of the proposed changes.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;note&quot;)]
+public string? Note { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_Models_GovernanceAiAssistantResponse_PromptCallId_" data-uid="Seclai.Models.GovernanceAiAssistantResponse.PromptCallId*"></a>
+  <h4 id="Seclai_Models_GovernanceAiAssistantResponse_PromptCallId" data-uid="Seclai.Models.GovernanceAiAssistantResponse.PromptCallId">PromptCallId</h4>
+  <div class="markdown level1 summary"><p>Prompt call ID for credit tracking, or null.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;prompt_call_id&quot;)]
+public string? PromptCallId { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_Models_GovernanceAiAssistantResponse_ProposedActions_" data-uid="Seclai.Models.GovernanceAiAssistantResponse.ProposedActions*"></a>
+  <h4 id="Seclai_Models_GovernanceAiAssistantResponse_ProposedActions" data-uid="Seclai.Models.GovernanceAiAssistantResponse.ProposedActions">ProposedActions</h4>
+  <div class="markdown level1 summary"><p>Policy actions the assistant proposes, in execution order.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;proposed_actions&quot;)]
+public List&lt;ProposedPolicyActionResponse&gt; ProposedActions { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.list-1">List</a>&lt;<a class="xref" href="Seclai.Models.ProposedPolicyActionResponse.html">ProposedPolicyActionResponse</a>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_Models_GovernanceAiAssistantResponse_Success_" data-uid="Seclai.Models.GovernanceAiAssistantResponse.Success*"></a>
+  <h4 id="Seclai_Models_GovernanceAiAssistantResponse_Success" data-uid="Seclai.Models.GovernanceAiAssistantResponse.Success">Success</h4>
+  <div class="markdown level1 summary"><p>Whether the plan was generated.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;success&quot;)]
+public bool Success { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
 </article>
           </div>
 

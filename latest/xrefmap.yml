@@ -190,6 +190,15 @@ references:
   fullName.vb: Seclai.Exceptions.StreamingException.New(String, System.Exception)
   nameWithType: StreamingException.StreamingException(string, Exception)
   nameWithType.vb: StreamingException.New(String, Exception)
+- uid: Seclai.Exceptions.StreamingException.#ctor(System.String,System.Exception,Seclai.Models.AgentRunResponse)
+  name: StreamingException(string, Exception?, AgentRunResponse?)
+  href: api/Seclai.Exceptions.StreamingException.html#Seclai_Exceptions_StreamingException__ctor_System_String_System_Exception_Seclai_Models_AgentRunResponse_
+  commentId: M:Seclai.Exceptions.StreamingException.#ctor(System.String,System.Exception,Seclai.Models.AgentRunResponse)
+  name.vb: New(String, Exception, AgentRunResponse)
+  fullName: Seclai.Exceptions.StreamingException.StreamingException(string, System.Exception?, Seclai.Models.AgentRunResponse?)
+  fullName.vb: Seclai.Exceptions.StreamingException.New(String, System.Exception, Seclai.Models.AgentRunResponse)
+  nameWithType: StreamingException.StreamingException(string, Exception?, AgentRunResponse?)
+  nameWithType.vb: StreamingException.New(String, Exception, AgentRunResponse)
 - uid: Seclai.Exceptions.StreamingException.#ctor*
   name: StreamingException
   href: api/Seclai.Exceptions.StreamingException.html#Seclai_Exceptions_StreamingException__ctor_
@@ -200,6 +209,19 @@ references:
   fullName.vb: Seclai.Exceptions.StreamingException.New
   nameWithType: StreamingException.StreamingException
   nameWithType.vb: StreamingException.New
+- uid: Seclai.Exceptions.StreamingException.Run
+  name: Run
+  href: api/Seclai.Exceptions.StreamingException.html#Seclai_Exceptions_StreamingException_Run
+  commentId: P:Seclai.Exceptions.StreamingException.Run
+  fullName: Seclai.Exceptions.StreamingException.Run
+  nameWithType: StreamingException.Run
+- uid: Seclai.Exceptions.StreamingException.Run*
+  name: Run
+  href: api/Seclai.Exceptions.StreamingException.html#Seclai_Exceptions_StreamingException_Run_
+  commentId: Overload:Seclai.Exceptions.StreamingException.Run
+  isSpec: "True"
+  fullName: Seclai.Exceptions.StreamingException.Run
+  nameWithType: StreamingException.Run
 - uid: Seclai.Models
   name: Seclai.Models
   href: api/Seclai.Models.html
@@ -1244,6 +1266,19 @@ references:
   isSpec: "True"
   fullName: Seclai.Models.AgentListResponse.Data
   nameWithType: AgentListResponse.Data
+- uid: Seclai.Models.AgentListResponse.Pagination
+  name: Pagination
+  href: api/Seclai.Models.AgentListResponse.html#Seclai_Models_AgentListResponse_Pagination
+  commentId: P:Seclai.Models.AgentListResponse.Pagination
+  fullName: Seclai.Models.AgentListResponse.Pagination
+  nameWithType: AgentListResponse.Pagination
+- uid: Seclai.Models.AgentListResponse.Pagination*
+  name: Pagination
+  href: api/Seclai.Models.AgentListResponse.html#Seclai_Models_AgentListResponse_Pagination_
+  commentId: Overload:Seclai.Models.AgentListResponse.Pagination
+  isSpec: "True"
+  fullName: Seclai.Models.AgentListResponse.Pagination
+  nameWithType: AgentListResponse.Pagination
 - uid: Seclai.Models.AgentListResponse.Total
   name: Total
   href: api/Seclai.Models.AgentListResponse.html#Seclai_Models_AgentListResponse_Total
@@ -1540,6 +1575,32 @@ references:
   isSpec: "True"
   fullName: Seclai.Models.AgentRunRequest.Input
   nameWithType: AgentRunRequest.Input
+- uid: Seclai.Models.AgentRunRequest.InputUploadId
+  name: InputUploadId
+  href: api/Seclai.Models.AgentRunRequest.html#Seclai_Models_AgentRunRequest_InputUploadId
+  commentId: P:Seclai.Models.AgentRunRequest.InputUploadId
+  fullName: Seclai.Models.AgentRunRequest.InputUploadId
+  nameWithType: AgentRunRequest.InputUploadId
+- uid: Seclai.Models.AgentRunRequest.InputUploadId*
+  name: InputUploadId
+  href: api/Seclai.Models.AgentRunRequest.html#Seclai_Models_AgentRunRequest_InputUploadId_
+  commentId: Overload:Seclai.Models.AgentRunRequest.InputUploadId
+  isSpec: "True"
+  fullName: Seclai.Models.AgentRunRequest.InputUploadId
+  nameWithType: AgentRunRequest.InputUploadId
+- uid: Seclai.Models.AgentRunRequest.InputUploadIds
+  name: InputUploadIds
+  href: api/Seclai.Models.AgentRunRequest.html#Seclai_Models_AgentRunRequest_InputUploadIds
+  commentId: P:Seclai.Models.AgentRunRequest.InputUploadIds
+  fullName: Seclai.Models.AgentRunRequest.InputUploadIds
+  nameWithType: AgentRunRequest.InputUploadIds
+- uid: Seclai.Models.AgentRunRequest.InputUploadIds*
+  name: InputUploadIds
+  href: api/Seclai.Models.AgentRunRequest.html#Seclai_Models_AgentRunRequest_InputUploadIds_
+  commentId: Overload:Seclai.Models.AgentRunRequest.InputUploadIds
+  isSpec: "True"
+  fullName: Seclai.Models.AgentRunRequest.InputUploadIds
+  nameWithType: AgentRunRequest.InputUploadIds
 - uid: Seclai.Models.AgentRunRequest.Metadata
   name: Metadata
   href: api/Seclai.Models.AgentRunRequest.html#Seclai_Models_AgentRunRequest_Metadata
@@ -1566,6 +1627,19 @@ references:
   isSpec: "True"
   fullName: Seclai.Models.AgentRunRequest.Priority
   nameWithType: AgentRunRequest.Priority
+- uid: Seclai.Models.AgentRunRequest.ReplayOfRunId
+  name: ReplayOfRunId
+  href: api/Seclai.Models.AgentRunRequest.html#Seclai_Models_AgentRunRequest_ReplayOfRunId
+  commentId: P:Seclai.Models.AgentRunRequest.ReplayOfRunId
+  fullName: Seclai.Models.AgentRunRequest.ReplayOfRunId
+  nameWithType: AgentRunRequest.ReplayOfRunId
+- uid: Seclai.Models.AgentRunRequest.ReplayOfRunId*
+  name: ReplayOfRunId
+  href: api/Seclai.Models.AgentRunRequest.html#Seclai_Models_AgentRunRequest_ReplayOfRunId_
+  commentId: Overload:Seclai.Models.AgentRunRequest.ReplayOfRunId
+  isSpec: "True"
+  fullName: Seclai.Models.AgentRunRequest.ReplayOfRunId
+  nameWithType: AgentRunRequest.ReplayOfRunId
 - uid: Seclai.Models.AgentRunResponse
   name: AgentRunResponse
   href: api/Seclai.Models.AgentRunResponse.html
@@ -1754,6 +1828,19 @@ references:
   isSpec: "True"
   fullName: Seclai.Models.AgentRunResponse.Priority
   nameWithType: AgentRunResponse.Priority
+- uid: Seclai.Models.AgentRunResponse.ResultReportedAt
+  name: ResultReportedAt
+  href: api/Seclai.Models.AgentRunResponse.html#Seclai_Models_AgentRunResponse_ResultReportedAt
+  commentId: P:Seclai.Models.AgentRunResponse.ResultReportedAt
+  fullName: Seclai.Models.AgentRunResponse.ResultReportedAt
+  nameWithType: AgentRunResponse.ResultReportedAt
+- uid: Seclai.Models.AgentRunResponse.ResultReportedAt*
+  name: ResultReportedAt
+  href: api/Seclai.Models.AgentRunResponse.html#Seclai_Models_AgentRunResponse_ResultReportedAt_
+  commentId: Overload:Seclai.Models.AgentRunResponse.ResultReportedAt
+  isSpec: "True"
+  fullName: Seclai.Models.AgentRunResponse.ResultReportedAt
+  nameWithType: AgentRunResponse.ResultReportedAt
 - uid: Seclai.Models.AgentRunResponse.RunId
   name: RunId
   href: api/Seclai.Models.AgentRunResponse.html#Seclai_Models_AgentRunResponse_RunId
@@ -1916,6 +2003,19 @@ references:
   isSpec: "True"
   fullName: Seclai.Models.AgentRunStepResponse.EndedAt
   nameWithType: AgentRunStepResponse.EndedAt
+- uid: Seclai.Models.AgentRunStepResponse.Input
+  name: Input
+  href: api/Seclai.Models.AgentRunStepResponse.html#Seclai_Models_AgentRunStepResponse_Input
+  commentId: P:Seclai.Models.AgentRunStepResponse.Input
+  fullName: Seclai.Models.AgentRunStepResponse.Input
+  nameWithType: AgentRunStepResponse.Input
+- uid: Seclai.Models.AgentRunStepResponse.Input*
+  name: Input
+  href: api/Seclai.Models.AgentRunStepResponse.html#Seclai_Models_AgentRunStepResponse_Input_
+  commentId: Overload:Seclai.Models.AgentRunStepResponse.Input
+  isSpec: "True"
+  fullName: Seclai.Models.AgentRunStepResponse.Input
+  nameWithType: AgentRunStepResponse.Input
 - uid: Seclai.Models.AgentRunStepResponse.Output
   name: Output
   href: api/Seclai.Models.AgentRunStepResponse.html#Seclai_Models_AgentRunStepResponse_Output
@@ -2039,6 +2139,32 @@ references:
   isSpec: "True"
   fullName: Seclai.Models.AgentRunStreamRequest.Input
   nameWithType: AgentRunStreamRequest.Input
+- uid: Seclai.Models.AgentRunStreamRequest.InputUploadId
+  name: InputUploadId
+  href: api/Seclai.Models.AgentRunStreamRequest.html#Seclai_Models_AgentRunStreamRequest_InputUploadId
+  commentId: P:Seclai.Models.AgentRunStreamRequest.InputUploadId
+  fullName: Seclai.Models.AgentRunStreamRequest.InputUploadId
+  nameWithType: AgentRunStreamRequest.InputUploadId
+- uid: Seclai.Models.AgentRunStreamRequest.InputUploadId*
+  name: InputUploadId
+  href: api/Seclai.Models.AgentRunStreamRequest.html#Seclai_Models_AgentRunStreamRequest_InputUploadId_
+  commentId: Overload:Seclai.Models.AgentRunStreamRequest.InputUploadId
+  isSpec: "True"
+  fullName: Seclai.Models.AgentRunStreamRequest.InputUploadId
+  nameWithType: AgentRunStreamRequest.InputUploadId
+- uid: Seclai.Models.AgentRunStreamRequest.InputUploadIds
+  name: InputUploadIds
+  href: api/Seclai.Models.AgentRunStreamRequest.html#Seclai_Models_AgentRunStreamRequest_InputUploadIds
+  commentId: P:Seclai.Models.AgentRunStreamRequest.InputUploadIds
+  fullName: Seclai.Models.AgentRunStreamRequest.InputUploadIds
+  nameWithType: AgentRunStreamRequest.InputUploadIds
+- uid: Seclai.Models.AgentRunStreamRequest.InputUploadIds*
+  name: InputUploadIds
+  href: api/Seclai.Models.AgentRunStreamRequest.html#Seclai_Models_AgentRunStreamRequest_InputUploadIds_
+  commentId: Overload:Seclai.Models.AgentRunStreamRequest.InputUploadIds
+  isSpec: "True"
+  fullName: Seclai.Models.AgentRunStreamRequest.InputUploadIds
+  nameWithType: AgentRunStreamRequest.InputUploadIds
 - uid: Seclai.Models.AgentRunStreamRequest.Metadata
   name: Metadata
   href: api/Seclai.Models.AgentRunStreamRequest.html#Seclai_Models_AgentRunStreamRequest_Metadata
@@ -2052,6 +2178,19 @@ references:
   isSpec: "True"
   fullName: Seclai.Models.AgentRunStreamRequest.Metadata
   nameWithType: AgentRunStreamRequest.Metadata
+- uid: Seclai.Models.AgentRunStreamRequest.ReplayOfRunId
+  name: ReplayOfRunId
+  href: api/Seclai.Models.AgentRunStreamRequest.html#Seclai_Models_AgentRunStreamRequest_ReplayOfRunId
+  commentId: P:Seclai.Models.AgentRunStreamRequest.ReplayOfRunId
+  fullName: Seclai.Models.AgentRunStreamRequest.ReplayOfRunId
+  nameWithType: AgentRunStreamRequest.ReplayOfRunId
+- uid: Seclai.Models.AgentRunStreamRequest.ReplayOfRunId*
+  name: ReplayOfRunId
+  href: api/Seclai.Models.AgentRunStreamRequest.html#Seclai_Models_AgentRunStreamRequest_ReplayOfRunId_
+  commentId: Overload:Seclai.Models.AgentRunStreamRequest.ReplayOfRunId
+  isSpec: "True"
+  fullName: Seclai.Models.AgentRunStreamRequest.ReplayOfRunId
+  nameWithType: AgentRunStreamRequest.ReplayOfRunId
 - uid: Seclai.Models.AgentRunToolCallResponse
   name: AgentRunToolCallResponse
   href: api/Seclai.Models.AgentRunToolCallResponse.html
@@ -2246,6 +2385,19 @@ references:
   isSpec: "True"
   fullName: Seclai.Models.AgentSummaryResponse.CreatedResources
   nameWithType: AgentSummaryResponse.CreatedResources
+- uid: Seclai.Models.AgentSummaryResponse.DefaultEvaluationTier
+  name: DefaultEvaluationTier
+  href: api/Seclai.Models.AgentSummaryResponse.html#Seclai_Models_AgentSummaryResponse_DefaultEvaluationTier
+  commentId: P:Seclai.Models.AgentSummaryResponse.DefaultEvaluationTier
+  fullName: Seclai.Models.AgentSummaryResponse.DefaultEvaluationTier
+  nameWithType: AgentSummaryResponse.DefaultEvaluationTier
+- uid: Seclai.Models.AgentSummaryResponse.DefaultEvaluationTier*
+  name: DefaultEvaluationTier
+  href: api/Seclai.Models.AgentSummaryResponse.html#Seclai_Models_AgentSummaryResponse_DefaultEvaluationTier_
+  commentId: Overload:Seclai.Models.AgentSummaryResponse.DefaultEvaluationTier
+  isSpec: "True"
+  fullName: Seclai.Models.AgentSummaryResponse.DefaultEvaluationTier
+  nameWithType: AgentSummaryResponse.DefaultEvaluationTier
 - uid: Seclai.Models.AgentSummaryResponse.Description
   name: Description
   href: api/Seclai.Models.AgentSummaryResponse.html#Seclai_Models_AgentSummaryResponse_Description
@@ -2298,6 +2450,19 @@ references:
   isSpec: "True"
   fullName: Seclai.Models.AgentSummaryResponse.DisabledReason
   nameWithType: AgentSummaryResponse.DisabledReason
+- uid: Seclai.Models.AgentSummaryResponse.EvaluationMode
+  name: EvaluationMode
+  href: api/Seclai.Models.AgentSummaryResponse.html#Seclai_Models_AgentSummaryResponse_EvaluationMode
+  commentId: P:Seclai.Models.AgentSummaryResponse.EvaluationMode
+  fullName: Seclai.Models.AgentSummaryResponse.EvaluationMode
+  nameWithType: AgentSummaryResponse.EvaluationMode
+- uid: Seclai.Models.AgentSummaryResponse.EvaluationMode*
+  name: EvaluationMode
+  href: api/Seclai.Models.AgentSummaryResponse.html#Seclai_Models_AgentSummaryResponse_EvaluationMode_
+  commentId: Overload:Seclai.Models.AgentSummaryResponse.EvaluationMode
+  isSpec: "True"
+  fullName: Seclai.Models.AgentSummaryResponse.EvaluationMode
+  nameWithType: AgentSummaryResponse.EvaluationMode
 - uid: Seclai.Models.AgentSummaryResponse.Id
   name: Id
   href: api/Seclai.Models.AgentSummaryResponse.html#Seclai_Models_AgentSummaryResponse_Id
@@ -2363,6 +2528,19 @@ references:
   isSpec: "True"
   fullName: Seclai.Models.AgentSummaryResponse.MaxCreditsPerRun
   nameWithType: AgentSummaryResponse.MaxCreditsPerRun
+- uid: Seclai.Models.AgentSummaryResponse.MaxRetries
+  name: MaxRetries
+  href: api/Seclai.Models.AgentSummaryResponse.html#Seclai_Models_AgentSummaryResponse_MaxRetries
+  commentId: P:Seclai.Models.AgentSummaryResponse.MaxRetries
+  fullName: Seclai.Models.AgentSummaryResponse.MaxRetries
+  nameWithType: AgentSummaryResponse.MaxRetries
+- uid: Seclai.Models.AgentSummaryResponse.MaxRetries*
+  name: MaxRetries
+  href: api/Seclai.Models.AgentSummaryResponse.html#Seclai_Models_AgentSummaryResponse_MaxRetries_
+  commentId: Overload:Seclai.Models.AgentSummaryResponse.MaxRetries
+  isSpec: "True"
+  fullName: Seclai.Models.AgentSummaryResponse.MaxRetries
+  nameWithType: AgentSummaryResponse.MaxRetries
 - uid: Seclai.Models.AgentSummaryResponse.MaxRunsPerDay
   name: MaxRunsPerDay
   href: api/Seclai.Models.AgentSummaryResponse.html#Seclai_Models_AgentSummaryResponse_MaxRunsPerDay
@@ -2415,6 +2593,71 @@ references:
   isSpec: "True"
   fullName: Seclai.Models.AgentSummaryResponse.Name
   nameWithType: AgentSummaryResponse.Name
+- uid: Seclai.Models.AgentSummaryResponse.PromptModelAutoRollbackEnabled
+  name: PromptModelAutoRollbackEnabled
+  href: api/Seclai.Models.AgentSummaryResponse.html#Seclai_Models_AgentSummaryResponse_PromptModelAutoRollbackEnabled
+  commentId: P:Seclai.Models.AgentSummaryResponse.PromptModelAutoRollbackEnabled
+  fullName: Seclai.Models.AgentSummaryResponse.PromptModelAutoRollbackEnabled
+  nameWithType: AgentSummaryResponse.PromptModelAutoRollbackEnabled
+- uid: Seclai.Models.AgentSummaryResponse.PromptModelAutoRollbackEnabled*
+  name: PromptModelAutoRollbackEnabled
+  href: api/Seclai.Models.AgentSummaryResponse.html#Seclai_Models_AgentSummaryResponse_PromptModelAutoRollbackEnabled_
+  commentId: Overload:Seclai.Models.AgentSummaryResponse.PromptModelAutoRollbackEnabled
+  isSpec: "True"
+  fullName: Seclai.Models.AgentSummaryResponse.PromptModelAutoRollbackEnabled
+  nameWithType: AgentSummaryResponse.PromptModelAutoRollbackEnabled
+- uid: Seclai.Models.AgentSummaryResponse.PromptModelAutoRollbackTriggers
+  name: PromptModelAutoRollbackTriggers
+  href: api/Seclai.Models.AgentSummaryResponse.html#Seclai_Models_AgentSummaryResponse_PromptModelAutoRollbackTriggers
+  commentId: P:Seclai.Models.AgentSummaryResponse.PromptModelAutoRollbackTriggers
+  fullName: Seclai.Models.AgentSummaryResponse.PromptModelAutoRollbackTriggers
+  nameWithType: AgentSummaryResponse.PromptModelAutoRollbackTriggers
+- uid: Seclai.Models.AgentSummaryResponse.PromptModelAutoRollbackTriggers*
+  name: PromptModelAutoRollbackTriggers
+  href: api/Seclai.Models.AgentSummaryResponse.html#Seclai_Models_AgentSummaryResponse_PromptModelAutoRollbackTriggers_
+  commentId: Overload:Seclai.Models.AgentSummaryResponse.PromptModelAutoRollbackTriggers
+  isSpec: "True"
+  fullName: Seclai.Models.AgentSummaryResponse.PromptModelAutoRollbackTriggers
+  nameWithType: AgentSummaryResponse.PromptModelAutoRollbackTriggers
+- uid: Seclai.Models.AgentSummaryResponse.PromptModelAutoUpgradeStrategy
+  name: PromptModelAutoUpgradeStrategy
+  href: api/Seclai.Models.AgentSummaryResponse.html#Seclai_Models_AgentSummaryResponse_PromptModelAutoUpgradeStrategy
+  commentId: P:Seclai.Models.AgentSummaryResponse.PromptModelAutoUpgradeStrategy
+  fullName: Seclai.Models.AgentSummaryResponse.PromptModelAutoUpgradeStrategy
+  nameWithType: AgentSummaryResponse.PromptModelAutoUpgradeStrategy
+- uid: Seclai.Models.AgentSummaryResponse.PromptModelAutoUpgradeStrategy*
+  name: PromptModelAutoUpgradeStrategy
+  href: api/Seclai.Models.AgentSummaryResponse.html#Seclai_Models_AgentSummaryResponse_PromptModelAutoUpgradeStrategy_
+  commentId: Overload:Seclai.Models.AgentSummaryResponse.PromptModelAutoUpgradeStrategy
+  isSpec: "True"
+  fullName: Seclai.Models.AgentSummaryResponse.PromptModelAutoUpgradeStrategy
+  nameWithType: AgentSummaryResponse.PromptModelAutoUpgradeStrategy
+- uid: Seclai.Models.AgentSummaryResponse.RetryOnFailure
+  name: RetryOnFailure
+  href: api/Seclai.Models.AgentSummaryResponse.html#Seclai_Models_AgentSummaryResponse_RetryOnFailure
+  commentId: P:Seclai.Models.AgentSummaryResponse.RetryOnFailure
+  fullName: Seclai.Models.AgentSummaryResponse.RetryOnFailure
+  nameWithType: AgentSummaryResponse.RetryOnFailure
+- uid: Seclai.Models.AgentSummaryResponse.RetryOnFailure*
+  name: RetryOnFailure
+  href: api/Seclai.Models.AgentSummaryResponse.html#Seclai_Models_AgentSummaryResponse_RetryOnFailure_
+  commentId: Overload:Seclai.Models.AgentSummaryResponse.RetryOnFailure
+  isSpec: "True"
+  fullName: Seclai.Models.AgentSummaryResponse.RetryOnFailure
+  nameWithType: AgentSummaryResponse.RetryOnFailure
+- uid: Seclai.Models.AgentSummaryResponse.SamplingConfig
+  name: SamplingConfig
+  href: api/Seclai.Models.AgentSummaryResponse.html#Seclai_Models_AgentSummaryResponse_SamplingConfig
+  commentId: P:Seclai.Models.AgentSummaryResponse.SamplingConfig
+  fullName: Seclai.Models.AgentSummaryResponse.SamplingConfig
+  nameWithType: AgentSummaryResponse.SamplingConfig
+- uid: Seclai.Models.AgentSummaryResponse.SamplingConfig*
+  name: SamplingConfig
+  href: api/Seclai.Models.AgentSummaryResponse.html#Seclai_Models_AgentSummaryResponse_SamplingConfig_
+  commentId: Overload:Seclai.Models.AgentSummaryResponse.SamplingConfig
+  isSpec: "True"
+  fullName: Seclai.Models.AgentSummaryResponse.SamplingConfig
+  nameWithType: AgentSummaryResponse.SamplingConfig
 - uid: Seclai.Models.AgentSummaryResponse.SolutionId
   name: SolutionId
   href: api/Seclai.Models.AgentSummaryResponse.html#Seclai_Models_AgentSummaryResponse_SolutionId
@@ -2454,6 +2697,19 @@ references:
   isSpec: "True"
   fullName: Seclai.Models.AgentSummaryResponse.TriggerId
   nameWithType: AgentSummaryResponse.TriggerId
+- uid: Seclai.Models.AgentSummaryResponse.TriggerType
+  name: TriggerType
+  href: api/Seclai.Models.AgentSummaryResponse.html#Seclai_Models_AgentSummaryResponse_TriggerType
+  commentId: P:Seclai.Models.AgentSummaryResponse.TriggerType
+  fullName: Seclai.Models.AgentSummaryResponse.TriggerType
+  nameWithType: AgentSummaryResponse.TriggerType
+- uid: Seclai.Models.AgentSummaryResponse.TriggerType*
+  name: TriggerType
+  href: api/Seclai.Models.AgentSummaryResponse.html#Seclai_Models_AgentSummaryResponse_TriggerType_
+  commentId: Overload:Seclai.Models.AgentSummaryResponse.TriggerType
+  isSpec: "True"
+  fullName: Seclai.Models.AgentSummaryResponse.TriggerType
+  nameWithType: AgentSummaryResponse.TriggerType
 - uid: Seclai.Models.AgentSummaryResponse.UpdatedAt
   name: UpdatedAt
   href: api/Seclai.Models.AgentSummaryResponse.html#Seclai_Models_AgentSummaryResponse_UpdatedAt
@@ -2918,6 +3174,19 @@ references:
   commentId: T:Seclai.Models.AiAssistantGenerateRequest
   fullName: Seclai.Models.AiAssistantGenerateRequest
   nameWithType: AiAssistantGenerateRequest
+- uid: Seclai.Models.AiAssistantGenerateRequest.HistorySince
+  name: HistorySince
+  href: api/Seclai.Models.AiAssistantGenerateRequest.html#Seclai_Models_AiAssistantGenerateRequest_HistorySince
+  commentId: P:Seclai.Models.AiAssistantGenerateRequest.HistorySince
+  fullName: Seclai.Models.AiAssistantGenerateRequest.HistorySince
+  nameWithType: AiAssistantGenerateRequest.HistorySince
+- uid: Seclai.Models.AiAssistantGenerateRequest.HistorySince*
+  name: HistorySince
+  href: api/Seclai.Models.AiAssistantGenerateRequest.html#Seclai_Models_AiAssistantGenerateRequest_HistorySince_
+  commentId: Overload:Seclai.Models.AiAssistantGenerateRequest.HistorySince
+  isSpec: "True"
+  fullName: Seclai.Models.AiAssistantGenerateRequest.HistorySince
+  nameWithType: AiAssistantGenerateRequest.HistorySince
 - uid: Seclai.Models.AiAssistantGenerateRequest.UserInput
   name: UserInput
   href: api/Seclai.Models.AiAssistantGenerateRequest.html#Seclai_Models_AiAssistantGenerateRequest_UserInput
@@ -6453,6 +6722,19 @@ references:
   isSpec: "True"
   fullName: Seclai.Models.CreateAgentRequest.Tags
   nameWithType: CreateAgentRequest.Tags
+- uid: Seclai.Models.CreateAgentRequest.TriggerType
+  name: TriggerType
+  href: api/Seclai.Models.CreateAgentRequest.html#Seclai_Models_CreateAgentRequest_TriggerType
+  commentId: P:Seclai.Models.CreateAgentRequest.TriggerType
+  fullName: Seclai.Models.CreateAgentRequest.TriggerType
+  nameWithType: CreateAgentRequest.TriggerType
+- uid: Seclai.Models.CreateAgentRequest.TriggerType*
+  name: TriggerType
+  href: api/Seclai.Models.CreateAgentRequest.html#Seclai_Models_CreateAgentRequest_TriggerType_
+  commentId: Overload:Seclai.Models.CreateAgentRequest.TriggerType
+  isSpec: "True"
+  fullName: Seclai.Models.CreateAgentRequest.TriggerType
+  nameWithType: CreateAgentRequest.TriggerType
 - uid: Seclai.Models.CreateAlertConfigRequest
   name: CreateAlertConfigRequest
   href: api/Seclai.Models.CreateAlertConfigRequest.html
@@ -6808,6 +7090,32 @@ references:
   commentId: T:Seclai.Models.CreateExportRequest
   fullName: Seclai.Models.CreateExportRequest
   nameWithType: CreateExportRequest
+- uid: Seclai.Models.CreateExportRequest.DateFrom
+  name: DateFrom
+  href: api/Seclai.Models.CreateExportRequest.html#Seclai_Models_CreateExportRequest_DateFrom
+  commentId: P:Seclai.Models.CreateExportRequest.DateFrom
+  fullName: Seclai.Models.CreateExportRequest.DateFrom
+  nameWithType: CreateExportRequest.DateFrom
+- uid: Seclai.Models.CreateExportRequest.DateFrom*
+  name: DateFrom
+  href: api/Seclai.Models.CreateExportRequest.html#Seclai_Models_CreateExportRequest_DateFrom_
+  commentId: Overload:Seclai.Models.CreateExportRequest.DateFrom
+  isSpec: "True"
+  fullName: Seclai.Models.CreateExportRequest.DateFrom
+  nameWithType: CreateExportRequest.DateFrom
+- uid: Seclai.Models.CreateExportRequest.DateTo
+  name: DateTo
+  href: api/Seclai.Models.CreateExportRequest.html#Seclai_Models_CreateExportRequest_DateTo
+  commentId: P:Seclai.Models.CreateExportRequest.DateTo
+  fullName: Seclai.Models.CreateExportRequest.DateTo
+  nameWithType: CreateExportRequest.DateTo
+- uid: Seclai.Models.CreateExportRequest.DateTo*
+  name: DateTo
+  href: api/Seclai.Models.CreateExportRequest.html#Seclai_Models_CreateExportRequest_DateTo_
+  commentId: Overload:Seclai.Models.CreateExportRequest.DateTo
+  isSpec: "True"
+  fullName: Seclai.Models.CreateExportRequest.DateTo
+  nameWithType: CreateExportRequest.DateTo
 - uid: Seclai.Models.CreateExportRequest.Filters
   name: Filters
   href: api/Seclai.Models.CreateExportRequest.html#Seclai_Models_CreateExportRequest_Filters
@@ -6834,12 +7142,77 @@ references:
   isSpec: "True"
   fullName: Seclai.Models.CreateExportRequest.Format
   nameWithType: CreateExportRequest.Format
+- uid: Seclai.Models.CreateExportRequest.MetadataFilter
+  name: MetadataFilter
+  href: api/Seclai.Models.CreateExportRequest.html#Seclai_Models_CreateExportRequest_MetadataFilter
+  commentId: P:Seclai.Models.CreateExportRequest.MetadataFilter
+  fullName: Seclai.Models.CreateExportRequest.MetadataFilter
+  nameWithType: CreateExportRequest.MetadataFilter
+- uid: Seclai.Models.CreateExportRequest.MetadataFilter*
+  name: MetadataFilter
+  href: api/Seclai.Models.CreateExportRequest.html#Seclai_Models_CreateExportRequest_MetadataFilter_
+  commentId: Overload:Seclai.Models.CreateExportRequest.MetadataFilter
+  isSpec: "True"
+  fullName: Seclai.Models.CreateExportRequest.MetadataFilter
+  nameWithType: CreateExportRequest.MetadataFilter
+- uid: Seclai.Models.CreateExportRequest.QueryFilter
+  name: QueryFilter
+  href: api/Seclai.Models.CreateExportRequest.html#Seclai_Models_CreateExportRequest_QueryFilter
+  commentId: P:Seclai.Models.CreateExportRequest.QueryFilter
+  fullName: Seclai.Models.CreateExportRequest.QueryFilter
+  nameWithType: CreateExportRequest.QueryFilter
+- uid: Seclai.Models.CreateExportRequest.QueryFilter*
+  name: QueryFilter
+  href: api/Seclai.Models.CreateExportRequest.html#Seclai_Models_CreateExportRequest_QueryFilter_
+  commentId: Overload:Seclai.Models.CreateExportRequest.QueryFilter
+  isSpec: "True"
+  fullName: Seclai.Models.CreateExportRequest.QueryFilter
+  nameWithType: CreateExportRequest.QueryFilter
 - uid: Seclai.Models.CreateKnowledgeBaseRequest
   name: CreateKnowledgeBaseRequest
   href: api/Seclai.Models.CreateKnowledgeBaseRequest.html
   commentId: T:Seclai.Models.CreateKnowledgeBaseRequest
   fullName: Seclai.Models.CreateKnowledgeBaseRequest
   nameWithType: CreateKnowledgeBaseRequest
+- uid: Seclai.Models.CreateKnowledgeBaseRequest.DefaultScoreThreshold
+  name: DefaultScoreThreshold
+  href: api/Seclai.Models.CreateKnowledgeBaseRequest.html#Seclai_Models_CreateKnowledgeBaseRequest_DefaultScoreThreshold
+  commentId: P:Seclai.Models.CreateKnowledgeBaseRequest.DefaultScoreThreshold
+  fullName: Seclai.Models.CreateKnowledgeBaseRequest.DefaultScoreThreshold
+  nameWithType: CreateKnowledgeBaseRequest.DefaultScoreThreshold
+- uid: Seclai.Models.CreateKnowledgeBaseRequest.DefaultScoreThreshold*
+  name: DefaultScoreThreshold
+  href: api/Seclai.Models.CreateKnowledgeBaseRequest.html#Seclai_Models_CreateKnowledgeBaseRequest_DefaultScoreThreshold_
+  commentId: Overload:Seclai.Models.CreateKnowledgeBaseRequest.DefaultScoreThreshold
+  isSpec: "True"
+  fullName: Seclai.Models.CreateKnowledgeBaseRequest.DefaultScoreThreshold
+  nameWithType: CreateKnowledgeBaseRequest.DefaultScoreThreshold
+- uid: Seclai.Models.CreateKnowledgeBaseRequest.DefaultTopK
+  name: DefaultTopK
+  href: api/Seclai.Models.CreateKnowledgeBaseRequest.html#Seclai_Models_CreateKnowledgeBaseRequest_DefaultTopK
+  commentId: P:Seclai.Models.CreateKnowledgeBaseRequest.DefaultTopK
+  fullName: Seclai.Models.CreateKnowledgeBaseRequest.DefaultTopK
+  nameWithType: CreateKnowledgeBaseRequest.DefaultTopK
+- uid: Seclai.Models.CreateKnowledgeBaseRequest.DefaultTopK*
+  name: DefaultTopK
+  href: api/Seclai.Models.CreateKnowledgeBaseRequest.html#Seclai_Models_CreateKnowledgeBaseRequest_DefaultTopK_
+  commentId: Overload:Seclai.Models.CreateKnowledgeBaseRequest.DefaultTopK
+  isSpec: "True"
+  fullName: Seclai.Models.CreateKnowledgeBaseRequest.DefaultTopK
+  nameWithType: CreateKnowledgeBaseRequest.DefaultTopK
+- uid: Seclai.Models.CreateKnowledgeBaseRequest.DefaultTopN
+  name: DefaultTopN
+  href: api/Seclai.Models.CreateKnowledgeBaseRequest.html#Seclai_Models_CreateKnowledgeBaseRequest_DefaultTopN
+  commentId: P:Seclai.Models.CreateKnowledgeBaseRequest.DefaultTopN
+  fullName: Seclai.Models.CreateKnowledgeBaseRequest.DefaultTopN
+  nameWithType: CreateKnowledgeBaseRequest.DefaultTopN
+- uid: Seclai.Models.CreateKnowledgeBaseRequest.DefaultTopN*
+  name: DefaultTopN
+  href: api/Seclai.Models.CreateKnowledgeBaseRequest.html#Seclai_Models_CreateKnowledgeBaseRequest_DefaultTopN_
+  commentId: Overload:Seclai.Models.CreateKnowledgeBaseRequest.DefaultTopN
+  isSpec: "True"
+  fullName: Seclai.Models.CreateKnowledgeBaseRequest.DefaultTopN
+  nameWithType: CreateKnowledgeBaseRequest.DefaultTopN
 - uid: Seclai.Models.CreateKnowledgeBaseRequest.Description
   name: Description
   href: api/Seclai.Models.CreateKnowledgeBaseRequest.html#Seclai_Models_CreateKnowledgeBaseRequest_Description
@@ -6866,6 +7239,19 @@ references:
   isSpec: "True"
   fullName: Seclai.Models.CreateKnowledgeBaseRequest.Name
   nameWithType: CreateKnowledgeBaseRequest.Name
+- uid: Seclai.Models.CreateKnowledgeBaseRequest.RerankerModel
+  name: RerankerModel
+  href: api/Seclai.Models.CreateKnowledgeBaseRequest.html#Seclai_Models_CreateKnowledgeBaseRequest_RerankerModel
+  commentId: P:Seclai.Models.CreateKnowledgeBaseRequest.RerankerModel
+  fullName: Seclai.Models.CreateKnowledgeBaseRequest.RerankerModel
+  nameWithType: CreateKnowledgeBaseRequest.RerankerModel
+- uid: Seclai.Models.CreateKnowledgeBaseRequest.RerankerModel*
+  name: RerankerModel
+  href: api/Seclai.Models.CreateKnowledgeBaseRequest.html#Seclai_Models_CreateKnowledgeBaseRequest_RerankerModel_
+  commentId: Overload:Seclai.Models.CreateKnowledgeBaseRequest.RerankerModel
+  isSpec: "True"
+  fullName: Seclai.Models.CreateKnowledgeBaseRequest.RerankerModel
+  nameWithType: CreateKnowledgeBaseRequest.RerankerModel
 - uid: Seclai.Models.CreateKnowledgeBaseRequest.SolutionId
   name: SolutionId
   href: api/Seclai.Models.CreateKnowledgeBaseRequest.html#Seclai_Models_CreateKnowledgeBaseRequest_SolutionId
@@ -6879,12 +7265,64 @@ references:
   isSpec: "True"
   fullName: Seclai.Models.CreateKnowledgeBaseRequest.SolutionId
   nameWithType: CreateKnowledgeBaseRequest.SolutionId
+- uid: Seclai.Models.CreateKnowledgeBaseRequest.SourceIds
+  name: SourceIds
+  href: api/Seclai.Models.CreateKnowledgeBaseRequest.html#Seclai_Models_CreateKnowledgeBaseRequest_SourceIds
+  commentId: P:Seclai.Models.CreateKnowledgeBaseRequest.SourceIds
+  fullName: Seclai.Models.CreateKnowledgeBaseRequest.SourceIds
+  nameWithType: CreateKnowledgeBaseRequest.SourceIds
+- uid: Seclai.Models.CreateKnowledgeBaseRequest.SourceIds*
+  name: SourceIds
+  href: api/Seclai.Models.CreateKnowledgeBaseRequest.html#Seclai_Models_CreateKnowledgeBaseRequest_SourceIds_
+  commentId: Overload:Seclai.Models.CreateKnowledgeBaseRequest.SourceIds
+  isSpec: "True"
+  fullName: Seclai.Models.CreateKnowledgeBaseRequest.SourceIds
+  nameWithType: CreateKnowledgeBaseRequest.SourceIds
 - uid: Seclai.Models.CreateMemoryBankRequest
   name: CreateMemoryBankRequest
   href: api/Seclai.Models.CreateMemoryBankRequest.html
   commentId: T:Seclai.Models.CreateMemoryBankRequest
   fullName: Seclai.Models.CreateMemoryBankRequest
   nameWithType: CreateMemoryBankRequest
+- uid: Seclai.Models.CreateMemoryBankRequest.ChunkOverlap
+  name: ChunkOverlap
+  href: api/Seclai.Models.CreateMemoryBankRequest.html#Seclai_Models_CreateMemoryBankRequest_ChunkOverlap
+  commentId: P:Seclai.Models.CreateMemoryBankRequest.ChunkOverlap
+  fullName: Seclai.Models.CreateMemoryBankRequest.ChunkOverlap
+  nameWithType: CreateMemoryBankRequest.ChunkOverlap
+- uid: Seclai.Models.CreateMemoryBankRequest.ChunkOverlap*
+  name: ChunkOverlap
+  href: api/Seclai.Models.CreateMemoryBankRequest.html#Seclai_Models_CreateMemoryBankRequest_ChunkOverlap_
+  commentId: Overload:Seclai.Models.CreateMemoryBankRequest.ChunkOverlap
+  isSpec: "True"
+  fullName: Seclai.Models.CreateMemoryBankRequest.ChunkOverlap
+  nameWithType: CreateMemoryBankRequest.ChunkOverlap
+- uid: Seclai.Models.CreateMemoryBankRequest.ChunkSize
+  name: ChunkSize
+  href: api/Seclai.Models.CreateMemoryBankRequest.html#Seclai_Models_CreateMemoryBankRequest_ChunkSize
+  commentId: P:Seclai.Models.CreateMemoryBankRequest.ChunkSize
+  fullName: Seclai.Models.CreateMemoryBankRequest.ChunkSize
+  nameWithType: CreateMemoryBankRequest.ChunkSize
+- uid: Seclai.Models.CreateMemoryBankRequest.ChunkSize*
+  name: ChunkSize
+  href: api/Seclai.Models.CreateMemoryBankRequest.html#Seclai_Models_CreateMemoryBankRequest_ChunkSize_
+  commentId: Overload:Seclai.Models.CreateMemoryBankRequest.ChunkSize
+  isSpec: "True"
+  fullName: Seclai.Models.CreateMemoryBankRequest.ChunkSize
+  nameWithType: CreateMemoryBankRequest.ChunkSize
+- uid: Seclai.Models.CreateMemoryBankRequest.CompactionPrompt
+  name: CompactionPrompt
+  href: api/Seclai.Models.CreateMemoryBankRequest.html#Seclai_Models_CreateMemoryBankRequest_CompactionPrompt
+  commentId: P:Seclai.Models.CreateMemoryBankRequest.CompactionPrompt
+  fullName: Seclai.Models.CreateMemoryBankRequest.CompactionPrompt
+  nameWithType: CreateMemoryBankRequest.CompactionPrompt
+- uid: Seclai.Models.CreateMemoryBankRequest.CompactionPrompt*
+  name: CompactionPrompt
+  href: api/Seclai.Models.CreateMemoryBankRequest.html#Seclai_Models_CreateMemoryBankRequest_CompactionPrompt_
+  commentId: Overload:Seclai.Models.CreateMemoryBankRequest.CompactionPrompt
+  isSpec: "True"
+  fullName: Seclai.Models.CreateMemoryBankRequest.CompactionPrompt
+  nameWithType: CreateMemoryBankRequest.CompactionPrompt
 - uid: Seclai.Models.CreateMemoryBankRequest.Description
   name: Description
   href: api/Seclai.Models.CreateMemoryBankRequest.html#Seclai_Models_CreateMemoryBankRequest_Description
@@ -6898,6 +7336,84 @@ references:
   isSpec: "True"
   fullName: Seclai.Models.CreateMemoryBankRequest.Description
   nameWithType: CreateMemoryBankRequest.Description
+- uid: Seclai.Models.CreateMemoryBankRequest.Dimensions
+  name: Dimensions
+  href: api/Seclai.Models.CreateMemoryBankRequest.html#Seclai_Models_CreateMemoryBankRequest_Dimensions
+  commentId: P:Seclai.Models.CreateMemoryBankRequest.Dimensions
+  fullName: Seclai.Models.CreateMemoryBankRequest.Dimensions
+  nameWithType: CreateMemoryBankRequest.Dimensions
+- uid: Seclai.Models.CreateMemoryBankRequest.Dimensions*
+  name: Dimensions
+  href: api/Seclai.Models.CreateMemoryBankRequest.html#Seclai_Models_CreateMemoryBankRequest_Dimensions_
+  commentId: Overload:Seclai.Models.CreateMemoryBankRequest.Dimensions
+  isSpec: "True"
+  fullName: Seclai.Models.CreateMemoryBankRequest.Dimensions
+  nameWithType: CreateMemoryBankRequest.Dimensions
+- uid: Seclai.Models.CreateMemoryBankRequest.EmbeddingModel
+  name: EmbeddingModel
+  href: api/Seclai.Models.CreateMemoryBankRequest.html#Seclai_Models_CreateMemoryBankRequest_EmbeddingModel
+  commentId: P:Seclai.Models.CreateMemoryBankRequest.EmbeddingModel
+  fullName: Seclai.Models.CreateMemoryBankRequest.EmbeddingModel
+  nameWithType: CreateMemoryBankRequest.EmbeddingModel
+- uid: Seclai.Models.CreateMemoryBankRequest.EmbeddingModel*
+  name: EmbeddingModel
+  href: api/Seclai.Models.CreateMemoryBankRequest.html#Seclai_Models_CreateMemoryBankRequest_EmbeddingModel_
+  commentId: Overload:Seclai.Models.CreateMemoryBankRequest.EmbeddingModel
+  isSpec: "True"
+  fullName: Seclai.Models.CreateMemoryBankRequest.EmbeddingModel
+  nameWithType: CreateMemoryBankRequest.EmbeddingModel
+- uid: Seclai.Models.CreateMemoryBankRequest.MaxAgeDays
+  name: MaxAgeDays
+  href: api/Seclai.Models.CreateMemoryBankRequest.html#Seclai_Models_CreateMemoryBankRequest_MaxAgeDays
+  commentId: P:Seclai.Models.CreateMemoryBankRequest.MaxAgeDays
+  fullName: Seclai.Models.CreateMemoryBankRequest.MaxAgeDays
+  nameWithType: CreateMemoryBankRequest.MaxAgeDays
+- uid: Seclai.Models.CreateMemoryBankRequest.MaxAgeDays*
+  name: MaxAgeDays
+  href: api/Seclai.Models.CreateMemoryBankRequest.html#Seclai_Models_CreateMemoryBankRequest_MaxAgeDays_
+  commentId: Overload:Seclai.Models.CreateMemoryBankRequest.MaxAgeDays
+  isSpec: "True"
+  fullName: Seclai.Models.CreateMemoryBankRequest.MaxAgeDays
+  nameWithType: CreateMemoryBankRequest.MaxAgeDays
+- uid: Seclai.Models.CreateMemoryBankRequest.MaxSizeTokens
+  name: MaxSizeTokens
+  href: api/Seclai.Models.CreateMemoryBankRequest.html#Seclai_Models_CreateMemoryBankRequest_MaxSizeTokens
+  commentId: P:Seclai.Models.CreateMemoryBankRequest.MaxSizeTokens
+  fullName: Seclai.Models.CreateMemoryBankRequest.MaxSizeTokens
+  nameWithType: CreateMemoryBankRequest.MaxSizeTokens
+- uid: Seclai.Models.CreateMemoryBankRequest.MaxSizeTokens*
+  name: MaxSizeTokens
+  href: api/Seclai.Models.CreateMemoryBankRequest.html#Seclai_Models_CreateMemoryBankRequest_MaxSizeTokens_
+  commentId: Overload:Seclai.Models.CreateMemoryBankRequest.MaxSizeTokens
+  isSpec: "True"
+  fullName: Seclai.Models.CreateMemoryBankRequest.MaxSizeTokens
+  nameWithType: CreateMemoryBankRequest.MaxSizeTokens
+- uid: Seclai.Models.CreateMemoryBankRequest.MaxTurns
+  name: MaxTurns
+  href: api/Seclai.Models.CreateMemoryBankRequest.html#Seclai_Models_CreateMemoryBankRequest_MaxTurns
+  commentId: P:Seclai.Models.CreateMemoryBankRequest.MaxTurns
+  fullName: Seclai.Models.CreateMemoryBankRequest.MaxTurns
+  nameWithType: CreateMemoryBankRequest.MaxTurns
+- uid: Seclai.Models.CreateMemoryBankRequest.MaxTurns*
+  name: MaxTurns
+  href: api/Seclai.Models.CreateMemoryBankRequest.html#Seclai_Models_CreateMemoryBankRequest_MaxTurns_
+  commentId: Overload:Seclai.Models.CreateMemoryBankRequest.MaxTurns
+  isSpec: "True"
+  fullName: Seclai.Models.CreateMemoryBankRequest.MaxTurns
+  nameWithType: CreateMemoryBankRequest.MaxTurns
+- uid: Seclai.Models.CreateMemoryBankRequest.Mode
+  name: Mode
+  href: api/Seclai.Models.CreateMemoryBankRequest.html#Seclai_Models_CreateMemoryBankRequest_Mode
+  commentId: P:Seclai.Models.CreateMemoryBankRequest.Mode
+  fullName: Seclai.Models.CreateMemoryBankRequest.Mode
+  nameWithType: CreateMemoryBankRequest.Mode
+- uid: Seclai.Models.CreateMemoryBankRequest.Mode*
+  name: Mode
+  href: api/Seclai.Models.CreateMemoryBankRequest.html#Seclai_Models_CreateMemoryBankRequest_Mode_
+  commentId: Overload:Seclai.Models.CreateMemoryBankRequest.Mode
+  isSpec: "True"
+  fullName: Seclai.Models.CreateMemoryBankRequest.Mode
+  nameWithType: CreateMemoryBankRequest.Mode
 - uid: Seclai.Models.CreateMemoryBankRequest.Name
   name: Name
   href: api/Seclai.Models.CreateMemoryBankRequest.html#Seclai_Models_CreateMemoryBankRequest_Name
@@ -7183,6 +7699,19 @@ references:
   isSpec: "True"
   fullName: Seclai.Models.CreateSourceRequest.FeedAttachments
   nameWithType: CreateSourceRequest.FeedAttachments
+- uid: Seclai.Models.CreateSourceRequest.IndexMode
+  name: IndexMode
+  href: api/Seclai.Models.CreateSourceRequest.html#Seclai_Models_CreateSourceRequest_IndexMode
+  commentId: P:Seclai.Models.CreateSourceRequest.IndexMode
+  fullName: Seclai.Models.CreateSourceRequest.IndexMode
+  nameWithType: CreateSourceRequest.IndexMode
+- uid: Seclai.Models.CreateSourceRequest.IndexMode*
+  name: IndexMode
+  href: api/Seclai.Models.CreateSourceRequest.html#Seclai_Models_CreateSourceRequest_IndexMode_
+  commentId: Overload:Seclai.Models.CreateSourceRequest.IndexMode
+  isSpec: "True"
+  fullName: Seclai.Models.CreateSourceRequest.IndexMode
+  nameWithType: CreateSourceRequest.IndexMode
 - uid: Seclai.Models.CreateSourceRequest.MediaTypes
   name: MediaTypes
   href: api/Seclai.Models.CreateSourceRequest.html#Seclai_Models_CreateSourceRequest_MediaTypes
@@ -7287,6 +7816,51 @@ references:
   isSpec: "True"
   fullName: Seclai.Models.CreateSourceRequest.UrlId
   nameWithType: CreateSourceRequest.UrlId
+- uid: Seclai.Models.DeclarableMetadataKey
+  name: DeclarableMetadataKey
+  href: api/Seclai.Models.DeclarableMetadataKey.html
+  commentId: T:Seclai.Models.DeclarableMetadataKey
+  fullName: Seclai.Models.DeclarableMetadataKey
+  nameWithType: DeclarableMetadataKey
+- uid: Seclai.Models.DeclarableMetadataKey.AlwaysPresent
+  name: AlwaysPresent
+  href: api/Seclai.Models.DeclarableMetadataKey.html#Seclai_Models_DeclarableMetadataKey_AlwaysPresent
+  commentId: P:Seclai.Models.DeclarableMetadataKey.AlwaysPresent
+  fullName: Seclai.Models.DeclarableMetadataKey.AlwaysPresent
+  nameWithType: DeclarableMetadataKey.AlwaysPresent
+- uid: Seclai.Models.DeclarableMetadataKey.AlwaysPresent*
+  name: AlwaysPresent
+  href: api/Seclai.Models.DeclarableMetadataKey.html#Seclai_Models_DeclarableMetadataKey_AlwaysPresent_
+  commentId: Overload:Seclai.Models.DeclarableMetadataKey.AlwaysPresent
+  isSpec: "True"
+  fullName: Seclai.Models.DeclarableMetadataKey.AlwaysPresent
+  nameWithType: DeclarableMetadataKey.AlwaysPresent
+- uid: Seclai.Models.DeclarableMetadataKey.Key
+  name: Key
+  href: api/Seclai.Models.DeclarableMetadataKey.html#Seclai_Models_DeclarableMetadataKey_Key
+  commentId: P:Seclai.Models.DeclarableMetadataKey.Key
+  fullName: Seclai.Models.DeclarableMetadataKey.Key
+  nameWithType: DeclarableMetadataKey.Key
+- uid: Seclai.Models.DeclarableMetadataKey.Key*
+  name: Key
+  href: api/Seclai.Models.DeclarableMetadataKey.html#Seclai_Models_DeclarableMetadataKey_Key_
+  commentId: Overload:Seclai.Models.DeclarableMetadataKey.Key
+  isSpec: "True"
+  fullName: Seclai.Models.DeclarableMetadataKey.Key
+  nameWithType: DeclarableMetadataKey.Key
+- uid: Seclai.Models.DeclarableMetadataKey.Origin
+  name: Origin
+  href: api/Seclai.Models.DeclarableMetadataKey.html#Seclai_Models_DeclarableMetadataKey_Origin
+  commentId: P:Seclai.Models.DeclarableMetadataKey.Origin
+  fullName: Seclai.Models.DeclarableMetadataKey.Origin
+  nameWithType: DeclarableMetadataKey.Origin
+- uid: Seclai.Models.DeclarableMetadataKey.Origin*
+  name: Origin
+  href: api/Seclai.Models.DeclarableMetadataKey.html#Seclai_Models_DeclarableMetadataKey_Origin_
+  commentId: Overload:Seclai.Models.DeclarableMetadataKey.Origin
+  isSpec: "True"
+  fullName: Seclai.Models.DeclarableMetadataKey.Origin
+  nameWithType: DeclarableMetadataKey.Origin
 - uid: Seclai.Models.DmarcFailingSourceResponse
   name: DmarcFailingSourceResponse
   href: api/Seclai.Models.DmarcFailingSourceResponse.html
@@ -8958,6 +9532,45 @@ references:
   commentId: T:Seclai.Models.EvaluationCriteriaResponse
   fullName: Seclai.Models.EvaluationCriteriaResponse
   nameWithType: EvaluationCriteriaResponse
+- uid: Seclai.Models.EvaluationCriteriaResponse.AccountId
+  name: AccountId
+  href: api/Seclai.Models.EvaluationCriteriaResponse.html#Seclai_Models_EvaluationCriteriaResponse_AccountId
+  commentId: P:Seclai.Models.EvaluationCriteriaResponse.AccountId
+  fullName: Seclai.Models.EvaluationCriteriaResponse.AccountId
+  nameWithType: EvaluationCriteriaResponse.AccountId
+- uid: Seclai.Models.EvaluationCriteriaResponse.AccountId*
+  name: AccountId
+  href: api/Seclai.Models.EvaluationCriteriaResponse.html#Seclai_Models_EvaluationCriteriaResponse_AccountId_
+  commentId: Overload:Seclai.Models.EvaluationCriteriaResponse.AccountId
+  isSpec: "True"
+  fullName: Seclai.Models.EvaluationCriteriaResponse.AccountId
+  nameWithType: EvaluationCriteriaResponse.AccountId
+- uid: Seclai.Models.EvaluationCriteriaResponse.AgentId
+  name: AgentId
+  href: api/Seclai.Models.EvaluationCriteriaResponse.html#Seclai_Models_EvaluationCriteriaResponse_AgentId
+  commentId: P:Seclai.Models.EvaluationCriteriaResponse.AgentId
+  fullName: Seclai.Models.EvaluationCriteriaResponse.AgentId
+  nameWithType: EvaluationCriteriaResponse.AgentId
+- uid: Seclai.Models.EvaluationCriteriaResponse.AgentId*
+  name: AgentId
+  href: api/Seclai.Models.EvaluationCriteriaResponse.html#Seclai_Models_EvaluationCriteriaResponse_AgentId_
+  commentId: Overload:Seclai.Models.EvaluationCriteriaResponse.AgentId
+  isSpec: "True"
+  fullName: Seclai.Models.EvaluationCriteriaResponse.AgentId
+  nameWithType: EvaluationCriteriaResponse.AgentId
+- uid: Seclai.Models.EvaluationCriteriaResponse.CreatedAt
+  name: CreatedAt
+  href: api/Seclai.Models.EvaluationCriteriaResponse.html#Seclai_Models_EvaluationCriteriaResponse_CreatedAt
+  commentId: P:Seclai.Models.EvaluationCriteriaResponse.CreatedAt
+  fullName: Seclai.Models.EvaluationCriteriaResponse.CreatedAt
+  nameWithType: EvaluationCriteriaResponse.CreatedAt
+- uid: Seclai.Models.EvaluationCriteriaResponse.CreatedAt*
+  name: CreatedAt
+  href: api/Seclai.Models.EvaluationCriteriaResponse.html#Seclai_Models_EvaluationCriteriaResponse_CreatedAt_
+  commentId: Overload:Seclai.Models.EvaluationCriteriaResponse.CreatedAt
+  isSpec: "True"
+  fullName: Seclai.Models.EvaluationCriteriaResponse.CreatedAt
+  nameWithType: EvaluationCriteriaResponse.CreatedAt
 - uid: Seclai.Models.EvaluationCriteriaResponse.Description
   name: Description
   href: api/Seclai.Models.EvaluationCriteriaResponse.html#Seclai_Models_EvaluationCriteriaResponse_Description
@@ -8971,6 +9584,71 @@ references:
   isSpec: "True"
   fullName: Seclai.Models.EvaluationCriteriaResponse.Description
   nameWithType: EvaluationCriteriaResponse.Description
+- uid: Seclai.Models.EvaluationCriteriaResponse.Enabled
+  name: Enabled
+  href: api/Seclai.Models.EvaluationCriteriaResponse.html#Seclai_Models_EvaluationCriteriaResponse_Enabled
+  commentId: P:Seclai.Models.EvaluationCriteriaResponse.Enabled
+  fullName: Seclai.Models.EvaluationCriteriaResponse.Enabled
+  nameWithType: EvaluationCriteriaResponse.Enabled
+- uid: Seclai.Models.EvaluationCriteriaResponse.Enabled*
+  name: Enabled
+  href: api/Seclai.Models.EvaluationCriteriaResponse.html#Seclai_Models_EvaluationCriteriaResponse_Enabled_
+  commentId: Overload:Seclai.Models.EvaluationCriteriaResponse.Enabled
+  isSpec: "True"
+  fullName: Seclai.Models.EvaluationCriteriaResponse.Enabled
+  nameWithType: EvaluationCriteriaResponse.Enabled
+- uid: Seclai.Models.EvaluationCriteriaResponse.EvaluationMode
+  name: EvaluationMode
+  href: api/Seclai.Models.EvaluationCriteriaResponse.html#Seclai_Models_EvaluationCriteriaResponse_EvaluationMode
+  commentId: P:Seclai.Models.EvaluationCriteriaResponse.EvaluationMode
+  fullName: Seclai.Models.EvaluationCriteriaResponse.EvaluationMode
+  nameWithType: EvaluationCriteriaResponse.EvaluationMode
+- uid: Seclai.Models.EvaluationCriteriaResponse.EvaluationMode*
+  name: EvaluationMode
+  href: api/Seclai.Models.EvaluationCriteriaResponse.html#Seclai_Models_EvaluationCriteriaResponse_EvaluationMode_
+  commentId: Overload:Seclai.Models.EvaluationCriteriaResponse.EvaluationMode
+  isSpec: "True"
+  fullName: Seclai.Models.EvaluationCriteriaResponse.EvaluationMode
+  nameWithType: EvaluationCriteriaResponse.EvaluationMode
+- uid: Seclai.Models.EvaluationCriteriaResponse.EvaluationPrompt
+  name: EvaluationPrompt
+  href: api/Seclai.Models.EvaluationCriteriaResponse.html#Seclai_Models_EvaluationCriteriaResponse_EvaluationPrompt
+  commentId: P:Seclai.Models.EvaluationCriteriaResponse.EvaluationPrompt
+  fullName: Seclai.Models.EvaluationCriteriaResponse.EvaluationPrompt
+  nameWithType: EvaluationCriteriaResponse.EvaluationPrompt
+- uid: Seclai.Models.EvaluationCriteriaResponse.EvaluationPrompt*
+  name: EvaluationPrompt
+  href: api/Seclai.Models.EvaluationCriteriaResponse.html#Seclai_Models_EvaluationCriteriaResponse_EvaluationPrompt_
+  commentId: Overload:Seclai.Models.EvaluationCriteriaResponse.EvaluationPrompt
+  isSpec: "True"
+  fullName: Seclai.Models.EvaluationCriteriaResponse.EvaluationPrompt
+  nameWithType: EvaluationCriteriaResponse.EvaluationPrompt
+- uid: Seclai.Models.EvaluationCriteriaResponse.EvaluationTier
+  name: EvaluationTier
+  href: api/Seclai.Models.EvaluationCriteriaResponse.html#Seclai_Models_EvaluationCriteriaResponse_EvaluationTier
+  commentId: P:Seclai.Models.EvaluationCriteriaResponse.EvaluationTier
+  fullName: Seclai.Models.EvaluationCriteriaResponse.EvaluationTier
+  nameWithType: EvaluationCriteriaResponse.EvaluationTier
+- uid: Seclai.Models.EvaluationCriteriaResponse.EvaluationTier*
+  name: EvaluationTier
+  href: api/Seclai.Models.EvaluationCriteriaResponse.html#Seclai_Models_EvaluationCriteriaResponse_EvaluationTier_
+  commentId: Overload:Seclai.Models.EvaluationCriteriaResponse.EvaluationTier
+  isSpec: "True"
+  fullName: Seclai.Models.EvaluationCriteriaResponse.EvaluationTier
+  nameWithType: EvaluationCriteriaResponse.EvaluationTier
+- uid: Seclai.Models.EvaluationCriteriaResponse.ExpectationConfig
+  name: ExpectationConfig
+  href: api/Seclai.Models.EvaluationCriteriaResponse.html#Seclai_Models_EvaluationCriteriaResponse_ExpectationConfig
+  commentId: P:Seclai.Models.EvaluationCriteriaResponse.ExpectationConfig
+  fullName: Seclai.Models.EvaluationCriteriaResponse.ExpectationConfig
+  nameWithType: EvaluationCriteriaResponse.ExpectationConfig
+- uid: Seclai.Models.EvaluationCriteriaResponse.ExpectationConfig*
+  name: ExpectationConfig
+  href: api/Seclai.Models.EvaluationCriteriaResponse.html#Seclai_Models_EvaluationCriteriaResponse_ExpectationConfig_
+  commentId: Overload:Seclai.Models.EvaluationCriteriaResponse.ExpectationConfig
+  isSpec: "True"
+  fullName: Seclai.Models.EvaluationCriteriaResponse.ExpectationConfig
+  nameWithType: EvaluationCriteriaResponse.ExpectationConfig
 - uid: Seclai.Models.EvaluationCriteriaResponse.Id
   name: Id
   href: api/Seclai.Models.EvaluationCriteriaResponse.html#Seclai_Models_EvaluationCriteriaResponse_Id
@@ -8984,6 +9662,19 @@ references:
   isSpec: "True"
   fullName: Seclai.Models.EvaluationCriteriaResponse.Id
   nameWithType: EvaluationCriteriaResponse.Id
+- uid: Seclai.Models.EvaluationCriteriaResponse.MaxRetries
+  name: MaxRetries
+  href: api/Seclai.Models.EvaluationCriteriaResponse.html#Seclai_Models_EvaluationCriteriaResponse_MaxRetries
+  commentId: P:Seclai.Models.EvaluationCriteriaResponse.MaxRetries
+  fullName: Seclai.Models.EvaluationCriteriaResponse.MaxRetries
+  nameWithType: EvaluationCriteriaResponse.MaxRetries
+- uid: Seclai.Models.EvaluationCriteriaResponse.MaxRetries*
+  name: MaxRetries
+  href: api/Seclai.Models.EvaluationCriteriaResponse.html#Seclai_Models_EvaluationCriteriaResponse_MaxRetries_
+  commentId: Overload:Seclai.Models.EvaluationCriteriaResponse.MaxRetries
+  isSpec: "True"
+  fullName: Seclai.Models.EvaluationCriteriaResponse.MaxRetries
+  nameWithType: EvaluationCriteriaResponse.MaxRetries
 - uid: Seclai.Models.EvaluationCriteriaResponse.Name
   name: Name
   href: api/Seclai.Models.EvaluationCriteriaResponse.html#Seclai_Models_EvaluationCriteriaResponse_Name
@@ -8997,6 +9688,71 @@ references:
   isSpec: "True"
   fullName: Seclai.Models.EvaluationCriteriaResponse.Name
   nameWithType: EvaluationCriteriaResponse.Name
+- uid: Seclai.Models.EvaluationCriteriaResponse.PassThreshold
+  name: PassThreshold
+  href: api/Seclai.Models.EvaluationCriteriaResponse.html#Seclai_Models_EvaluationCriteriaResponse_PassThreshold
+  commentId: P:Seclai.Models.EvaluationCriteriaResponse.PassThreshold
+  fullName: Seclai.Models.EvaluationCriteriaResponse.PassThreshold
+  nameWithType: EvaluationCriteriaResponse.PassThreshold
+- uid: Seclai.Models.EvaluationCriteriaResponse.PassThreshold*
+  name: PassThreshold
+  href: api/Seclai.Models.EvaluationCriteriaResponse.html#Seclai_Models_EvaluationCriteriaResponse_PassThreshold_
+  commentId: Overload:Seclai.Models.EvaluationCriteriaResponse.PassThreshold
+  isSpec: "True"
+  fullName: Seclai.Models.EvaluationCriteriaResponse.PassThreshold
+  nameWithType: EvaluationCriteriaResponse.PassThreshold
+- uid: Seclai.Models.EvaluationCriteriaResponse.ResultSummary
+  name: ResultSummary
+  href: api/Seclai.Models.EvaluationCriteriaResponse.html#Seclai_Models_EvaluationCriteriaResponse_ResultSummary
+  commentId: P:Seclai.Models.EvaluationCriteriaResponse.ResultSummary
+  fullName: Seclai.Models.EvaluationCriteriaResponse.ResultSummary
+  nameWithType: EvaluationCriteriaResponse.ResultSummary
+- uid: Seclai.Models.EvaluationCriteriaResponse.ResultSummary*
+  name: ResultSummary
+  href: api/Seclai.Models.EvaluationCriteriaResponse.html#Seclai_Models_EvaluationCriteriaResponse_ResultSummary_
+  commentId: Overload:Seclai.Models.EvaluationCriteriaResponse.ResultSummary
+  isSpec: "True"
+  fullName: Seclai.Models.EvaluationCriteriaResponse.ResultSummary
+  nameWithType: EvaluationCriteriaResponse.ResultSummary
+- uid: Seclai.Models.EvaluationCriteriaResponse.RetryOnFailure
+  name: RetryOnFailure
+  href: api/Seclai.Models.EvaluationCriteriaResponse.html#Seclai_Models_EvaluationCriteriaResponse_RetryOnFailure
+  commentId: P:Seclai.Models.EvaluationCriteriaResponse.RetryOnFailure
+  fullName: Seclai.Models.EvaluationCriteriaResponse.RetryOnFailure
+  nameWithType: EvaluationCriteriaResponse.RetryOnFailure
+- uid: Seclai.Models.EvaluationCriteriaResponse.RetryOnFailure*
+  name: RetryOnFailure
+  href: api/Seclai.Models.EvaluationCriteriaResponse.html#Seclai_Models_EvaluationCriteriaResponse_RetryOnFailure_
+  commentId: Overload:Seclai.Models.EvaluationCriteriaResponse.RetryOnFailure
+  isSpec: "True"
+  fullName: Seclai.Models.EvaluationCriteriaResponse.RetryOnFailure
+  nameWithType: EvaluationCriteriaResponse.RetryOnFailure
+- uid: Seclai.Models.EvaluationCriteriaResponse.StepId
+  name: StepId
+  href: api/Seclai.Models.EvaluationCriteriaResponse.html#Seclai_Models_EvaluationCriteriaResponse_StepId
+  commentId: P:Seclai.Models.EvaluationCriteriaResponse.StepId
+  fullName: Seclai.Models.EvaluationCriteriaResponse.StepId
+  nameWithType: EvaluationCriteriaResponse.StepId
+- uid: Seclai.Models.EvaluationCriteriaResponse.StepId*
+  name: StepId
+  href: api/Seclai.Models.EvaluationCriteriaResponse.html#Seclai_Models_EvaluationCriteriaResponse_StepId_
+  commentId: Overload:Seclai.Models.EvaluationCriteriaResponse.StepId
+  isSpec: "True"
+  fullName: Seclai.Models.EvaluationCriteriaResponse.StepId
+  nameWithType: EvaluationCriteriaResponse.StepId
+- uid: Seclai.Models.EvaluationCriteriaResponse.UpdatedAt
+  name: UpdatedAt
+  href: api/Seclai.Models.EvaluationCriteriaResponse.html#Seclai_Models_EvaluationCriteriaResponse_UpdatedAt
+  commentId: P:Seclai.Models.EvaluationCriteriaResponse.UpdatedAt
+  fullName: Seclai.Models.EvaluationCriteriaResponse.UpdatedAt
+  nameWithType: EvaluationCriteriaResponse.UpdatedAt
+- uid: Seclai.Models.EvaluationCriteriaResponse.UpdatedAt*
+  name: UpdatedAt
+  href: api/Seclai.Models.EvaluationCriteriaResponse.html#Seclai_Models_EvaluationCriteriaResponse_UpdatedAt_
+  commentId: Overload:Seclai.Models.EvaluationCriteriaResponse.UpdatedAt
+  isSpec: "True"
+  fullName: Seclai.Models.EvaluationCriteriaResponse.UpdatedAt
+  nameWithType: EvaluationCriteriaResponse.UpdatedAt
 - uid: Seclai.Models.EvaluationResultListOptions
   name: EvaluationResultListOptions
   href: api/Seclai.Models.EvaluationResultListOptions.html
@@ -10096,6 +10852,19 @@ references:
   isSpec: "True"
   fullName: Seclai.Models.ExportListResponse.Data
   nameWithType: ExportListResponse.Data
+- uid: Seclai.Models.ExportListResponse.Pagination
+  name: Pagination
+  href: api/Seclai.Models.ExportListResponse.html#Seclai_Models_ExportListResponse_Pagination
+  commentId: P:Seclai.Models.ExportListResponse.Pagination
+  fullName: Seclai.Models.ExportListResponse.Pagination
+  nameWithType: ExportListResponse.Pagination
+- uid: Seclai.Models.ExportListResponse.Pagination*
+  name: Pagination
+  href: api/Seclai.Models.ExportListResponse.html#Seclai_Models_ExportListResponse_Pagination_
+  commentId: Overload:Seclai.Models.ExportListResponse.Pagination
+  isSpec: "True"
+  fullName: Seclai.Models.ExportListResponse.Pagination
+  nameWithType: ExportListResponse.Pagination
 - uid: Seclai.Models.ExportListResponse.Total
   name: Total
   href: api/Seclai.Models.ExportListResponse.html#Seclai_Models_ExportListResponse_Total
@@ -10115,6 +10884,32 @@ references:
   commentId: T:Seclai.Models.ExportResponse
   fullName: Seclai.Models.ExportResponse
   nameWithType: ExportResponse
+- uid: Seclai.Models.ExportResponse.AccountId
+  name: AccountId
+  href: api/Seclai.Models.ExportResponse.html#Seclai_Models_ExportResponse_AccountId
+  commentId: P:Seclai.Models.ExportResponse.AccountId
+  fullName: Seclai.Models.ExportResponse.AccountId
+  nameWithType: ExportResponse.AccountId
+- uid: Seclai.Models.ExportResponse.AccountId*
+  name: AccountId
+  href: api/Seclai.Models.ExportResponse.html#Seclai_Models_ExportResponse_AccountId_
+  commentId: Overload:Seclai.Models.ExportResponse.AccountId
+  isSpec: "True"
+  fullName: Seclai.Models.ExportResponse.AccountId
+  nameWithType: ExportResponse.AccountId
+- uid: Seclai.Models.ExportResponse.CompletedAt
+  name: CompletedAt
+  href: api/Seclai.Models.ExportResponse.html#Seclai_Models_ExportResponse_CompletedAt
+  commentId: P:Seclai.Models.ExportResponse.CompletedAt
+  fullName: Seclai.Models.ExportResponse.CompletedAt
+  nameWithType: ExportResponse.CompletedAt
+- uid: Seclai.Models.ExportResponse.CompletedAt*
+  name: CompletedAt
+  href: api/Seclai.Models.ExportResponse.html#Seclai_Models_ExportResponse_CompletedAt_
+  commentId: Overload:Seclai.Models.ExportResponse.CompletedAt
+  isSpec: "True"
+  fullName: Seclai.Models.ExportResponse.CompletedAt
+  nameWithType: ExportResponse.CompletedAt
 - uid: Seclai.Models.ExportResponse.CreatedAt
   name: CreatedAt
   href: api/Seclai.Models.ExportResponse.html#Seclai_Models_ExportResponse_CreatedAt
@@ -10128,6 +10923,45 @@ references:
   isSpec: "True"
   fullName: Seclai.Models.ExportResponse.CreatedAt
   nameWithType: ExportResponse.CreatedAt
+- uid: Seclai.Models.ExportResponse.DateFrom
+  name: DateFrom
+  href: api/Seclai.Models.ExportResponse.html#Seclai_Models_ExportResponse_DateFrom
+  commentId: P:Seclai.Models.ExportResponse.DateFrom
+  fullName: Seclai.Models.ExportResponse.DateFrom
+  nameWithType: ExportResponse.DateFrom
+- uid: Seclai.Models.ExportResponse.DateFrom*
+  name: DateFrom
+  href: api/Seclai.Models.ExportResponse.html#Seclai_Models_ExportResponse_DateFrom_
+  commentId: Overload:Seclai.Models.ExportResponse.DateFrom
+  isSpec: "True"
+  fullName: Seclai.Models.ExportResponse.DateFrom
+  nameWithType: ExportResponse.DateFrom
+- uid: Seclai.Models.ExportResponse.DateTo
+  name: DateTo
+  href: api/Seclai.Models.ExportResponse.html#Seclai_Models_ExportResponse_DateTo
+  commentId: P:Seclai.Models.ExportResponse.DateTo
+  fullName: Seclai.Models.ExportResponse.DateTo
+  nameWithType: ExportResponse.DateTo
+- uid: Seclai.Models.ExportResponse.DateTo*
+  name: DateTo
+  href: api/Seclai.Models.ExportResponse.html#Seclai_Models_ExportResponse_DateTo_
+  commentId: Overload:Seclai.Models.ExportResponse.DateTo
+  isSpec: "True"
+  fullName: Seclai.Models.ExportResponse.DateTo
+  nameWithType: ExportResponse.DateTo
+- uid: Seclai.Models.ExportResponse.Destination
+  name: Destination
+  href: api/Seclai.Models.ExportResponse.html#Seclai_Models_ExportResponse_Destination
+  commentId: P:Seclai.Models.ExportResponse.Destination
+  fullName: Seclai.Models.ExportResponse.Destination
+  nameWithType: ExportResponse.Destination
+- uid: Seclai.Models.ExportResponse.Destination*
+  name: Destination
+  href: api/Seclai.Models.ExportResponse.html#Seclai_Models_ExportResponse_Destination_
+  commentId: Overload:Seclai.Models.ExportResponse.Destination
+  isSpec: "True"
+  fullName: Seclai.Models.ExportResponse.Destination
+  nameWithType: ExportResponse.Destination
 - uid: Seclai.Models.ExportResponse.DownloadUrl
   name: DownloadUrl
   href: api/Seclai.Models.ExportResponse.html#Seclai_Models_ExportResponse_DownloadUrl
@@ -10141,6 +10975,32 @@ references:
   isSpec: "True"
   fullName: Seclai.Models.ExportResponse.DownloadUrl
   nameWithType: ExportResponse.DownloadUrl
+- uid: Seclai.Models.ExportResponse.Error
+  name: Error
+  href: api/Seclai.Models.ExportResponse.html#Seclai_Models_ExportResponse_Error
+  commentId: P:Seclai.Models.ExportResponse.Error
+  fullName: Seclai.Models.ExportResponse.Error
+  nameWithType: ExportResponse.Error
+- uid: Seclai.Models.ExportResponse.Error*
+  name: Error
+  href: api/Seclai.Models.ExportResponse.html#Seclai_Models_ExportResponse_Error_
+  commentId: Overload:Seclai.Models.ExportResponse.Error
+  isSpec: "True"
+  fullName: Seclai.Models.ExportResponse.Error
+  nameWithType: ExportResponse.Error
+- uid: Seclai.Models.ExportResponse.EstimatedSizeBytes
+  name: EstimatedSizeBytes
+  href: api/Seclai.Models.ExportResponse.html#Seclai_Models_ExportResponse_EstimatedSizeBytes
+  commentId: P:Seclai.Models.ExportResponse.EstimatedSizeBytes
+  fullName: Seclai.Models.ExportResponse.EstimatedSizeBytes
+  nameWithType: ExportResponse.EstimatedSizeBytes
+- uid: Seclai.Models.ExportResponse.EstimatedSizeBytes*
+  name: EstimatedSizeBytes
+  href: api/Seclai.Models.ExportResponse.html#Seclai_Models_ExportResponse_EstimatedSizeBytes_
+  commentId: Overload:Seclai.Models.ExportResponse.EstimatedSizeBytes
+  isSpec: "True"
+  fullName: Seclai.Models.ExportResponse.EstimatedSizeBytes
+  nameWithType: ExportResponse.EstimatedSizeBytes
 - uid: Seclai.Models.ExportResponse.ExpiresAt
   name: ExpiresAt
   href: api/Seclai.Models.ExportResponse.html#Seclai_Models_ExportResponse_ExpiresAt
@@ -10154,6 +11014,19 @@ references:
   isSpec: "True"
   fullName: Seclai.Models.ExportResponse.ExpiresAt
   nameWithType: ExportResponse.ExpiresAt
+- uid: Seclai.Models.ExportResponse.FileSizeBytes
+  name: FileSizeBytes
+  href: api/Seclai.Models.ExportResponse.html#Seclai_Models_ExportResponse_FileSizeBytes
+  commentId: P:Seclai.Models.ExportResponse.FileSizeBytes
+  fullName: Seclai.Models.ExportResponse.FileSizeBytes
+  nameWithType: ExportResponse.FileSizeBytes
+- uid: Seclai.Models.ExportResponse.FileSizeBytes*
+  name: FileSizeBytes
+  href: api/Seclai.Models.ExportResponse.html#Seclai_Models_ExportResponse_FileSizeBytes_
+  commentId: Overload:Seclai.Models.ExportResponse.FileSizeBytes
+  isSpec: "True"
+  fullName: Seclai.Models.ExportResponse.FileSizeBytes
+  nameWithType: ExportResponse.FileSizeBytes
 - uid: Seclai.Models.ExportResponse.Format
   name: Format
   href: api/Seclai.Models.ExportResponse.html#Seclai_Models_ExportResponse_Format
@@ -10180,6 +11053,123 @@ references:
   isSpec: "True"
   fullName: Seclai.Models.ExportResponse.Id
   nameWithType: ExportResponse.Id
+- uid: Seclai.Models.ExportResponse.ItemCount
+  name: ItemCount
+  href: api/Seclai.Models.ExportResponse.html#Seclai_Models_ExportResponse_ItemCount
+  commentId: P:Seclai.Models.ExportResponse.ItemCount
+  fullName: Seclai.Models.ExportResponse.ItemCount
+  nameWithType: ExportResponse.ItemCount
+- uid: Seclai.Models.ExportResponse.ItemCount*
+  name: ItemCount
+  href: api/Seclai.Models.ExportResponse.html#Seclai_Models_ExportResponse_ItemCount_
+  commentId: Overload:Seclai.Models.ExportResponse.ItemCount
+  isSpec: "True"
+  fullName: Seclai.Models.ExportResponse.ItemCount
+  nameWithType: ExportResponse.ItemCount
+- uid: Seclai.Models.ExportResponse.MetadataFilter
+  name: MetadataFilter
+  href: api/Seclai.Models.ExportResponse.html#Seclai_Models_ExportResponse_MetadataFilter
+  commentId: P:Seclai.Models.ExportResponse.MetadataFilter
+  fullName: Seclai.Models.ExportResponse.MetadataFilter
+  nameWithType: ExportResponse.MetadataFilter
+- uid: Seclai.Models.ExportResponse.MetadataFilter*
+  name: MetadataFilter
+  href: api/Seclai.Models.ExportResponse.html#Seclai_Models_ExportResponse_MetadataFilter_
+  commentId: Overload:Seclai.Models.ExportResponse.MetadataFilter
+  isSpec: "True"
+  fullName: Seclai.Models.ExportResponse.MetadataFilter
+  nameWithType: ExportResponse.MetadataFilter
+- uid: Seclai.Models.ExportResponse.ProgressCurrent
+  name: ProgressCurrent
+  href: api/Seclai.Models.ExportResponse.html#Seclai_Models_ExportResponse_ProgressCurrent
+  commentId: P:Seclai.Models.ExportResponse.ProgressCurrent
+  fullName: Seclai.Models.ExportResponse.ProgressCurrent
+  nameWithType: ExportResponse.ProgressCurrent
+- uid: Seclai.Models.ExportResponse.ProgressCurrent*
+  name: ProgressCurrent
+  href: api/Seclai.Models.ExportResponse.html#Seclai_Models_ExportResponse_ProgressCurrent_
+  commentId: Overload:Seclai.Models.ExportResponse.ProgressCurrent
+  isSpec: "True"
+  fullName: Seclai.Models.ExportResponse.ProgressCurrent
+  nameWithType: ExportResponse.ProgressCurrent
+- uid: Seclai.Models.ExportResponse.ProgressTotal
+  name: ProgressTotal
+  href: api/Seclai.Models.ExportResponse.html#Seclai_Models_ExportResponse_ProgressTotal
+  commentId: P:Seclai.Models.ExportResponse.ProgressTotal
+  fullName: Seclai.Models.ExportResponse.ProgressTotal
+  nameWithType: ExportResponse.ProgressTotal
+- uid: Seclai.Models.ExportResponse.ProgressTotal*
+  name: ProgressTotal
+  href: api/Seclai.Models.ExportResponse.html#Seclai_Models_ExportResponse_ProgressTotal_
+  commentId: Overload:Seclai.Models.ExportResponse.ProgressTotal
+  isSpec: "True"
+  fullName: Seclai.Models.ExportResponse.ProgressTotal
+  nameWithType: ExportResponse.ProgressTotal
+- uid: Seclai.Models.ExportResponse.QueryFilter
+  name: QueryFilter
+  href: api/Seclai.Models.ExportResponse.html#Seclai_Models_ExportResponse_QueryFilter
+  commentId: P:Seclai.Models.ExportResponse.QueryFilter
+  fullName: Seclai.Models.ExportResponse.QueryFilter
+  nameWithType: ExportResponse.QueryFilter
+- uid: Seclai.Models.ExportResponse.QueryFilter*
+  name: QueryFilter
+  href: api/Seclai.Models.ExportResponse.html#Seclai_Models_ExportResponse_QueryFilter_
+  commentId: Overload:Seclai.Models.ExportResponse.QueryFilter
+  isSpec: "True"
+  fullName: Seclai.Models.ExportResponse.QueryFilter
+  nameWithType: ExportResponse.QueryFilter
+- uid: Seclai.Models.ExportResponse.RequestedByUserId
+  name: RequestedByUserId
+  href: api/Seclai.Models.ExportResponse.html#Seclai_Models_ExportResponse_RequestedByUserId
+  commentId: P:Seclai.Models.ExportResponse.RequestedByUserId
+  fullName: Seclai.Models.ExportResponse.RequestedByUserId
+  nameWithType: ExportResponse.RequestedByUserId
+- uid: Seclai.Models.ExportResponse.RequestedByUserId*
+  name: RequestedByUserId
+  href: api/Seclai.Models.ExportResponse.html#Seclai_Models_ExportResponse_RequestedByUserId_
+  commentId: Overload:Seclai.Models.ExportResponse.RequestedByUserId
+  isSpec: "True"
+  fullName: Seclai.Models.ExportResponse.RequestedByUserId
+  nameWithType: ExportResponse.RequestedByUserId
+- uid: Seclai.Models.ExportResponse.RequestedByUserName
+  name: RequestedByUserName
+  href: api/Seclai.Models.ExportResponse.html#Seclai_Models_ExportResponse_RequestedByUserName
+  commentId: P:Seclai.Models.ExportResponse.RequestedByUserName
+  fullName: Seclai.Models.ExportResponse.RequestedByUserName
+  nameWithType: ExportResponse.RequestedByUserName
+- uid: Seclai.Models.ExportResponse.RequestedByUserName*
+  name: RequestedByUserName
+  href: api/Seclai.Models.ExportResponse.html#Seclai_Models_ExportResponse_RequestedByUserName_
+  commentId: Overload:Seclai.Models.ExportResponse.RequestedByUserName
+  isSpec: "True"
+  fullName: Seclai.Models.ExportResponse.RequestedByUserName
+  nameWithType: ExportResponse.RequestedByUserName
+- uid: Seclai.Models.ExportResponse.SourceConnectionId
+  name: SourceConnectionId
+  href: api/Seclai.Models.ExportResponse.html#Seclai_Models_ExportResponse_SourceConnectionId
+  commentId: P:Seclai.Models.ExportResponse.SourceConnectionId
+  fullName: Seclai.Models.ExportResponse.SourceConnectionId
+  nameWithType: ExportResponse.SourceConnectionId
+- uid: Seclai.Models.ExportResponse.SourceConnectionId*
+  name: SourceConnectionId
+  href: api/Seclai.Models.ExportResponse.html#Seclai_Models_ExportResponse_SourceConnectionId_
+  commentId: Overload:Seclai.Models.ExportResponse.SourceConnectionId
+  isSpec: "True"
+  fullName: Seclai.Models.ExportResponse.SourceConnectionId
+  nameWithType: ExportResponse.SourceConnectionId
+- uid: Seclai.Models.ExportResponse.StartedAt
+  name: StartedAt
+  href: api/Seclai.Models.ExportResponse.html#Seclai_Models_ExportResponse_StartedAt
+  commentId: P:Seclai.Models.ExportResponse.StartedAt
+  fullName: Seclai.Models.ExportResponse.StartedAt
+  nameWithType: ExportResponse.StartedAt
+- uid: Seclai.Models.ExportResponse.StartedAt*
+  name: StartedAt
+  href: api/Seclai.Models.ExportResponse.html#Seclai_Models_ExportResponse_StartedAt_
+  commentId: Overload:Seclai.Models.ExportResponse.StartedAt
+  isSpec: "True"
+  fullName: Seclai.Models.ExportResponse.StartedAt
+  nameWithType: ExportResponse.StartedAt
 - uid: Seclai.Models.ExportResponse.Status
   name: Status
   href: api/Seclai.Models.ExportResponse.html#Seclai_Models_ExportResponse_Status
@@ -10193,6 +11183,32 @@ references:
   isSpec: "True"
   fullName: Seclai.Models.ExportResponse.Status
   nameWithType: ExportResponse.Status
+- uid: Seclai.Models.ExportResponse.StorageKey
+  name: StorageKey
+  href: api/Seclai.Models.ExportResponse.html#Seclai_Models_ExportResponse_StorageKey
+  commentId: P:Seclai.Models.ExportResponse.StorageKey
+  fullName: Seclai.Models.ExportResponse.StorageKey
+  nameWithType: ExportResponse.StorageKey
+- uid: Seclai.Models.ExportResponse.StorageKey*
+  name: StorageKey
+  href: api/Seclai.Models.ExportResponse.html#Seclai_Models_ExportResponse_StorageKey_
+  commentId: Overload:Seclai.Models.ExportResponse.StorageKey
+  isSpec: "True"
+  fullName: Seclai.Models.ExportResponse.StorageKey
+  nameWithType: ExportResponse.StorageKey
+- uid: Seclai.Models.ExportResponse.UpdatedAt
+  name: UpdatedAt
+  href: api/Seclai.Models.ExportResponse.html#Seclai_Models_ExportResponse_UpdatedAt
+  commentId: P:Seclai.Models.ExportResponse.UpdatedAt
+  fullName: Seclai.Models.ExportResponse.UpdatedAt
+  nameWithType: ExportResponse.UpdatedAt
+- uid: Seclai.Models.ExportResponse.UpdatedAt*
+  name: UpdatedAt
+  href: api/Seclai.Models.ExportResponse.html#Seclai_Models_ExportResponse_UpdatedAt_
+  commentId: Overload:Seclai.Models.ExportResponse.UpdatedAt
+  isSpec: "True"
+  fullName: Seclai.Models.ExportResponse.UpdatedAt
+  nameWithType: ExportResponse.UpdatedAt
 - uid: Seclai.Models.FileUploadResponse
   name: FileUploadResponse
   href: api/Seclai.Models.FileUploadResponse.html
@@ -10270,6 +11286,58 @@ references:
   commentId: T:Seclai.Models.GenerateAgentStepsRequest
   fullName: Seclai.Models.GenerateAgentStepsRequest
   nameWithType: GenerateAgentStepsRequest
+- uid: Seclai.Models.GenerateAgentStepsRequest.AgentDescription
+  name: AgentDescription
+  href: api/Seclai.Models.GenerateAgentStepsRequest.html#Seclai_Models_GenerateAgentStepsRequest_AgentDescription
+  commentId: P:Seclai.Models.GenerateAgentStepsRequest.AgentDescription
+  fullName: Seclai.Models.GenerateAgentStepsRequest.AgentDescription
+  nameWithType: GenerateAgentStepsRequest.AgentDescription
+- uid: Seclai.Models.GenerateAgentStepsRequest.AgentDescription*
+  name: AgentDescription
+  href: api/Seclai.Models.GenerateAgentStepsRequest.html#Seclai_Models_GenerateAgentStepsRequest_AgentDescription_
+  commentId: Overload:Seclai.Models.GenerateAgentStepsRequest.AgentDescription
+  isSpec: "True"
+  fullName: Seclai.Models.GenerateAgentStepsRequest.AgentDescription
+  nameWithType: GenerateAgentStepsRequest.AgentDescription
+- uid: Seclai.Models.GenerateAgentStepsRequest.AgentSteps
+  name: AgentSteps
+  href: api/Seclai.Models.GenerateAgentStepsRequest.html#Seclai_Models_GenerateAgentStepsRequest_AgentSteps
+  commentId: P:Seclai.Models.GenerateAgentStepsRequest.AgentSteps
+  fullName: Seclai.Models.GenerateAgentStepsRequest.AgentSteps
+  nameWithType: GenerateAgentStepsRequest.AgentSteps
+- uid: Seclai.Models.GenerateAgentStepsRequest.AgentSteps*
+  name: AgentSteps
+  href: api/Seclai.Models.GenerateAgentStepsRequest.html#Seclai_Models_GenerateAgentStepsRequest_AgentSteps_
+  commentId: Overload:Seclai.Models.GenerateAgentStepsRequest.AgentSteps
+  isSpec: "True"
+  fullName: Seclai.Models.GenerateAgentStepsRequest.AgentSteps
+  nameWithType: GenerateAgentStepsRequest.AgentSteps
+- uid: Seclai.Models.GenerateAgentStepsRequest.Mode
+  name: Mode
+  href: api/Seclai.Models.GenerateAgentStepsRequest.html#Seclai_Models_GenerateAgentStepsRequest_Mode
+  commentId: P:Seclai.Models.GenerateAgentStepsRequest.Mode
+  fullName: Seclai.Models.GenerateAgentStepsRequest.Mode
+  nameWithType: GenerateAgentStepsRequest.Mode
+- uid: Seclai.Models.GenerateAgentStepsRequest.Mode*
+  name: Mode
+  href: api/Seclai.Models.GenerateAgentStepsRequest.html#Seclai_Models_GenerateAgentStepsRequest_Mode_
+  commentId: Overload:Seclai.Models.GenerateAgentStepsRequest.Mode
+  isSpec: "True"
+  fullName: Seclai.Models.GenerateAgentStepsRequest.Mode
+  nameWithType: GenerateAgentStepsRequest.Mode
+- uid: Seclai.Models.GenerateAgentStepsRequest.TriggerType
+  name: TriggerType
+  href: api/Seclai.Models.GenerateAgentStepsRequest.html#Seclai_Models_GenerateAgentStepsRequest_TriggerType
+  commentId: P:Seclai.Models.GenerateAgentStepsRequest.TriggerType
+  fullName: Seclai.Models.GenerateAgentStepsRequest.TriggerType
+  nameWithType: GenerateAgentStepsRequest.TriggerType
+- uid: Seclai.Models.GenerateAgentStepsRequest.TriggerType*
+  name: TriggerType
+  href: api/Seclai.Models.GenerateAgentStepsRequest.html#Seclai_Models_GenerateAgentStepsRequest_TriggerType_
+  commentId: Overload:Seclai.Models.GenerateAgentStepsRequest.TriggerType
+  isSpec: "True"
+  fullName: Seclai.Models.GenerateAgentStepsRequest.TriggerType
+  nameWithType: GenerateAgentStepsRequest.TriggerType
 - uid: Seclai.Models.GenerateAgentStepsRequest.UserInput
   name: UserInput
   href: api/Seclai.Models.GenerateAgentStepsRequest.html#Seclai_Models_GenerateAgentStepsRequest_UserInput
@@ -10289,6 +11357,45 @@ references:
   commentId: T:Seclai.Models.GenerateAgentStepsResponse
   fullName: Seclai.Models.GenerateAgentStepsResponse
   nameWithType: GenerateAgentStepsResponse
+- uid: Seclai.Models.GenerateAgentStepsResponse.AgentConfig
+  name: AgentConfig
+  href: api/Seclai.Models.GenerateAgentStepsResponse.html#Seclai_Models_GenerateAgentStepsResponse_AgentConfig
+  commentId: P:Seclai.Models.GenerateAgentStepsResponse.AgentConfig
+  fullName: Seclai.Models.GenerateAgentStepsResponse.AgentConfig
+  nameWithType: GenerateAgentStepsResponse.AgentConfig
+- uid: Seclai.Models.GenerateAgentStepsResponse.AgentConfig*
+  name: AgentConfig
+  href: api/Seclai.Models.GenerateAgentStepsResponse.html#Seclai_Models_GenerateAgentStepsResponse_AgentConfig_
+  commentId: Overload:Seclai.Models.GenerateAgentStepsResponse.AgentConfig
+  isSpec: "True"
+  fullName: Seclai.Models.GenerateAgentStepsResponse.AgentConfig
+  nameWithType: GenerateAgentStepsResponse.AgentConfig
+- uid: Seclai.Models.GenerateAgentStepsResponse.ConversationId
+  name: ConversationId
+  href: api/Seclai.Models.GenerateAgentStepsResponse.html#Seclai_Models_GenerateAgentStepsResponse_ConversationId
+  commentId: P:Seclai.Models.GenerateAgentStepsResponse.ConversationId
+  fullName: Seclai.Models.GenerateAgentStepsResponse.ConversationId
+  nameWithType: GenerateAgentStepsResponse.ConversationId
+- uid: Seclai.Models.GenerateAgentStepsResponse.ConversationId*
+  name: ConversationId
+  href: api/Seclai.Models.GenerateAgentStepsResponse.html#Seclai_Models_GenerateAgentStepsResponse_ConversationId_
+  commentId: Overload:Seclai.Models.GenerateAgentStepsResponse.ConversationId
+  isSpec: "True"
+  fullName: Seclai.Models.GenerateAgentStepsResponse.ConversationId
+  nameWithType: GenerateAgentStepsResponse.ConversationId
+- uid: Seclai.Models.GenerateAgentStepsResponse.ExamplePrompts
+  name: ExamplePrompts
+  href: api/Seclai.Models.GenerateAgentStepsResponse.html#Seclai_Models_GenerateAgentStepsResponse_ExamplePrompts
+  commentId: P:Seclai.Models.GenerateAgentStepsResponse.ExamplePrompts
+  fullName: Seclai.Models.GenerateAgentStepsResponse.ExamplePrompts
+  nameWithType: GenerateAgentStepsResponse.ExamplePrompts
+- uid: Seclai.Models.GenerateAgentStepsResponse.ExamplePrompts*
+  name: ExamplePrompts
+  href: api/Seclai.Models.GenerateAgentStepsResponse.html#Seclai_Models_GenerateAgentStepsResponse_ExamplePrompts_
+  commentId: Overload:Seclai.Models.GenerateAgentStepsResponse.ExamplePrompts
+  isSpec: "True"
+  fullName: Seclai.Models.GenerateAgentStepsResponse.ExamplePrompts
+  nameWithType: GenerateAgentStepsResponse.ExamplePrompts
 - uid: Seclai.Models.GenerateAgentStepsResponse.IntentAssessment
   name: IntentAssessment
   href: api/Seclai.Models.GenerateAgentStepsResponse.html#Seclai_Models_GenerateAgentStepsResponse_IntentAssessment
@@ -10302,6 +11409,19 @@ references:
   isSpec: "True"
   fullName: Seclai.Models.GenerateAgentStepsResponse.IntentAssessment
   nameWithType: GenerateAgentStepsResponse.IntentAssessment
+- uid: Seclai.Models.GenerateAgentStepsResponse.Note
+  name: Note
+  href: api/Seclai.Models.GenerateAgentStepsResponse.html#Seclai_Models_GenerateAgentStepsResponse_Note
+  commentId: P:Seclai.Models.GenerateAgentStepsResponse.Note
+  fullName: Seclai.Models.GenerateAgentStepsResponse.Note
+  nameWithType: GenerateAgentStepsResponse.Note
+- uid: Seclai.Models.GenerateAgentStepsResponse.Note*
+  name: Note
+  href: api/Seclai.Models.GenerateAgentStepsResponse.html#Seclai_Models_GenerateAgentStepsResponse_Note_
+  commentId: Overload:Seclai.Models.GenerateAgentStepsResponse.Note
+  isSpec: "True"
+  fullName: Seclai.Models.GenerateAgentStepsResponse.Note
+  nameWithType: GenerateAgentStepsResponse.Note
 - uid: Seclai.Models.GenerateAgentStepsResponse.Steps
   name: Steps
   href: api/Seclai.Models.GenerateAgentStepsResponse.html#Seclai_Models_GenerateAgentStepsResponse_Steps
@@ -10315,6 +11435,19 @@ references:
   isSpec: "True"
   fullName: Seclai.Models.GenerateAgentStepsResponse.Steps
   nameWithType: GenerateAgentStepsResponse.Steps
+- uid: Seclai.Models.GenerateAgentStepsResponse.Success
+  name: Success
+  href: api/Seclai.Models.GenerateAgentStepsResponse.html#Seclai_Models_GenerateAgentStepsResponse_Success
+  commentId: P:Seclai.Models.GenerateAgentStepsResponse.Success
+  fullName: Seclai.Models.GenerateAgentStepsResponse.Success
+  nameWithType: GenerateAgentStepsResponse.Success
+- uid: Seclai.Models.GenerateAgentStepsResponse.Success*
+  name: Success
+  href: api/Seclai.Models.GenerateAgentStepsResponse.html#Seclai_Models_GenerateAgentStepsResponse_Success_
+  commentId: Overload:Seclai.Models.GenerateAgentStepsResponse.Success
+  isSpec: "True"
+  fullName: Seclai.Models.GenerateAgentStepsResponse.Success
+  nameWithType: GenerateAgentStepsResponse.Success
 - uid: Seclai.Models.GenerateStepConfigRequest
   name: GenerateStepConfigRequest
   href: api/Seclai.Models.GenerateStepConfigRequest.html
@@ -10695,6 +11828,84 @@ references:
   isSpec: "True"
   fullName: Seclai.Models.GovernanceAiAssistantResponse.AssistantResponse
   nameWithType: GovernanceAiAssistantResponse.AssistantResponse
+- uid: Seclai.Models.GovernanceAiAssistantResponse.ConversationId
+  name: ConversationId
+  href: api/Seclai.Models.GovernanceAiAssistantResponse.html#Seclai_Models_GovernanceAiAssistantResponse_ConversationId
+  commentId: P:Seclai.Models.GovernanceAiAssistantResponse.ConversationId
+  fullName: Seclai.Models.GovernanceAiAssistantResponse.ConversationId
+  nameWithType: GovernanceAiAssistantResponse.ConversationId
+- uid: Seclai.Models.GovernanceAiAssistantResponse.ConversationId*
+  name: ConversationId
+  href: api/Seclai.Models.GovernanceAiAssistantResponse.html#Seclai_Models_GovernanceAiAssistantResponse_ConversationId_
+  commentId: Overload:Seclai.Models.GovernanceAiAssistantResponse.ConversationId
+  isSpec: "True"
+  fullName: Seclai.Models.GovernanceAiAssistantResponse.ConversationId
+  nameWithType: GovernanceAiAssistantResponse.ConversationId
+- uid: Seclai.Models.GovernanceAiAssistantResponse.ExamplePrompts
+  name: ExamplePrompts
+  href: api/Seclai.Models.GovernanceAiAssistantResponse.html#Seclai_Models_GovernanceAiAssistantResponse_ExamplePrompts
+  commentId: P:Seclai.Models.GovernanceAiAssistantResponse.ExamplePrompts
+  fullName: Seclai.Models.GovernanceAiAssistantResponse.ExamplePrompts
+  nameWithType: GovernanceAiAssistantResponse.ExamplePrompts
+- uid: Seclai.Models.GovernanceAiAssistantResponse.ExamplePrompts*
+  name: ExamplePrompts
+  href: api/Seclai.Models.GovernanceAiAssistantResponse.html#Seclai_Models_GovernanceAiAssistantResponse_ExamplePrompts_
+  commentId: Overload:Seclai.Models.GovernanceAiAssistantResponse.ExamplePrompts
+  isSpec: "True"
+  fullName: Seclai.Models.GovernanceAiAssistantResponse.ExamplePrompts
+  nameWithType: GovernanceAiAssistantResponse.ExamplePrompts
+- uid: Seclai.Models.GovernanceAiAssistantResponse.Note
+  name: Note
+  href: api/Seclai.Models.GovernanceAiAssistantResponse.html#Seclai_Models_GovernanceAiAssistantResponse_Note
+  commentId: P:Seclai.Models.GovernanceAiAssistantResponse.Note
+  fullName: Seclai.Models.GovernanceAiAssistantResponse.Note
+  nameWithType: GovernanceAiAssistantResponse.Note
+- uid: Seclai.Models.GovernanceAiAssistantResponse.Note*
+  name: Note
+  href: api/Seclai.Models.GovernanceAiAssistantResponse.html#Seclai_Models_GovernanceAiAssistantResponse_Note_
+  commentId: Overload:Seclai.Models.GovernanceAiAssistantResponse.Note
+  isSpec: "True"
+  fullName: Seclai.Models.GovernanceAiAssistantResponse.Note
+  nameWithType: GovernanceAiAssistantResponse.Note
+- uid: Seclai.Models.GovernanceAiAssistantResponse.PromptCallId
+  name: PromptCallId
+  href: api/Seclai.Models.GovernanceAiAssistantResponse.html#Seclai_Models_GovernanceAiAssistantResponse_PromptCallId
+  commentId: P:Seclai.Models.GovernanceAiAssistantResponse.PromptCallId
+  fullName: Seclai.Models.GovernanceAiAssistantResponse.PromptCallId
+  nameWithType: GovernanceAiAssistantResponse.PromptCallId
+- uid: Seclai.Models.GovernanceAiAssistantResponse.PromptCallId*
+  name: PromptCallId
+  href: api/Seclai.Models.GovernanceAiAssistantResponse.html#Seclai_Models_GovernanceAiAssistantResponse_PromptCallId_
+  commentId: Overload:Seclai.Models.GovernanceAiAssistantResponse.PromptCallId
+  isSpec: "True"
+  fullName: Seclai.Models.GovernanceAiAssistantResponse.PromptCallId
+  nameWithType: GovernanceAiAssistantResponse.PromptCallId
+- uid: Seclai.Models.GovernanceAiAssistantResponse.ProposedActions
+  name: ProposedActions
+  href: api/Seclai.Models.GovernanceAiAssistantResponse.html#Seclai_Models_GovernanceAiAssistantResponse_ProposedActions
+  commentId: P:Seclai.Models.GovernanceAiAssistantResponse.ProposedActions
+  fullName: Seclai.Models.GovernanceAiAssistantResponse.ProposedActions
+  nameWithType: GovernanceAiAssistantResponse.ProposedActions
+- uid: Seclai.Models.GovernanceAiAssistantResponse.ProposedActions*
+  name: ProposedActions
+  href: api/Seclai.Models.GovernanceAiAssistantResponse.html#Seclai_Models_GovernanceAiAssistantResponse_ProposedActions_
+  commentId: Overload:Seclai.Models.GovernanceAiAssistantResponse.ProposedActions
+  isSpec: "True"
+  fullName: Seclai.Models.GovernanceAiAssistantResponse.ProposedActions
+  nameWithType: GovernanceAiAssistantResponse.ProposedActions
+- uid: Seclai.Models.GovernanceAiAssistantResponse.Success
+  name: Success
+  href: api/Seclai.Models.GovernanceAiAssistantResponse.html#Seclai_Models_GovernanceAiAssistantResponse_Success
+  commentId: P:Seclai.Models.GovernanceAiAssistantResponse.Success
+  fullName: Seclai.Models.GovernanceAiAssistantResponse.Success
+  nameWithType: GovernanceAiAssistantResponse.Success
+- uid: Seclai.Models.GovernanceAiAssistantResponse.Success*
+  name: Success
+  href: api/Seclai.Models.GovernanceAiAssistantResponse.html#Seclai_Models_GovernanceAiAssistantResponse_Success_
+  commentId: Overload:Seclai.Models.GovernanceAiAssistantResponse.Success
+  isSpec: "True"
+  fullName: Seclai.Models.GovernanceAiAssistantResponse.Success
+  nameWithType: GovernanceAiAssistantResponse.Success
 - uid: Seclai.Models.GovernanceConversationResponse
   name: GovernanceConversationResponse
   href: api/Seclai.Models.GovernanceConversationResponse.html
@@ -11094,6 +12305,32 @@ references:
   commentId: T:Seclai.Models.InlineTextReplaceRequest
   fullName: Seclai.Models.InlineTextReplaceRequest
   nameWithType: InlineTextReplaceRequest
+- uid: Seclai.Models.InlineTextReplaceRequest.ContentType
+  name: ContentType
+  href: api/Seclai.Models.InlineTextReplaceRequest.html#Seclai_Models_InlineTextReplaceRequest_ContentType
+  commentId: P:Seclai.Models.InlineTextReplaceRequest.ContentType
+  fullName: Seclai.Models.InlineTextReplaceRequest.ContentType
+  nameWithType: InlineTextReplaceRequest.ContentType
+- uid: Seclai.Models.InlineTextReplaceRequest.ContentType*
+  name: ContentType
+  href: api/Seclai.Models.InlineTextReplaceRequest.html#Seclai_Models_InlineTextReplaceRequest_ContentType_
+  commentId: Overload:Seclai.Models.InlineTextReplaceRequest.ContentType
+  isSpec: "True"
+  fullName: Seclai.Models.InlineTextReplaceRequest.ContentType
+  nameWithType: InlineTextReplaceRequest.ContentType
+- uid: Seclai.Models.InlineTextReplaceRequest.Metadata
+  name: Metadata
+  href: api/Seclai.Models.InlineTextReplaceRequest.html#Seclai_Models_InlineTextReplaceRequest_Metadata
+  commentId: P:Seclai.Models.InlineTextReplaceRequest.Metadata
+  fullName: Seclai.Models.InlineTextReplaceRequest.Metadata
+  nameWithType: InlineTextReplaceRequest.Metadata
+- uid: Seclai.Models.InlineTextReplaceRequest.Metadata*
+  name: Metadata
+  href: api/Seclai.Models.InlineTextReplaceRequest.html#Seclai_Models_InlineTextReplaceRequest_Metadata_
+  commentId: Overload:Seclai.Models.InlineTextReplaceRequest.Metadata
+  isSpec: "True"
+  fullName: Seclai.Models.InlineTextReplaceRequest.Metadata
+  nameWithType: InlineTextReplaceRequest.Metadata
 - uid: Seclai.Models.InlineTextReplaceRequest.Text
   name: Text
   href: api/Seclai.Models.InlineTextReplaceRequest.html#Seclai_Models_InlineTextReplaceRequest_Text
@@ -11107,12 +12344,38 @@ references:
   isSpec: "True"
   fullName: Seclai.Models.InlineTextReplaceRequest.Text
   nameWithType: InlineTextReplaceRequest.Text
+- uid: Seclai.Models.InlineTextReplaceRequest.Title
+  name: Title
+  href: api/Seclai.Models.InlineTextReplaceRequest.html#Seclai_Models_InlineTextReplaceRequest_Title
+  commentId: P:Seclai.Models.InlineTextReplaceRequest.Title
+  fullName: Seclai.Models.InlineTextReplaceRequest.Title
+  nameWithType: InlineTextReplaceRequest.Title
+- uid: Seclai.Models.InlineTextReplaceRequest.Title*
+  name: Title
+  href: api/Seclai.Models.InlineTextReplaceRequest.html#Seclai_Models_InlineTextReplaceRequest_Title_
+  commentId: Overload:Seclai.Models.InlineTextReplaceRequest.Title
+  isSpec: "True"
+  fullName: Seclai.Models.InlineTextReplaceRequest.Title
+  nameWithType: InlineTextReplaceRequest.Title
 - uid: Seclai.Models.InlineTextUploadRequest
   name: InlineTextUploadRequest
   href: api/Seclai.Models.InlineTextUploadRequest.html
   commentId: T:Seclai.Models.InlineTextUploadRequest
   fullName: Seclai.Models.InlineTextUploadRequest
   nameWithType: InlineTextUploadRequest
+- uid: Seclai.Models.InlineTextUploadRequest.ContentType
+  name: ContentType
+  href: api/Seclai.Models.InlineTextUploadRequest.html#Seclai_Models_InlineTextUploadRequest_ContentType
+  commentId: P:Seclai.Models.InlineTextUploadRequest.ContentType
+  fullName: Seclai.Models.InlineTextUploadRequest.ContentType
+  nameWithType: InlineTextUploadRequest.ContentType
+- uid: Seclai.Models.InlineTextUploadRequest.ContentType*
+  name: ContentType
+  href: api/Seclai.Models.InlineTextUploadRequest.html#Seclai_Models_InlineTextUploadRequest_ContentType_
+  commentId: Overload:Seclai.Models.InlineTextUploadRequest.ContentType
+  isSpec: "True"
+  fullName: Seclai.Models.InlineTextUploadRequest.ContentType
+  nameWithType: InlineTextUploadRequest.ContentType
 - uid: Seclai.Models.InlineTextUploadRequest.Metadata
   name: Metadata
   href: api/Seclai.Models.InlineTextUploadRequest.html#Seclai_Models_InlineTextUploadRequest_Metadata
@@ -11236,6 +12499,38 @@ references:
   isSpec: "True"
   fullName: Seclai.Models.KnowledgeBaseListResponse.Total
   nameWithType: KnowledgeBaseListResponse.Total
+- uid: Seclai.Models.KnowledgeBaseMetadataKeyStatsResponse
+  name: KnowledgeBaseMetadataKeyStatsResponse
+  href: api/Seclai.Models.KnowledgeBaseMetadataKeyStatsResponse.html
+  commentId: T:Seclai.Models.KnowledgeBaseMetadataKeyStatsResponse
+  fullName: Seclai.Models.KnowledgeBaseMetadataKeyStatsResponse
+  nameWithType: KnowledgeBaseMetadataKeyStatsResponse
+- uid: Seclai.Models.KnowledgeBaseMetadataKeyStatsResponse.KnowledgeBaseId
+  name: KnowledgeBaseId
+  href: api/Seclai.Models.KnowledgeBaseMetadataKeyStatsResponse.html#Seclai_Models_KnowledgeBaseMetadataKeyStatsResponse_KnowledgeBaseId
+  commentId: P:Seclai.Models.KnowledgeBaseMetadataKeyStatsResponse.KnowledgeBaseId
+  fullName: Seclai.Models.KnowledgeBaseMetadataKeyStatsResponse.KnowledgeBaseId
+  nameWithType: KnowledgeBaseMetadataKeyStatsResponse.KnowledgeBaseId
+- uid: Seclai.Models.KnowledgeBaseMetadataKeyStatsResponse.KnowledgeBaseId*
+  name: KnowledgeBaseId
+  href: api/Seclai.Models.KnowledgeBaseMetadataKeyStatsResponse.html#Seclai_Models_KnowledgeBaseMetadataKeyStatsResponse_KnowledgeBaseId_
+  commentId: Overload:Seclai.Models.KnowledgeBaseMetadataKeyStatsResponse.KnowledgeBaseId
+  isSpec: "True"
+  fullName: Seclai.Models.KnowledgeBaseMetadataKeyStatsResponse.KnowledgeBaseId
+  nameWithType: KnowledgeBaseMetadataKeyStatsResponse.KnowledgeBaseId
+- uid: Seclai.Models.KnowledgeBaseMetadataKeyStatsResponse.Windows
+  name: Windows
+  href: api/Seclai.Models.KnowledgeBaseMetadataKeyStatsResponse.html#Seclai_Models_KnowledgeBaseMetadataKeyStatsResponse_Windows
+  commentId: P:Seclai.Models.KnowledgeBaseMetadataKeyStatsResponse.Windows
+  fullName: Seclai.Models.KnowledgeBaseMetadataKeyStatsResponse.Windows
+  nameWithType: KnowledgeBaseMetadataKeyStatsResponse.Windows
+- uid: Seclai.Models.KnowledgeBaseMetadataKeyStatsResponse.Windows*
+  name: Windows
+  href: api/Seclai.Models.KnowledgeBaseMetadataKeyStatsResponse.html#Seclai_Models_KnowledgeBaseMetadataKeyStatsResponse_Windows_
+  commentId: Overload:Seclai.Models.KnowledgeBaseMetadataKeyStatsResponse.Windows
+  isSpec: "True"
+  fullName: Seclai.Models.KnowledgeBaseMetadataKeyStatsResponse.Windows
+  nameWithType: KnowledgeBaseMetadataKeyStatsResponse.Windows
 - uid: Seclai.Models.KnowledgeBaseResponse
   name: KnowledgeBaseResponse
   href: api/Seclai.Models.KnowledgeBaseResponse.html
@@ -11255,6 +12550,45 @@ references:
   isSpec: "True"
   fullName: Seclai.Models.KnowledgeBaseResponse.CreatedAt
   nameWithType: KnowledgeBaseResponse.CreatedAt
+- uid: Seclai.Models.KnowledgeBaseResponse.DefaultScoreThreshold
+  name: DefaultScoreThreshold
+  href: api/Seclai.Models.KnowledgeBaseResponse.html#Seclai_Models_KnowledgeBaseResponse_DefaultScoreThreshold
+  commentId: P:Seclai.Models.KnowledgeBaseResponse.DefaultScoreThreshold
+  fullName: Seclai.Models.KnowledgeBaseResponse.DefaultScoreThreshold
+  nameWithType: KnowledgeBaseResponse.DefaultScoreThreshold
+- uid: Seclai.Models.KnowledgeBaseResponse.DefaultScoreThreshold*
+  name: DefaultScoreThreshold
+  href: api/Seclai.Models.KnowledgeBaseResponse.html#Seclai_Models_KnowledgeBaseResponse_DefaultScoreThreshold_
+  commentId: Overload:Seclai.Models.KnowledgeBaseResponse.DefaultScoreThreshold
+  isSpec: "True"
+  fullName: Seclai.Models.KnowledgeBaseResponse.DefaultScoreThreshold
+  nameWithType: KnowledgeBaseResponse.DefaultScoreThreshold
+- uid: Seclai.Models.KnowledgeBaseResponse.DefaultTopK
+  name: DefaultTopK
+  href: api/Seclai.Models.KnowledgeBaseResponse.html#Seclai_Models_KnowledgeBaseResponse_DefaultTopK
+  commentId: P:Seclai.Models.KnowledgeBaseResponse.DefaultTopK
+  fullName: Seclai.Models.KnowledgeBaseResponse.DefaultTopK
+  nameWithType: KnowledgeBaseResponse.DefaultTopK
+- uid: Seclai.Models.KnowledgeBaseResponse.DefaultTopK*
+  name: DefaultTopK
+  href: api/Seclai.Models.KnowledgeBaseResponse.html#Seclai_Models_KnowledgeBaseResponse_DefaultTopK_
+  commentId: Overload:Seclai.Models.KnowledgeBaseResponse.DefaultTopK
+  isSpec: "True"
+  fullName: Seclai.Models.KnowledgeBaseResponse.DefaultTopK
+  nameWithType: KnowledgeBaseResponse.DefaultTopK
+- uid: Seclai.Models.KnowledgeBaseResponse.DefaultTopN
+  name: DefaultTopN
+  href: api/Seclai.Models.KnowledgeBaseResponse.html#Seclai_Models_KnowledgeBaseResponse_DefaultTopN
+  commentId: P:Seclai.Models.KnowledgeBaseResponse.DefaultTopN
+  fullName: Seclai.Models.KnowledgeBaseResponse.DefaultTopN
+  nameWithType: KnowledgeBaseResponse.DefaultTopN
+- uid: Seclai.Models.KnowledgeBaseResponse.DefaultTopN*
+  name: DefaultTopN
+  href: api/Seclai.Models.KnowledgeBaseResponse.html#Seclai_Models_KnowledgeBaseResponse_DefaultTopN_
+  commentId: Overload:Seclai.Models.KnowledgeBaseResponse.DefaultTopN
+  isSpec: "True"
+  fullName: Seclai.Models.KnowledgeBaseResponse.DefaultTopN
+  nameWithType: KnowledgeBaseResponse.DefaultTopN
 - uid: Seclai.Models.KnowledgeBaseResponse.Description
   name: Description
   href: api/Seclai.Models.KnowledgeBaseResponse.html#Seclai_Models_KnowledgeBaseResponse_Description
@@ -11294,6 +12628,32 @@ references:
   isSpec: "True"
   fullName: Seclai.Models.KnowledgeBaseResponse.Name
   nameWithType: KnowledgeBaseResponse.Name
+- uid: Seclai.Models.KnowledgeBaseResponse.Readonly
+  name: Readonly
+  href: api/Seclai.Models.KnowledgeBaseResponse.html#Seclai_Models_KnowledgeBaseResponse_Readonly
+  commentId: P:Seclai.Models.KnowledgeBaseResponse.Readonly
+  fullName: Seclai.Models.KnowledgeBaseResponse.Readonly
+  nameWithType: KnowledgeBaseResponse.Readonly
+- uid: Seclai.Models.KnowledgeBaseResponse.Readonly*
+  name: Readonly
+  href: api/Seclai.Models.KnowledgeBaseResponse.html#Seclai_Models_KnowledgeBaseResponse_Readonly_
+  commentId: Overload:Seclai.Models.KnowledgeBaseResponse.Readonly
+  isSpec: "True"
+  fullName: Seclai.Models.KnowledgeBaseResponse.Readonly
+  nameWithType: KnowledgeBaseResponse.Readonly
+- uid: Seclai.Models.KnowledgeBaseResponse.RerankerModel
+  name: RerankerModel
+  href: api/Seclai.Models.KnowledgeBaseResponse.html#Seclai_Models_KnowledgeBaseResponse_RerankerModel
+  commentId: P:Seclai.Models.KnowledgeBaseResponse.RerankerModel
+  fullName: Seclai.Models.KnowledgeBaseResponse.RerankerModel
+  nameWithType: KnowledgeBaseResponse.RerankerModel
+- uid: Seclai.Models.KnowledgeBaseResponse.RerankerModel*
+  name: RerankerModel
+  href: api/Seclai.Models.KnowledgeBaseResponse.html#Seclai_Models_KnowledgeBaseResponse_RerankerModel_
+  commentId: Overload:Seclai.Models.KnowledgeBaseResponse.RerankerModel
+  isSpec: "True"
+  fullName: Seclai.Models.KnowledgeBaseResponse.RerankerModel
+  nameWithType: KnowledgeBaseResponse.RerankerModel
 - uid: Seclai.Models.KnowledgeBaseResponse.SolutionId
   name: SolutionId
   href: api/Seclai.Models.KnowledgeBaseResponse.html#Seclai_Models_KnowledgeBaseResponse_SolutionId
@@ -11307,6 +12667,19 @@ references:
   isSpec: "True"
   fullName: Seclai.Models.KnowledgeBaseResponse.SolutionId
   nameWithType: KnowledgeBaseResponse.SolutionId
+- uid: Seclai.Models.KnowledgeBaseResponse.Sources
+  name: Sources
+  href: api/Seclai.Models.KnowledgeBaseResponse.html#Seclai_Models_KnowledgeBaseResponse_Sources
+  commentId: P:Seclai.Models.KnowledgeBaseResponse.Sources
+  fullName: Seclai.Models.KnowledgeBaseResponse.Sources
+  nameWithType: KnowledgeBaseResponse.Sources
+- uid: Seclai.Models.KnowledgeBaseResponse.Sources*
+  name: Sources
+  href: api/Seclai.Models.KnowledgeBaseResponse.html#Seclai_Models_KnowledgeBaseResponse_Sources_
+  commentId: Overload:Seclai.Models.KnowledgeBaseResponse.Sources
+  isSpec: "True"
+  fullName: Seclai.Models.KnowledgeBaseResponse.Sources
+  nameWithType: KnowledgeBaseResponse.Sources
 - uid: Seclai.Models.KnowledgeBaseResponse.UpdatedAt
   name: UpdatedAt
   href: api/Seclai.Models.KnowledgeBaseResponse.html#Seclai_Models_KnowledgeBaseResponse_UpdatedAt
@@ -11460,6 +12833,19 @@ references:
   isSpec: "True"
   fullName: Seclai.Models.MemoryBankAiAssistantRequest.CurrentConfig
   nameWithType: MemoryBankAiAssistantRequest.CurrentConfig
+- uid: Seclai.Models.MemoryBankAiAssistantRequest.HistorySince
+  name: HistorySince
+  href: api/Seclai.Models.MemoryBankAiAssistantRequest.html#Seclai_Models_MemoryBankAiAssistantRequest_HistorySince
+  commentId: P:Seclai.Models.MemoryBankAiAssistantRequest.HistorySince
+  fullName: Seclai.Models.MemoryBankAiAssistantRequest.HistorySince
+  nameWithType: MemoryBankAiAssistantRequest.HistorySince
+- uid: Seclai.Models.MemoryBankAiAssistantRequest.HistorySince*
+  name: HistorySince
+  href: api/Seclai.Models.MemoryBankAiAssistantRequest.html#Seclai_Models_MemoryBankAiAssistantRequest_HistorySince_
+  commentId: Overload:Seclai.Models.MemoryBankAiAssistantRequest.HistorySince
+  isSpec: "True"
+  fullName: Seclai.Models.MemoryBankAiAssistantRequest.HistorySince
+  nameWithType: MemoryBankAiAssistantRequest.HistorySince
 - uid: Seclai.Models.MemoryBankAiAssistantRequest.UserInput
   name: UserInput
   href: api/Seclai.Models.MemoryBankAiAssistantRequest.html#Seclai_Models_MemoryBankAiAssistantRequest_UserInput
@@ -11589,6 +12975,32 @@ references:
   isSpec: "True"
   fullName: Seclai.Models.MemoryBankConversationTurnResponse.AiNote
   nameWithType: MemoryBankConversationTurnResponse.AiNote
+- uid: Seclai.Models.MemoryBankConversationTurnResponse.ConversationId
+  name: ConversationId
+  href: api/Seclai.Models.MemoryBankConversationTurnResponse.html#Seclai_Models_MemoryBankConversationTurnResponse_ConversationId
+  commentId: P:Seclai.Models.MemoryBankConversationTurnResponse.ConversationId
+  fullName: Seclai.Models.MemoryBankConversationTurnResponse.ConversationId
+  nameWithType: MemoryBankConversationTurnResponse.ConversationId
+- uid: Seclai.Models.MemoryBankConversationTurnResponse.ConversationId*
+  name: ConversationId
+  href: api/Seclai.Models.MemoryBankConversationTurnResponse.html#Seclai_Models_MemoryBankConversationTurnResponse_ConversationId_
+  commentId: Overload:Seclai.Models.MemoryBankConversationTurnResponse.ConversationId
+  isSpec: "True"
+  fullName: Seclai.Models.MemoryBankConversationTurnResponse.ConversationId
+  nameWithType: MemoryBankConversationTurnResponse.ConversationId
+- uid: Seclai.Models.MemoryBankConversationTurnResponse.ResultingConfig
+  name: ResultingConfig
+  href: api/Seclai.Models.MemoryBankConversationTurnResponse.html#Seclai_Models_MemoryBankConversationTurnResponse_ResultingConfig
+  commentId: P:Seclai.Models.MemoryBankConversationTurnResponse.ResultingConfig
+  fullName: Seclai.Models.MemoryBankConversationTurnResponse.ResultingConfig
+  nameWithType: MemoryBankConversationTurnResponse.ResultingConfig
+- uid: Seclai.Models.MemoryBankConversationTurnResponse.ResultingConfig*
+  name: ResultingConfig
+  href: api/Seclai.Models.MemoryBankConversationTurnResponse.html#Seclai_Models_MemoryBankConversationTurnResponse_ResultingConfig_
+  commentId: Overload:Seclai.Models.MemoryBankConversationTurnResponse.ResultingConfig
+  isSpec: "True"
+  fullName: Seclai.Models.MemoryBankConversationTurnResponse.ResultingConfig
+  nameWithType: MemoryBankConversationTurnResponse.ResultingConfig
 - uid: Seclai.Models.MemoryBankConversationTurnResponse.UserInput
   name: UserInput
   href: api/Seclai.Models.MemoryBankConversationTurnResponse.html#Seclai_Models_MemoryBankConversationTurnResponse_UserInput
@@ -11834,6 +13246,45 @@ references:
   commentId: T:Seclai.Models.MemoryBankResponse
   fullName: Seclai.Models.MemoryBankResponse
   nameWithType: MemoryBankResponse
+- uid: Seclai.Models.MemoryBankResponse.ChunkOverlap
+  name: ChunkOverlap
+  href: api/Seclai.Models.MemoryBankResponse.html#Seclai_Models_MemoryBankResponse_ChunkOverlap
+  commentId: P:Seclai.Models.MemoryBankResponse.ChunkOverlap
+  fullName: Seclai.Models.MemoryBankResponse.ChunkOverlap
+  nameWithType: MemoryBankResponse.ChunkOverlap
+- uid: Seclai.Models.MemoryBankResponse.ChunkOverlap*
+  name: ChunkOverlap
+  href: api/Seclai.Models.MemoryBankResponse.html#Seclai_Models_MemoryBankResponse_ChunkOverlap_
+  commentId: Overload:Seclai.Models.MemoryBankResponse.ChunkOverlap
+  isSpec: "True"
+  fullName: Seclai.Models.MemoryBankResponse.ChunkOverlap
+  nameWithType: MemoryBankResponse.ChunkOverlap
+- uid: Seclai.Models.MemoryBankResponse.ChunkSize
+  name: ChunkSize
+  href: api/Seclai.Models.MemoryBankResponse.html#Seclai_Models_MemoryBankResponse_ChunkSize
+  commentId: P:Seclai.Models.MemoryBankResponse.ChunkSize
+  fullName: Seclai.Models.MemoryBankResponse.ChunkSize
+  nameWithType: MemoryBankResponse.ChunkSize
+- uid: Seclai.Models.MemoryBankResponse.ChunkSize*
+  name: ChunkSize
+  href: api/Seclai.Models.MemoryBankResponse.html#Seclai_Models_MemoryBankResponse_ChunkSize_
+  commentId: Overload:Seclai.Models.MemoryBankResponse.ChunkSize
+  isSpec: "True"
+  fullName: Seclai.Models.MemoryBankResponse.ChunkSize
+  nameWithType: MemoryBankResponse.ChunkSize
+- uid: Seclai.Models.MemoryBankResponse.CompactionPrompt
+  name: CompactionPrompt
+  href: api/Seclai.Models.MemoryBankResponse.html#Seclai_Models_MemoryBankResponse_CompactionPrompt
+  commentId: P:Seclai.Models.MemoryBankResponse.CompactionPrompt
+  fullName: Seclai.Models.MemoryBankResponse.CompactionPrompt
+  nameWithType: MemoryBankResponse.CompactionPrompt
+- uid: Seclai.Models.MemoryBankResponse.CompactionPrompt*
+  name: CompactionPrompt
+  href: api/Seclai.Models.MemoryBankResponse.html#Seclai_Models_MemoryBankResponse_CompactionPrompt_
+  commentId: Overload:Seclai.Models.MemoryBankResponse.CompactionPrompt
+  isSpec: "True"
+  fullName: Seclai.Models.MemoryBankResponse.CompactionPrompt
+  nameWithType: MemoryBankResponse.CompactionPrompt
 - uid: Seclai.Models.MemoryBankResponse.CreatedAt
   name: CreatedAt
   href: api/Seclai.Models.MemoryBankResponse.html#Seclai_Models_MemoryBankResponse_CreatedAt
@@ -11860,6 +13311,32 @@ references:
   isSpec: "True"
   fullName: Seclai.Models.MemoryBankResponse.Description
   nameWithType: MemoryBankResponse.Description
+- uid: Seclai.Models.MemoryBankResponse.Dimensions
+  name: Dimensions
+  href: api/Seclai.Models.MemoryBankResponse.html#Seclai_Models_MemoryBankResponse_Dimensions
+  commentId: P:Seclai.Models.MemoryBankResponse.Dimensions
+  fullName: Seclai.Models.MemoryBankResponse.Dimensions
+  nameWithType: MemoryBankResponse.Dimensions
+- uid: Seclai.Models.MemoryBankResponse.Dimensions*
+  name: Dimensions
+  href: api/Seclai.Models.MemoryBankResponse.html#Seclai_Models_MemoryBankResponse_Dimensions_
+  commentId: Overload:Seclai.Models.MemoryBankResponse.Dimensions
+  isSpec: "True"
+  fullName: Seclai.Models.MemoryBankResponse.Dimensions
+  nameWithType: MemoryBankResponse.Dimensions
+- uid: Seclai.Models.MemoryBankResponse.EmbeddingModel
+  name: EmbeddingModel
+  href: api/Seclai.Models.MemoryBankResponse.html#Seclai_Models_MemoryBankResponse_EmbeddingModel
+  commentId: P:Seclai.Models.MemoryBankResponse.EmbeddingModel
+  fullName: Seclai.Models.MemoryBankResponse.EmbeddingModel
+  nameWithType: MemoryBankResponse.EmbeddingModel
+- uid: Seclai.Models.MemoryBankResponse.EmbeddingModel*
+  name: EmbeddingModel
+  href: api/Seclai.Models.MemoryBankResponse.html#Seclai_Models_MemoryBankResponse_EmbeddingModel_
+  commentId: Overload:Seclai.Models.MemoryBankResponse.EmbeddingModel
+  isSpec: "True"
+  fullName: Seclai.Models.MemoryBankResponse.EmbeddingModel
+  nameWithType: MemoryBankResponse.EmbeddingModel
 - uid: Seclai.Models.MemoryBankResponse.Id
   name: Id
   href: api/Seclai.Models.MemoryBankResponse.html#Seclai_Models_MemoryBankResponse_Id
@@ -11873,6 +13350,58 @@ references:
   isSpec: "True"
   fullName: Seclai.Models.MemoryBankResponse.Id
   nameWithType: MemoryBankResponse.Id
+- uid: Seclai.Models.MemoryBankResponse.MaxAgeDays
+  name: MaxAgeDays
+  href: api/Seclai.Models.MemoryBankResponse.html#Seclai_Models_MemoryBankResponse_MaxAgeDays
+  commentId: P:Seclai.Models.MemoryBankResponse.MaxAgeDays
+  fullName: Seclai.Models.MemoryBankResponse.MaxAgeDays
+  nameWithType: MemoryBankResponse.MaxAgeDays
+- uid: Seclai.Models.MemoryBankResponse.MaxAgeDays*
+  name: MaxAgeDays
+  href: api/Seclai.Models.MemoryBankResponse.html#Seclai_Models_MemoryBankResponse_MaxAgeDays_
+  commentId: Overload:Seclai.Models.MemoryBankResponse.MaxAgeDays
+  isSpec: "True"
+  fullName: Seclai.Models.MemoryBankResponse.MaxAgeDays
+  nameWithType: MemoryBankResponse.MaxAgeDays
+- uid: Seclai.Models.MemoryBankResponse.MaxSizeTokens
+  name: MaxSizeTokens
+  href: api/Seclai.Models.MemoryBankResponse.html#Seclai_Models_MemoryBankResponse_MaxSizeTokens
+  commentId: P:Seclai.Models.MemoryBankResponse.MaxSizeTokens
+  fullName: Seclai.Models.MemoryBankResponse.MaxSizeTokens
+  nameWithType: MemoryBankResponse.MaxSizeTokens
+- uid: Seclai.Models.MemoryBankResponse.MaxSizeTokens*
+  name: MaxSizeTokens
+  href: api/Seclai.Models.MemoryBankResponse.html#Seclai_Models_MemoryBankResponse_MaxSizeTokens_
+  commentId: Overload:Seclai.Models.MemoryBankResponse.MaxSizeTokens
+  isSpec: "True"
+  fullName: Seclai.Models.MemoryBankResponse.MaxSizeTokens
+  nameWithType: MemoryBankResponse.MaxSizeTokens
+- uid: Seclai.Models.MemoryBankResponse.MaxTurns
+  name: MaxTurns
+  href: api/Seclai.Models.MemoryBankResponse.html#Seclai_Models_MemoryBankResponse_MaxTurns
+  commentId: P:Seclai.Models.MemoryBankResponse.MaxTurns
+  fullName: Seclai.Models.MemoryBankResponse.MaxTurns
+  nameWithType: MemoryBankResponse.MaxTurns
+- uid: Seclai.Models.MemoryBankResponse.MaxTurns*
+  name: MaxTurns
+  href: api/Seclai.Models.MemoryBankResponse.html#Seclai_Models_MemoryBankResponse_MaxTurns_
+  commentId: Overload:Seclai.Models.MemoryBankResponse.MaxTurns
+  isSpec: "True"
+  fullName: Seclai.Models.MemoryBankResponse.MaxTurns
+  nameWithType: MemoryBankResponse.MaxTurns
+- uid: Seclai.Models.MemoryBankResponse.Mode
+  name: Mode
+  href: api/Seclai.Models.MemoryBankResponse.html#Seclai_Models_MemoryBankResponse_Mode
+  commentId: P:Seclai.Models.MemoryBankResponse.Mode
+  fullName: Seclai.Models.MemoryBankResponse.Mode
+  nameWithType: MemoryBankResponse.Mode
+- uid: Seclai.Models.MemoryBankResponse.Mode*
+  name: Mode
+  href: api/Seclai.Models.MemoryBankResponse.html#Seclai_Models_MemoryBankResponse_Mode_
+  commentId: Overload:Seclai.Models.MemoryBankResponse.Mode
+  isSpec: "True"
+  fullName: Seclai.Models.MemoryBankResponse.Mode
+  nameWithType: MemoryBankResponse.Mode
 - uid: Seclai.Models.MemoryBankResponse.Name
   name: Name
   href: api/Seclai.Models.MemoryBankResponse.html#Seclai_Models_MemoryBankResponse_Name
@@ -11886,6 +13415,19 @@ references:
   isSpec: "True"
   fullName: Seclai.Models.MemoryBankResponse.Name
   nameWithType: MemoryBankResponse.Name
+- uid: Seclai.Models.MemoryBankResponse.RetentionDays
+  name: RetentionDays
+  href: api/Seclai.Models.MemoryBankResponse.html#Seclai_Models_MemoryBankResponse_RetentionDays
+  commentId: P:Seclai.Models.MemoryBankResponse.RetentionDays
+  fullName: Seclai.Models.MemoryBankResponse.RetentionDays
+  nameWithType: MemoryBankResponse.RetentionDays
+- uid: Seclai.Models.MemoryBankResponse.RetentionDays*
+  name: RetentionDays
+  href: api/Seclai.Models.MemoryBankResponse.html#Seclai_Models_MemoryBankResponse_RetentionDays_
+  commentId: Overload:Seclai.Models.MemoryBankResponse.RetentionDays
+  isSpec: "True"
+  fullName: Seclai.Models.MemoryBankResponse.RetentionDays
+  nameWithType: MemoryBankResponse.RetentionDays
 - uid: Seclai.Models.MemoryBankResponse.SolutionId
   name: SolutionId
   href: api/Seclai.Models.MemoryBankResponse.html#Seclai_Models_MemoryBankResponse_SolutionId
@@ -11899,6 +13441,19 @@ references:
   isSpec: "True"
   fullName: Seclai.Models.MemoryBankResponse.SolutionId
   nameWithType: MemoryBankResponse.SolutionId
+- uid: Seclai.Models.MemoryBankResponse.SourceConnectionId
+  name: SourceConnectionId
+  href: api/Seclai.Models.MemoryBankResponse.html#Seclai_Models_MemoryBankResponse_SourceConnectionId
+  commentId: P:Seclai.Models.MemoryBankResponse.SourceConnectionId
+  fullName: Seclai.Models.MemoryBankResponse.SourceConnectionId
+  nameWithType: MemoryBankResponse.SourceConnectionId
+- uid: Seclai.Models.MemoryBankResponse.SourceConnectionId*
+  name: SourceConnectionId
+  href: api/Seclai.Models.MemoryBankResponse.html#Seclai_Models_MemoryBankResponse_SourceConnectionId_
+  commentId: Overload:Seclai.Models.MemoryBankResponse.SourceConnectionId
+  isSpec: "True"
+  fullName: Seclai.Models.MemoryBankResponse.SourceConnectionId
+  nameWithType: MemoryBankResponse.SourceConnectionId
 - uid: Seclai.Models.MemoryBankResponse.StripQuotedReplyChains
   name: StripQuotedReplyChains
   href: api/Seclai.Models.MemoryBankResponse.html#Seclai_Models_MemoryBankResponse_StripQuotedReplyChains
@@ -11983,6 +13538,283 @@ references:
   isSpec: "True"
   fullName: Seclai.Models.MemoryBankStatsOptions.StartDate
   nameWithType: MemoryBankStatsOptions.StartDate
+- uid: Seclai.Models.MetadataKeyCountResponse
+  name: MetadataKeyCountResponse
+  href: api/Seclai.Models.MetadataKeyCountResponse.html
+  commentId: T:Seclai.Models.MetadataKeyCountResponse
+  fullName: Seclai.Models.MetadataKeyCountResponse
+  nameWithType: MetadataKeyCountResponse
+- uid: Seclai.Models.MetadataKeyCountResponse.DistinctValues
+  name: DistinctValues
+  href: api/Seclai.Models.MetadataKeyCountResponse.html#Seclai_Models_MetadataKeyCountResponse_DistinctValues
+  commentId: P:Seclai.Models.MetadataKeyCountResponse.DistinctValues
+  fullName: Seclai.Models.MetadataKeyCountResponse.DistinctValues
+  nameWithType: MetadataKeyCountResponse.DistinctValues
+- uid: Seclai.Models.MetadataKeyCountResponse.DistinctValues*
+  name: DistinctValues
+  href: api/Seclai.Models.MetadataKeyCountResponse.html#Seclai_Models_MetadataKeyCountResponse_DistinctValues_
+  commentId: Overload:Seclai.Models.MetadataKeyCountResponse.DistinctValues
+  isSpec: "True"
+  fullName: Seclai.Models.MetadataKeyCountResponse.DistinctValues
+  nameWithType: MetadataKeyCountResponse.DistinctValues
+- uid: Seclai.Models.MetadataKeyCountResponse.Items
+  name: Items
+  href: api/Seclai.Models.MetadataKeyCountResponse.html#Seclai_Models_MetadataKeyCountResponse_Items
+  commentId: P:Seclai.Models.MetadataKeyCountResponse.Items
+  fullName: Seclai.Models.MetadataKeyCountResponse.Items
+  nameWithType: MetadataKeyCountResponse.Items
+- uid: Seclai.Models.MetadataKeyCountResponse.Items*
+  name: Items
+  href: api/Seclai.Models.MetadataKeyCountResponse.html#Seclai_Models_MetadataKeyCountResponse_Items_
+  commentId: Overload:Seclai.Models.MetadataKeyCountResponse.Items
+  isSpec: "True"
+  fullName: Seclai.Models.MetadataKeyCountResponse.Items
+  nameWithType: MetadataKeyCountResponse.Items
+- uid: Seclai.Models.MetadataKeyCountResponse.Key
+  name: Key
+  href: api/Seclai.Models.MetadataKeyCountResponse.html#Seclai_Models_MetadataKeyCountResponse_Key
+  commentId: P:Seclai.Models.MetadataKeyCountResponse.Key
+  fullName: Seclai.Models.MetadataKeyCountResponse.Key
+  nameWithType: MetadataKeyCountResponse.Key
+- uid: Seclai.Models.MetadataKeyCountResponse.Key*
+  name: Key
+  href: api/Seclai.Models.MetadataKeyCountResponse.html#Seclai_Models_MetadataKeyCountResponse_Key_
+  commentId: Overload:Seclai.Models.MetadataKeyCountResponse.Key
+  isSpec: "True"
+  fullName: Seclai.Models.MetadataKeyCountResponse.Key
+  nameWithType: MetadataKeyCountResponse.Key
+- uid: Seclai.Models.MetadataKeyCountResponse.TopValues
+  name: TopValues
+  href: api/Seclai.Models.MetadataKeyCountResponse.html#Seclai_Models_MetadataKeyCountResponse_TopValues
+  commentId: P:Seclai.Models.MetadataKeyCountResponse.TopValues
+  fullName: Seclai.Models.MetadataKeyCountResponse.TopValues
+  nameWithType: MetadataKeyCountResponse.TopValues
+- uid: Seclai.Models.MetadataKeyCountResponse.TopValues*
+  name: TopValues
+  href: api/Seclai.Models.MetadataKeyCountResponse.html#Seclai_Models_MetadataKeyCountResponse_TopValues_
+  commentId: Overload:Seclai.Models.MetadataKeyCountResponse.TopValues
+  isSpec: "True"
+  fullName: Seclai.Models.MetadataKeyCountResponse.TopValues
+  nameWithType: MetadataKeyCountResponse.TopValues
+- uid: Seclai.Models.MetadataKeyDeclaration
+  name: MetadataKeyDeclaration
+  href: api/Seclai.Models.MetadataKeyDeclaration.html
+  commentId: T:Seclai.Models.MetadataKeyDeclaration
+  fullName: Seclai.Models.MetadataKeyDeclaration
+  nameWithType: MetadataKeyDeclaration
+- uid: Seclai.Models.MetadataKeyDeclaration.Key
+  name: Key
+  href: api/Seclai.Models.MetadataKeyDeclaration.html#Seclai_Models_MetadataKeyDeclaration_Key
+  commentId: P:Seclai.Models.MetadataKeyDeclaration.Key
+  fullName: Seclai.Models.MetadataKeyDeclaration.Key
+  nameWithType: MetadataKeyDeclaration.Key
+- uid: Seclai.Models.MetadataKeyDeclaration.Key*
+  name: Key
+  href: api/Seclai.Models.MetadataKeyDeclaration.html#Seclai_Models_MetadataKeyDeclaration_Key_
+  commentId: Overload:Seclai.Models.MetadataKeyDeclaration.Key
+  isSpec: "True"
+  fullName: Seclai.Models.MetadataKeyDeclaration.Key
+  nameWithType: MetadataKeyDeclaration.Key
+- uid: Seclai.Models.MetadataKeyDeclaration.Origin
+  name: Origin
+  href: api/Seclai.Models.MetadataKeyDeclaration.html#Seclai_Models_MetadataKeyDeclaration_Origin
+  commentId: P:Seclai.Models.MetadataKeyDeclaration.Origin
+  fullName: Seclai.Models.MetadataKeyDeclaration.Origin
+  nameWithType: MetadataKeyDeclaration.Origin
+- uid: Seclai.Models.MetadataKeyDeclaration.Origin*
+  name: Origin
+  href: api/Seclai.Models.MetadataKeyDeclaration.html#Seclai_Models_MetadataKeyDeclaration_Origin_
+  commentId: Overload:Seclai.Models.MetadataKeyDeclaration.Origin
+  isSpec: "True"
+  fullName: Seclai.Models.MetadataKeyDeclaration.Origin
+  nameWithType: MetadataKeyDeclaration.Origin
+- uid: Seclai.Models.MetadataKeyDeclaration.Required
+  name: Required
+  href: api/Seclai.Models.MetadataKeyDeclaration.html#Seclai_Models_MetadataKeyDeclaration_Required
+  commentId: P:Seclai.Models.MetadataKeyDeclaration.Required
+  fullName: Seclai.Models.MetadataKeyDeclaration.Required
+  nameWithType: MetadataKeyDeclaration.Required
+- uid: Seclai.Models.MetadataKeyDeclaration.Required*
+  name: Required
+  href: api/Seclai.Models.MetadataKeyDeclaration.html#Seclai_Models_MetadataKeyDeclaration_Required_
+  commentId: Overload:Seclai.Models.MetadataKeyDeclaration.Required
+  isSpec: "True"
+  fullName: Seclai.Models.MetadataKeyDeclaration.Required
+  nameWithType: MetadataKeyDeclaration.Required
+- uid: Seclai.Models.MetadataKeyWindowResponse
+  name: MetadataKeyWindowResponse
+  href: api/Seclai.Models.MetadataKeyWindowResponse.html
+  commentId: T:Seclai.Models.MetadataKeyWindowResponse
+  fullName: Seclai.Models.MetadataKeyWindowResponse
+  nameWithType: MetadataKeyWindowResponse
+- uid: Seclai.Models.MetadataKeyWindowResponse.Keys
+  name: Keys
+  href: api/Seclai.Models.MetadataKeyWindowResponse.html#Seclai_Models_MetadataKeyWindowResponse_Keys
+  commentId: P:Seclai.Models.MetadataKeyWindowResponse.Keys
+  fullName: Seclai.Models.MetadataKeyWindowResponse.Keys
+  nameWithType: MetadataKeyWindowResponse.Keys
+- uid: Seclai.Models.MetadataKeyWindowResponse.Keys*
+  name: Keys
+  href: api/Seclai.Models.MetadataKeyWindowResponse.html#Seclai_Models_MetadataKeyWindowResponse_Keys_
+  commentId: Overload:Seclai.Models.MetadataKeyWindowResponse.Keys
+  isSpec: "True"
+  fullName: Seclai.Models.MetadataKeyWindowResponse.Keys
+  nameWithType: MetadataKeyWindowResponse.Keys
+- uid: Seclai.Models.MetadataKeyWindowResponse.Since
+  name: Since
+  href: api/Seclai.Models.MetadataKeyWindowResponse.html#Seclai_Models_MetadataKeyWindowResponse_Since
+  commentId: P:Seclai.Models.MetadataKeyWindowResponse.Since
+  fullName: Seclai.Models.MetadataKeyWindowResponse.Since
+  nameWithType: MetadataKeyWindowResponse.Since
+- uid: Seclai.Models.MetadataKeyWindowResponse.Since*
+  name: Since
+  href: api/Seclai.Models.MetadataKeyWindowResponse.html#Seclai_Models_MetadataKeyWindowResponse_Since_
+  commentId: Overload:Seclai.Models.MetadataKeyWindowResponse.Since
+  isSpec: "True"
+  fullName: Seclai.Models.MetadataKeyWindowResponse.Since
+  nameWithType: MetadataKeyWindowResponse.Since
+- uid: Seclai.Models.MetadataKeyWindowResponse.TotalItems
+  name: TotalItems
+  href: api/Seclai.Models.MetadataKeyWindowResponse.html#Seclai_Models_MetadataKeyWindowResponse_TotalItems
+  commentId: P:Seclai.Models.MetadataKeyWindowResponse.TotalItems
+  fullName: Seclai.Models.MetadataKeyWindowResponse.TotalItems
+  nameWithType: MetadataKeyWindowResponse.TotalItems
+- uid: Seclai.Models.MetadataKeyWindowResponse.TotalItems*
+  name: TotalItems
+  href: api/Seclai.Models.MetadataKeyWindowResponse.html#Seclai_Models_MetadataKeyWindowResponse_TotalItems_
+  commentId: Overload:Seclai.Models.MetadataKeyWindowResponse.TotalItems
+  isSpec: "True"
+  fullName: Seclai.Models.MetadataKeyWindowResponse.TotalItems
+  nameWithType: MetadataKeyWindowResponse.TotalItems
+- uid: Seclai.Models.MetadataKeyWindowResponse.Window
+  name: Window
+  href: api/Seclai.Models.MetadataKeyWindowResponse.html#Seclai_Models_MetadataKeyWindowResponse_Window
+  commentId: P:Seclai.Models.MetadataKeyWindowResponse.Window
+  fullName: Seclai.Models.MetadataKeyWindowResponse.Window
+  nameWithType: MetadataKeyWindowResponse.Window
+- uid: Seclai.Models.MetadataKeyWindowResponse.Window*
+  name: Window
+  href: api/Seclai.Models.MetadataKeyWindowResponse.html#Seclai_Models_MetadataKeyWindowResponse_Window_
+  commentId: Overload:Seclai.Models.MetadataKeyWindowResponse.Window
+  isSpec: "True"
+  fullName: Seclai.Models.MetadataKeyWindowResponse.Window
+  nameWithType: MetadataKeyWindowResponse.Window
+- uid: Seclai.Models.MetadataKeysResponse
+  name: MetadataKeysResponse
+  href: api/Seclai.Models.MetadataKeysResponse.html
+  commentId: T:Seclai.Models.MetadataKeysResponse
+  fullName: Seclai.Models.MetadataKeysResponse
+  nameWithType: MetadataKeysResponse
+- uid: Seclai.Models.MetadataKeysResponse.AcceptsAnySourceKey
+  name: AcceptsAnySourceKey
+  href: api/Seclai.Models.MetadataKeysResponse.html#Seclai_Models_MetadataKeysResponse_AcceptsAnySourceKey
+  commentId: P:Seclai.Models.MetadataKeysResponse.AcceptsAnySourceKey
+  fullName: Seclai.Models.MetadataKeysResponse.AcceptsAnySourceKey
+  nameWithType: MetadataKeysResponse.AcceptsAnySourceKey
+- uid: Seclai.Models.MetadataKeysResponse.AcceptsAnySourceKey*
+  name: AcceptsAnySourceKey
+  href: api/Seclai.Models.MetadataKeysResponse.html#Seclai_Models_MetadataKeysResponse_AcceptsAnySourceKey_
+  commentId: Overload:Seclai.Models.MetadataKeysResponse.AcceptsAnySourceKey
+  isSpec: "True"
+  fullName: Seclai.Models.MetadataKeysResponse.AcceptsAnySourceKey
+  nameWithType: MetadataKeysResponse.AcceptsAnySourceKey
+- uid: Seclai.Models.MetadataKeysResponse.AgentId
+  name: AgentId
+  href: api/Seclai.Models.MetadataKeysResponse.html#Seclai_Models_MetadataKeysResponse_AgentId
+  commentId: P:Seclai.Models.MetadataKeysResponse.AgentId
+  fullName: Seclai.Models.MetadataKeysResponse.AgentId
+  nameWithType: MetadataKeysResponse.AgentId
+- uid: Seclai.Models.MetadataKeysResponse.AgentId*
+  name: AgentId
+  href: api/Seclai.Models.MetadataKeysResponse.html#Seclai_Models_MetadataKeysResponse_AgentId_
+  commentId: Overload:Seclai.Models.MetadataKeysResponse.AgentId
+  isSpec: "True"
+  fullName: Seclai.Models.MetadataKeysResponse.AgentId
+  nameWithType: MetadataKeysResponse.AgentId
+- uid: Seclai.Models.MetadataKeysResponse.DeclarableKeys
+  name: DeclarableKeys
+  href: api/Seclai.Models.MetadataKeysResponse.html#Seclai_Models_MetadataKeysResponse_DeclarableKeys
+  commentId: P:Seclai.Models.MetadataKeysResponse.DeclarableKeys
+  fullName: Seclai.Models.MetadataKeysResponse.DeclarableKeys
+  nameWithType: MetadataKeysResponse.DeclarableKeys
+- uid: Seclai.Models.MetadataKeysResponse.DeclarableKeys*
+  name: DeclarableKeys
+  href: api/Seclai.Models.MetadataKeysResponse.html#Seclai_Models_MetadataKeysResponse_DeclarableKeys_
+  commentId: Overload:Seclai.Models.MetadataKeysResponse.DeclarableKeys
+  isSpec: "True"
+  fullName: Seclai.Models.MetadataKeysResponse.DeclarableKeys
+  nameWithType: MetadataKeysResponse.DeclarableKeys
+- uid: Seclai.Models.MetadataKeysResponse.MetadataKeys
+  name: MetadataKeys
+  href: api/Seclai.Models.MetadataKeysResponse.html#Seclai_Models_MetadataKeysResponse_MetadataKeys
+  commentId: P:Seclai.Models.MetadataKeysResponse.MetadataKeys
+  fullName: Seclai.Models.MetadataKeysResponse.MetadataKeys
+  nameWithType: MetadataKeysResponse.MetadataKeys
+- uid: Seclai.Models.MetadataKeysResponse.MetadataKeys*
+  name: MetadataKeys
+  href: api/Seclai.Models.MetadataKeysResponse.html#Seclai_Models_MetadataKeysResponse_MetadataKeys_
+  commentId: Overload:Seclai.Models.MetadataKeysResponse.MetadataKeys
+  isSpec: "True"
+  fullName: Seclai.Models.MetadataKeysResponse.MetadataKeys
+  nameWithType: MetadataKeysResponse.MetadataKeys
+- uid: Seclai.Models.MetadataKeysResponse.TriggerId
+  name: TriggerId
+  href: api/Seclai.Models.MetadataKeysResponse.html#Seclai_Models_MetadataKeysResponse_TriggerId
+  commentId: P:Seclai.Models.MetadataKeysResponse.TriggerId
+  fullName: Seclai.Models.MetadataKeysResponse.TriggerId
+  nameWithType: MetadataKeysResponse.TriggerId
+- uid: Seclai.Models.MetadataKeysResponse.TriggerId*
+  name: TriggerId
+  href: api/Seclai.Models.MetadataKeysResponse.html#Seclai_Models_MetadataKeysResponse_TriggerId_
+  commentId: Overload:Seclai.Models.MetadataKeysResponse.TriggerId
+  isSpec: "True"
+  fullName: Seclai.Models.MetadataKeysResponse.TriggerId
+  nameWithType: MetadataKeysResponse.TriggerId
+- uid: Seclai.Models.MetadataKeysResponse.Warnings
+  name: Warnings
+  href: api/Seclai.Models.MetadataKeysResponse.html#Seclai_Models_MetadataKeysResponse_Warnings
+  commentId: P:Seclai.Models.MetadataKeysResponse.Warnings
+  fullName: Seclai.Models.MetadataKeysResponse.Warnings
+  nameWithType: MetadataKeysResponse.Warnings
+- uid: Seclai.Models.MetadataKeysResponse.Warnings*
+  name: Warnings
+  href: api/Seclai.Models.MetadataKeysResponse.html#Seclai_Models_MetadataKeysResponse_Warnings_
+  commentId: Overload:Seclai.Models.MetadataKeysResponse.Warnings
+  isSpec: "True"
+  fullName: Seclai.Models.MetadataKeysResponse.Warnings
+  nameWithType: MetadataKeysResponse.Warnings
+- uid: Seclai.Models.MetadataValueCountResponse
+  name: MetadataValueCountResponse
+  href: api/Seclai.Models.MetadataValueCountResponse.html
+  commentId: T:Seclai.Models.MetadataValueCountResponse
+  fullName: Seclai.Models.MetadataValueCountResponse
+  nameWithType: MetadataValueCountResponse
+- uid: Seclai.Models.MetadataValueCountResponse.Items
+  name: Items
+  href: api/Seclai.Models.MetadataValueCountResponse.html#Seclai_Models_MetadataValueCountResponse_Items
+  commentId: P:Seclai.Models.MetadataValueCountResponse.Items
+  fullName: Seclai.Models.MetadataValueCountResponse.Items
+  nameWithType: MetadataValueCountResponse.Items
+- uid: Seclai.Models.MetadataValueCountResponse.Items*
+  name: Items
+  href: api/Seclai.Models.MetadataValueCountResponse.html#Seclai_Models_MetadataValueCountResponse_Items_
+  commentId: Overload:Seclai.Models.MetadataValueCountResponse.Items
+  isSpec: "True"
+  fullName: Seclai.Models.MetadataValueCountResponse.Items
+  nameWithType: MetadataValueCountResponse.Items
+- uid: Seclai.Models.MetadataValueCountResponse.Value
+  name: Value
+  href: api/Seclai.Models.MetadataValueCountResponse.html#Seclai_Models_MetadataValueCountResponse_Value
+  commentId: P:Seclai.Models.MetadataValueCountResponse.Value
+  fullName: Seclai.Models.MetadataValueCountResponse.Value
+  nameWithType: MetadataValueCountResponse.Value
+- uid: Seclai.Models.MetadataValueCountResponse.Value*
+  name: Value
+  href: api/Seclai.Models.MetadataValueCountResponse.html#Seclai_Models_MetadataValueCountResponse_Value_
+  commentId: Overload:Seclai.Models.MetadataValueCountResponse.Value
+  isSpec: "True"
+  fullName: Seclai.Models.MetadataValueCountResponse.Value
+  nameWithType: MetadataValueCountResponse.Value
 - uid: Seclai.Models.ModalityRateResponse
   name: ModalityRateResponse
   href: api/Seclai.Models.ModalityRateResponse.html
@@ -14132,6 +15964,64 @@ references:
   isSpec: "True"
   fullName: Seclai.Models.ProposedActionResponse.Params
   nameWithType: ProposedActionResponse.Params
+- uid: Seclai.Models.ProposedActionResponse.Preview
+  name: Preview
+  href: api/Seclai.Models.ProposedActionResponse.html#Seclai_Models_ProposedActionResponse_Preview
+  commentId: P:Seclai.Models.ProposedActionResponse.Preview
+  fullName: Seclai.Models.ProposedActionResponse.Preview
+  nameWithType: ProposedActionResponse.Preview
+- uid: Seclai.Models.ProposedActionResponse.Preview*
+  name: Preview
+  href: api/Seclai.Models.ProposedActionResponse.html#Seclai_Models_ProposedActionResponse_Preview_
+  commentId: Overload:Seclai.Models.ProposedActionResponse.Preview
+  isSpec: "True"
+  fullName: Seclai.Models.ProposedActionResponse.Preview
+  nameWithType: ProposedActionResponse.Preview
+- uid: Seclai.Models.ProposedPolicyActionResponse
+  name: ProposedPolicyActionResponse
+  href: api/Seclai.Models.ProposedPolicyActionResponse.html
+  commentId: T:Seclai.Models.ProposedPolicyActionResponse
+  fullName: Seclai.Models.ProposedPolicyActionResponse
+  nameWithType: ProposedPolicyActionResponse
+- uid: Seclai.Models.ProposedPolicyActionResponse.ActionType
+  name: ActionType
+  href: api/Seclai.Models.ProposedPolicyActionResponse.html#Seclai_Models_ProposedPolicyActionResponse_ActionType
+  commentId: P:Seclai.Models.ProposedPolicyActionResponse.ActionType
+  fullName: Seclai.Models.ProposedPolicyActionResponse.ActionType
+  nameWithType: ProposedPolicyActionResponse.ActionType
+- uid: Seclai.Models.ProposedPolicyActionResponse.ActionType*
+  name: ActionType
+  href: api/Seclai.Models.ProposedPolicyActionResponse.html#Seclai_Models_ProposedPolicyActionResponse_ActionType_
+  commentId: Overload:Seclai.Models.ProposedPolicyActionResponse.ActionType
+  isSpec: "True"
+  fullName: Seclai.Models.ProposedPolicyActionResponse.ActionType
+  nameWithType: ProposedPolicyActionResponse.ActionType
+- uid: Seclai.Models.ProposedPolicyActionResponse.Description
+  name: Description
+  href: api/Seclai.Models.ProposedPolicyActionResponse.html#Seclai_Models_ProposedPolicyActionResponse_Description
+  commentId: P:Seclai.Models.ProposedPolicyActionResponse.Description
+  fullName: Seclai.Models.ProposedPolicyActionResponse.Description
+  nameWithType: ProposedPolicyActionResponse.Description
+- uid: Seclai.Models.ProposedPolicyActionResponse.Description*
+  name: Description
+  href: api/Seclai.Models.ProposedPolicyActionResponse.html#Seclai_Models_ProposedPolicyActionResponse_Description_
+  commentId: Overload:Seclai.Models.ProposedPolicyActionResponse.Description
+  isSpec: "True"
+  fullName: Seclai.Models.ProposedPolicyActionResponse.Description
+  nameWithType: ProposedPolicyActionResponse.Description
+- uid: Seclai.Models.ProposedPolicyActionResponse.Params
+  name: Params
+  href: api/Seclai.Models.ProposedPolicyActionResponse.html#Seclai_Models_ProposedPolicyActionResponse_Params
+  commentId: P:Seclai.Models.ProposedPolicyActionResponse.Params
+  fullName: Seclai.Models.ProposedPolicyActionResponse.Params
+  nameWithType: ProposedPolicyActionResponse.Params
+- uid: Seclai.Models.ProposedPolicyActionResponse.Params*
+  name: Params
+  href: api/Seclai.Models.ProposedPolicyActionResponse.html#Seclai_Models_ProposedPolicyActionResponse_Params_
+  commentId: Overload:Seclai.Models.ProposedPolicyActionResponse.Params
+  isSpec: "True"
+  fullName: Seclai.Models.ProposedPolicyActionResponse.Params
+  nameWithType: ProposedPolicyActionResponse.Params
 - uid: Seclai.Models.ProviderGroupResponse
   name: ProviderGroupResponse
   href: api/Seclai.Models.ProviderGroupResponse.html
@@ -14435,6 +16325,122 @@ references:
   isSpec: "True"
   fullName: Seclai.Models.ResumeInboundResponse.Resumed
   nameWithType: ResumeInboundResponse.Resumed
+- uid: Seclai.Models.RunAgentAndPollOptions
+  name: RunAgentAndPollOptions
+  href: api/Seclai.Models.RunAgentAndPollOptions.html
+  commentId: T:Seclai.Models.RunAgentAndPollOptions
+  fullName: Seclai.Models.RunAgentAndPollOptions
+  nameWithType: RunAgentAndPollOptions
+- uid: Seclai.Models.RunAgentAndPollOptions.IncludeStepOutputs
+  name: IncludeStepOutputs
+  href: api/Seclai.Models.RunAgentAndPollOptions.html#Seclai_Models_RunAgentAndPollOptions_IncludeStepOutputs
+  commentId: P:Seclai.Models.RunAgentAndPollOptions.IncludeStepOutputs
+  fullName: Seclai.Models.RunAgentAndPollOptions.IncludeStepOutputs
+  nameWithType: RunAgentAndPollOptions.IncludeStepOutputs
+- uid: Seclai.Models.RunAgentAndPollOptions.IncludeStepOutputs*
+  name: IncludeStepOutputs
+  href: api/Seclai.Models.RunAgentAndPollOptions.html#Seclai_Models_RunAgentAndPollOptions_IncludeStepOutputs_
+  commentId: Overload:Seclai.Models.RunAgentAndPollOptions.IncludeStepOutputs
+  isSpec: "True"
+  fullName: Seclai.Models.RunAgentAndPollOptions.IncludeStepOutputs
+  nameWithType: RunAgentAndPollOptions.IncludeStepOutputs
+- uid: Seclai.Models.RunAgentAndPollOptions.PollInterval
+  name: PollInterval
+  href: api/Seclai.Models.RunAgentAndPollOptions.html#Seclai_Models_RunAgentAndPollOptions_PollInterval
+  commentId: P:Seclai.Models.RunAgentAndPollOptions.PollInterval
+  fullName: Seclai.Models.RunAgentAndPollOptions.PollInterval
+  nameWithType: RunAgentAndPollOptions.PollInterval
+- uid: Seclai.Models.RunAgentAndPollOptions.PollInterval*
+  name: PollInterval
+  href: api/Seclai.Models.RunAgentAndPollOptions.html#Seclai_Models_RunAgentAndPollOptions_PollInterval_
+  commentId: Overload:Seclai.Models.RunAgentAndPollOptions.PollInterval
+  isSpec: "True"
+  fullName: Seclai.Models.RunAgentAndPollOptions.PollInterval
+  nameWithType: RunAgentAndPollOptions.PollInterval
+- uid: Seclai.Models.RunAgentAndPollOptions.ReturnOnResult
+  name: ReturnOnResult
+  href: api/Seclai.Models.RunAgentAndPollOptions.html#Seclai_Models_RunAgentAndPollOptions_ReturnOnResult
+  commentId: P:Seclai.Models.RunAgentAndPollOptions.ReturnOnResult
+  fullName: Seclai.Models.RunAgentAndPollOptions.ReturnOnResult
+  nameWithType: RunAgentAndPollOptions.ReturnOnResult
+- uid: Seclai.Models.RunAgentAndPollOptions.ReturnOnResult*
+  name: ReturnOnResult
+  href: api/Seclai.Models.RunAgentAndPollOptions.html#Seclai_Models_RunAgentAndPollOptions_ReturnOnResult_
+  commentId: Overload:Seclai.Models.RunAgentAndPollOptions.ReturnOnResult
+  isSpec: "True"
+  fullName: Seclai.Models.RunAgentAndPollOptions.ReturnOnResult
+  nameWithType: RunAgentAndPollOptions.ReturnOnResult
+- uid: Seclai.Models.RunAgentAndPollOptions.ThrowOnIncomplete
+  name: ThrowOnIncomplete
+  href: api/Seclai.Models.RunAgentAndPollOptions.html#Seclai_Models_RunAgentAndPollOptions_ThrowOnIncomplete
+  commentId: P:Seclai.Models.RunAgentAndPollOptions.ThrowOnIncomplete
+  fullName: Seclai.Models.RunAgentAndPollOptions.ThrowOnIncomplete
+  nameWithType: RunAgentAndPollOptions.ThrowOnIncomplete
+- uid: Seclai.Models.RunAgentAndPollOptions.ThrowOnIncomplete*
+  name: ThrowOnIncomplete
+  href: api/Seclai.Models.RunAgentAndPollOptions.html#Seclai_Models_RunAgentAndPollOptions_ThrowOnIncomplete_
+  commentId: Overload:Seclai.Models.RunAgentAndPollOptions.ThrowOnIncomplete
+  isSpec: "True"
+  fullName: Seclai.Models.RunAgentAndPollOptions.ThrowOnIncomplete
+  nameWithType: RunAgentAndPollOptions.ThrowOnIncomplete
+- uid: Seclai.Models.RunAgentAndPollOptions.Timeout
+  name: Timeout
+  href: api/Seclai.Models.RunAgentAndPollOptions.html#Seclai_Models_RunAgentAndPollOptions_Timeout
+  commentId: P:Seclai.Models.RunAgentAndPollOptions.Timeout
+  fullName: Seclai.Models.RunAgentAndPollOptions.Timeout
+  nameWithType: RunAgentAndPollOptions.Timeout
+- uid: Seclai.Models.RunAgentAndPollOptions.Timeout*
+  name: Timeout
+  href: api/Seclai.Models.RunAgentAndPollOptions.html#Seclai_Models_RunAgentAndPollOptions_Timeout_
+  commentId: Overload:Seclai.Models.RunAgentAndPollOptions.Timeout
+  isSpec: "True"
+  fullName: Seclai.Models.RunAgentAndPollOptions.Timeout
+  nameWithType: RunAgentAndPollOptions.Timeout
+- uid: Seclai.Models.RunStreamingAgentAndWaitOptions
+  name: RunStreamingAgentAndWaitOptions
+  href: api/Seclai.Models.RunStreamingAgentAndWaitOptions.html
+  commentId: T:Seclai.Models.RunStreamingAgentAndWaitOptions
+  fullName: Seclai.Models.RunStreamingAgentAndWaitOptions
+  nameWithType: RunStreamingAgentAndWaitOptions
+- uid: Seclai.Models.RunStreamingAgentAndWaitOptions.ReturnOnResult
+  name: ReturnOnResult
+  href: api/Seclai.Models.RunStreamingAgentAndWaitOptions.html#Seclai_Models_RunStreamingAgentAndWaitOptions_ReturnOnResult
+  commentId: P:Seclai.Models.RunStreamingAgentAndWaitOptions.ReturnOnResult
+  fullName: Seclai.Models.RunStreamingAgentAndWaitOptions.ReturnOnResult
+  nameWithType: RunStreamingAgentAndWaitOptions.ReturnOnResult
+- uid: Seclai.Models.RunStreamingAgentAndWaitOptions.ReturnOnResult*
+  name: ReturnOnResult
+  href: api/Seclai.Models.RunStreamingAgentAndWaitOptions.html#Seclai_Models_RunStreamingAgentAndWaitOptions_ReturnOnResult_
+  commentId: Overload:Seclai.Models.RunStreamingAgentAndWaitOptions.ReturnOnResult
+  isSpec: "True"
+  fullName: Seclai.Models.RunStreamingAgentAndWaitOptions.ReturnOnResult
+  nameWithType: RunStreamingAgentAndWaitOptions.ReturnOnResult
+- uid: Seclai.Models.RunStreamingAgentAndWaitOptions.ThrowOnIncomplete
+  name: ThrowOnIncomplete
+  href: api/Seclai.Models.RunStreamingAgentAndWaitOptions.html#Seclai_Models_RunStreamingAgentAndWaitOptions_ThrowOnIncomplete
+  commentId: P:Seclai.Models.RunStreamingAgentAndWaitOptions.ThrowOnIncomplete
+  fullName: Seclai.Models.RunStreamingAgentAndWaitOptions.ThrowOnIncomplete
+  nameWithType: RunStreamingAgentAndWaitOptions.ThrowOnIncomplete
+- uid: Seclai.Models.RunStreamingAgentAndWaitOptions.ThrowOnIncomplete*
+  name: ThrowOnIncomplete
+  href: api/Seclai.Models.RunStreamingAgentAndWaitOptions.html#Seclai_Models_RunStreamingAgentAndWaitOptions_ThrowOnIncomplete_
+  commentId: Overload:Seclai.Models.RunStreamingAgentAndWaitOptions.ThrowOnIncomplete
+  isSpec: "True"
+  fullName: Seclai.Models.RunStreamingAgentAndWaitOptions.ThrowOnIncomplete
+  nameWithType: RunStreamingAgentAndWaitOptions.ThrowOnIncomplete
+- uid: Seclai.Models.RunStreamingAgentAndWaitOptions.Timeout
+  name: Timeout
+  href: api/Seclai.Models.RunStreamingAgentAndWaitOptions.html#Seclai_Models_RunStreamingAgentAndWaitOptions_Timeout
+  commentId: P:Seclai.Models.RunStreamingAgentAndWaitOptions.Timeout
+  fullName: Seclai.Models.RunStreamingAgentAndWaitOptions.Timeout
+  nameWithType: RunStreamingAgentAndWaitOptions.Timeout
+- uid: Seclai.Models.RunStreamingAgentAndWaitOptions.Timeout*
+  name: Timeout
+  href: api/Seclai.Models.RunStreamingAgentAndWaitOptions.html#Seclai_Models_RunStreamingAgentAndWaitOptions_Timeout_
+  commentId: Overload:Seclai.Models.RunStreamingAgentAndWaitOptions.Timeout
+  isSpec: "True"
+  fullName: Seclai.Models.RunStreamingAgentAndWaitOptions.Timeout
+  nameWithType: RunStreamingAgentAndWaitOptions.Timeout
 - uid: Seclai.Models.SearchResponse
   name: SearchResponse
   href: api/Seclai.Models.SearchResponse.html
@@ -14653,6 +16659,44 @@ references:
   isSpec: "True"
   fullName: Seclai.Models.SetEmailTriggerConfigRequest.RunOnAttachmentMismatch
   nameWithType: SetEmailTriggerConfigRequest.RunOnAttachmentMismatch
+- uid: Seclai.Models.SetMetadataKeysRequest
+  name: SetMetadataKeysRequest
+  href: api/Seclai.Models.SetMetadataKeysRequest.html
+  commentId: T:Seclai.Models.SetMetadataKeysRequest
+  fullName: Seclai.Models.SetMetadataKeysRequest
+  nameWithType: SetMetadataKeysRequest
+- uid: Seclai.Models.SetMetadataKeysRequest.#ctor(System.Collections.Generic.List{Seclai.Models.MetadataKeyDeclaration})
+  name: SetMetadataKeysRequest(List<MetadataKeyDeclaration>)
+  href: api/Seclai.Models.SetMetadataKeysRequest.html#Seclai_Models_SetMetadataKeysRequest__ctor_System_Collections_Generic_List_Seclai_Models_MetadataKeyDeclaration__
+  commentId: M:Seclai.Models.SetMetadataKeysRequest.#ctor(System.Collections.Generic.List{Seclai.Models.MetadataKeyDeclaration})
+  name.vb: New(List(Of MetadataKeyDeclaration))
+  fullName: Seclai.Models.SetMetadataKeysRequest.SetMetadataKeysRequest(System.Collections.Generic.List<Seclai.Models.MetadataKeyDeclaration>)
+  fullName.vb: Seclai.Models.SetMetadataKeysRequest.New(System.Collections.Generic.List(Of Seclai.Models.MetadataKeyDeclaration))
+  nameWithType: SetMetadataKeysRequest.SetMetadataKeysRequest(List<MetadataKeyDeclaration>)
+  nameWithType.vb: SetMetadataKeysRequest.New(List(Of MetadataKeyDeclaration))
+- uid: Seclai.Models.SetMetadataKeysRequest.#ctor*
+  name: SetMetadataKeysRequest
+  href: api/Seclai.Models.SetMetadataKeysRequest.html#Seclai_Models_SetMetadataKeysRequest__ctor_
+  commentId: Overload:Seclai.Models.SetMetadataKeysRequest.#ctor
+  isSpec: "True"
+  name.vb: New
+  fullName: Seclai.Models.SetMetadataKeysRequest.SetMetadataKeysRequest
+  fullName.vb: Seclai.Models.SetMetadataKeysRequest.New
+  nameWithType: SetMetadataKeysRequest.SetMetadataKeysRequest
+  nameWithType.vb: SetMetadataKeysRequest.New
+- uid: Seclai.Models.SetMetadataKeysRequest.MetadataKeys
+  name: MetadataKeys
+  href: api/Seclai.Models.SetMetadataKeysRequest.html#Seclai_Models_SetMetadataKeysRequest_MetadataKeys
+  commentId: P:Seclai.Models.SetMetadataKeysRequest.MetadataKeys
+  fullName: Seclai.Models.SetMetadataKeysRequest.MetadataKeys
+  nameWithType: SetMetadataKeysRequest.MetadataKeys
+- uid: Seclai.Models.SetMetadataKeysRequest.MetadataKeys*
+  name: MetadataKeys
+  href: api/Seclai.Models.SetMetadataKeysRequest.html#Seclai_Models_SetMetadataKeysRequest_MetadataKeys_
+  commentId: Overload:Seclai.Models.SetMetadataKeysRequest.MetadataKeys
+  isSpec: "True"
+  fullName: Seclai.Models.SetMetadataKeysRequest.MetadataKeys
+  nameWithType: SetMetadataKeysRequest.MetadataKeys
 - uid: Seclai.Models.SetSlackTriggerConfigRequest
   name: SetSlackTriggerConfigRequest
   href: api/Seclai.Models.SetSlackTriggerConfigRequest.html
@@ -14672,6 +16716,19 @@ references:
   isSpec: "True"
   fullName: Seclai.Models.SetSlackTriggerConfigRequest.Activation
   nameWithType: SetSlackTriggerConfigRequest.Activation
+- uid: Seclai.Models.SetSlackTriggerConfigRequest.Alias
+  name: Alias
+  href: api/Seclai.Models.SetSlackTriggerConfigRequest.html#Seclai_Models_SetSlackTriggerConfigRequest_Alias
+  commentId: P:Seclai.Models.SetSlackTriggerConfigRequest.Alias
+  fullName: Seclai.Models.SetSlackTriggerConfigRequest.Alias
+  nameWithType: SetSlackTriggerConfigRequest.Alias
+- uid: Seclai.Models.SetSlackTriggerConfigRequest.Alias*
+  name: Alias
+  href: api/Seclai.Models.SetSlackTriggerConfigRequest.html#Seclai_Models_SetSlackTriggerConfigRequest_Alias_
+  commentId: Overload:Seclai.Models.SetSlackTriggerConfigRequest.Alias
+  isSpec: "True"
+  fullName: Seclai.Models.SetSlackTriggerConfigRequest.Alias
+  nameWithType: SetSlackTriggerConfigRequest.Alias
 - uid: Seclai.Models.SetSlackTriggerConfigRequest.AllowDms
   name: AllowDms
   href: api/Seclai.Models.SetSlackTriggerConfigRequest.html#Seclai_Models_SetSlackTriggerConfigRequest_AllowDms
@@ -15041,6 +17098,19 @@ references:
   isSpec: "True"
   fullName: Seclai.Models.SlackTriggerConfigResponse.AgentId
   nameWithType: SlackTriggerConfigResponse.AgentId
+- uid: Seclai.Models.SlackTriggerConfigResponse.Alias
+  name: Alias
+  href: api/Seclai.Models.SlackTriggerConfigResponse.html#Seclai_Models_SlackTriggerConfigResponse_Alias
+  commentId: P:Seclai.Models.SlackTriggerConfigResponse.Alias
+  fullName: Seclai.Models.SlackTriggerConfigResponse.Alias
+  nameWithType: SlackTriggerConfigResponse.Alias
+- uid: Seclai.Models.SlackTriggerConfigResponse.Alias*
+  name: Alias
+  href: api/Seclai.Models.SlackTriggerConfigResponse.html#Seclai_Models_SlackTriggerConfigResponse_Alias_
+  commentId: Overload:Seclai.Models.SlackTriggerConfigResponse.Alias
+  isSpec: "True"
+  fullName: Seclai.Models.SlackTriggerConfigResponse.Alias
+  nameWithType: SlackTriggerConfigResponse.Alias
 - uid: Seclai.Models.SlackTriggerConfigResponse.AllowDms
   name: AllowDms
   href: api/Seclai.Models.SlackTriggerConfigResponse.html#Seclai_Models_SlackTriggerConfigResponse_AllowDms
@@ -15236,6 +17306,51 @@ references:
   isSpec: "True"
   fullName: Seclai.Models.SlackTriggerConfigResponse.Visibility
   nameWithType: SlackTriggerConfigResponse.Visibility
+- uid: Seclai.Models.SolutionAgentResponse
+  name: SolutionAgentResponse
+  href: api/Seclai.Models.SolutionAgentResponse.html
+  commentId: T:Seclai.Models.SolutionAgentResponse
+  fullName: Seclai.Models.SolutionAgentResponse
+  nameWithType: SolutionAgentResponse
+- uid: Seclai.Models.SolutionAgentResponse.Id
+  name: Id
+  href: api/Seclai.Models.SolutionAgentResponse.html#Seclai_Models_SolutionAgentResponse_Id
+  commentId: P:Seclai.Models.SolutionAgentResponse.Id
+  fullName: Seclai.Models.SolutionAgentResponse.Id
+  nameWithType: SolutionAgentResponse.Id
+- uid: Seclai.Models.SolutionAgentResponse.Id*
+  name: Id
+  href: api/Seclai.Models.SolutionAgentResponse.html#Seclai_Models_SolutionAgentResponse_Id_
+  commentId: Overload:Seclai.Models.SolutionAgentResponse.Id
+  isSpec: "True"
+  fullName: Seclai.Models.SolutionAgentResponse.Id
+  nameWithType: SolutionAgentResponse.Id
+- uid: Seclai.Models.SolutionAgentResponse.KnowledgeBaseIds
+  name: KnowledgeBaseIds
+  href: api/Seclai.Models.SolutionAgentResponse.html#Seclai_Models_SolutionAgentResponse_KnowledgeBaseIds
+  commentId: P:Seclai.Models.SolutionAgentResponse.KnowledgeBaseIds
+  fullName: Seclai.Models.SolutionAgentResponse.KnowledgeBaseIds
+  nameWithType: SolutionAgentResponse.KnowledgeBaseIds
+- uid: Seclai.Models.SolutionAgentResponse.KnowledgeBaseIds*
+  name: KnowledgeBaseIds
+  href: api/Seclai.Models.SolutionAgentResponse.html#Seclai_Models_SolutionAgentResponse_KnowledgeBaseIds_
+  commentId: Overload:Seclai.Models.SolutionAgentResponse.KnowledgeBaseIds
+  isSpec: "True"
+  fullName: Seclai.Models.SolutionAgentResponse.KnowledgeBaseIds
+  nameWithType: SolutionAgentResponse.KnowledgeBaseIds
+- uid: Seclai.Models.SolutionAgentResponse.Name
+  name: Name
+  href: api/Seclai.Models.SolutionAgentResponse.html#Seclai_Models_SolutionAgentResponse_Name
+  commentId: P:Seclai.Models.SolutionAgentResponse.Name
+  fullName: Seclai.Models.SolutionAgentResponse.Name
+  nameWithType: SolutionAgentResponse.Name
+- uid: Seclai.Models.SolutionAgentResponse.Name*
+  name: Name
+  href: api/Seclai.Models.SolutionAgentResponse.html#Seclai_Models_SolutionAgentResponse_Name_
+  commentId: Overload:Seclai.Models.SolutionAgentResponse.Name
+  isSpec: "True"
+  fullName: Seclai.Models.SolutionAgentResponse.Name
+  nameWithType: SolutionAgentResponse.Name
 - uid: Seclai.Models.SolutionConversationResponse
   name: SolutionConversationResponse
   href: api/Seclai.Models.SolutionConversationResponse.html
@@ -15320,6 +17435,51 @@ references:
   isSpec: "True"
   fullName: Seclai.Models.SolutionConversationResponse.UserInput
   nameWithType: SolutionConversationResponse.UserInput
+- uid: Seclai.Models.SolutionKnowledgeBaseResponse
+  name: SolutionKnowledgeBaseResponse
+  href: api/Seclai.Models.SolutionKnowledgeBaseResponse.html
+  commentId: T:Seclai.Models.SolutionKnowledgeBaseResponse
+  fullName: Seclai.Models.SolutionKnowledgeBaseResponse
+  nameWithType: SolutionKnowledgeBaseResponse
+- uid: Seclai.Models.SolutionKnowledgeBaseResponse.Id
+  name: Id
+  href: api/Seclai.Models.SolutionKnowledgeBaseResponse.html#Seclai_Models_SolutionKnowledgeBaseResponse_Id
+  commentId: P:Seclai.Models.SolutionKnowledgeBaseResponse.Id
+  fullName: Seclai.Models.SolutionKnowledgeBaseResponse.Id
+  nameWithType: SolutionKnowledgeBaseResponse.Id
+- uid: Seclai.Models.SolutionKnowledgeBaseResponse.Id*
+  name: Id
+  href: api/Seclai.Models.SolutionKnowledgeBaseResponse.html#Seclai_Models_SolutionKnowledgeBaseResponse_Id_
+  commentId: Overload:Seclai.Models.SolutionKnowledgeBaseResponse.Id
+  isSpec: "True"
+  fullName: Seclai.Models.SolutionKnowledgeBaseResponse.Id
+  nameWithType: SolutionKnowledgeBaseResponse.Id
+- uid: Seclai.Models.SolutionKnowledgeBaseResponse.Name
+  name: Name
+  href: api/Seclai.Models.SolutionKnowledgeBaseResponse.html#Seclai_Models_SolutionKnowledgeBaseResponse_Name
+  commentId: P:Seclai.Models.SolutionKnowledgeBaseResponse.Name
+  fullName: Seclai.Models.SolutionKnowledgeBaseResponse.Name
+  nameWithType: SolutionKnowledgeBaseResponse.Name
+- uid: Seclai.Models.SolutionKnowledgeBaseResponse.Name*
+  name: Name
+  href: api/Seclai.Models.SolutionKnowledgeBaseResponse.html#Seclai_Models_SolutionKnowledgeBaseResponse_Name_
+  commentId: Overload:Seclai.Models.SolutionKnowledgeBaseResponse.Name
+  isSpec: "True"
+  fullName: Seclai.Models.SolutionKnowledgeBaseResponse.Name
+  nameWithType: SolutionKnowledgeBaseResponse.Name
+- uid: Seclai.Models.SolutionKnowledgeBaseResponse.SourceConnectionIds
+  name: SourceConnectionIds
+  href: api/Seclai.Models.SolutionKnowledgeBaseResponse.html#Seclai_Models_SolutionKnowledgeBaseResponse_SourceConnectionIds
+  commentId: P:Seclai.Models.SolutionKnowledgeBaseResponse.SourceConnectionIds
+  fullName: Seclai.Models.SolutionKnowledgeBaseResponse.SourceConnectionIds
+  nameWithType: SolutionKnowledgeBaseResponse.SourceConnectionIds
+- uid: Seclai.Models.SolutionKnowledgeBaseResponse.SourceConnectionIds*
+  name: SourceConnectionIds
+  href: api/Seclai.Models.SolutionKnowledgeBaseResponse.html#Seclai_Models_SolutionKnowledgeBaseResponse_SourceConnectionIds_
+  commentId: Overload:Seclai.Models.SolutionKnowledgeBaseResponse.SourceConnectionIds
+  isSpec: "True"
+  fullName: Seclai.Models.SolutionKnowledgeBaseResponse.SourceConnectionIds
+  nameWithType: SolutionKnowledgeBaseResponse.SourceConnectionIds
 - uid: Seclai.Models.SolutionListOptions
   name: SolutionListOptions
   href: api/Seclai.Models.SolutionListOptions.html
@@ -15410,6 +17570,19 @@ references:
   isSpec: "True"
   fullName: Seclai.Models.SolutionListResponse.Data
   nameWithType: SolutionListResponse.Data
+- uid: Seclai.Models.SolutionListResponse.Pagination
+  name: Pagination
+  href: api/Seclai.Models.SolutionListResponse.html#Seclai_Models_SolutionListResponse_Pagination
+  commentId: P:Seclai.Models.SolutionListResponse.Pagination
+  fullName: Seclai.Models.SolutionListResponse.Pagination
+  nameWithType: SolutionListResponse.Pagination
+- uid: Seclai.Models.SolutionListResponse.Pagination*
+  name: Pagination
+  href: api/Seclai.Models.SolutionListResponse.html#Seclai_Models_SolutionListResponse_Pagination_
+  commentId: Overload:Seclai.Models.SolutionListResponse.Pagination
+  isSpec: "True"
+  fullName: Seclai.Models.SolutionListResponse.Pagination
+  nameWithType: SolutionListResponse.Pagination
 - uid: Seclai.Models.SolutionListResponse.Total
   name: Total
   href: api/Seclai.Models.SolutionListResponse.html#Seclai_Models_SolutionListResponse_Total
@@ -15429,6 +17602,19 @@ references:
   commentId: T:Seclai.Models.SolutionResponse
   fullName: Seclai.Models.SolutionResponse
   nameWithType: SolutionResponse
+- uid: Seclai.Models.SolutionResponse.Agents
+  name: Agents
+  href: api/Seclai.Models.SolutionResponse.html#Seclai_Models_SolutionResponse_Agents
+  commentId: P:Seclai.Models.SolutionResponse.Agents
+  fullName: Seclai.Models.SolutionResponse.Agents
+  nameWithType: SolutionResponse.Agents
+- uid: Seclai.Models.SolutionResponse.Agents*
+  name: Agents
+  href: api/Seclai.Models.SolutionResponse.html#Seclai_Models_SolutionResponse_Agents_
+  commentId: Overload:Seclai.Models.SolutionResponse.Agents
+  isSpec: "True"
+  fullName: Seclai.Models.SolutionResponse.Agents
+  nameWithType: SolutionResponse.Agents
 - uid: Seclai.Models.SolutionResponse.CreatedAt
   name: CreatedAt
   href: api/Seclai.Models.SolutionResponse.html#Seclai_Models_SolutionResponse_CreatedAt
@@ -15468,6 +17654,19 @@ references:
   isSpec: "True"
   fullName: Seclai.Models.SolutionResponse.Id
   nameWithType: SolutionResponse.Id
+- uid: Seclai.Models.SolutionResponse.KnowledgeBases
+  name: KnowledgeBases
+  href: api/Seclai.Models.SolutionResponse.html#Seclai_Models_SolutionResponse_KnowledgeBases
+  commentId: P:Seclai.Models.SolutionResponse.KnowledgeBases
+  fullName: Seclai.Models.SolutionResponse.KnowledgeBases
+  nameWithType: SolutionResponse.KnowledgeBases
+- uid: Seclai.Models.SolutionResponse.KnowledgeBases*
+  name: KnowledgeBases
+  href: api/Seclai.Models.SolutionResponse.html#Seclai_Models_SolutionResponse_KnowledgeBases_
+  commentId: Overload:Seclai.Models.SolutionResponse.KnowledgeBases
+  isSpec: "True"
+  fullName: Seclai.Models.SolutionResponse.KnowledgeBases
+  nameWithType: SolutionResponse.KnowledgeBases
 - uid: Seclai.Models.SolutionResponse.Name
   name: Name
   href: api/Seclai.Models.SolutionResponse.html#Seclai_Models_SolutionResponse_Name
@@ -15481,6 +17680,19 @@ references:
   isSpec: "True"
   fullName: Seclai.Models.SolutionResponse.Name
   nameWithType: SolutionResponse.Name
+- uid: Seclai.Models.SolutionResponse.SourceConnections
+  name: SourceConnections
+  href: api/Seclai.Models.SolutionResponse.html#Seclai_Models_SolutionResponse_SourceConnections
+  commentId: P:Seclai.Models.SolutionResponse.SourceConnections
+  fullName: Seclai.Models.SolutionResponse.SourceConnections
+  nameWithType: SolutionResponse.SourceConnections
+- uid: Seclai.Models.SolutionResponse.SourceConnections*
+  name: SourceConnections
+  href: api/Seclai.Models.SolutionResponse.html#Seclai_Models_SolutionResponse_SourceConnections_
+  commentId: Overload:Seclai.Models.SolutionResponse.SourceConnections
+  isSpec: "True"
+  fullName: Seclai.Models.SolutionResponse.SourceConnections
+  nameWithType: SolutionResponse.SourceConnections
 - uid: Seclai.Models.SolutionResponse.UpdatedAt
   name: UpdatedAt
   href: api/Seclai.Models.SolutionResponse.html#Seclai_Models_SolutionResponse_UpdatedAt
@@ -15494,6 +17706,109 @@ references:
   isSpec: "True"
   fullName: Seclai.Models.SolutionResponse.UpdatedAt
   nameWithType: SolutionResponse.UpdatedAt
+- uid: Seclai.Models.SolutionSourceConnectionResponse
+  name: SolutionSourceConnectionResponse
+  href: api/Seclai.Models.SolutionSourceConnectionResponse.html
+  commentId: T:Seclai.Models.SolutionSourceConnectionResponse
+  fullName: Seclai.Models.SolutionSourceConnectionResponse
+  nameWithType: SolutionSourceConnectionResponse
+- uid: Seclai.Models.SolutionSourceConnectionResponse.Id
+  name: Id
+  href: api/Seclai.Models.SolutionSourceConnectionResponse.html#Seclai_Models_SolutionSourceConnectionResponse_Id
+  commentId: P:Seclai.Models.SolutionSourceConnectionResponse.Id
+  fullName: Seclai.Models.SolutionSourceConnectionResponse.Id
+  nameWithType: SolutionSourceConnectionResponse.Id
+- uid: Seclai.Models.SolutionSourceConnectionResponse.Id*
+  name: Id
+  href: api/Seclai.Models.SolutionSourceConnectionResponse.html#Seclai_Models_SolutionSourceConnectionResponse_Id_
+  commentId: Overload:Seclai.Models.SolutionSourceConnectionResponse.Id
+  isSpec: "True"
+  fullName: Seclai.Models.SolutionSourceConnectionResponse.Id
+  nameWithType: SolutionSourceConnectionResponse.Id
+- uid: Seclai.Models.SolutionSourceConnectionResponse.Name
+  name: Name
+  href: api/Seclai.Models.SolutionSourceConnectionResponse.html#Seclai_Models_SolutionSourceConnectionResponse_Name
+  commentId: P:Seclai.Models.SolutionSourceConnectionResponse.Name
+  fullName: Seclai.Models.SolutionSourceConnectionResponse.Name
+  nameWithType: SolutionSourceConnectionResponse.Name
+- uid: Seclai.Models.SolutionSourceConnectionResponse.Name*
+  name: Name
+  href: api/Seclai.Models.SolutionSourceConnectionResponse.html#Seclai_Models_SolutionSourceConnectionResponse_Name_
+  commentId: Overload:Seclai.Models.SolutionSourceConnectionResponse.Name
+  isSpec: "True"
+  fullName: Seclai.Models.SolutionSourceConnectionResponse.Name
+  nameWithType: SolutionSourceConnectionResponse.Name
+- uid: Seclai.Models.SourceConnectionResponse
+  name: SourceConnectionResponse
+  href: api/Seclai.Models.SourceConnectionResponse.html
+  commentId: T:Seclai.Models.SourceConnectionResponse
+  fullName: Seclai.Models.SourceConnectionResponse
+  nameWithType: SourceConnectionResponse
+- uid: Seclai.Models.SourceConnectionResponse.Id
+  name: Id
+  href: api/Seclai.Models.SourceConnectionResponse.html#Seclai_Models_SourceConnectionResponse_Id
+  commentId: P:Seclai.Models.SourceConnectionResponse.Id
+  fullName: Seclai.Models.SourceConnectionResponse.Id
+  nameWithType: SourceConnectionResponse.Id
+- uid: Seclai.Models.SourceConnectionResponse.Id*
+  name: Id
+  href: api/Seclai.Models.SourceConnectionResponse.html#Seclai_Models_SourceConnectionResponse_Id_
+  commentId: Overload:Seclai.Models.SourceConnectionResponse.Id
+  isSpec: "True"
+  fullName: Seclai.Models.SourceConnectionResponse.Id
+  nameWithType: SourceConnectionResponse.Id
+- uid: Seclai.Models.SourceConnectionResponse.Name
+  name: Name
+  href: api/Seclai.Models.SourceConnectionResponse.html#Seclai_Models_SourceConnectionResponse_Name
+  commentId: P:Seclai.Models.SourceConnectionResponse.Name
+  fullName: Seclai.Models.SourceConnectionResponse.Name
+  nameWithType: SourceConnectionResponse.Name
+- uid: Seclai.Models.SourceConnectionResponse.Name*
+  name: Name
+  href: api/Seclai.Models.SourceConnectionResponse.html#Seclai_Models_SourceConnectionResponse_Name_
+  commentId: Overload:Seclai.Models.SourceConnectionResponse.Name
+  isSpec: "True"
+  fullName: Seclai.Models.SourceConnectionResponse.Name
+  nameWithType: SourceConnectionResponse.Name
+- uid: Seclai.Models.SourceConnectionResponse.Polling
+  name: Polling
+  href: api/Seclai.Models.SourceConnectionResponse.html#Seclai_Models_SourceConnectionResponse_Polling
+  commentId: P:Seclai.Models.SourceConnectionResponse.Polling
+  fullName: Seclai.Models.SourceConnectionResponse.Polling
+  nameWithType: SourceConnectionResponse.Polling
+- uid: Seclai.Models.SourceConnectionResponse.Polling*
+  name: Polling
+  href: api/Seclai.Models.SourceConnectionResponse.html#Seclai_Models_SourceConnectionResponse_Polling_
+  commentId: Overload:Seclai.Models.SourceConnectionResponse.Polling
+  isSpec: "True"
+  fullName: Seclai.Models.SourceConnectionResponse.Polling
+  nameWithType: SourceConnectionResponse.Polling
+- uid: Seclai.Models.SourceConnectionResponse.SourceType
+  name: SourceType
+  href: api/Seclai.Models.SourceConnectionResponse.html#Seclai_Models_SourceConnectionResponse_SourceType
+  commentId: P:Seclai.Models.SourceConnectionResponse.SourceType
+  fullName: Seclai.Models.SourceConnectionResponse.SourceType
+  nameWithType: SourceConnectionResponse.SourceType
+- uid: Seclai.Models.SourceConnectionResponse.SourceType*
+  name: SourceType
+  href: api/Seclai.Models.SourceConnectionResponse.html#Seclai_Models_SourceConnectionResponse_SourceType_
+  commentId: Overload:Seclai.Models.SourceConnectionResponse.SourceType
+  isSpec: "True"
+  fullName: Seclai.Models.SourceConnectionResponse.SourceType
+  nameWithType: SourceConnectionResponse.SourceType
+- uid: Seclai.Models.SourceConnectionResponse.Url
+  name: Url
+  href: api/Seclai.Models.SourceConnectionResponse.html#Seclai_Models_SourceConnectionResponse_Url
+  commentId: P:Seclai.Models.SourceConnectionResponse.Url
+  fullName: Seclai.Models.SourceConnectionResponse.Url
+  nameWithType: SourceConnectionResponse.Url
+- uid: Seclai.Models.SourceConnectionResponse.Url*
+  name: Url
+  href: api/Seclai.Models.SourceConnectionResponse.html#Seclai_Models_SourceConnectionResponse_Url_
+  commentId: Overload:Seclai.Models.SourceConnectionResponse.Url
+  isSpec: "True"
+  fullName: Seclai.Models.SourceConnectionResponse.Url
+  nameWithType: SourceConnectionResponse.Url
 - uid: Seclai.Models.SourceContentStatusListResponse
   name: SourceContentStatusListResponse
   href: api/Seclai.Models.SourceContentStatusListResponse.html
@@ -15785,6 +18100,58 @@ references:
   commentId: T:Seclai.Models.SourceEmbeddingMigrationResponse
   fullName: Seclai.Models.SourceEmbeddingMigrationResponse
   nameWithType: SourceEmbeddingMigrationResponse
+- uid: Seclai.Models.SourceEmbeddingMigrationResponse.CompletedAt
+  name: CompletedAt
+  href: api/Seclai.Models.SourceEmbeddingMigrationResponse.html#Seclai_Models_SourceEmbeddingMigrationResponse_CompletedAt
+  commentId: P:Seclai.Models.SourceEmbeddingMigrationResponse.CompletedAt
+  fullName: Seclai.Models.SourceEmbeddingMigrationResponse.CompletedAt
+  nameWithType: SourceEmbeddingMigrationResponse.CompletedAt
+- uid: Seclai.Models.SourceEmbeddingMigrationResponse.CompletedAt*
+  name: CompletedAt
+  href: api/Seclai.Models.SourceEmbeddingMigrationResponse.html#Seclai_Models_SourceEmbeddingMigrationResponse_CompletedAt_
+  commentId: Overload:Seclai.Models.SourceEmbeddingMigrationResponse.CompletedAt
+  isSpec: "True"
+  fullName: Seclai.Models.SourceEmbeddingMigrationResponse.CompletedAt
+  nameWithType: SourceEmbeddingMigrationResponse.CompletedAt
+- uid: Seclai.Models.SourceEmbeddingMigrationResponse.CreatedAt
+  name: CreatedAt
+  href: api/Seclai.Models.SourceEmbeddingMigrationResponse.html#Seclai_Models_SourceEmbeddingMigrationResponse_CreatedAt
+  commentId: P:Seclai.Models.SourceEmbeddingMigrationResponse.CreatedAt
+  fullName: Seclai.Models.SourceEmbeddingMigrationResponse.CreatedAt
+  nameWithType: SourceEmbeddingMigrationResponse.CreatedAt
+- uid: Seclai.Models.SourceEmbeddingMigrationResponse.CreatedAt*
+  name: CreatedAt
+  href: api/Seclai.Models.SourceEmbeddingMigrationResponse.html#Seclai_Models_SourceEmbeddingMigrationResponse_CreatedAt_
+  commentId: Overload:Seclai.Models.SourceEmbeddingMigrationResponse.CreatedAt
+  isSpec: "True"
+  fullName: Seclai.Models.SourceEmbeddingMigrationResponse.CreatedAt
+  nameWithType: SourceEmbeddingMigrationResponse.CreatedAt
+- uid: Seclai.Models.SourceEmbeddingMigrationResponse.FailureMessage
+  name: FailureMessage
+  href: api/Seclai.Models.SourceEmbeddingMigrationResponse.html#Seclai_Models_SourceEmbeddingMigrationResponse_FailureMessage
+  commentId: P:Seclai.Models.SourceEmbeddingMigrationResponse.FailureMessage
+  fullName: Seclai.Models.SourceEmbeddingMigrationResponse.FailureMessage
+  nameWithType: SourceEmbeddingMigrationResponse.FailureMessage
+- uid: Seclai.Models.SourceEmbeddingMigrationResponse.FailureMessage*
+  name: FailureMessage
+  href: api/Seclai.Models.SourceEmbeddingMigrationResponse.html#Seclai_Models_SourceEmbeddingMigrationResponse_FailureMessage_
+  commentId: Overload:Seclai.Models.SourceEmbeddingMigrationResponse.FailureMessage
+  isSpec: "True"
+  fullName: Seclai.Models.SourceEmbeddingMigrationResponse.FailureMessage
+  nameWithType: SourceEmbeddingMigrationResponse.FailureMessage
+- uid: Seclai.Models.SourceEmbeddingMigrationResponse.Id
+  name: Id
+  href: api/Seclai.Models.SourceEmbeddingMigrationResponse.html#Seclai_Models_SourceEmbeddingMigrationResponse_Id
+  commentId: P:Seclai.Models.SourceEmbeddingMigrationResponse.Id
+  fullName: Seclai.Models.SourceEmbeddingMigrationResponse.Id
+  nameWithType: SourceEmbeddingMigrationResponse.Id
+- uid: Seclai.Models.SourceEmbeddingMigrationResponse.Id*
+  name: Id
+  href: api/Seclai.Models.SourceEmbeddingMigrationResponse.html#Seclai_Models_SourceEmbeddingMigrationResponse_Id_
+  commentId: Overload:Seclai.Models.SourceEmbeddingMigrationResponse.Id
+  isSpec: "True"
+  fullName: Seclai.Models.SourceEmbeddingMigrationResponse.Id
+  nameWithType: SourceEmbeddingMigrationResponse.Id
 - uid: Seclai.Models.SourceEmbeddingMigrationResponse.MigrationId
   name: MigrationId
   href: api/Seclai.Models.SourceEmbeddingMigrationResponse.html#Seclai_Models_SourceEmbeddingMigrationResponse_MigrationId
@@ -15798,6 +18165,123 @@ references:
   isSpec: "True"
   fullName: Seclai.Models.SourceEmbeddingMigrationResponse.MigrationId
   nameWithType: SourceEmbeddingMigrationResponse.MigrationId
+- uid: Seclai.Models.SourceEmbeddingMigrationResponse.NotificationRecipients
+  name: NotificationRecipients
+  href: api/Seclai.Models.SourceEmbeddingMigrationResponse.html#Seclai_Models_SourceEmbeddingMigrationResponse_NotificationRecipients
+  commentId: P:Seclai.Models.SourceEmbeddingMigrationResponse.NotificationRecipients
+  fullName: Seclai.Models.SourceEmbeddingMigrationResponse.NotificationRecipients
+  nameWithType: SourceEmbeddingMigrationResponse.NotificationRecipients
+- uid: Seclai.Models.SourceEmbeddingMigrationResponse.NotificationRecipients*
+  name: NotificationRecipients
+  href: api/Seclai.Models.SourceEmbeddingMigrationResponse.html#Seclai_Models_SourceEmbeddingMigrationResponse_NotificationRecipients_
+  commentId: Overload:Seclai.Models.SourceEmbeddingMigrationResponse.NotificationRecipients
+  isSpec: "True"
+  fullName: Seclai.Models.SourceEmbeddingMigrationResponse.NotificationRecipients
+  nameWithType: SourceEmbeddingMigrationResponse.NotificationRecipients
+- uid: Seclai.Models.SourceEmbeddingMigrationResponse.Phase
+  name: Phase
+  href: api/Seclai.Models.SourceEmbeddingMigrationResponse.html#Seclai_Models_SourceEmbeddingMigrationResponse_Phase
+  commentId: P:Seclai.Models.SourceEmbeddingMigrationResponse.Phase
+  fullName: Seclai.Models.SourceEmbeddingMigrationResponse.Phase
+  nameWithType: SourceEmbeddingMigrationResponse.Phase
+- uid: Seclai.Models.SourceEmbeddingMigrationResponse.Phase*
+  name: Phase
+  href: api/Seclai.Models.SourceEmbeddingMigrationResponse.html#Seclai_Models_SourceEmbeddingMigrationResponse_Phase_
+  commentId: Overload:Seclai.Models.SourceEmbeddingMigrationResponse.Phase
+  isSpec: "True"
+  fullName: Seclai.Models.SourceEmbeddingMigrationResponse.Phase
+  nameWithType: SourceEmbeddingMigrationResponse.Phase
+- uid: Seclai.Models.SourceEmbeddingMigrationResponse.ProgressCurrent
+  name: ProgressCurrent
+  href: api/Seclai.Models.SourceEmbeddingMigrationResponse.html#Seclai_Models_SourceEmbeddingMigrationResponse_ProgressCurrent
+  commentId: P:Seclai.Models.SourceEmbeddingMigrationResponse.ProgressCurrent
+  fullName: Seclai.Models.SourceEmbeddingMigrationResponse.ProgressCurrent
+  nameWithType: SourceEmbeddingMigrationResponse.ProgressCurrent
+- uid: Seclai.Models.SourceEmbeddingMigrationResponse.ProgressCurrent*
+  name: ProgressCurrent
+  href: api/Seclai.Models.SourceEmbeddingMigrationResponse.html#Seclai_Models_SourceEmbeddingMigrationResponse_ProgressCurrent_
+  commentId: Overload:Seclai.Models.SourceEmbeddingMigrationResponse.ProgressCurrent
+  isSpec: "True"
+  fullName: Seclai.Models.SourceEmbeddingMigrationResponse.ProgressCurrent
+  nameWithType: SourceEmbeddingMigrationResponse.ProgressCurrent
+- uid: Seclai.Models.SourceEmbeddingMigrationResponse.ProgressMessage
+  name: ProgressMessage
+  href: api/Seclai.Models.SourceEmbeddingMigrationResponse.html#Seclai_Models_SourceEmbeddingMigrationResponse_ProgressMessage
+  commentId: P:Seclai.Models.SourceEmbeddingMigrationResponse.ProgressMessage
+  fullName: Seclai.Models.SourceEmbeddingMigrationResponse.ProgressMessage
+  nameWithType: SourceEmbeddingMigrationResponse.ProgressMessage
+- uid: Seclai.Models.SourceEmbeddingMigrationResponse.ProgressMessage*
+  name: ProgressMessage
+  href: api/Seclai.Models.SourceEmbeddingMigrationResponse.html#Seclai_Models_SourceEmbeddingMigrationResponse_ProgressMessage_
+  commentId: Overload:Seclai.Models.SourceEmbeddingMigrationResponse.ProgressMessage
+  isSpec: "True"
+  fullName: Seclai.Models.SourceEmbeddingMigrationResponse.ProgressMessage
+  nameWithType: SourceEmbeddingMigrationResponse.ProgressMessage
+- uid: Seclai.Models.SourceEmbeddingMigrationResponse.ProgressTotal
+  name: ProgressTotal
+  href: api/Seclai.Models.SourceEmbeddingMigrationResponse.html#Seclai_Models_SourceEmbeddingMigrationResponse_ProgressTotal
+  commentId: P:Seclai.Models.SourceEmbeddingMigrationResponse.ProgressTotal
+  fullName: Seclai.Models.SourceEmbeddingMigrationResponse.ProgressTotal
+  nameWithType: SourceEmbeddingMigrationResponse.ProgressTotal
+- uid: Seclai.Models.SourceEmbeddingMigrationResponse.ProgressTotal*
+  name: ProgressTotal
+  href: api/Seclai.Models.SourceEmbeddingMigrationResponse.html#Seclai_Models_SourceEmbeddingMigrationResponse_ProgressTotal_
+  commentId: Overload:Seclai.Models.SourceEmbeddingMigrationResponse.ProgressTotal
+  isSpec: "True"
+  fullName: Seclai.Models.SourceEmbeddingMigrationResponse.ProgressTotal
+  nameWithType: SourceEmbeddingMigrationResponse.ProgressTotal
+- uid: Seclai.Models.SourceEmbeddingMigrationResponse.SourceConnectionId
+  name: SourceConnectionId
+  href: api/Seclai.Models.SourceEmbeddingMigrationResponse.html#Seclai_Models_SourceEmbeddingMigrationResponse_SourceConnectionId
+  commentId: P:Seclai.Models.SourceEmbeddingMigrationResponse.SourceConnectionId
+  fullName: Seclai.Models.SourceEmbeddingMigrationResponse.SourceConnectionId
+  nameWithType: SourceEmbeddingMigrationResponse.SourceConnectionId
+- uid: Seclai.Models.SourceEmbeddingMigrationResponse.SourceConnectionId*
+  name: SourceConnectionId
+  href: api/Seclai.Models.SourceEmbeddingMigrationResponse.html#Seclai_Models_SourceEmbeddingMigrationResponse_SourceConnectionId_
+  commentId: Overload:Seclai.Models.SourceEmbeddingMigrationResponse.SourceConnectionId
+  isSpec: "True"
+  fullName: Seclai.Models.SourceEmbeddingMigrationResponse.SourceConnectionId
+  nameWithType: SourceEmbeddingMigrationResponse.SourceConnectionId
+- uid: Seclai.Models.SourceEmbeddingMigrationResponse.SourceIdNew
+  name: SourceIdNew
+  href: api/Seclai.Models.SourceEmbeddingMigrationResponse.html#Seclai_Models_SourceEmbeddingMigrationResponse_SourceIdNew
+  commentId: P:Seclai.Models.SourceEmbeddingMigrationResponse.SourceIdNew
+  fullName: Seclai.Models.SourceEmbeddingMigrationResponse.SourceIdNew
+  nameWithType: SourceEmbeddingMigrationResponse.SourceIdNew
+- uid: Seclai.Models.SourceEmbeddingMigrationResponse.SourceIdNew*
+  name: SourceIdNew
+  href: api/Seclai.Models.SourceEmbeddingMigrationResponse.html#Seclai_Models_SourceEmbeddingMigrationResponse_SourceIdNew_
+  commentId: Overload:Seclai.Models.SourceEmbeddingMigrationResponse.SourceIdNew
+  isSpec: "True"
+  fullName: Seclai.Models.SourceEmbeddingMigrationResponse.SourceIdNew
+  nameWithType: SourceEmbeddingMigrationResponse.SourceIdNew
+- uid: Seclai.Models.SourceEmbeddingMigrationResponse.SourceIdOld
+  name: SourceIdOld
+  href: api/Seclai.Models.SourceEmbeddingMigrationResponse.html#Seclai_Models_SourceEmbeddingMigrationResponse_SourceIdOld
+  commentId: P:Seclai.Models.SourceEmbeddingMigrationResponse.SourceIdOld
+  fullName: Seclai.Models.SourceEmbeddingMigrationResponse.SourceIdOld
+  nameWithType: SourceEmbeddingMigrationResponse.SourceIdOld
+- uid: Seclai.Models.SourceEmbeddingMigrationResponse.SourceIdOld*
+  name: SourceIdOld
+  href: api/Seclai.Models.SourceEmbeddingMigrationResponse.html#Seclai_Models_SourceEmbeddingMigrationResponse_SourceIdOld_
+  commentId: Overload:Seclai.Models.SourceEmbeddingMigrationResponse.SourceIdOld
+  isSpec: "True"
+  fullName: Seclai.Models.SourceEmbeddingMigrationResponse.SourceIdOld
+  nameWithType: SourceEmbeddingMigrationResponse.SourceIdOld
+- uid: Seclai.Models.SourceEmbeddingMigrationResponse.StartedAt
+  name: StartedAt
+  href: api/Seclai.Models.SourceEmbeddingMigrationResponse.html#Seclai_Models_SourceEmbeddingMigrationResponse_StartedAt
+  commentId: P:Seclai.Models.SourceEmbeddingMigrationResponse.StartedAt
+  fullName: Seclai.Models.SourceEmbeddingMigrationResponse.StartedAt
+  nameWithType: SourceEmbeddingMigrationResponse.StartedAt
+- uid: Seclai.Models.SourceEmbeddingMigrationResponse.StartedAt*
+  name: StartedAt
+  href: api/Seclai.Models.SourceEmbeddingMigrationResponse.html#Seclai_Models_SourceEmbeddingMigrationResponse_StartedAt_
+  commentId: Overload:Seclai.Models.SourceEmbeddingMigrationResponse.StartedAt
+  isSpec: "True"
+  fullName: Seclai.Models.SourceEmbeddingMigrationResponse.StartedAt
+  nameWithType: SourceEmbeddingMigrationResponse.StartedAt
 - uid: Seclai.Models.SourceEmbeddingMigrationResponse.Status
   name: Status
   href: api/Seclai.Models.SourceEmbeddingMigrationResponse.html#Seclai_Models_SourceEmbeddingMigrationResponse_Status
@@ -15811,6 +18295,58 @@ references:
   isSpec: "True"
   fullName: Seclai.Models.SourceEmbeddingMigrationResponse.Status
   nameWithType: SourceEmbeddingMigrationResponse.Status
+- uid: Seclai.Models.SourceEmbeddingMigrationResponse.TargetDimensions
+  name: TargetDimensions
+  href: api/Seclai.Models.SourceEmbeddingMigrationResponse.html#Seclai_Models_SourceEmbeddingMigrationResponse_TargetDimensions
+  commentId: P:Seclai.Models.SourceEmbeddingMigrationResponse.TargetDimensions
+  fullName: Seclai.Models.SourceEmbeddingMigrationResponse.TargetDimensions
+  nameWithType: SourceEmbeddingMigrationResponse.TargetDimensions
+- uid: Seclai.Models.SourceEmbeddingMigrationResponse.TargetDimensions*
+  name: TargetDimensions
+  href: api/Seclai.Models.SourceEmbeddingMigrationResponse.html#Seclai_Models_SourceEmbeddingMigrationResponse_TargetDimensions_
+  commentId: Overload:Seclai.Models.SourceEmbeddingMigrationResponse.TargetDimensions
+  isSpec: "True"
+  fullName: Seclai.Models.SourceEmbeddingMigrationResponse.TargetDimensions
+  nameWithType: SourceEmbeddingMigrationResponse.TargetDimensions
+- uid: Seclai.Models.SourceEmbeddingMigrationResponse.TargetEmbeddingModel
+  name: TargetEmbeddingModel
+  href: api/Seclai.Models.SourceEmbeddingMigrationResponse.html#Seclai_Models_SourceEmbeddingMigrationResponse_TargetEmbeddingModel
+  commentId: P:Seclai.Models.SourceEmbeddingMigrationResponse.TargetEmbeddingModel
+  fullName: Seclai.Models.SourceEmbeddingMigrationResponse.TargetEmbeddingModel
+  nameWithType: SourceEmbeddingMigrationResponse.TargetEmbeddingModel
+- uid: Seclai.Models.SourceEmbeddingMigrationResponse.TargetEmbeddingModel*
+  name: TargetEmbeddingModel
+  href: api/Seclai.Models.SourceEmbeddingMigrationResponse.html#Seclai_Models_SourceEmbeddingMigrationResponse_TargetEmbeddingModel_
+  commentId: Overload:Seclai.Models.SourceEmbeddingMigrationResponse.TargetEmbeddingModel
+  isSpec: "True"
+  fullName: Seclai.Models.SourceEmbeddingMigrationResponse.TargetEmbeddingModel
+  nameWithType: SourceEmbeddingMigrationResponse.TargetEmbeddingModel
+- uid: Seclai.Models.SourceEmbeddingMigrationResponse.TaskExecutionId
+  name: TaskExecutionId
+  href: api/Seclai.Models.SourceEmbeddingMigrationResponse.html#Seclai_Models_SourceEmbeddingMigrationResponse_TaskExecutionId
+  commentId: P:Seclai.Models.SourceEmbeddingMigrationResponse.TaskExecutionId
+  fullName: Seclai.Models.SourceEmbeddingMigrationResponse.TaskExecutionId
+  nameWithType: SourceEmbeddingMigrationResponse.TaskExecutionId
+- uid: Seclai.Models.SourceEmbeddingMigrationResponse.TaskExecutionId*
+  name: TaskExecutionId
+  href: api/Seclai.Models.SourceEmbeddingMigrationResponse.html#Seclai_Models_SourceEmbeddingMigrationResponse_TaskExecutionId_
+  commentId: Overload:Seclai.Models.SourceEmbeddingMigrationResponse.TaskExecutionId
+  isSpec: "True"
+  fullName: Seclai.Models.SourceEmbeddingMigrationResponse.TaskExecutionId
+  nameWithType: SourceEmbeddingMigrationResponse.TaskExecutionId
+- uid: Seclai.Models.SourceEmbeddingMigrationResponse.UpdatedAt
+  name: UpdatedAt
+  href: api/Seclai.Models.SourceEmbeddingMigrationResponse.html#Seclai_Models_SourceEmbeddingMigrationResponse_UpdatedAt
+  commentId: P:Seclai.Models.SourceEmbeddingMigrationResponse.UpdatedAt
+  fullName: Seclai.Models.SourceEmbeddingMigrationResponse.UpdatedAt
+  nameWithType: SourceEmbeddingMigrationResponse.UpdatedAt
+- uid: Seclai.Models.SourceEmbeddingMigrationResponse.UpdatedAt*
+  name: UpdatedAt
+  href: api/Seclai.Models.SourceEmbeddingMigrationResponse.html#Seclai_Models_SourceEmbeddingMigrationResponse_UpdatedAt_
+  commentId: Overload:Seclai.Models.SourceEmbeddingMigrationResponse.UpdatedAt
+  isSpec: "True"
+  fullName: Seclai.Models.SourceEmbeddingMigrationResponse.UpdatedAt
+  nameWithType: SourceEmbeddingMigrationResponse.UpdatedAt
 - uid: Seclai.Models.SourceField
   name: SourceField
   href: api/Seclai.Models.SourceField.html
@@ -16166,6 +18702,19 @@ references:
   isSpec: "True"
   fullName: Seclai.Models.SourceResponse.FeedAttachments
   nameWithType: SourceResponse.FeedAttachments
+- uid: Seclai.Models.SourceResponse.FreeRetentionDays
+  name: FreeRetentionDays
+  href: api/Seclai.Models.SourceResponse.html#Seclai_Models_SourceResponse_FreeRetentionDays
+  commentId: P:Seclai.Models.SourceResponse.FreeRetentionDays
+  fullName: Seclai.Models.SourceResponse.FreeRetentionDays
+  nameWithType: SourceResponse.FreeRetentionDays
+- uid: Seclai.Models.SourceResponse.FreeRetentionDays*
+  name: FreeRetentionDays
+  href: api/Seclai.Models.SourceResponse.html#Seclai_Models_SourceResponse_FreeRetentionDays_
+  commentId: Overload:Seclai.Models.SourceResponse.FreeRetentionDays
+  isSpec: "True"
+  fullName: Seclai.Models.SourceResponse.FreeRetentionDays
+  nameWithType: SourceResponse.FreeRetentionDays
 - uid: Seclai.Models.SourceResponse.HasHistoricalData
   name: HasHistoricalData
   href: api/Seclai.Models.SourceResponse.html#Seclai_Models_SourceResponse_HasHistoricalData
@@ -16192,6 +18741,19 @@ references:
   isSpec: "True"
   fullName: Seclai.Models.SourceResponse.Id
   nameWithType: SourceResponse.Id
+- uid: Seclai.Models.SourceResponse.IndexMode
+  name: IndexMode
+  href: api/Seclai.Models.SourceResponse.html#Seclai_Models_SourceResponse_IndexMode
+  commentId: P:Seclai.Models.SourceResponse.IndexMode
+  fullName: Seclai.Models.SourceResponse.IndexMode
+  nameWithType: SourceResponse.IndexMode
+- uid: Seclai.Models.SourceResponse.IndexMode*
+  name: IndexMode
+  href: api/Seclai.Models.SourceResponse.html#Seclai_Models_SourceResponse_IndexMode_
+  commentId: Overload:Seclai.Models.SourceResponse.IndexMode
+  isSpec: "True"
+  fullName: Seclai.Models.SourceResponse.IndexMode
+  nameWithType: SourceResponse.IndexMode
 - uid: Seclai.Models.SourceResponse.MaxCreditsPerPeriod
   name: MaxCreditsPerPeriod
   href: api/Seclai.Models.SourceResponse.html#Seclai_Models_SourceResponse_MaxCreditsPerPeriod
@@ -16374,6 +18936,19 @@ references:
   isSpec: "True"
   fullName: Seclai.Models.SourceResponse.SpendCapReached
   nameWithType: SourceResponse.SpendCapReached
+- uid: Seclai.Models.SourceResponse.SystemManaged
+  name: SystemManaged
+  href: api/Seclai.Models.SourceResponse.html#Seclai_Models_SourceResponse_SystemManaged
+  commentId: P:Seclai.Models.SourceResponse.SystemManaged
+  fullName: Seclai.Models.SourceResponse.SystemManaged
+  nameWithType: SourceResponse.SystemManaged
+- uid: Seclai.Models.SourceResponse.SystemManaged*
+  name: SystemManaged
+  href: api/Seclai.Models.SourceResponse.html#Seclai_Models_SourceResponse_SystemManaged_
+  commentId: Overload:Seclai.Models.SourceResponse.SystemManaged
+  isSpec: "True"
+  fullName: Seclai.Models.SourceResponse.SystemManaged
+  nameWithType: SourceResponse.SystemManaged
 - uid: Seclai.Models.SourceResponse.UpdatedAt
   name: UpdatedAt
   href: api/Seclai.Models.SourceResponse.html#Seclai_Models_SourceResponse_UpdatedAt
@@ -16909,6 +19484,19 @@ references:
   isSpec: "True"
   fullName: Seclai.Models.UpdateAgentRequest.ApplyImportRunLimits
   nameWithType: UpdateAgentRequest.ApplyImportRunLimits
+- uid: Seclai.Models.UpdateAgentRequest.DefaultEvaluationTier
+  name: DefaultEvaluationTier
+  href: api/Seclai.Models.UpdateAgentRequest.html#Seclai_Models_UpdateAgentRequest_DefaultEvaluationTier
+  commentId: P:Seclai.Models.UpdateAgentRequest.DefaultEvaluationTier
+  fullName: Seclai.Models.UpdateAgentRequest.DefaultEvaluationTier
+  nameWithType: UpdateAgentRequest.DefaultEvaluationTier
+- uid: Seclai.Models.UpdateAgentRequest.DefaultEvaluationTier*
+  name: DefaultEvaluationTier
+  href: api/Seclai.Models.UpdateAgentRequest.html#Seclai_Models_UpdateAgentRequest_DefaultEvaluationTier_
+  commentId: Overload:Seclai.Models.UpdateAgentRequest.DefaultEvaluationTier
+  isSpec: "True"
+  fullName: Seclai.Models.UpdateAgentRequest.DefaultEvaluationTier
+  nameWithType: UpdateAgentRequest.DefaultEvaluationTier
 - uid: Seclai.Models.UpdateAgentRequest.Description
   name: Description
   href: api/Seclai.Models.UpdateAgentRequest.html#Seclai_Models_UpdateAgentRequest_Description
@@ -16935,6 +19523,19 @@ references:
   isSpec: "True"
   fullName: Seclai.Models.UpdateAgentRequest.EntityRemap
   nameWithType: UpdateAgentRequest.EntityRemap
+- uid: Seclai.Models.UpdateAgentRequest.EvaluationMode
+  name: EvaluationMode
+  href: api/Seclai.Models.UpdateAgentRequest.html#Seclai_Models_UpdateAgentRequest_EvaluationMode
+  commentId: P:Seclai.Models.UpdateAgentRequest.EvaluationMode
+  fullName: Seclai.Models.UpdateAgentRequest.EvaluationMode
+  nameWithType: UpdateAgentRequest.EvaluationMode
+- uid: Seclai.Models.UpdateAgentRequest.EvaluationMode*
+  name: EvaluationMode
+  href: api/Seclai.Models.UpdateAgentRequest.html#Seclai_Models_UpdateAgentRequest_EvaluationMode_
+  commentId: Overload:Seclai.Models.UpdateAgentRequest.EvaluationMode
+  isSpec: "True"
+  fullName: Seclai.Models.UpdateAgentRequest.EvaluationMode
+  nameWithType: UpdateAgentRequest.EvaluationMode
 - uid: Seclai.Models.UpdateAgentRequest.IsPublic
   name: IsPublic
   href: api/Seclai.Models.UpdateAgentRequest.html#Seclai_Models_UpdateAgentRequest_IsPublic
@@ -16974,6 +19575,19 @@ references:
   isSpec: "True"
   fullName: Seclai.Models.UpdateAgentRequest.MaxCreditsPerRun
   nameWithType: UpdateAgentRequest.MaxCreditsPerRun
+- uid: Seclai.Models.UpdateAgentRequest.MaxRetries
+  name: MaxRetries
+  href: api/Seclai.Models.UpdateAgentRequest.html#Seclai_Models_UpdateAgentRequest_MaxRetries
+  commentId: P:Seclai.Models.UpdateAgentRequest.MaxRetries
+  fullName: Seclai.Models.UpdateAgentRequest.MaxRetries
+  nameWithType: UpdateAgentRequest.MaxRetries
+- uid: Seclai.Models.UpdateAgentRequest.MaxRetries*
+  name: MaxRetries
+  href: api/Seclai.Models.UpdateAgentRequest.html#Seclai_Models_UpdateAgentRequest_MaxRetries_
+  commentId: Overload:Seclai.Models.UpdateAgentRequest.MaxRetries
+  isSpec: "True"
+  fullName: Seclai.Models.UpdateAgentRequest.MaxRetries
+  nameWithType: UpdateAgentRequest.MaxRetries
 - uid: Seclai.Models.UpdateAgentRequest.MaxRunsPerDay
   name: MaxRunsPerDay
   href: api/Seclai.Models.UpdateAgentRequest.html#Seclai_Models_UpdateAgentRequest_MaxRunsPerDay
@@ -17026,6 +19640,84 @@ references:
   isSpec: "True"
   fullName: Seclai.Models.UpdateAgentRequest.Name
   nameWithType: UpdateAgentRequest.Name
+- uid: Seclai.Models.UpdateAgentRequest.PromptModelAutoRollbackEnabled
+  name: PromptModelAutoRollbackEnabled
+  href: api/Seclai.Models.UpdateAgentRequest.html#Seclai_Models_UpdateAgentRequest_PromptModelAutoRollbackEnabled
+  commentId: P:Seclai.Models.UpdateAgentRequest.PromptModelAutoRollbackEnabled
+  fullName: Seclai.Models.UpdateAgentRequest.PromptModelAutoRollbackEnabled
+  nameWithType: UpdateAgentRequest.PromptModelAutoRollbackEnabled
+- uid: Seclai.Models.UpdateAgentRequest.PromptModelAutoRollbackEnabled*
+  name: PromptModelAutoRollbackEnabled
+  href: api/Seclai.Models.UpdateAgentRequest.html#Seclai_Models_UpdateAgentRequest_PromptModelAutoRollbackEnabled_
+  commentId: Overload:Seclai.Models.UpdateAgentRequest.PromptModelAutoRollbackEnabled
+  isSpec: "True"
+  fullName: Seclai.Models.UpdateAgentRequest.PromptModelAutoRollbackEnabled
+  nameWithType: UpdateAgentRequest.PromptModelAutoRollbackEnabled
+- uid: Seclai.Models.UpdateAgentRequest.PromptModelAutoRollbackTriggers
+  name: PromptModelAutoRollbackTriggers
+  href: api/Seclai.Models.UpdateAgentRequest.html#Seclai_Models_UpdateAgentRequest_PromptModelAutoRollbackTriggers
+  commentId: P:Seclai.Models.UpdateAgentRequest.PromptModelAutoRollbackTriggers
+  fullName: Seclai.Models.UpdateAgentRequest.PromptModelAutoRollbackTriggers
+  nameWithType: UpdateAgentRequest.PromptModelAutoRollbackTriggers
+- uid: Seclai.Models.UpdateAgentRequest.PromptModelAutoRollbackTriggers*
+  name: PromptModelAutoRollbackTriggers
+  href: api/Seclai.Models.UpdateAgentRequest.html#Seclai_Models_UpdateAgentRequest_PromptModelAutoRollbackTriggers_
+  commentId: Overload:Seclai.Models.UpdateAgentRequest.PromptModelAutoRollbackTriggers
+  isSpec: "True"
+  fullName: Seclai.Models.UpdateAgentRequest.PromptModelAutoRollbackTriggers
+  nameWithType: UpdateAgentRequest.PromptModelAutoRollbackTriggers
+- uid: Seclai.Models.UpdateAgentRequest.PromptModelAutoUpgradeStrategy
+  name: PromptModelAutoUpgradeStrategy
+  href: api/Seclai.Models.UpdateAgentRequest.html#Seclai_Models_UpdateAgentRequest_PromptModelAutoUpgradeStrategy
+  commentId: P:Seclai.Models.UpdateAgentRequest.PromptModelAutoUpgradeStrategy
+  fullName: Seclai.Models.UpdateAgentRequest.PromptModelAutoUpgradeStrategy
+  nameWithType: UpdateAgentRequest.PromptModelAutoUpgradeStrategy
+- uid: Seclai.Models.UpdateAgentRequest.PromptModelAutoUpgradeStrategy*
+  name: PromptModelAutoUpgradeStrategy
+  href: api/Seclai.Models.UpdateAgentRequest.html#Seclai_Models_UpdateAgentRequest_PromptModelAutoUpgradeStrategy_
+  commentId: Overload:Seclai.Models.UpdateAgentRequest.PromptModelAutoUpgradeStrategy
+  isSpec: "True"
+  fullName: Seclai.Models.UpdateAgentRequest.PromptModelAutoUpgradeStrategy
+  nameWithType: UpdateAgentRequest.PromptModelAutoUpgradeStrategy
+- uid: Seclai.Models.UpdateAgentRequest.RetryOnFailure
+  name: RetryOnFailure
+  href: api/Seclai.Models.UpdateAgentRequest.html#Seclai_Models_UpdateAgentRequest_RetryOnFailure
+  commentId: P:Seclai.Models.UpdateAgentRequest.RetryOnFailure
+  fullName: Seclai.Models.UpdateAgentRequest.RetryOnFailure
+  nameWithType: UpdateAgentRequest.RetryOnFailure
+- uid: Seclai.Models.UpdateAgentRequest.RetryOnFailure*
+  name: RetryOnFailure
+  href: api/Seclai.Models.UpdateAgentRequest.html#Seclai_Models_UpdateAgentRequest_RetryOnFailure_
+  commentId: Overload:Seclai.Models.UpdateAgentRequest.RetryOnFailure
+  isSpec: "True"
+  fullName: Seclai.Models.UpdateAgentRequest.RetryOnFailure
+  nameWithType: UpdateAgentRequest.RetryOnFailure
+- uid: Seclai.Models.UpdateAgentRequest.SamplingConfig
+  name: SamplingConfig
+  href: api/Seclai.Models.UpdateAgentRequest.html#Seclai_Models_UpdateAgentRequest_SamplingConfig
+  commentId: P:Seclai.Models.UpdateAgentRequest.SamplingConfig
+  fullName: Seclai.Models.UpdateAgentRequest.SamplingConfig
+  nameWithType: UpdateAgentRequest.SamplingConfig
+- uid: Seclai.Models.UpdateAgentRequest.SamplingConfig*
+  name: SamplingConfig
+  href: api/Seclai.Models.UpdateAgentRequest.html#Seclai_Models_UpdateAgentRequest_SamplingConfig_
+  commentId: Overload:Seclai.Models.UpdateAgentRequest.SamplingConfig
+  isSpec: "True"
+  fullName: Seclai.Models.UpdateAgentRequest.SamplingConfig
+  nameWithType: UpdateAgentRequest.SamplingConfig
+- uid: Seclai.Models.UpdateAgentRequest.SetDefaultEvaluationTier
+  name: SetDefaultEvaluationTier
+  href: api/Seclai.Models.UpdateAgentRequest.html#Seclai_Models_UpdateAgentRequest_SetDefaultEvaluationTier
+  commentId: P:Seclai.Models.UpdateAgentRequest.SetDefaultEvaluationTier
+  fullName: Seclai.Models.UpdateAgentRequest.SetDefaultEvaluationTier
+  nameWithType: UpdateAgentRequest.SetDefaultEvaluationTier
+- uid: Seclai.Models.UpdateAgentRequest.SetDefaultEvaluationTier*
+  name: SetDefaultEvaluationTier
+  href: api/Seclai.Models.UpdateAgentRequest.html#Seclai_Models_UpdateAgentRequest_SetDefaultEvaluationTier_
+  commentId: Overload:Seclai.Models.UpdateAgentRequest.SetDefaultEvaluationTier
+  isSpec: "True"
+  fullName: Seclai.Models.UpdateAgentRequest.SetDefaultEvaluationTier
+  nameWithType: UpdateAgentRequest.SetDefaultEvaluationTier
 - uid: Seclai.Models.UpdateAgentRequest.SetMaxCreditsPerPeriod
   name: SetMaxCreditsPerPeriod
   href: api/Seclai.Models.UpdateAgentRequest.html#Seclai_Models_UpdateAgentRequest_SetMaxCreditsPerPeriod
@@ -17091,6 +19783,32 @@ references:
   isSpec: "True"
   fullName: Seclai.Models.UpdateAgentRequest.SetMaxRunsTotal
   nameWithType: UpdateAgentRequest.SetMaxRunsTotal
+- uid: Seclai.Models.UpdateAgentRequest.SetPromptModelAutoRollbackTriggers
+  name: SetPromptModelAutoRollbackTriggers
+  href: api/Seclai.Models.UpdateAgentRequest.html#Seclai_Models_UpdateAgentRequest_SetPromptModelAutoRollbackTriggers
+  commentId: P:Seclai.Models.UpdateAgentRequest.SetPromptModelAutoRollbackTriggers
+  fullName: Seclai.Models.UpdateAgentRequest.SetPromptModelAutoRollbackTriggers
+  nameWithType: UpdateAgentRequest.SetPromptModelAutoRollbackTriggers
+- uid: Seclai.Models.UpdateAgentRequest.SetPromptModelAutoRollbackTriggers*
+  name: SetPromptModelAutoRollbackTriggers
+  href: api/Seclai.Models.UpdateAgentRequest.html#Seclai_Models_UpdateAgentRequest_SetPromptModelAutoRollbackTriggers_
+  commentId: Overload:Seclai.Models.UpdateAgentRequest.SetPromptModelAutoRollbackTriggers
+  isSpec: "True"
+  fullName: Seclai.Models.UpdateAgentRequest.SetPromptModelAutoRollbackTriggers
+  nameWithType: UpdateAgentRequest.SetPromptModelAutoRollbackTriggers
+- uid: Seclai.Models.UpdateAgentRequest.SetSamplingConfig
+  name: SetSamplingConfig
+  href: api/Seclai.Models.UpdateAgentRequest.html#Seclai_Models_UpdateAgentRequest_SetSamplingConfig
+  commentId: P:Seclai.Models.UpdateAgentRequest.SetSamplingConfig
+  fullName: Seclai.Models.UpdateAgentRequest.SetSamplingConfig
+  nameWithType: UpdateAgentRequest.SetSamplingConfig
+- uid: Seclai.Models.UpdateAgentRequest.SetSamplingConfig*
+  name: SetSamplingConfig
+  href: api/Seclai.Models.UpdateAgentRequest.html#Seclai_Models_UpdateAgentRequest_SetSamplingConfig_
+  commentId: Overload:Seclai.Models.UpdateAgentRequest.SetSamplingConfig
+  isSpec: "True"
+  fullName: Seclai.Models.UpdateAgentRequest.SetSamplingConfig
+  nameWithType: UpdateAgentRequest.SetSamplingConfig
 - uid: Seclai.Models.UpdateAgentRequest.SolutionId
   name: SolutionId
   href: api/Seclai.Models.UpdateAgentRequest.html#Seclai_Models_UpdateAgentRequest_SolutionId
@@ -18259,6 +20977,18 @@ references:
   commentId: F:Seclai.SeclaiApiVersion.V2026_10_28
   fullName: Seclai.SeclaiApiVersion.V2026_10_28
   nameWithType: SeclaiApiVersion.V2026_10_28
+- uid: Seclai.SeclaiApiVersion.V2026_11_02
+  name: V2026_11_02
+  href: api/Seclai.SeclaiApiVersion.html#Seclai_SeclaiApiVersion_V2026_11_02
+  commentId: F:Seclai.SeclaiApiVersion.V2026_11_02
+  fullName: Seclai.SeclaiApiVersion.V2026_11_02
+  nameWithType: SeclaiApiVersion.V2026_11_02
+- uid: Seclai.SeclaiApiVersion.V2026_11_04
+  name: V2026_11_04
+  href: api/Seclai.SeclaiApiVersion.html#Seclai_SeclaiApiVersion_V2026_11_04
+  commentId: F:Seclai.SeclaiApiVersion.V2026_11_04
+  fullName: Seclai.SeclaiApiVersion.V2026_11_04
+  nameWithType: SeclaiApiVersion.V2026_11_04
 - uid: Seclai.SeclaiAuth
   name: SeclaiAuth
   href: api/Seclai.SeclaiAuth.html
@@ -19815,6 +22545,22 @@ references:
   isSpec: "True"
   fullName: Seclai.SeclaiClient.GetKnowledgeBaseAsync
   nameWithType: SeclaiClient.GetKnowledgeBaseAsync
+- uid: Seclai.SeclaiClient.GetKnowledgeBaseMetadataKeyStatsAsync(System.String,System.Threading.CancellationToken)
+  name: GetKnowledgeBaseMetadataKeyStatsAsync(string, CancellationToken)
+  href: api/Seclai.SeclaiClient.html#Seclai_SeclaiClient_GetKnowledgeBaseMetadataKeyStatsAsync_System_String_System_Threading_CancellationToken_
+  commentId: M:Seclai.SeclaiClient.GetKnowledgeBaseMetadataKeyStatsAsync(System.String,System.Threading.CancellationToken)
+  name.vb: GetKnowledgeBaseMetadataKeyStatsAsync(String, CancellationToken)
+  fullName: Seclai.SeclaiClient.GetKnowledgeBaseMetadataKeyStatsAsync(string, System.Threading.CancellationToken)
+  fullName.vb: Seclai.SeclaiClient.GetKnowledgeBaseMetadataKeyStatsAsync(String, System.Threading.CancellationToken)
+  nameWithType: SeclaiClient.GetKnowledgeBaseMetadataKeyStatsAsync(string, CancellationToken)
+  nameWithType.vb: SeclaiClient.GetKnowledgeBaseMetadataKeyStatsAsync(String, CancellationToken)
+- uid: Seclai.SeclaiClient.GetKnowledgeBaseMetadataKeyStatsAsync*
+  name: GetKnowledgeBaseMetadataKeyStatsAsync
+  href: api/Seclai.SeclaiClient.html#Seclai_SeclaiClient_GetKnowledgeBaseMetadataKeyStatsAsync_
+  commentId: Overload:Seclai.SeclaiClient.GetKnowledgeBaseMetadataKeyStatsAsync
+  isSpec: "True"
+  fullName: Seclai.SeclaiClient.GetKnowledgeBaseMetadataKeyStatsAsync
+  nameWithType: SeclaiClient.GetKnowledgeBaseMetadataKeyStatsAsync
 - uid: Seclai.SeclaiClient.GetMeAsync(System.Threading.CancellationToken)
   name: GetMeAsync(CancellationToken)
   href: api/Seclai.SeclaiClient.html#Seclai_SeclaiClient_GetMeAsync_System_Threading_CancellationToken_
@@ -19888,6 +22634,22 @@ references:
   isSpec: "True"
   fullName: Seclai.SeclaiClient.GetMemoryBankStatsAsync
   nameWithType: SeclaiClient.GetMemoryBankStatsAsync
+- uid: Seclai.SeclaiClient.GetMetadataKeysAsync(System.String,System.String,System.Threading.CancellationToken)
+  name: GetMetadataKeysAsync(string, string, CancellationToken)
+  href: api/Seclai.SeclaiClient.html#Seclai_SeclaiClient_GetMetadataKeysAsync_System_String_System_String_System_Threading_CancellationToken_
+  commentId: M:Seclai.SeclaiClient.GetMetadataKeysAsync(System.String,System.String,System.Threading.CancellationToken)
+  name.vb: GetMetadataKeysAsync(String, String, CancellationToken)
+  fullName: Seclai.SeclaiClient.GetMetadataKeysAsync(string, string, System.Threading.CancellationToken)
+  fullName.vb: Seclai.SeclaiClient.GetMetadataKeysAsync(String, String, System.Threading.CancellationToken)
+  nameWithType: SeclaiClient.GetMetadataKeysAsync(string, string, CancellationToken)
+  nameWithType.vb: SeclaiClient.GetMetadataKeysAsync(String, String, CancellationToken)
+- uid: Seclai.SeclaiClient.GetMetadataKeysAsync*
+  name: GetMetadataKeysAsync
+  href: api/Seclai.SeclaiClient.html#Seclai_SeclaiClient_GetMetadataKeysAsync_
+  commentId: Overload:Seclai.SeclaiClient.GetMetadataKeysAsync
+  isSpec: "True"
+  fullName: Seclai.SeclaiClient.GetMetadataKeysAsync
+  nameWithType: SeclaiClient.GetMetadataKeysAsync
 - uid: Seclai.SeclaiClient.GetModelAsync(System.String,System.Threading.CancellationToken)
   name: GetModelAsync(string, CancellationToken)
   href: api/Seclai.SeclaiClient.html#Seclai_SeclaiClient_GetModelAsync_System_String_System_Threading_CancellationToken_
@@ -20910,6 +23672,24 @@ references:
   isSpec: "True"
   fullName: Seclai.SeclaiClient.ResumeInboundEmailAsync
   nameWithType: SeclaiClient.ResumeInboundEmailAsync
+- uid: Seclai.SeclaiClient.RunAgentAndPollAsync(System.String,Seclai.Models.AgentRunRequest,Seclai.Models.RunAgentAndPollOptions)
+  name: RunAgentAndPollAsync(string, AgentRunRequest, RunAgentAndPollOptions)
+  href: api/Seclai.SeclaiClient.html#Seclai_SeclaiClient_RunAgentAndPollAsync_System_String_Seclai_Models_AgentRunRequest_Seclai_Models_RunAgentAndPollOptions_
+  commentId: M:Seclai.SeclaiClient.RunAgentAndPollAsync(System.String,Seclai.Models.AgentRunRequest,Seclai.Models.RunAgentAndPollOptions)
+  name.vb: RunAgentAndPollAsync(String, AgentRunRequest, RunAgentAndPollOptions)
+  fullName: Seclai.SeclaiClient.RunAgentAndPollAsync(string, Seclai.Models.AgentRunRequest, Seclai.Models.RunAgentAndPollOptions)
+  fullName.vb: Seclai.SeclaiClient.RunAgentAndPollAsync(String, Seclai.Models.AgentRunRequest, Seclai.Models.RunAgentAndPollOptions)
+  nameWithType: SeclaiClient.RunAgentAndPollAsync(string, AgentRunRequest, RunAgentAndPollOptions)
+  nameWithType.vb: SeclaiClient.RunAgentAndPollAsync(String, AgentRunRequest, RunAgentAndPollOptions)
+- uid: Seclai.SeclaiClient.RunAgentAndPollAsync(System.String,Seclai.Models.AgentRunRequest,Seclai.Models.RunAgentAndPollOptions,System.Threading.CancellationToken)
+  name: RunAgentAndPollAsync(string, AgentRunRequest, RunAgentAndPollOptions, CancellationToken)
+  href: api/Seclai.SeclaiClient.html#Seclai_SeclaiClient_RunAgentAndPollAsync_System_String_Seclai_Models_AgentRunRequest_Seclai_Models_RunAgentAndPollOptions_System_Threading_CancellationToken_
+  commentId: M:Seclai.SeclaiClient.RunAgentAndPollAsync(System.String,Seclai.Models.AgentRunRequest,Seclai.Models.RunAgentAndPollOptions,System.Threading.CancellationToken)
+  name.vb: RunAgentAndPollAsync(String, AgentRunRequest, RunAgentAndPollOptions, CancellationToken)
+  fullName: Seclai.SeclaiClient.RunAgentAndPollAsync(string, Seclai.Models.AgentRunRequest, Seclai.Models.RunAgentAndPollOptions, System.Threading.CancellationToken)
+  fullName.vb: Seclai.SeclaiClient.RunAgentAndPollAsync(String, Seclai.Models.AgentRunRequest, Seclai.Models.RunAgentAndPollOptions, System.Threading.CancellationToken)
+  nameWithType: SeclaiClient.RunAgentAndPollAsync(string, AgentRunRequest, RunAgentAndPollOptions, CancellationToken)
+  nameWithType.vb: SeclaiClient.RunAgentAndPollAsync(String, AgentRunRequest, RunAgentAndPollOptions, CancellationToken)
 - uid: Seclai.SeclaiClient.RunAgentAndPollAsync(System.String,Seclai.Models.AgentRunRequest,System.Nullable{System.TimeSpan},System.Nullable{System.TimeSpan},System.Boolean,System.Threading.CancellationToken)
   name: RunAgentAndPollAsync(string, AgentRunRequest, TimeSpan?, TimeSpan?, bool, CancellationToken)
   href: api/Seclai.SeclaiClient.html#Seclai_SeclaiClient_RunAgentAndPollAsync_System_String_Seclai_Models_AgentRunRequest_System_Nullable_System_TimeSpan__System_Nullable_System_TimeSpan__System_Boolean_System_Threading_CancellationToken_
@@ -20958,6 +23738,31 @@ references:
   isSpec: "True"
   fullName: Seclai.SeclaiClient.RunStreamingAgentAndWaitAsync
   nameWithType: SeclaiClient.RunStreamingAgentAndWaitAsync
+- uid: Seclai.SeclaiClient.RunStreamingAgentAndWaitWithOptionsAsync(System.String,Seclai.Models.AgentRunStreamRequest,Seclai.Models.RunStreamingAgentAndWaitOptions)
+  name: RunStreamingAgentAndWaitWithOptionsAsync(string, AgentRunStreamRequest, RunStreamingAgentAndWaitOptions)
+  href: api/Seclai.SeclaiClient.html#Seclai_SeclaiClient_RunStreamingAgentAndWaitWithOptionsAsync_System_String_Seclai_Models_AgentRunStreamRequest_Seclai_Models_RunStreamingAgentAndWaitOptions_
+  commentId: M:Seclai.SeclaiClient.RunStreamingAgentAndWaitWithOptionsAsync(System.String,Seclai.Models.AgentRunStreamRequest,Seclai.Models.RunStreamingAgentAndWaitOptions)
+  name.vb: RunStreamingAgentAndWaitWithOptionsAsync(String, AgentRunStreamRequest, RunStreamingAgentAndWaitOptions)
+  fullName: Seclai.SeclaiClient.RunStreamingAgentAndWaitWithOptionsAsync(string, Seclai.Models.AgentRunStreamRequest, Seclai.Models.RunStreamingAgentAndWaitOptions)
+  fullName.vb: Seclai.SeclaiClient.RunStreamingAgentAndWaitWithOptionsAsync(String, Seclai.Models.AgentRunStreamRequest, Seclai.Models.RunStreamingAgentAndWaitOptions)
+  nameWithType: SeclaiClient.RunStreamingAgentAndWaitWithOptionsAsync(string, AgentRunStreamRequest, RunStreamingAgentAndWaitOptions)
+  nameWithType.vb: SeclaiClient.RunStreamingAgentAndWaitWithOptionsAsync(String, AgentRunStreamRequest, RunStreamingAgentAndWaitOptions)
+- uid: Seclai.SeclaiClient.RunStreamingAgentAndWaitWithOptionsAsync(System.String,Seclai.Models.AgentRunStreamRequest,Seclai.Models.RunStreamingAgentAndWaitOptions,System.Threading.CancellationToken)
+  name: RunStreamingAgentAndWaitWithOptionsAsync(string, AgentRunStreamRequest, RunStreamingAgentAndWaitOptions, CancellationToken)
+  href: api/Seclai.SeclaiClient.html#Seclai_SeclaiClient_RunStreamingAgentAndWaitWithOptionsAsync_System_String_Seclai_Models_AgentRunStreamRequest_Seclai_Models_RunStreamingAgentAndWaitOptions_System_Threading_CancellationToken_
+  commentId: M:Seclai.SeclaiClient.RunStreamingAgentAndWaitWithOptionsAsync(System.String,Seclai.Models.AgentRunStreamRequest,Seclai.Models.RunStreamingAgentAndWaitOptions,System.Threading.CancellationToken)
+  name.vb: RunStreamingAgentAndWaitWithOptionsAsync(String, AgentRunStreamRequest, RunStreamingAgentAndWaitOptions, CancellationToken)
+  fullName: Seclai.SeclaiClient.RunStreamingAgentAndWaitWithOptionsAsync(string, Seclai.Models.AgentRunStreamRequest, Seclai.Models.RunStreamingAgentAndWaitOptions, System.Threading.CancellationToken)
+  fullName.vb: Seclai.SeclaiClient.RunStreamingAgentAndWaitWithOptionsAsync(String, Seclai.Models.AgentRunStreamRequest, Seclai.Models.RunStreamingAgentAndWaitOptions, System.Threading.CancellationToken)
+  nameWithType: SeclaiClient.RunStreamingAgentAndWaitWithOptionsAsync(string, AgentRunStreamRequest, RunStreamingAgentAndWaitOptions, CancellationToken)
+  nameWithType.vb: SeclaiClient.RunStreamingAgentAndWaitWithOptionsAsync(String, AgentRunStreamRequest, RunStreamingAgentAndWaitOptions, CancellationToken)
+- uid: Seclai.SeclaiClient.RunStreamingAgentAndWaitWithOptionsAsync*
+  name: RunStreamingAgentAndWaitWithOptionsAsync
+  href: api/Seclai.SeclaiClient.html#Seclai_SeclaiClient_RunStreamingAgentAndWaitWithOptionsAsync_
+  commentId: Overload:Seclai.SeclaiClient.RunStreamingAgentAndWaitWithOptionsAsync
+  isSpec: "True"
+  fullName: Seclai.SeclaiClient.RunStreamingAgentAndWaitWithOptionsAsync
+  nameWithType: SeclaiClient.RunStreamingAgentAndWaitWithOptionsAsync
 - uid: Seclai.SeclaiClient.RunStreamingAgentAsync(System.String,Seclai.Models.AgentRunStreamRequest,System.Threading.CancellationToken)
   name: RunStreamingAgentAsync(string, AgentRunStreamRequest, CancellationToken)
   href: api/Seclai.SeclaiClient.html#Seclai_SeclaiClient_RunStreamingAgentAsync_System_String_Seclai_Models_AgentRunStreamRequest_System_Threading_CancellationToken_
@@ -21080,6 +23885,22 @@ references:
   isSpec: "True"
   fullName: Seclai.SeclaiClient.SetEmailTriggerConfigAsync
   nameWithType: SeclaiClient.SetEmailTriggerConfigAsync
+- uid: Seclai.SeclaiClient.SetMetadataKeysAsync(System.String,System.String,Seclai.Models.SetMetadataKeysRequest,System.Threading.CancellationToken)
+  name: SetMetadataKeysAsync(string, string, SetMetadataKeysRequest, CancellationToken)
+  href: api/Seclai.SeclaiClient.html#Seclai_SeclaiClient_SetMetadataKeysAsync_System_String_System_String_Seclai_Models_SetMetadataKeysRequest_System_Threading_CancellationToken_
+  commentId: M:Seclai.SeclaiClient.SetMetadataKeysAsync(System.String,System.String,Seclai.Models.SetMetadataKeysRequest,System.Threading.CancellationToken)
+  name.vb: SetMetadataKeysAsync(String, String, SetMetadataKeysRequest, CancellationToken)
+  fullName: Seclai.SeclaiClient.SetMetadataKeysAsync(string, string, Seclai.Models.SetMetadataKeysRequest, System.Threading.CancellationToken)
+  fullName.vb: Seclai.SeclaiClient.SetMetadataKeysAsync(String, String, Seclai.Models.SetMetadataKeysRequest, System.Threading.CancellationToken)
+  nameWithType: SeclaiClient.SetMetadataKeysAsync(string, string, SetMetadataKeysRequest, CancellationToken)
+  nameWithType.vb: SeclaiClient.SetMetadataKeysAsync(String, String, SetMetadataKeysRequest, CancellationToken)
+- uid: Seclai.SeclaiClient.SetMetadataKeysAsync*
+  name: SetMetadataKeysAsync
+  href: api/Seclai.SeclaiClient.html#Seclai_SeclaiClient_SetMetadataKeysAsync_
+  commentId: Overload:Seclai.SeclaiClient.SetMetadataKeysAsync
+  isSpec: "True"
+  fullName: Seclai.SeclaiClient.SetMetadataKeysAsync
+  nameWithType: SeclaiClient.SetMetadataKeysAsync
 - uid: Seclai.SeclaiClient.SetPrimaryEmailDomainAsync(System.String,System.Threading.CancellationToken)
   name: SetPrimaryEmailDomainAsync(string, CancellationToken)
   href: api/Seclai.SeclaiClient.html#Seclai_SeclaiClient_SetPrimaryEmailDomainAsync_System_String_System_Threading_CancellationToken_

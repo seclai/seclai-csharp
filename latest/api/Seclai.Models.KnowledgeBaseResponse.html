@@ -145,6 +145,87 @@ public string? CreatedAt { get; set; }</code></pre>
   </table>
 
 
+  <a id="Seclai_Models_KnowledgeBaseResponse_DefaultScoreThreshold_" data-uid="Seclai.Models.KnowledgeBaseResponse.DefaultScoreThreshold*"></a>
+  <h4 id="Seclai_Models_KnowledgeBaseResponse_DefaultScoreThreshold" data-uid="Seclai.Models.KnowledgeBaseResponse.DefaultScoreThreshold">DefaultScoreThreshold</h4>
+  <div class="markdown level1 summary"><p>Editor default for a new retrieval step's Minimum Rerank Score.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;default_score_threshold&quot;)]
+public double? DefaultScoreThreshold { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.double">double</a>?</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_Models_KnowledgeBaseResponse_DefaultTopK_" data-uid="Seclai.Models.KnowledgeBaseResponse.DefaultTopK*"></a>
+  <h4 id="Seclai_Models_KnowledgeBaseResponse_DefaultTopK" data-uid="Seclai.Models.KnowledgeBaseResponse.DefaultTopK">DefaultTopK</h4>
+  <div class="markdown level1 summary"><p>Editor default for a new retrieval step's Top K.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;default_top_k&quot;)]
+public int? DefaultTopK { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>?</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_Models_KnowledgeBaseResponse_DefaultTopN_" data-uid="Seclai.Models.KnowledgeBaseResponse.DefaultTopN*"></a>
+  <h4 id="Seclai_Models_KnowledgeBaseResponse_DefaultTopN" data-uid="Seclai.Models.KnowledgeBaseResponse.DefaultTopN">DefaultTopN</h4>
+  <div class="markdown level1 summary"><p>Editor default for a new retrieval step's Top N.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;default_top_n&quot;)]
+public int? DefaultTopN { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>?</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
   <a id="Seclai_Models_KnowledgeBaseResponse_Description_" data-uid="Seclai.Models.KnowledgeBaseResponse.Description*"></a>
   <h4 id="Seclai_Models_KnowledgeBaseResponse_Description" data-uid="Seclai.Models.KnowledgeBaseResponse.Description">Description</h4>
   <div class="markdown level1 summary"></div>
@@ -223,6 +304,60 @@ public string? Name { get; set; }</code></pre>
   </table>
 
 
+  <a id="Seclai_Models_KnowledgeBaseResponse_Readonly_" data-uid="Seclai.Models.KnowledgeBaseResponse.Readonly*"></a>
+  <h4 id="Seclai_Models_KnowledgeBaseResponse_Readonly" data-uid="Seclai.Models.KnowledgeBaseResponse.Readonly">Readonly</h4>
+  <div class="markdown level1 summary"><p>Whether the knowledge base is read-only.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;readonly&quot;)]
+public bool Readonly { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_Models_KnowledgeBaseResponse_RerankerModel_" data-uid="Seclai.Models.KnowledgeBaseResponse.RerankerModel*"></a>
+  <h4 id="Seclai_Models_KnowledgeBaseResponse_RerankerModel" data-uid="Seclai.Models.KnowledgeBaseResponse.RerankerModel">RerankerModel</h4>
+  <div class="markdown level1 summary"><p>Reranker model in use.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;reranker_model&quot;)]
+public string? RerankerModel { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
   <a id="Seclai_Models_KnowledgeBaseResponse_SolutionId_" data-uid="Seclai.Models.KnowledgeBaseResponse.SolutionId*"></a>
   <h4 id="Seclai_Models_KnowledgeBaseResponse_SolutionId" data-uid="Seclai.Models.KnowledgeBaseResponse.SolutionId">SolutionId</h4>
   <div class="markdown level1 summary"></div>
@@ -243,6 +378,33 @@ public string? SolutionId { get; set; }</code></pre>
     <tbody>
       <tr>
         <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_Models_KnowledgeBaseResponse_Sources_" data-uid="Seclai.Models.KnowledgeBaseResponse.Sources*"></a>
+  <h4 id="Seclai_Models_KnowledgeBaseResponse_Sources" data-uid="Seclai.Models.KnowledgeBaseResponse.Sources">Sources</h4>
+  <div class="markdown level1 summary"><p>Linked source connections.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;sources&quot;)]
+public List&lt;SourceConnectionResponse&gt;? Sources { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.list-1">List</a>&lt;<a class="xref" href="Seclai.Models.SourceConnectionResponse.html">SourceConnectionResponse</a>&gt;</td>
         <td></td>
       </tr>
     </tbody>

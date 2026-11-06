@@ -9,7 +9,7 @@
       <meta name="viewport" content="width=device-width">
       <meta name="title" content="Class StreamingException | Seclai C# SDK ">
     
-    <meta name="description" content="Thrown when an SSE streaming agent run encounters an error, such as a timeout or an unexpected end of stream.">
+    <meta name="description" content="Thrown when an agent run helper gives up before the run finished: an SSE streaming run times out, its stream ends without a done event or breaks mid-stream, or a polled run&#39;s own timeout elapses.">
       <link rel="shortcut icon" href="../favicon.ico">
       <link rel="stylesheet" href="../styles/docfx.vendor.min.css">
       <link rel="stylesheet" href="../styles/docfx.css">
@@ -81,8 +81,8 @@
 
 
   <h1 id="Seclai_Exceptions_StreamingException" data-uid="Seclai.Exceptions.StreamingException" class="text-break">Class StreamingException</h1>
-  <div class="markdown level0 summary"><p>Thrown when an SSE streaming agent run encounters an error, such as a timeout
-or an unexpected end of stream.</p>
+  <div class="markdown level0 summary"><p>Thrown when an agent run helper gives up before the run finished: an SSE streaming run times out, its stream
+ends without a <code>done</code> event or breaks mid-stream, or a polled run's own timeout elapses.</p>
 </div>
   <div class="markdown level0 conceptual"></div>
   <div class="inheritance">
@@ -211,6 +211,75 @@ or an unexpected end of stream.</p>
       <tr>
         <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.exception">Exception</a></td>
         <td><span class="parametername">innerException</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_Exceptions_StreamingException__ctor_" data-uid="Seclai.Exceptions.StreamingException.#ctor*"></a>
+  <h4 id="Seclai_Exceptions_StreamingException__ctor_System_String_System_Exception_Seclai_Models_AgentRunResponse_" data-uid="Seclai.Exceptions.StreamingException.#ctor(System.String,System.Exception,Seclai.Models.AgentRunResponse)">StreamingException(string, Exception?, AgentRunResponse?)</h4>
+  <div class="markdown level1 summary"><p>Creates a <a class="xref" href="Seclai.Exceptions.StreamingException.html">StreamingException</a> carrying the latest snapshot of the unfinished run.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public StreamingException(string message, Exception? innerException, AgentRunResponse? run)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
+        <td><span class="parametername">message</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.exception">Exception</a></td>
+        <td><span class="parametername">innerException</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="Seclai.Models.AgentRunResponse.html">AgentRunResponse</a></td>
+        <td><span class="parametername">run</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="properties">Properties
+</h3>
+
+
+  <a id="Seclai_Exceptions_StreamingException_Run_" data-uid="Seclai.Exceptions.StreamingException.Run*"></a>
+  <h4 id="Seclai_Exceptions_StreamingException_Run" data-uid="Seclai.Exceptions.StreamingException.Run">Run</h4>
+  <div class="markdown level1 summary"><p>The latest snapshot of the run, which had not finished, or null if none arrived. For a streaming run it is
+the <code>result</code> snapshot if that event arrived, else the <code>init</code> one; for a polled run, the last poll.
+When <a class="xref" href="Seclai.Models.AgentRunResponse.html#Seclai_Models_AgentRunResponse_ResultReportedAt">ResultReportedAt</a> is set, <a class="xref" href="Seclai.Models.AgentRunResponse.html#Seclai_Models_AgentRunResponse_Output">Output</a> is the
+answer even though <a class="xref" href="Seclai.Models.AgentRunResponse.html#Seclai_Models_AgentRunResponse_Status">Status</a> is not terminal.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public AgentRunResponse? Run { get; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Seclai.Models.AgentRunResponse.html">AgentRunResponse</a></td>
         <td></td>
       </tr>
     </tbody>

@@ -119,6 +119,87 @@
 </h3>
 
 
+  <a id="Seclai_Models_MemoryBankResponse_ChunkOverlap_" data-uid="Seclai.Models.MemoryBankResponse.ChunkOverlap*"></a>
+  <h4 id="Seclai_Models_MemoryBankResponse_ChunkOverlap" data-uid="Seclai.Models.MemoryBankResponse.ChunkOverlap">ChunkOverlap</h4>
+  <div class="markdown level1 summary"><p>Character overlap between chunks.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;chunk_overlap&quot;)]
+public int? ChunkOverlap { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>?</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_Models_MemoryBankResponse_ChunkSize_" data-uid="Seclai.Models.MemoryBankResponse.ChunkSize*"></a>
+  <h4 id="Seclai_Models_MemoryBankResponse_ChunkSize" data-uid="Seclai.Models.MemoryBankResponse.ChunkSize">ChunkSize</h4>
+  <div class="markdown level1 summary"><p>Characters per chunk.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;chunk_size&quot;)]
+public int? ChunkSize { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>?</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_Models_MemoryBankResponse_CompactionPrompt_" data-uid="Seclai.Models.MemoryBankResponse.CompactionPrompt*"></a>
+  <h4 id="Seclai_Models_MemoryBankResponse_CompactionPrompt" data-uid="Seclai.Models.MemoryBankResponse.CompactionPrompt">CompactionPrompt</h4>
+  <div class="markdown level1 summary"><p>Custom prompt used when compacting older entries. When set, entries that exceed a threshold are summarized into a new entry before being soft-deleted.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;compaction_prompt&quot;)]
+public string? CompactionPrompt { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
   <a id="Seclai_Models_MemoryBankResponse_CreatedAt_" data-uid="Seclai.Models.MemoryBankResponse.CreatedAt*"></a>
   <h4 id="Seclai_Models_MemoryBankResponse_CreatedAt" data-uid="Seclai.Models.MemoryBankResponse.CreatedAt">CreatedAt</h4>
   <div class="markdown level1 summary"></div>
@@ -171,6 +252,60 @@ public string? Description { get; set; }</code></pre>
   </table>
 
 
+  <a id="Seclai_Models_MemoryBankResponse_Dimensions_" data-uid="Seclai.Models.MemoryBankResponse.Dimensions*"></a>
+  <h4 id="Seclai_Models_MemoryBankResponse_Dimensions" data-uid="Seclai.Models.MemoryBankResponse.Dimensions">Dimensions</h4>
+  <div class="markdown level1 summary"><p>Vector embedding dimensions.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;dimensions&quot;)]
+public int? Dimensions { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>?</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_Models_MemoryBankResponse_EmbeddingModel_" data-uid="Seclai.Models.MemoryBankResponse.EmbeddingModel*"></a>
+  <h4 id="Seclai_Models_MemoryBankResponse_EmbeddingModel" data-uid="Seclai.Models.MemoryBankResponse.EmbeddingModel">EmbeddingModel</h4>
+  <div class="markdown level1 summary"><p>Embedding model identifier.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;embedding_model&quot;)]
+public string? EmbeddingModel { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
   <a id="Seclai_Models_MemoryBankResponse_Id_" data-uid="Seclai.Models.MemoryBankResponse.Id*"></a>
   <h4 id="Seclai_Models_MemoryBankResponse_Id" data-uid="Seclai.Models.MemoryBankResponse.Id">Id</h4>
   <div class="markdown level1 summary"></div>
@@ -179,6 +314,114 @@ public string? Description { get; set; }</code></pre>
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;id&quot;)]
 public string? Id { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_Models_MemoryBankResponse_MaxAgeDays_" data-uid="Seclai.Models.MemoryBankResponse.MaxAgeDays*"></a>
+  <h4 id="Seclai_Models_MemoryBankResponse_MaxAgeDays" data-uid="Seclai.Models.MemoryBankResponse.MaxAgeDays">MaxAgeDays</h4>
+  <div class="markdown level1 summary"><p>Deprecated and no longer applied: age belongs to <a class="xref" href="Seclai.Models.MemoryBankResponse.html#Seclai_Models_MemoryBankResponse_RetentionDays">RetentionDays</a>. Always null from <code>Seclai-Version: 2026-08-03</code>; older versions read whatever was stored.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;max_age_days&quot;)]
+public int? MaxAgeDays { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>?</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_Models_MemoryBankResponse_MaxSizeTokens_" data-uid="Seclai.Models.MemoryBankResponse.MaxSizeTokens*"></a>
+  <h4 id="Seclai_Models_MemoryBankResponse_MaxSizeTokens" data-uid="Seclai.Models.MemoryBankResponse.MaxSizeTokens">MaxSizeTokens</h4>
+  <div class="markdown level1 summary"><p>Max total tokens per partition before compaction.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;max_size_tokens&quot;)]
+public int? MaxSizeTokens { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>?</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_Models_MemoryBankResponse_MaxTurns_" data-uid="Seclai.Models.MemoryBankResponse.MaxTurns*"></a>
+  <h4 id="Seclai_Models_MemoryBankResponse_MaxTurns" data-uid="Seclai.Models.MemoryBankResponse.MaxTurns">MaxTurns</h4>
+  <div class="markdown level1 summary"><p>Max conversation turns per partition before compaction.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;max_turns&quot;)]
+public int? MaxTurns { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>?</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_Models_MemoryBankResponse_Mode_" data-uid="Seclai.Models.MemoryBankResponse.Mode*"></a>
+  <h4 id="Seclai_Models_MemoryBankResponse_Mode" data-uid="Seclai.Models.MemoryBankResponse.Mode">Mode</h4>
+  <div class="markdown level1 summary"><p>Embedding mode: <code>fast_and_cheap</code>, <code>balanced</code>, <code>slow_and_thorough</code>, or <code>custom</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;mode&quot;)]
+public string? Mode { get; set; }</code></pre>
   </div>
   <h5 class="propertyValue">Property Value</h5>
   <table class="table table-bordered table-condensed">
@@ -223,6 +466,33 @@ public string? Name { get; set; }</code></pre>
   </table>
 
 
+  <a id="Seclai_Models_MemoryBankResponse_RetentionDays_" data-uid="Seclai.Models.MemoryBankResponse.RetentionDays*"></a>
+  <h4 id="Seclai_Models_MemoryBankResponse_RetentionDays" data-uid="Seclai.Models.MemoryBankResponse.RetentionDays">RetentionDays</h4>
+  <div class="markdown level1 summary"><p>Days entries are kept before deletion; null keeps them indefinitely.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;retention_days&quot;)]
+public int? RetentionDays { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>?</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
   <a id="Seclai_Models_MemoryBankResponse_SolutionId_" data-uid="Seclai.Models.MemoryBankResponse.SolutionId*"></a>
   <h4 id="Seclai_Models_MemoryBankResponse_SolutionId" data-uid="Seclai.Models.MemoryBankResponse.SolutionId">SolutionId</h4>
   <div class="markdown level1 summary"></div>
@@ -231,6 +501,33 @@ public string? Name { get; set; }</code></pre>
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;solution_id&quot;)]
 public string? SolutionId { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_Models_MemoryBankResponse_SourceConnectionId_" data-uid="Seclai.Models.MemoryBankResponse.SourceConnectionId*"></a>
+  <h4 id="Seclai_Models_MemoryBankResponse_SourceConnectionId" data-uid="Seclai.Models.MemoryBankResponse.SourceConnectionId">SourceConnectionId</h4>
+  <div class="markdown level1 summary"><p>The linked content source; null until provisioned.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;source_connection_id&quot;)]
+public string? SourceConnectionId { get; set; }</code></pre>
   </div>
   <h5 class="propertyValue">Property Value</h5>
   <table class="table table-bordered table-condensed">

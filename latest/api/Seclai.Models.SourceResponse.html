@@ -726,6 +726,33 @@ public List&lt;string&gt;? FeedAttachments { get; set; }</code></pre>
   </table>
 
 
+  <a id="Seclai_Models_SourceResponse_FreeRetentionDays_" data-uid="Seclai.Models.SourceResponse.FreeRetentionDays*"></a>
+  <h4 id="Seclai_Models_SourceResponse_FreeRetentionDays" data-uid="Seclai.Models.SourceResponse.FreeRetentionDays">FreeRetentionDays</h4>
+  <div class="markdown level1 summary"><p>Days content is stored for free before billing applies.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;free_retention_days&quot;)]
+public int? FreeRetentionDays { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.int32">int</a>?</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
   <a id="Seclai_Models_SourceResponse_HasHistoricalData_" data-uid="Seclai.Models.SourceResponse.HasHistoricalData*"></a>
   <h4 id="Seclai_Models_SourceResponse_HasHistoricalData" data-uid="Seclai.Models.SourceResponse.HasHistoricalData">HasHistoricalData</h4>
   <div class="markdown level1 summary"></div>
@@ -760,6 +787,33 @@ public bool? HasHistoricalData { get; set; }</code></pre>
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;id&quot;)]
 public string? Id { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_Models_SourceResponse_IndexMode_" data-uid="Seclai.Models.SourceResponse.IndexMode*"></a>
+  <h4 id="Seclai_Models_SourceResponse_IndexMode" data-uid="Seclai.Models.SourceResponse.IndexMode">IndexMode</h4>
+  <div class="markdown level1 summary"><p>Index mode for a <code>custom_index</code> source: <code>fast_and_cheap</code>, <code>balanced</code>, <code>slow_and_thorough</code>, or <code>custom</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;index_mode&quot;)]
+public string? IndexMode { get; set; }</code></pre>
   </div>
   <h5 class="propertyValue">Property Value</h5>
   <table class="table table-bordered table-condensed">
@@ -1141,6 +1195,33 @@ public bool? SpendCapReached { get; set; }</code></pre>
     <tbody>
       <tr>
         <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a>?</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_Models_SourceResponse_SystemManaged_" data-uid="Seclai.Models.SourceResponse.SystemManaged*"></a>
+  <h4 id="Seclai_Models_SourceResponse_SystemManaged" data-uid="Seclai.Models.SourceResponse.SystemManaged">SystemManaged</h4>
+  <div class="markdown level1 summary"><p>Whether the system manages this source automatically (for example, agent traces).</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;system_managed&quot;)]
+public bool SystemManaged { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a></td>
         <td></td>
       </tr>
     </tbody>

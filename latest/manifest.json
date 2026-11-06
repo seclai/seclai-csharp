@@ -74,7 +74,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Seclai.Exceptions.StreamingException",
-      "Summary": "<p sourcefile=\"build/api/Seclai.Exceptions.StreamingException.yml\" sourcestartlinenumber=\"1\">Thrown when an SSE streaming agent run encounters an error, such as a timeout\nor an unexpected end of stream.</p>\n"
+      "Summary": "<p sourcefile=\"build/api/Seclai.Exceptions.StreamingException.yml\" sourcestartlinenumber=\"1\">Thrown when an agent run helper gives up before the run finished: an SSE streaming run times out, its stream\nends without a <code>done</code> event or breaks mid-stream, or a polled run's own timeout elapses.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -1296,6 +1296,20 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.DeclarableMetadataKey.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.DeclarableMetadataKey.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.DeclarableMetadataKey",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.DeclarableMetadataKey.yml\" sourcestartlinenumber=\"1\">A system or source metadata key that a trigger's type can declare.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "build/api/Seclai.Models.DmarcFailingSourceResponse.yml",
       "output": {
         ".html": {
@@ -2052,6 +2066,20 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.KnowledgeBaseMetadataKeyStatsResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.KnowledgeBaseMetadataKeyStatsResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.KnowledgeBaseMetadataKeyStatsResponse",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.KnowledgeBaseMetadataKeyStatsResponse.yml\" sourcestartlinenumber=\"1\">How often each item-metadata key appears on a knowledge base's content items, per time window.\nReturned by <xref href=\"Seclai.SeclaiClient.GetKnowledgeBaseMetadataKeyStatsAsync(System.String%2cSystem.Threading.CancellationToken)\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "build/api/Seclai.Models.KnowledgeBaseResponse.yml",
       "output": {
         ".html": {
@@ -2245,6 +2273,76 @@
       "IsMRef": true,
       "Title": "Seclai.Models.MemoryBankStatsOptions",
       "Summary": "<p sourcefile=\"build/api/Seclai.Models.MemoryBankStatsOptions.yml\" sourcestartlinenumber=\"1\">Period for <xref href=\"Seclai.SeclaiClient.GetMemoryBankStatsAsync(System.String%2cSeclai.Models.MemoryBankStatsOptions%2cSystem.Threading.CancellationToken)\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.MetadataKeyCountResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.MetadataKeyCountResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.MetadataKeyCountResponse",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.MetadataKeyCountResponse.yml\" sourcestartlinenumber=\"1\">How often one item-metadata key appears in a window.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.MetadataKeyDeclaration.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.MetadataKeyDeclaration.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.MetadataKeyDeclaration",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.MetadataKeyDeclaration.yml\" sourcestartlinenumber=\"1\">One run metadata key a trigger declares. The agent's steps reference it as\n<code>{{metadata.&lt;key&gt;}}</code>.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.MetadataKeyWindowResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.MetadataKeyWindowResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.MetadataKeyWindowResponse",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.MetadataKeyWindowResponse.yml\" sourcestartlinenumber=\"1\">Item-metadata key counts over one time window.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.MetadataKeysResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.MetadataKeysResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.MetadataKeysResponse",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.MetadataKeysResponse.yml\" sourcestartlinenumber=\"1\">The run metadata keys a trigger declares, and the ones it could declare.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.MetadataValueCountResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.MetadataValueCountResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.MetadataValueCountResponse",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.MetadataValueCountResponse.yml\" sourcestartlinenumber=\"1\">One value of an item-metadata key, and how many items carry it.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -2500,6 +2598,20 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.ProposedPolicyActionResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.ProposedPolicyActionResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.ProposedPolicyActionResponse",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.ProposedPolicyActionResponse.yml\" sourcestartlinenumber=\"1\">A governance policy action proposed by <xref href=\"Seclai.SeclaiClient.GenerateGovernanceAiPlanAsync(Seclai.Models.GovernanceAiAssistantRequest%2cSystem.Threading.CancellationToken)\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "build/api/Seclai.Models.ProviderGroupResponse.yml",
       "output": {
         ".html": {
@@ -2567,6 +2679,34 @@
       "IsMRef": true,
       "Title": "Seclai.Models.ResumeInboundResponse",
       "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.RunAgentAndPollOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.RunAgentAndPollOptions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.RunAgentAndPollOptions",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.RunAgentAndPollOptions.yml\" sourcestartlinenumber=\"1\">Options for <xref href=\"Seclai.SeclaiClient.RunAgentAndPollAsync(System.String%2cSeclai.Models.AgentRunRequest%2cSeclai.Models.RunAgentAndPollOptions%2cSystem.Threading.CancellationToken)\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.RunStreamingAgentAndWaitOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.RunStreamingAgentAndWaitOptions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.RunStreamingAgentAndWaitOptions",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.RunStreamingAgentAndWaitOptions.yml\" sourcestartlinenumber=\"1\">Options for <xref href=\"Seclai.SeclaiClient.RunStreamingAgentAndWaitWithOptionsAsync(System.String%2cSeclai.Models.AgentRunStreamRequest%2cSeclai.Models.RunStreamingAgentAndWaitOptions%2cSystem.Threading.CancellationToken)\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -2654,6 +2794,20 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.SetMetadataKeysRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.SetMetadataKeysRequest.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.SetMetadataKeysRequest",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.SetMetadataKeysRequest.yml\" sourcestartlinenumber=\"1\">Replaces the run metadata keys a trigger declares.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "build/api/Seclai.Models.SetSlackTriggerConfigRequest.yml",
       "output": {
         ".html": {
@@ -2710,6 +2864,20 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.SolutionAgentResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.SolutionAgentResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.SolutionAgentResponse",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.SolutionAgentResponse.yml\" sourcestartlinenumber=\"1\">An agent linked to a solution, as listed in <xref href=\"Seclai.Models.SolutionResponse.Agents\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "build/api/Seclai.Models.SolutionConversationResponse.yml",
       "output": {
         ".html": {
@@ -2721,6 +2889,20 @@
       "IsMRef": true,
       "Title": "Seclai.Models.SolutionConversationResponse",
       "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.SolutionKnowledgeBaseResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.SolutionKnowledgeBaseResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.SolutionKnowledgeBaseResponse",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.SolutionKnowledgeBaseResponse.yml\" sourcestartlinenumber=\"1\">A knowledge base linked to a solution, as listed in <xref href=\"Seclai.Models.SolutionResponse.KnowledgeBases\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -2763,6 +2945,34 @@
       "IsMRef": true,
       "Title": "Seclai.Models.SolutionResponse",
       "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.SolutionSourceConnectionResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.SolutionSourceConnectionResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.SolutionSourceConnectionResponse",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.SolutionSourceConnectionResponse.yml\" sourcestartlinenumber=\"1\">A source connection linked to a solution, as listed in <xref href=\"Seclai.Models.SolutionResponse.SourceConnections\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.SourceConnectionResponse.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.SourceConnectionResponse.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.SourceConnectionResponse",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.SourceConnectionResponse.yml\" sourcestartlinenumber=\"1\">A source connection linked to a knowledge base, as listed in <xref href=\"Seclai.Models.KnowledgeBaseResponse.Sources\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
     },
     {
       "type": "ManagedReference",

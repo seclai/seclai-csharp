@@ -4889,6 +4889,59 @@ left (<code>error.code</code> is <code>insufficient_credits</code>).</p>
   </table>
 
 
+  <a id="Seclai_SeclaiClient_GetKnowledgeBaseMetadataKeyStatsAsync_" data-uid="Seclai.SeclaiClient.GetKnowledgeBaseMetadataKeyStatsAsync*"></a>
+  <h4 id="Seclai_SeclaiClient_GetKnowledgeBaseMetadataKeyStatsAsync_System_String_System_Threading_CancellationToken_" data-uid="Seclai.SeclaiClient.GetKnowledgeBaseMetadataKeyStatsAsync(System.String,System.Threading.CancellationToken)">GetKnowledgeBaseMetadataKeyStatsAsync(string, CancellationToken)</h4>
+  <div class="markdown level1 summary"><p>Reports how often each item-metadata key appears on a knowledge base's content items, over all time and
+the last 30 and 7 days, for declaring a content trigger's metadata keys with
+<a class="xref" href="Seclai.SeclaiClient.html#Seclai_SeclaiClient_SetMetadataKeysAsync_System_String_System_String_Seclai_Models_SetMetadataKeysRequest_System_Threading_CancellationToken_">SetMetadataKeysAsync(string, string, SetMetadataKeysRequest, CancellationToken)</a>. An item is counted once, at its latest version; a null value counts
+as absent, and reserved keys and keys the platform sets are left out.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;KnowledgeBaseMetadataKeyStatsResponse&gt; GetKnowledgeBaseMetadataKeyStatsAsync(string knowledgeBaseId, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
+        <td><span class="parametername">knowledgeBaseId</span></td>
+        <td><p>Knowledge base identifier.</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></td>
+        <td><span class="parametername">cancellationToken</span></td>
+        <td><p>Cancellation token.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Seclai.Models.KnowledgeBaseMetadataKeyStatsResponse.html">KnowledgeBaseMetadataKeyStatsResponse</a>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
   <a id="Seclai_SeclaiClient_GetMeAsync_" data-uid="Seclai.SeclaiClient.GetMeAsync*"></a>
   <h4 id="Seclai_SeclaiClient_GetMeAsync_System_Threading_CancellationToken_" data-uid="Seclai.SeclaiClient.GetMeAsync(System.Threading.CancellationToken)">GetMeAsync(CancellationToken)</h4>
   <div class="markdown level1 summary"><p>Gets the authenticated user's personal account ID and the organizations they belong to.</p>
@@ -5166,6 +5219,64 @@ left (<code>error.code</code> is <code>insufficient_credits</code>).</p>
     <tbody>
       <tr>
         <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.text.json.jsonelement">JsonElement</a>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_SeclaiClient_GetMetadataKeysAsync_" data-uid="Seclai.SeclaiClient.GetMetadataKeysAsync*"></a>
+  <h4 id="Seclai_SeclaiClient_GetMetadataKeysAsync_System_String_System_String_System_Threading_CancellationToken_" data-uid="Seclai.SeclaiClient.GetMetadataKeysAsync(System.String,System.String,System.Threading.CancellationToken)">GetMetadataKeysAsync(string, string, CancellationToken)</h4>
+  <div class="markdown level1 summary"><p>Gets the run metadata keys an agent's trigger declares, each required or optional, and the system and
+source keys its type could declare. A run started with a custom key the trigger does not declare, or
+without a required one, is refused with HTTP 400.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;MetadataKeysResponse&gt; GetMetadataKeysAsync(string agentId, string triggerId, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
+        <td><span class="parametername">agentId</span></td>
+        <td><p>Agent identifier.</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
+        <td><span class="parametername">triggerId</span></td>
+        <td><p>The trigger's id, from <a class="xref" href="Seclai.Models.AgentSummaryResponse.html#Seclai_Models_AgentSummaryResponse_TriggerId">TriggerId</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></td>
+        <td><span class="parametername">cancellationToken</span></td>
+        <td><p>Cancellation token.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Seclai.Models.MetadataKeysResponse.html">MetadataKeysResponse</a>&gt;</td>
         <td></td>
       </tr>
     </tbody>
@@ -9220,6 +9331,188 @@ raw body in <a class="xref" href="Seclai.Exceptions.ApiException.html#Seclai_Exc
 
 
   <a id="Seclai_SeclaiClient_RunAgentAndPollAsync_" data-uid="Seclai.SeclaiClient.RunAgentAndPollAsync*"></a>
+  <h4 id="Seclai_SeclaiClient_RunAgentAndPollAsync_System_String_Seclai_Models_AgentRunRequest_Seclai_Models_RunAgentAndPollOptions_" data-uid="Seclai.SeclaiClient.RunAgentAndPollAsync(System.String,Seclai.Models.AgentRunRequest,Seclai.Models.RunAgentAndPollOptions)">RunAgentAndPollAsync(string, AgentRunRequest, RunAgentAndPollOptions)</h4>
+  <div class="markdown level1 summary"><p>Runs an agent and polls until it reaches a terminal status (completed or failed), or, with
+<a class="xref" href="Seclai.Models.RunAgentAndPollOptions.html#Seclai_Models_RunAgentAndPollOptions_ReturnOnResult">ReturnOnResult</a>, until it reports its result.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;AgentRunResponse&gt; RunAgentAndPollAsync(string agentId, AgentRunRequest body, RunAgentAndPollOptions options)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
+        <td><span class="parametername">agentId</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="Seclai.Models.AgentRunRequest.html">AgentRunRequest</a></td>
+        <td><span class="parametername">body</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="Seclai.Models.RunAgentAndPollOptions.html">RunAgentAndPollOptions</a></td>
+        <td><span class="parametername">options</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Seclai.Models.AgentRunResponse.html">AgentRunResponse</a>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="Seclai_SeclaiClient_RunAgentAndPollAsync_System_String_Seclai_Models_AgentRunRequest_Seclai_Models_RunAgentAndPollOptions__remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p><a class="xref" href="Seclai.Models.RunAgentAndPollOptions.html#Seclai_Models_RunAgentAndPollOptions_Timeout">Timeout</a> bounds only waiting for an unfinished run. The request that starts
+the run is bounded, as in 1.7.0, by the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.net.http.httpclient">HttpClient</a>'s timeout
+(<a class="xref" href="Seclai.SeclaiClientOptions.html#Seclai_SeclaiClientOptions_Timeout">Timeout</a> when the SDK creates the client), plus the cancellation token on the
+overload that takes one, since the server may already have created the run. With
+<a class="xref" href="Seclai.Models.RunAgentAndPollOptions.html#Seclai_Models_RunAgentAndPollOptions_IncludeStepOutputs">IncludeStepOutputs</a>, a start response that would end the poll is fetched
+again with its step outputs, so the returned snapshot carries them even when the run ended at once; that fetch
+is not bounded by <a class="xref" href="Seclai.Models.RunAgentAndPollOptions.html#Seclai_Models_RunAgentAndPollOptions_Timeout">Timeout</a> either.</p>
+</div>
+  <h5 class="exceptions">Exceptions</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Condition</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Seclai.Exceptions.StreamingException.html">StreamingException</a></td>
+        <td><p>With <a class="xref" href="Seclai.Models.RunAgentAndPollOptions.html#Seclai_Models_RunAgentAndPollOptions_ThrowOnIncomplete">ThrowOnIncomplete</a>, <a class="xref" href="Seclai.Models.RunAgentAndPollOptions.html#Seclai_Models_RunAgentAndPollOptions_Timeout">Timeout</a>
+elapsed before the run finished. <a class="xref" href="Seclai.Exceptions.StreamingException.html#Seclai_Exceptions_StreamingException_Run">Run</a> holds the latest snapshot; when its
+<a class="xref" href="Seclai.Models.AgentRunResponse.html#Seclai_Models_AgentRunResponse_ResultReportedAt">ResultReportedAt</a> is set, <a class="xref" href="Seclai.Models.AgentRunResponse.html#Seclai_Models_AgentRunResponse_Output">Output</a> is the answer.</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.operationcanceledexception">OperationCanceledException</a></td>
+        <td><p>Without <a class="xref" href="Seclai.Models.RunAgentAndPollOptions.html#Seclai_Models_RunAgentAndPollOptions_ThrowOnIncomplete">ThrowOnIncomplete</a>, <a class="xref" href="Seclai.Models.RunAgentAndPollOptions.html#Seclai_Models_RunAgentAndPollOptions_Timeout">Timeout</a>
+elapsed before the run finished; or, with or without it, the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.net.http.httpclient">HttpClient</a>'s timeout elapsed on one
+of its requests (<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.taskcanceledexception">TaskCanceledException</a>).</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_SeclaiClient_RunAgentAndPollAsync_" data-uid="Seclai.SeclaiClient.RunAgentAndPollAsync*"></a>
+  <h4 id="Seclai_SeclaiClient_RunAgentAndPollAsync_System_String_Seclai_Models_AgentRunRequest_Seclai_Models_RunAgentAndPollOptions_System_Threading_CancellationToken_" data-uid="Seclai.SeclaiClient.RunAgentAndPollAsync(System.String,Seclai.Models.AgentRunRequest,Seclai.Models.RunAgentAndPollOptions,System.Threading.CancellationToken)">RunAgentAndPollAsync(string, AgentRunRequest, RunAgentAndPollOptions, CancellationToken)</h4>
+  <div class="markdown level1 summary"><p>Runs an agent and polls until it reaches a terminal status (completed or failed), or, with
+<a class="xref" href="Seclai.Models.RunAgentAndPollOptions.html#Seclai_Models_RunAgentAndPollOptions_ReturnOnResult">ReturnOnResult</a>, until it reports its result.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;AgentRunResponse&gt; RunAgentAndPollAsync(string agentId, AgentRunRequest body, RunAgentAndPollOptions options, CancellationToken cancellationToken)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
+        <td><span class="parametername">agentId</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="Seclai.Models.AgentRunRequest.html">AgentRunRequest</a></td>
+        <td><span class="parametername">body</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="Seclai.Models.RunAgentAndPollOptions.html">RunAgentAndPollOptions</a></td>
+        <td><span class="parametername">options</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></td>
+        <td><span class="parametername">cancellationToken</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Seclai.Models.AgentRunResponse.html">AgentRunResponse</a>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="Seclai_SeclaiClient_RunAgentAndPollAsync_System_String_Seclai_Models_AgentRunRequest_Seclai_Models_RunAgentAndPollOptions_System_Threading_CancellationToken__remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p><a class="xref" href="Seclai.Models.RunAgentAndPollOptions.html#Seclai_Models_RunAgentAndPollOptions_Timeout">Timeout</a> bounds only waiting for an unfinished run. The request that starts
+the run is bounded, as in 1.7.0, by the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.net.http.httpclient">HttpClient</a>'s timeout
+(<a class="xref" href="Seclai.SeclaiClientOptions.html#Seclai_SeclaiClientOptions_Timeout">Timeout</a> when the SDK creates the client), plus the cancellation token on the
+overload that takes one, since the server may already have created the run. With
+<a class="xref" href="Seclai.Models.RunAgentAndPollOptions.html#Seclai_Models_RunAgentAndPollOptions_IncludeStepOutputs">IncludeStepOutputs</a>, a start response that would end the poll is fetched
+again with its step outputs, so the returned snapshot carries them even when the run ended at once; that fetch
+is not bounded by <a class="xref" href="Seclai.Models.RunAgentAndPollOptions.html#Seclai_Models_RunAgentAndPollOptions_Timeout">Timeout</a> either.</p>
+</div>
+  <h5 class="exceptions">Exceptions</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Condition</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Seclai.Exceptions.StreamingException.html">StreamingException</a></td>
+        <td><p>With <a class="xref" href="Seclai.Models.RunAgentAndPollOptions.html#Seclai_Models_RunAgentAndPollOptions_ThrowOnIncomplete">ThrowOnIncomplete</a>, <a class="xref" href="Seclai.Models.RunAgentAndPollOptions.html#Seclai_Models_RunAgentAndPollOptions_Timeout">Timeout</a>
+elapsed before the run finished. <a class="xref" href="Seclai.Exceptions.StreamingException.html#Seclai_Exceptions_StreamingException_Run">Run</a> holds the latest snapshot; when its
+<a class="xref" href="Seclai.Models.AgentRunResponse.html#Seclai_Models_AgentRunResponse_ResultReportedAt">ResultReportedAt</a> is set, <a class="xref" href="Seclai.Models.AgentRunResponse.html#Seclai_Models_AgentRunResponse_Output">Output</a> is the answer.</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.operationcanceledexception">OperationCanceledException</a></td>
+        <td><p><code class="paramref">cancellationToken</code> was cancelled; without
+<a class="xref" href="Seclai.Models.RunAgentAndPollOptions.html#Seclai_Models_RunAgentAndPollOptions_ThrowOnIncomplete">ThrowOnIncomplete</a>, <a class="xref" href="Seclai.Models.RunAgentAndPollOptions.html#Seclai_Models_RunAgentAndPollOptions_Timeout">Timeout</a> elapsed;
+or, with or without it, the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.net.http.httpclient">HttpClient</a>'s timeout elapsed on one of its requests
+(<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.taskcanceledexception">TaskCanceledException</a>, even when <code class="paramref">cancellationToken</code> was not cancelled).</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_SeclaiClient_RunAgentAndPollAsync_" data-uid="Seclai.SeclaiClient.RunAgentAndPollAsync*"></a>
   <h4 id="Seclai_SeclaiClient_RunAgentAndPollAsync_System_String_Seclai_Models_AgentRunRequest_System_Nullable_System_TimeSpan__System_Nullable_System_TimeSpan__System_Boolean_System_Threading_CancellationToken_" data-uid="Seclai.SeclaiClient.RunAgentAndPollAsync(System.String,Seclai.Models.AgentRunRequest,System.Nullable{System.TimeSpan},System.Nullable{System.TimeSpan},System.Boolean,System.Threading.CancellationToken)">RunAgentAndPollAsync(string, AgentRunRequest, TimeSpan?, TimeSpan?, bool, CancellationToken)</h4>
   <div class="markdown level1 summary"><p>Runs an agent and polls until it reaches a terminal status (completed or failed).</p>
 </div>
@@ -9282,6 +9575,29 @@ raw body in <a class="xref" href="Seclai.Exceptions.ApiException.html#Seclai_Exc
       <tr>
         <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Seclai.Models.AgentRunResponse.html">AgentRunResponse</a>&gt;</td>
         <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="Seclai_SeclaiClient_RunAgentAndPollAsync_System_String_Seclai_Models_AgentRunRequest_System_Nullable_System_TimeSpan__System_Nullable_System_TimeSpan__System_Boolean_System_Threading_CancellationToken__remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>To return as soon as the run reports its result, or to get the last snapshot when the timeout elapses, use
+the <a class="xref" href="Seclai.Models.RunAgentAndPollOptions.html">RunAgentAndPollOptions</a> overload with <a class="xref" href="Seclai.Models.RunAgentAndPollOptions.html#Seclai_Models_RunAgentAndPollOptions_ReturnOnResult">ReturnOnResult</a> or
+<a class="xref" href="Seclai.Models.RunAgentAndPollOptions.html#Seclai_Models_RunAgentAndPollOptions_ThrowOnIncomplete">ThrowOnIncomplete</a>.</p>
+</div>
+  <h5 class="exceptions">Exceptions</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Condition</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.operationcanceledexception">OperationCanceledException</a></td>
+        <td><p><code class="paramref">timeout</code> elapsed before the run finished, <code class="paramref">cancellationToken</code> was cancelled,
+or the <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.net.http.httpclient">HttpClient</a>'s timeout elapsed on one of its requests (<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.taskcanceledexception">TaskCanceledException</a>,
+even when the token was not cancelled).</p>
+</td>
       </tr>
     </tbody>
   </table>
@@ -9400,6 +9716,16 @@ raw body in <a class="xref" href="Seclai.Exceptions.ApiException.html#Seclai_Exc
       </tr>
     </tbody>
   </table>
+  <h5 id="Seclai_SeclaiClient_RunStreamingAgentAndWaitAsync_System_String_Seclai_Models_AgentRunStreamRequest_System_Nullable_System_TimeSpan__System_Threading_CancellationToken__remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>The <code>done</code> snapshot is returned when it arrives. If the stream ends without it, the latest snapshot is
+returned instead (the <code>result</code> one if that event arrived, else <code>init</code>), so the run may not have
+finished: check <a class="xref" href="Seclai.Models.AgentRunResponse.html#Seclai_Models_AgentRunResponse_Status">Status</a> and <a class="xref" href="Seclai.Models.AgentRunResponse.html#Seclai_Models_AgentRunResponse_ResultReportedAt">ResultReportedAt</a>.
+To throw instead, or to return as soon as the run reports its result, use
+<a class="xref" href="Seclai.SeclaiClient.html#Seclai_SeclaiClient_RunStreamingAgentAndWaitWithOptionsAsync_System_String_Seclai_Models_AgentRunStreamRequest_Seclai_Models_RunStreamingAgentAndWaitOptions_System_Threading_CancellationToken_">RunStreamingAgentAndWaitWithOptionsAsync(string, AgentRunStreamRequest, RunStreamingAgentAndWaitOptions, CancellationToken)</a>
+with <a class="xref" href="Seclai.Models.RunStreamingAgentAndWaitOptions.html#Seclai_Models_RunStreamingAgentAndWaitOptions_ThrowOnIncomplete">ThrowOnIncomplete</a>, which becomes the default in the next
+major version, or <a class="xref" href="Seclai.Models.RunStreamingAgentAndWaitOptions.html#Seclai_Models_RunStreamingAgentAndWaitOptions_ReturnOnResult">ReturnOnResult</a>. If the server answers with
+plain JSON instead of an SSE stream, that response is returned.</p>
+</div>
   <h5 class="exceptions">Exceptions</h5>
   <table class="table table-bordered table-condensed">
     <thead>
@@ -9411,7 +9737,161 @@ raw body in <a class="xref" href="Seclai.Exceptions.ApiException.html#Seclai_Exc
     <tbody>
       <tr>
         <td><a class="xref" href="Seclai.Exceptions.StreamingException.html">StreamingException</a></td>
-        <td><p>Thrown on timeout or if the stream ends without a <code>done</code> event.</p>
+        <td><p><code class="paramref">timeout</code> elapsed, <code class="paramref">cancellationToken</code> was cancelled, or the stream ended
+with no snapshot at all. <a class="xref" href="Seclai.Exceptions.StreamingException.html#Seclai_Exceptions_StreamingException_Run">Run</a> holds the latest snapshot, if any.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_SeclaiClient_RunStreamingAgentAndWaitWithOptionsAsync_" data-uid="Seclai.SeclaiClient.RunStreamingAgentAndWaitWithOptionsAsync*"></a>
+  <h4 id="Seclai_SeclaiClient_RunStreamingAgentAndWaitWithOptionsAsync_System_String_Seclai_Models_AgentRunStreamRequest_Seclai_Models_RunStreamingAgentAndWaitOptions_" data-uid="Seclai.SeclaiClient.RunStreamingAgentAndWaitWithOptionsAsync(System.String,Seclai.Models.AgentRunStreamRequest,Seclai.Models.RunStreamingAgentAndWaitOptions)">RunStreamingAgentAndWaitWithOptionsAsync(string, AgentRunStreamRequest, RunStreamingAgentAndWaitOptions)</h4>
+  <div class="markdown level1 summary"><p>Starts an agent run via SSE streaming and blocks until the final <code>done</code> event, or, with
+<a class="xref" href="Seclai.Models.RunStreamingAgentAndWaitOptions.html#Seclai_Models_RunStreamingAgentAndWaitOptions_ReturnOnResult">ReturnOnResult</a>, until the <code>result</code> event.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;AgentRunResponse&gt; RunStreamingAgentAndWaitWithOptionsAsync(string agentId, AgentRunStreamRequest body, RunStreamingAgentAndWaitOptions options)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
+        <td><span class="parametername">agentId</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="Seclai.Models.AgentRunStreamRequest.html">AgentRunStreamRequest</a></td>
+        <td><span class="parametername">body</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="Seclai.Models.RunStreamingAgentAndWaitOptions.html">RunStreamingAgentAndWaitOptions</a></td>
+        <td><span class="parametername">options</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Seclai.Models.AgentRunResponse.html">AgentRunResponse</a>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="Seclai_SeclaiClient_RunStreamingAgentAndWaitWithOptionsAsync_System_String_Seclai_Models_AgentRunStreamRequest_Seclai_Models_RunStreamingAgentAndWaitOptions__remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>See <a class="xref" href="Seclai.SeclaiClient.html#Seclai_SeclaiClient_RunStreamingAgentAndWaitWithOptionsAsync_System_String_Seclai_Models_AgentRunStreamRequest_Seclai_Models_RunStreamingAgentAndWaitOptions_System_Threading_CancellationToken_">RunStreamingAgentAndWaitWithOptionsAsync(string, AgentRunStreamRequest, RunStreamingAgentAndWaitOptions, CancellationToken)</a>.</p>
+</div>
+
+
+  <a id="Seclai_SeclaiClient_RunStreamingAgentAndWaitWithOptionsAsync_" data-uid="Seclai.SeclaiClient.RunStreamingAgentAndWaitWithOptionsAsync*"></a>
+  <h4 id="Seclai_SeclaiClient_RunStreamingAgentAndWaitWithOptionsAsync_System_String_Seclai_Models_AgentRunStreamRequest_Seclai_Models_RunStreamingAgentAndWaitOptions_System_Threading_CancellationToken_" data-uid="Seclai.SeclaiClient.RunStreamingAgentAndWaitWithOptionsAsync(System.String,Seclai.Models.AgentRunStreamRequest,Seclai.Models.RunStreamingAgentAndWaitOptions,System.Threading.CancellationToken)">RunStreamingAgentAndWaitWithOptionsAsync(string, AgentRunStreamRequest, RunStreamingAgentAndWaitOptions, CancellationToken)</h4>
+  <div class="markdown level1 summary"><p>Starts an agent run via SSE streaming and blocks until the final <code>done</code> event, or, with
+<a class="xref" href="Seclai.Models.RunStreamingAgentAndWaitOptions.html#Seclai_Models_RunStreamingAgentAndWaitOptions_ReturnOnResult">ReturnOnResult</a>, until the <code>result</code> event.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;AgentRunResponse&gt; RunStreamingAgentAndWaitWithOptionsAsync(string agentId, AgentRunStreamRequest body, RunStreamingAgentAndWaitOptions options, CancellationToken cancellationToken)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
+        <td><span class="parametername">agentId</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="Seclai.Models.AgentRunStreamRequest.html">AgentRunStreamRequest</a></td>
+        <td><span class="parametername">body</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="Seclai.Models.RunStreamingAgentAndWaitOptions.html">RunStreamingAgentAndWaitOptions</a></td>
+        <td><span class="parametername">options</span></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></td>
+        <td><span class="parametername">cancellationToken</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Seclai.Models.AgentRunResponse.html">AgentRunResponse</a>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="Seclai_SeclaiClient_RunStreamingAgentAndWaitWithOptionsAsync_System_String_Seclai_Models_AgentRunStreamRequest_Seclai_Models_RunStreamingAgentAndWaitOptions_System_Threading_CancellationToken__remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>A run returned because of <a class="xref" href="Seclai.Models.RunStreamingAgentAndWaitOptions.html#Seclai_Models_RunStreamingAgentAndWaitOptions_ReturnOnResult">ReturnOnResult</a> may still be in
+progress: its <a class="xref" href="Seclai.Models.AgentRunResponse.html#Seclai_Models_AgentRunResponse_Status">Status</a> is not terminal and it can still fail, so check
+<a class="xref" href="Seclai.Models.AgentRunResponse.html#Seclai_Models_AgentRunResponse_ResultReportedAt">ResultReportedAt</a>, not <a class="xref" href="Seclai.Models.AgentRunResponse.html#Seclai_Models_AgentRunResponse_Status">Status</a>. If the server
+answers with plain JSON instead of an SSE stream, that response is returned.</p>
+<p>
+With <a class="xref" href="Seclai.Models.RunStreamingAgentAndWaitOptions.html#Seclai_Models_RunStreamingAgentAndWaitOptions_ThrowOnIncomplete">ThrowOnIncomplete</a> off (the default), the endings other
+than <code>done</code> behave as <a class="xref" href="Seclai.SeclaiClient.html#Seclai_SeclaiClient_RunStreamingAgentAndWaitAsync_System_String_Seclai_Models_AgentRunStreamRequest_System_Nullable_System_TimeSpan__System_Threading_CancellationToken_">RunStreamingAgentAndWaitAsync(string, AgentRunStreamRequest, TimeSpan?, CancellationToken)</a>
+does: a stream that ends returns the latest snapshot, a broken one throws the transport exception, and the
+timeout or cancelling <code class="paramref">cancellationToken</code> throws <a class="xref" href="Seclai.Exceptions.StreamingException.html">StreamingException</a>. With it
+on, no unfinished run is returned: see the exceptions.
+</p>
+</div>
+  <h5 class="exceptions">Exceptions</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Condition</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="Seclai.Exceptions.StreamingException.html">StreamingException</a></td>
+        <td><p>The run did not finish: <a class="xref" href="Seclai.Models.RunStreamingAgentAndWaitOptions.html#Seclai_Models_RunStreamingAgentAndWaitOptions_Timeout">Timeout</a> elapsed, or, with
+<a class="xref" href="Seclai.Models.RunStreamingAgentAndWaitOptions.html#Seclai_Models_RunStreamingAgentAndWaitOptions_ThrowOnIncomplete">ThrowOnIncomplete</a>, the stream ended without a <code>done</code> event
+or broke mid-stream. <a class="xref" href="Seclai.Exceptions.StreamingException.html#Seclai_Exceptions_StreamingException_Run">Run</a> holds the latest snapshot: the <code>result</code> one if
+that event arrived (then <a class="xref" href="Seclai.Models.AgentRunResponse.html#Seclai_Models_AgentRunResponse_Output">Output</a> is the answer), else the <code>init</code> one.</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.operationcanceledexception">OperationCanceledException</a></td>
+        <td><p><code class="paramref">cancellationToken</code> was cancelled, with <a class="xref" href="Seclai.Models.RunStreamingAgentAndWaitOptions.html#Seclai_Models_RunStreamingAgentAndWaitOptions_ThrowOnIncomplete">ThrowOnIncomplete</a>.</p>
 </td>
       </tr>
     </tbody>
@@ -9469,6 +9949,13 @@ raw body in <a class="xref" href="Seclai.Exceptions.ApiException.html#Seclai_Exc
       </tr>
     </tbody>
   </table>
+  <h5 id="Seclai_SeclaiClient_RunStreamingAgentAsync_System_String_Seclai_Models_AgentRunStreamRequest_System_Threading_CancellationToken__remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>The first event is <code>init</code>. A <code>result</code> event carries the snapshot once the run has reported its
+result (<a class="xref" href="Seclai.Models.AgentRunResponse.html#Seclai_Models_AgentRunResponse_ResultReportedAt">ResultReportedAt</a> is set and <a class="xref" href="Seclai.Models.AgentRunResponse.html#Seclai_Models_AgentRunResponse_Output">Output</a> is the
+answer); take the answer from it rather than from <code>stream_token</code> events. The last event is <code>done</code>,
+whose status says whether the whole run succeeded, which can still fail after its result. When the server
+answers with plain JSON instead of an SSE stream, only a <code>done</code> event is yielded, so read the answer from it.</p>
+</div>
 
 
   <a id="Seclai_SeclaiClient_SearchAgentRunsAsync_" data-uid="Seclai.SeclaiClient.SearchAgentRunsAsync*"></a>
@@ -9853,6 +10340,71 @@ the number of rows returned once <a class="xref" href="Seclai.SeclaiClientOption
     <tbody>
       <tr>
         <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Seclai.Models.EmailTriggerConfigResponse.html">EmailTriggerConfigResponse</a>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_SeclaiClient_SetMetadataKeysAsync_" data-uid="Seclai.SeclaiClient.SetMetadataKeysAsync*"></a>
+  <h4 id="Seclai_SeclaiClient_SetMetadataKeysAsync_System_String_System_String_Seclai_Models_SetMetadataKeysRequest_System_Threading_CancellationToken_" data-uid="Seclai.SeclaiClient.SetMetadataKeysAsync(System.String,System.String,Seclai.Models.SetMetadataKeysRequest,System.Threading.CancellationToken)">SetMetadataKeysAsync(string, string, SetMetadataKeysRequest, CancellationToken)</h4>
+  <div class="markdown level1 summary"><p>Replaces the run metadata keys an agent's trigger declares. Steps reference a key as
+<code>{{metadata.&lt;key&gt;}}</code>. The API answers 400 when the agent references a key no trigger of its
+branch then declares. <a class="xref" href="Seclai.Models.MetadataKeysResponse.html#Seclai_Models_MetadataKeysResponse_Warnings">Warnings</a> lists agents whose <code>call_agent</code>
+mapping no longer fits the new declaration.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;MetadataKeysResponse&gt; SetMetadataKeysAsync(string agentId, string triggerId, SetMetadataKeysRequest body, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
+        <td><span class="parametername">agentId</span></td>
+        <td><p>Agent identifier.</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
+        <td><span class="parametername">triggerId</span></td>
+        <td><p>The trigger's id, from <a class="xref" href="Seclai.Models.AgentSummaryResponse.html#Seclai_Models_AgentSummaryResponse_TriggerId">TriggerId</a>.</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="Seclai.Models.SetMetadataKeysRequest.html">SetMetadataKeysRequest</a></td>
+        <td><span class="parametername">body</span></td>
+        <td><p>The whole new declaration. An empty <a class="xref" href="Seclai.Models.SetMetadataKeysRequest.html#Seclai_Models_SetMetadataKeysRequest_MetadataKeys">MetadataKeys</a> list declares no keys.</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></td>
+        <td><span class="parametername">cancellationToken</span></td>
+        <td><p>Cancellation token.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="Seclai.Models.MetadataKeysResponse.html">MetadataKeysResponse</a>&gt;</td>
         <td></td>
       </tr>
     </tbody>

@@ -145,6 +145,65 @@ public string? Input { get; set; }</code></pre>
   </table>
 
 
+  <a id="Seclai_Models_AgentRunRequest_InputUploadId_" data-uid="Seclai.Models.AgentRunRequest.InputUploadId*"></a>
+  <h4 id="Seclai_Models_AgentRunRequest_InputUploadId" data-uid="Seclai.Models.AgentRunRequest.InputUploadId">InputUploadId</h4>
+  <div class="markdown level1 summary"><p>ID of a file uploaded with <a class="xref" href="Seclai.SeclaiClient.html#Seclai_SeclaiClient_UploadAgentInputAsync_System_String_System_Byte___System_String_System_String_System_String_System_Collections_Generic_IReadOnlyDictionary_System_String_System_Object__System_Threading_CancellationToken_">UploadAgentInputAsync(string, byte[], string, string?, string?, IReadOnlyDictionary&lt;string, object?&gt;?, CancellationToken)</a> to use as the run input for a dynamic-input trigger.
+Mutually exclusive with <a class="xref" href="Seclai.Models.AgentRunRequest.html#Seclai_Models_AgentRunRequest_InputUploadIds">InputUploadIds</a>, which attaches several files. May be combined with <a class="xref" href="Seclai.Models.AgentRunRequest.html#Seclai_Models_AgentRunRequest_Input">Input</a>:
+the prompt text leads and the file follows under a <code># {filename}</code> heading (before <code>Seclai-Version: 2026-10-16</code>, followed by its extracted text).
+The batch must fit the trigger's <code>accepted_attachments</code>, or the run is refused with HTTP 400.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;input_upload_id&quot;)]
+public string? InputUploadId { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_Models_AgentRunRequest_InputUploadIds_" data-uid="Seclai.Models.AgentRunRequest.InputUploadIds*"></a>
+  <h4 id="Seclai_Models_AgentRunRequest_InputUploadIds" data-uid="Seclai.Models.AgentRunRequest.InputUploadIds">InputUploadIds</h4>
+  <div class="markdown level1 summary"><p>IDs of several previously uploaded files, at most 20. Mutually exclusive with <a class="xref" href="Seclai.Models.AgentRunRequest.html#Seclai_Models_AgentRunRequest_InputUploadId">InputUploadId</a> (two spellings of the
+same batch), but may be combined with <a class="xref" href="Seclai.Models.AgentRunRequest.html#Seclai_Models_AgentRunRequest_Input">Input</a>: the prompt text leads and the per-file sections follow. Each upload reaches
+steps as a separate file. The batch must fit the trigger's <code>accepted_attachments</code>; a mismatch returns HTTP 400 listing what does not fit.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;input_upload_ids&quot;)]
+public List&lt;string&gt;? InputUploadIds { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.collections.generic.list-1">List</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
   <a id="Seclai_Models_AgentRunRequest_Metadata_" data-uid="Seclai.Models.AgentRunRequest.Metadata*"></a>
   <h4 id="Seclai_Models_AgentRunRequest_Metadata" data-uid="Seclai.Models.AgentRunRequest.Metadata">Metadata</h4>
   <div class="markdown level1 summary"></div>
@@ -191,6 +250,36 @@ public bool? Priority { get; set; }</code></pre>
     <tbody>
       <tr>
         <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.boolean">bool</a>?</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <a id="Seclai_Models_AgentRunRequest_ReplayOfRunId_" data-uid="Seclai.Models.AgentRunRequest.ReplayOfRunId*"></a>
+  <h4 id="Seclai_Models_AgentRunRequest_ReplayOfRunId" data-uid="Seclai.Models.AgentRunRequest.ReplayOfRunId">ReplayOfRunId</h4>
+  <div class="markdown level1 summary"><p>Re-run this agent reusing a prior run's uploaded input files, re-resolved server-side from that run (which must belong to this account
+and agent), so they need not be uploaded again. Combine with <a class="xref" href="Seclai.Models.AgentRunRequest.html#Seclai_Models_AgentRunRequest_Input">Input</a> to change the text while keeping the files. A fresh
+upload batch (<a class="xref" href="Seclai.Models.AgentRunRequest.html#Seclai_Models_AgentRunRequest_InputUploadId">InputUploadId</a> or <a class="xref" href="Seclai.Models.AgentRunRequest.html#Seclai_Models_AgentRunRequest_InputUploadIds">InputUploadIds</a>) takes precedence and disables replay. Binaries swept by
+retention fall back to their extracted text; files the trigger's <code>accepted_attachments</code> no longer accepts are left out.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonPropertyName(&quot;replay_of_run_id&quot;)]
+public string? ReplayOfRunId { get; set; }</code></pre>
+  </div>
+  <h5 class="propertyValue">Property Value</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
         <td></td>
       </tr>
     </tbody>
