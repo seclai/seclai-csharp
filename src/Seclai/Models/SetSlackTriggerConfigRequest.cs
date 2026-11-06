@@ -33,7 +33,7 @@ public sealed class SetSlackTriggerConfigRequest
     public string? Alias { get; set; }
 
     /// <summary>
-    /// No longer used: the API ignores it. A Slack run's input is the text after <c>/seclai &lt;alias&gt;</c>, or the
+    /// The API ignores it. A Slack run's input is the text after <c>/seclai &lt;alias&gt;</c>, or the
     /// message the shortcut was used on, and its files; form values reach the run as <c>{{metadata.&lt;key&gt;}}</c>.
     /// </summary>
     [Obsolete("Ignored by the API since November 2026: a Slack run's input is the text after /seclai <alias>. Use Alias to set the command name.")]

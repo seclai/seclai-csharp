@@ -389,7 +389,12 @@ A trigger declares the run metadata keys its agent's steps may reference as
 `{{metadata.<key>}}`, each required or optional. `system` and `source` keys are written by
 the platform; `custom` keys are sent by the caller, and only a custom key can be required. A
 run you start is refused with a 400 when it lacks a required key or sends a custom key the
-trigger does not declare.
+trigger does not declare, on every API version, so declare custom keys with `SetMetadataKeysAsync`
+before sending them in a run's metadata.
+
+`SetMetadataKeysRequest.MetadataKeys` is required: `SetMetadataKeysAsync` throws
+`ArgumentException` when it is null, so a request built without it cannot wipe the declaration.
+To declare no keys, set an empty list.
 
 ```csharp
 var keys = await client.GetMetadataKeysAsync(agent.Id!, agent.TriggerId!);
@@ -453,18 +458,32 @@ await foreach (var evt in client.RunStreamingAgentAsync("ag1",
     Console.WriteLine($"[{evt.Event}] {evt.Run?.Status}");
 }
 
-// Wait for the final result from the SSE stream. It reads only the init and done
-// events, so it does not send IncludeReasoning.
+// Wait for the final result from the SSE stream. It reads only the init, result and
+// done events, so it does not send IncludeReasoning. The done snapshot wins; if the
+// stream ends or the timeout elapses after the result event but before done, the
+// result snapshot (ResultReportedAt set, Output final) is returned instead of throwing.
 var final = await client.RunStreamingAgentAndWaitAsync("ag1",
     new AgentRunStreamRequest { Input = "hello" },
     timeout: TimeSpan.FromSeconds(120));
 
-// Poll-based alternative
+// Poll-based alternative. If the timeout elapses after the run reported its result,
+// the last snapshot is returned instead of throwing.
 var polled = await client.RunAgentAndPollAsync("ag1",
     new AgentRunRequest { Input = "hello" },
     pollInterval: TimeSpan.FromSeconds(2),
     timeout: TimeSpan.FromMinutes(5));
+
+// Return as soon as the run reports its result, without waiting for the remaining
+// steps. Status may still be "processing", and the run can still fail afterwards.
+var early = await client.RunAgentAndPollAsync("ag1",
+    new AgentRunRequest { Input = "hello" },
+    new RunAgentAndPollOptions { Timeout = TimeSpan.FromMinutes(5), ReturnOnResult = true });
+Console.WriteLine(early.Output);
 ```
+
+`RunStreamingAgentAsync` yields a `result` event once the run has reported its result: take the
+answer from it rather than from `stream_token` events. `done.Status` says whether the whole run
+succeeded, which can still fail after its result.
 
 ### Sources & Content
 

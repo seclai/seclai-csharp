@@ -420,6 +420,64 @@ public sealed class SeclaiClientTests
             ));
     }
 
+    private static HttpResponseMessage SseResponse(System.IO.Stream stream)
+    {
+        var resp = new HttpResponseMessage(HttpStatusCode.OK) { Content = new StreamContent(stream) };
+        resp.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("text/event-stream");
+        return resp;
+    }
+
+    private const string SseInit =
+        "event: init\n" +
+        "data: {\"run_id\":\"run_1\",\"status\":\"processing\",\"attempts\":[],\"error_count\":0,\"priority\":false}\n\n";
+
+    private const string SseResult =
+        "event: result\n" +
+        "data: {\"run_id\":\"run_1\",\"status\":\"processing\",\"output\":\"answer\",\"result_reported_at\":\"2026-11-05T00:00:00Z\",\"attempts\":[],\"error_count\":0,\"priority\":false}\n\n";
+
+    [Fact]
+    public async Task RunStreamingAgentAndWait_StreamEndsAfterResult_ReturnsResult()
+    {
+        var handler = new FakeHttpMessageHandler(_ =>
+            SseResponse(new System.IO.MemoryStream(Encoding.UTF8.GetBytes(SseInit + SseResult))));
+        var res = await MakeClient(handler).RunStreamingAgentAndWaitAsync("a", new AgentRunStreamRequest { Input = "hi" });
+        Assert.Equal("answer", res.Output);
+        Assert.Equal("2026-11-05T00:00:00Z", res.ResultReportedAt);
+    }
+
+    [Fact]
+    public async Task RunStreamingAgentAndWait_DoneWinsOverResult()
+    {
+        var sse = SseInit + SseResult +
+            "event: done\n" +
+            "data: {\"run_id\":\"run_1\",\"status\":\"failed\",\"output\":\"answer\",\"result_reported_at\":\"2026-11-05T00:00:00Z\",\"attempts\":[],\"error_count\":1,\"priority\":false}\n\n";
+        var handler = new FakeHttpMessageHandler(_ => SseResponse(new System.IO.MemoryStream(Encoding.UTF8.GetBytes(sse))));
+        var res = await MakeClient(handler).RunStreamingAgentAndWaitAsync("a", new AgentRunStreamRequest { Input = "hi" });
+        Assert.Equal("failed", res.Status);
+        Assert.Equal(1, res.ErrorCount);
+    }
+
+    [Fact]
+    public async Task RunStreamingAgentAndWait_TimeoutAfterResult_ReturnsResult()
+    {
+        var handler = new FakeHttpMessageHandler(_ =>
+            SseResponse(new NeverEndingStream(Encoding.UTF8.GetBytes(SseInit + SseResult))));
+        var res = await MakeClient(handler).RunStreamingAgentAndWaitAsync(
+            "a", new AgentRunStreamRequest { Input = "hi" }, timeout: TimeSpan.FromMilliseconds(100));
+        Assert.Equal("answer", res.Output);
+        Assert.Equal("processing", res.Status);
+    }
+
+    [Fact]
+    public async Task RunStreamingAgentAndWait_CallerCancellationAfterResult_Throws()
+    {
+        var handler = new FakeHttpMessageHandler(_ =>
+            SseResponse(new NeverEndingStream(Encoding.UTF8.GetBytes(SseInit + SseResult))));
+        using var cts = new CancellationTokenSource(TimeSpan.FromMilliseconds(100));
+        await Assert.ThrowsAsync<StreamingException>(() => MakeClient(handler).RunStreamingAgentAndWaitAsync(
+            "a", new AgentRunStreamRequest { Input = "hi" }, timeout: TimeSpan.FromSeconds(30), cancellationToken: cts.Token));
+    }
+
     [Fact]
     public async Task UploadFileToSource_SendsMetadataMultipartField()
     {
@@ -2111,6 +2169,91 @@ public sealed class SeclaiClientTests
                 new AgentRunRequest { Input = "go" },
                 pollInterval: TimeSpan.FromMilliseconds(10),
                 timeout: TimeSpan.FromMilliseconds(50)));
+    }
+
+    private const string PollRunning = "{\"run_id\":\"r1\",\"status\":\"processing\",\"attempts\":[],\"error_count\":0,\"priority\":false}";
+    private const string PollReported = "{\"run_id\":\"r1\",\"status\":\"processing\",\"output\":\"answer\",\"result_reported_at\":\"2026-11-05T00:00:00Z\",\"attempts\":[],\"error_count\":0,\"priority\":false}";
+
+    [Fact]
+    public async Task RunAgentAndPoll_TimeoutAfterResult_ReturnsLastSnapshot()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+            JsonResponse(req.Method == HttpMethod.Post ? PollRunning : PollReported));
+        var res = await MakeClient(handler).RunAgentAndPollAsync("a1",
+            new AgentRunRequest { Input = "go" },
+            pollInterval: TimeSpan.FromMilliseconds(10),
+            timeout: TimeSpan.FromMilliseconds(100));
+        Assert.Equal("answer", res.Output);
+        Assert.Equal("2026-11-05T00:00:00Z", res.ResultReportedAt);
+    }
+
+    [Fact]
+    public async Task RunAgentAndPoll_CallerCancellationAfterResult_Throws()
+    {
+        var handler = new FakeHttpMessageHandler(req =>
+            JsonResponse(req.Method == HttpMethod.Post ? PollRunning : PollReported));
+        using var cts = new CancellationTokenSource(TimeSpan.FromMilliseconds(100));
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(() =>
+            MakeClient(handler).RunAgentAndPollAsync("a1",
+                new AgentRunRequest { Input = "go" },
+                pollInterval: TimeSpan.FromMilliseconds(10),
+                timeout: TimeSpan.FromSeconds(30),
+                cancellationToken: cts.Token));
+    }
+
+    [Fact]
+    public async Task RunAgentAndPoll_ReturnOnResult_ReturnsOnceResultReported()
+    {
+        var gets = 0;
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            if (req.Method == HttpMethod.Post) return JsonResponse(PollRunning);
+            gets++;
+            Assert.Equal("include_step_outputs=true", req.RequestUri!.Query.TrimStart('?'));
+            return JsonResponse(gets == 1 ? PollReported
+                : "{\"run_id\":\"r1\",\"status\":\"completed\",\"output\":\"answer\",\"attempts\":[],\"error_count\":0,\"priority\":false}");
+        });
+        var res = await MakeClient(handler).RunAgentAndPollAsync("a1",
+            new AgentRunRequest { Input = "go" },
+            new RunAgentAndPollOptions { PollInterval = TimeSpan.FromMilliseconds(10), IncludeStepOutputs = true, ReturnOnResult = true });
+        Assert.Equal("processing", res.Status);
+        Assert.Equal("answer", res.Output);
+        Assert.Equal(1, gets);
+    }
+
+    [Fact]
+    public async Task RunAgentAndPoll_WaitsForTerminalStatusByDefault()
+    {
+        var gets = 0;
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            if (req.Method == HttpMethod.Post) return JsonResponse(PollRunning);
+            gets++;
+            return JsonResponse(gets == 1 ? PollReported
+                : "{\"run_id\":\"r1\",\"status\":\"completed\",\"output\":\"answer\",\"attempts\":[],\"error_count\":0,\"priority\":false}");
+        });
+        var res = await MakeClient(handler).RunAgentAndPollAsync("a1", new AgentRunRequest { Input = "go" },
+            new RunAgentAndPollOptions { PollInterval = TimeSpan.FromMilliseconds(10) });
+        Assert.Equal("completed", res.Status);
+        Assert.Equal(2, gets);
+    }
+
+    [Fact]
+    public async Task RunAgentAndPoll_OptionsOverloadLeavesExistingCallsUnambiguous()
+    {
+        var handler = new FakeHttpMessageHandler(_ =>
+            JsonResponse("{\"run_id\":\"r1\",\"status\":\"completed\",\"attempts\":[],\"error_count\":0,\"priority\":false}"));
+        var client = MakeClient(handler);
+        var body = new AgentRunRequest { Input = "go" };
+        // Each of these compiled against 1.7.0 and must still compile: a bare `null` binds to the original
+        // overload, and a bare `default` to the options overload, whose default polls exactly as the original's.
+        Assert.Equal("completed", (await client.RunAgentAndPollAsync("a1", body, null)).Status);
+        Assert.Equal("completed", (await client.RunAgentAndPollAsync("a1", body, null, null)).Status);
+        Assert.Equal("completed", (await client.RunAgentAndPollAsync("a1", body, default)).Status);
+        Assert.Equal("completed", (await client.RunAgentAndPollAsync("a1", body, default, default)).Status);
+        Assert.Equal("completed", (await client.RunAgentAndPollAsync("a1", body, default, default, default)).Status);
+        Assert.Equal("completed", (await client.RunAgentAndPollAsync("a1", body, cancellationToken: default)).Status);
+        Assert.Equal("completed", (await client.RunAgentAndPollAsync("a1", body, default, cancellationToken: default)).Status);
     }
 
     // ── Helpers ─────────────────────────────────────────────────────────────
@@ -4786,10 +4929,26 @@ public sealed class SeclaiClientTests
             return JsonResponse("{\"trigger_id\":\"t1\",\"agent_id\":\"a1\",\"accepts_any_source_key\":false,\"metadata_keys\":[],\"declarable_keys\":[],\"warnings\":[]}");
         });
         var client = MakeClient(handler);
-        await client.SetMetadataKeysAsync("a1", "t1", new SetMetadataKeysRequest());
+        await client.SetMetadataKeysAsync("a1", "t1", new SetMetadataKeysRequest { MetadataKeys = new List<MetadataKeyDeclaration>() });
         Assert.Equal("{\"metadata_keys\":[]}", body);
         await Assert.ThrowsAsync<ArgumentNullException>(() => client.SetMetadataKeysAsync("a1", "t1", null!));
-        await Assert.ThrowsAsync<ArgumentException>(() => client.SetMetadataKeysAsync("a1", " ", new SetMetadataKeysRequest()));
+        await Assert.ThrowsAsync<ArgumentException>(() => client.SetMetadataKeysAsync("a1", " ", new SetMetadataKeysRequest { MetadataKeys = new List<MetadataKeyDeclaration>() }));
+    }
+
+    [Fact]
+    public async Task SetMetadataKeys_RejectsRequestWithoutMetadataKeys()
+    {
+        // A request built without MetadataKeys must not go out as a declaration that wipes every key.
+        var requests = 0;
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            requests++;
+            return JsonResponse("{\"trigger_id\":\"t1\",\"agent_id\":\"a1\",\"accepts_any_source_key\":false,\"metadata_keys\":[],\"declarable_keys\":[],\"warnings\":[]}");
+        });
+        var client = MakeClient(handler);
+        var ex = await Assert.ThrowsAsync<ArgumentException>(() => client.SetMetadataKeysAsync("a1", "t1", new SetMetadataKeysRequest()));
+        Assert.Equal("body", ex.ParamName);
+        Assert.Equal(0, requests);
     }
 
     [Fact]

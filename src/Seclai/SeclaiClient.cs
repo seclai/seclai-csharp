@@ -179,11 +179,21 @@ public sealed class SeclaiClient : IDisposable
     /// <summary>
     /// Starts an agent run via SSE streaming and blocks until the final <c>done</c> event.
     /// </summary>
+    /// <remarks>
+    /// The stream sends a <c>result</c> event once the run has reported its result
+    /// (<see cref="AgentRunResponse.ResultReportedAt"/> is set and <see cref="AgentRunResponse.Output"/> is the
+    /// answer), before <c>done</c>. The <c>done</c> snapshot is returned when it arrives. If the stream ends, or
+    /// <paramref name="timeout"/> elapses, after <c>result</c> but before <c>done</c>, the <c>result</c> snapshot is
+    /// returned instead; its <see cref="AgentRunResponse.Status"/> may not be terminal yet.
+    /// </remarks>
     /// <param name="agentId">The agent identifier.</param>
     /// <param name="body">The run request payload.</param>
     /// <param name="timeout">Maximum time to wait for completion (default: 60 s).</param>
-    /// <param name="cancellationToken">Cancellation token.</param>
-    /// <exception cref="StreamingException">Thrown on timeout or if the stream ends without a <c>done</c> event.</exception>
+    /// <param name="cancellationToken">Cancellation token. Cancelling it always throws.</param>
+    /// <exception cref="StreamingException">
+    /// Thrown on timeout before a <c>result</c> event, on cancellation, or if the stream ends without a
+    /// <c>result</c> or <c>done</c> event and without an <c>init</c> snapshot to return.
+    /// </exception>
     public async Task<AgentRunResponse> RunStreamingAgentAndWaitAsync(
         string agentId,
         AgentRunStreamRequest body,
@@ -197,7 +207,7 @@ public sealed class SeclaiClient : IDisposable
         using var req = new HttpRequestMessage(HttpMethod.Post, url);
         await ApplyHeadersAsync(req, cancellationToken, "text/event-stream", "application/json").ConfigureAwait(false);
 
-        // This method reads only init and done, so stream_reasoning events would be traffic counted
+        // This method reads only init, result and done, so stream_reasoning events would be traffic counted
         // against the timeout. The field is dropped from a copy; the caller's object is unchanged.
         var node = JsonSerializer.SerializeToNode(body, JsonOptions);
         (node as JsonObject)?.Remove("include_reasoning");
@@ -209,6 +219,9 @@ public sealed class SeclaiClient : IDisposable
         var ct = cts.Token;
 
         HttpResponseMessage? resp = null;
+        // The latest `result` snapshot: returned if the stream ends, or our own timeout elapses, before `done`.
+        AgentRunResponse? resultSeen = null;
+        bool TimedOutWithResult() => resultSeen is not null && ct.IsCancellationRequested && !cancellationToken.IsCancellationRequested;
         try
         {
             resp = await _http.SendAsync(req, HttpCompletionOption.ResponseHeadersRead, ct).ConfigureAwait(false);
@@ -251,6 +264,7 @@ public sealed class SeclaiClient : IDisposable
 
                 if (string.IsNullOrWhiteSpace(evt) || string.IsNullOrWhiteSpace(data)) return null;
                 if (!string.Equals(evt, "init", StringComparison.OrdinalIgnoreCase) &&
+                    !string.Equals(evt, "result", StringComparison.OrdinalIgnoreCase) &&
                     !string.Equals(evt, "done", StringComparison.OrdinalIgnoreCase))
                 {
                     return null;
@@ -261,6 +275,7 @@ public sealed class SeclaiClient : IDisposable
                     var parsed = JsonSerializer.Deserialize<AgentRunResponse>(data, JsonOptions);
                     if (parsed is null) return null;
                     lastSeen = parsed;
+                    if (string.Equals(evt, "result", StringComparison.OrdinalIgnoreCase)) resultSeen = parsed;
                     if (string.Equals(evt, "done", StringComparison.OrdinalIgnoreCase)) return parsed;
                 }
                 catch
@@ -281,6 +296,7 @@ public sealed class SeclaiClient : IDisposable
                 }
                 catch (Exception ex) when (ct.IsCancellationRequested)
                 {
+                    if (TimedOutWithResult()) return resultSeen!;
                     throw new StreamingException($"Timed out after {effectiveTimeout.TotalMilliseconds}ms waiting for streaming agent run to complete.", ex);
                 }
 
@@ -310,12 +326,14 @@ public sealed class SeclaiClient : IDisposable
 
             var final = Dispatch();
             if (final is not null) return final;
+            if (resultSeen is not null) return resultSeen;
             if (lastSeen is not null) return lastSeen;
 
             throw new StreamingException("Stream ended before receiving a 'done' event.");
         }
         catch (OperationCanceledException ex)
         {
+            if (TimedOutWithResult()) return resultSeen!;
             throw new StreamingException($"Timed out after {effectiveTimeout.TotalMilliseconds}ms waiting for streaming agent run to complete.", ex);
         }
         finally
@@ -2734,13 +2752,15 @@ public sealed class SeclaiClient : IDisposable
     /// </summary>
     /// <param name="agentId">Agent identifier.</param>
     /// <param name="triggerId">The trigger's id, from <see cref="AgentSummaryResponse.TriggerId"/>.</param>
-    /// <param name="body">The whole new declaration.</param>
+    /// <param name="body">The whole new declaration. An empty <see cref="SetMetadataKeysRequest.MetadataKeys"/> list declares no keys.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
+    /// <exception cref="ArgumentException"><see cref="SetMetadataKeysRequest.MetadataKeys"/> is null. Nothing is sent, so a request built without it cannot wipe the declaration.</exception>
     public async Task<MetadataKeysResponse> SetMetadataKeysAsync(string agentId, string triggerId, SetMetadataKeysRequest body, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(agentId)) throw new ArgumentException("agentId is required", nameof(agentId));
         if (string.IsNullOrWhiteSpace(triggerId)) throw new ArgumentException("triggerId is required", nameof(triggerId));
         if (body is null) throw new ArgumentNullException(nameof(body));
+        if (body.MetadataKeys is null) throw new ArgumentException("body.MetadataKeys is required; set an empty list to declare no keys", nameof(body));
         return await SendJsonAsync<MetadataKeysResponse>(HttpMethod.Put, $"/agents/{Uri.EscapeDataString(agentId)}/triggers/{Uri.EscapeDataString(triggerId)}/metadata-keys", null, body, cancellationToken).ConfigureAwait(false);
     }
 
@@ -3040,6 +3060,12 @@ public sealed class SeclaiClient : IDisposable
     /// <summary>
     /// Runs an agent in streaming mode and yields SSE events as they arrive.
     /// </summary>
+    /// <remarks>
+    /// The first event is <c>init</c>. A <c>result</c> event carries the snapshot once the run has reported its
+    /// result (<see cref="AgentRunResponse.ResultReportedAt"/> is set and <see cref="AgentRunResponse.Output"/> is the
+    /// answer); take the answer from it rather than from <c>stream_token</c> events. The last event is <c>done</c>,
+    /// whose status says whether the whole run succeeded, which can still fail after its result.
+    /// </remarks>
     public async IAsyncEnumerable<AgentRunEvent> RunStreamingAgentAsync(
         string agentId,
         AgentRunStreamRequest body,
@@ -3135,23 +3161,68 @@ public sealed class SeclaiClient : IDisposable
     /// <summary>
     /// Runs an agent and polls until it reaches a terminal status (completed or failed).
     /// </summary>
-    public async Task<AgentRunResponse> RunAgentAndPollAsync(
+    /// <remarks>
+    /// When <paramref name="timeout"/> elapses after the run reported its result
+    /// (<see cref="AgentRunResponse.ResultReportedAt"/> is set, so <see cref="AgentRunResponse.Output"/> is the answer),
+    /// the last snapshot is returned instead of throwing. To return as soon as the result is reported, use the
+    /// <see cref="RunAgentAndPollOptions"/> overload with <see cref="RunAgentAndPollOptions.ReturnOnResult"/>.
+    /// </remarks>
+    /// <exception cref="OperationCanceledException">
+    /// <paramref name="timeout"/> elapsed before the run reported its result, or <paramref name="cancellationToken"/> was cancelled.
+    /// </exception>
+    public Task<AgentRunResponse> RunAgentAndPollAsync(
         string agentId,
         AgentRunRequest body,
         TimeSpan? pollInterval = null,
         TimeSpan? timeout = null,
         bool includeStepOutputs = false,
         CancellationToken cancellationToken = default)
+        => RunAgentAndPollAsync(agentId, body, new RunAgentAndPollOptions
+        {
+            PollInterval = pollInterval,
+            Timeout = timeout,
+            IncludeStepOutputs = includeStepOutputs,
+        }, cancellationToken);
+
+    /// <summary>
+    /// Runs an agent and polls until it reaches a terminal status (completed or failed), or, with
+    /// <see cref="RunAgentAndPollOptions.ReturnOnResult"/>, until it reports its result.
+    /// </summary>
+    /// <remarks>
+    /// When <see cref="RunAgentAndPollOptions.Timeout"/> elapses after the run reported its result
+    /// (<see cref="AgentRunResponse.ResultReportedAt"/> is set), the last snapshot is returned instead of throwing.
+    /// </remarks>
+    /// <exception cref="OperationCanceledException">The timeout elapsed before the run reported its result.</exception>
+    public Task<AgentRunResponse> RunAgentAndPollAsync(string agentId, AgentRunRequest body, RunAgentAndPollOptions options)
+        => RunAgentAndPollAsync(agentId, body, options, CancellationToken.None);
+
+    /// <summary>
+    /// Runs an agent and polls until it reaches a terminal status (completed or failed), or, with
+    /// <see cref="RunAgentAndPollOptions.ReturnOnResult"/>, until it reports its result.
+    /// </summary>
+    /// <remarks>
+    /// When <see cref="RunAgentAndPollOptions.Timeout"/> elapses after the run reported its result
+    /// (<see cref="AgentRunResponse.ResultReportedAt"/> is set), the last snapshot is returned instead of throwing.
+    /// Cancelling <paramref name="cancellationToken"/> always throws.
+    /// </remarks>
+    /// <exception cref="OperationCanceledException">
+    /// The timeout elapsed before the run reported its result, or <paramref name="cancellationToken"/> was cancelled.
+    /// </exception>
+    public async Task<AgentRunResponse> RunAgentAndPollAsync(
+        string agentId,
+        AgentRunRequest body,
+        RunAgentAndPollOptions options,
+        CancellationToken cancellationToken)
     {
         if (string.IsNullOrWhiteSpace(agentId)) throw new ArgumentException("agentId is required", nameof(agentId));
 
         var run = await RunAgentAsync(agentId, body, cancellationToken).ConfigureAwait(false);
-        var interval = pollInterval ?? TimeSpan.FromSeconds(2);
+        var interval = options.PollInterval ?? TimeSpan.FromSeconds(2);
 
-        using var cts = timeout.HasValue
+        using var cts = options.Timeout.HasValue
             ? CancellationTokenSource.CreateLinkedTokenSource(cancellationToken)
             : null;
-        if (cts is not null) cts.CancelAfter(timeout!.Value);
+        if (cts is not null) cts.CancelAfter(options.Timeout!.Value);
         var ct = cts?.Token ?? cancellationToken;
 
         while (true)
@@ -3162,9 +3233,21 @@ public sealed class SeclaiClient : IDisposable
                 case "failed":
                     return run;
             }
+            if (options.ReturnOnResult && !string.IsNullOrEmpty(run.ResultReportedAt)) return run;
 
-            await Task.Delay(interval, ct).ConfigureAwait(false);
-            run = await GetAgentRunAsync(run.RunId!, includeStepOutputs, ct).ConfigureAwait(false);
+            try
+            {
+                await Task.Delay(interval, ct).ConfigureAwait(false);
+                run = await GetAgentRunAsync(run.RunId!, options.IncludeStepOutputs, ct).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException) when (
+                ct.IsCancellationRequested &&
+                !cancellationToken.IsCancellationRequested &&
+                !string.IsNullOrEmpty(run.ResultReportedAt))
+            {
+                // Our own timeout elapsed after the run reported its result: Output is the answer.
+                return run;
+            }
         }
     }
 
