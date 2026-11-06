@@ -435,14 +435,78 @@ public sealed class SeclaiClientTests
         "event: result\n" +
         "data: {\"run_id\":\"run_1\",\"status\":\"processing\",\"output\":\"answer\",\"result_reported_at\":\"2026-11-05T00:00:00Z\",\"attempts\":[],\"error_count\":0,\"priority\":false}\n\n";
 
+    private static readonly RunStreamingAgentAndWaitOptions ThrowOnIncomplete = new() { ThrowOnIncomplete = true };
+
+    private static AgentRunStreamRequest Hi => new() { Input = "hi" };
+
+    // ── Default (ThrowOnIncomplete off): the 1.7.0 behaviour ──────────────
+
     [Fact]
-    public async Task RunStreamingAgentAndWait_StreamEndsAfterResult_ReturnsResult()
+    public async Task RunStreamingAgentAndWait_Default_StreamEndsWithoutDone_ReturnsLastSnapshot()
+    {
+        var handler = new FakeHttpMessageHandler(_ =>
+            SseResponse(new System.IO.MemoryStream(Encoding.UTF8.GetBytes(SseInit))));
+        var res = await MakeClient(handler).RunStreamingAgentAndWaitAsync("a", Hi);
+        Assert.Equal("processing", res.Status);
+
+        handler = new FakeHttpMessageHandler(_ => SseResponse(new System.IO.MemoryStream(Encoding.UTF8.GetBytes(": keepalive\n\n"))));
+        await Assert.ThrowsAsync<StreamingException>(() => MakeClient(handler).RunStreamingAgentAndWaitAsync("a", Hi));
+    }
+
+    [Fact]
+    public async Task RunStreamingAgentAndWait_Default_StreamEndsAfterResult_ReturnsResultSnapshot()
     {
         var handler = new FakeHttpMessageHandler(_ =>
             SseResponse(new System.IO.MemoryStream(Encoding.UTF8.GetBytes(SseInit + SseResult))));
-        var res = await MakeClient(handler).RunStreamingAgentAndWaitAsync("a", new AgentRunStreamRequest { Input = "hi" });
+        var res = await MakeClient(handler).RunStreamingAgentAndWaitAsync("a", Hi);
         Assert.Equal("answer", res.Output);
         Assert.Equal("2026-11-05T00:00:00Z", res.ResultReportedAt);
+    }
+
+    [Fact]
+    public async Task RunStreamingAgentAndWait_Default_TransportErrorMidStream_Propagates()
+    {
+        var handler = new FakeHttpMessageHandler(_ => SseResponse(new NeverEndingStream(
+            Encoding.UTF8.GetBytes(SseInit), failAfterPrefix: new System.IO.IOException("connection reset"))));
+        await Assert.ThrowsAsync<System.IO.IOException>(() => MakeClient(handler).RunStreamingAgentAndWaitAsync("a", Hi));
+    }
+
+    [Fact]
+    public async Task RunStreamingAgentAndWait_Default_Timeout_ThrowsStreamingException()
+    {
+        var handler = new FakeHttpMessageHandler(_ =>
+            SseResponse(new NeverEndingStream(Encoding.UTF8.GetBytes(SseInit))));
+        var ex = await Assert.ThrowsAsync<StreamingException>(() =>
+            MakeClient(handler).RunStreamingAgentAndWaitAsync("a", Hi, timeout: TimeSpan.FromMilliseconds(100)));
+        Assert.StartsWith("Timed out", ex.Message);
+    }
+
+    [Fact]
+    public async Task RunStreamingAgentAndWait_Default_CallerCancellation_ThrowsStreamingException()
+    {
+        var handler = new FakeHttpMessageHandler(_ =>
+            SseResponse(new NeverEndingStream(Encoding.UTF8.GetBytes(SseInit))));
+        using var cts = new CancellationTokenSource(TimeSpan.FromMilliseconds(100));
+        var ex = await Assert.ThrowsAsync<StreamingException>(() => MakeClient(handler).RunStreamingAgentAndWaitAsync(
+            "a", Hi, timeout: TimeSpan.FromSeconds(30), cancellationToken: cts.Token));
+        Assert.StartsWith("Timed out", ex.Message);
+    }
+
+    [Fact]
+    public async Task RunStreamingAgentAndWait_Default_CancellationReadAsEndOfStream_IsNotTreatedAsEof()
+    {
+        // Disposing this stream makes reads return 0, so cancellation surfaces as a clean end of stream.
+        var handler = new FakeHttpMessageHandler(_ =>
+            SseResponse(new NeverEndingStream(Encoding.UTF8.GetBytes(SseInit), eofOnDispose: true)));
+        var ex = await Assert.ThrowsAsync<StreamingException>(() =>
+            MakeClient(handler).RunStreamingAgentAndWaitAsync("a", Hi, timeout: TimeSpan.FromMilliseconds(100)));
+        Assert.StartsWith("Timed out", ex.Message);
+        Assert.Equal("processing", ex.Run!.Status);
+
+        using var cts = new CancellationTokenSource(TimeSpan.FromMilliseconds(100));
+        ex = await Assert.ThrowsAsync<StreamingException>(() => MakeClient(handler).RunStreamingAgentAndWaitAsync(
+            "a", Hi, timeout: TimeSpan.FromSeconds(30), cancellationToken: cts.Token));
+        Assert.StartsWith("Timed out", ex.Message);
     }
 
     [Fact]
@@ -452,30 +516,126 @@ public sealed class SeclaiClientTests
             "event: done\n" +
             "data: {\"run_id\":\"run_1\",\"status\":\"failed\",\"output\":\"answer\",\"result_reported_at\":\"2026-11-05T00:00:00Z\",\"attempts\":[],\"error_count\":1,\"priority\":false}\n\n";
         var handler = new FakeHttpMessageHandler(_ => SseResponse(new System.IO.MemoryStream(Encoding.UTF8.GetBytes(sse))));
-        var res = await MakeClient(handler).RunStreamingAgentAndWaitAsync("a", new AgentRunStreamRequest { Input = "hi" });
+        var res = await MakeClient(handler).RunStreamingAgentAndWaitAsync("a", Hi);
         Assert.Equal("failed", res.Status);
         Assert.Equal(1, res.ErrorCount);
     }
 
     [Fact]
-    public async Task RunStreamingAgentAndWait_TimeoutAfterResult_ReturnsResult()
+    public async Task RunStreamingAgentAndWait_TimeoutKeepsBufferedResult()
+    {
+        // The result event's lines arrived, but not the blank line that ends it.
+        var unterminated = SseResult.Substring(0, SseResult.Length - 1);
+        var handler = new FakeHttpMessageHandler(_ =>
+            SseResponse(new NeverEndingStream(Encoding.UTF8.GetBytes(SseInit + unterminated))));
+        var ex = await Assert.ThrowsAsync<StreamingException>(() => MakeClient(handler).RunStreamingAgentAndWaitAsync(
+            "a", Hi, timeout: TimeSpan.FromMilliseconds(100)));
+        Assert.Equal("answer", ex.Run!.Output);
+    }
+
+    // ── ThrowOnIncomplete ──────────────────────────────────────────────────
+
+    [Fact]
+    public async Task RunStreamingAgentAndWait_ThrowOnIncomplete_StreamEndsWithoutDone_ThrowsWithLatestSnapshot()
+    {
+        // After result: the result snapshot is attached, not returned.
+        var handler = new FakeHttpMessageHandler(_ =>
+            SseResponse(new System.IO.MemoryStream(Encoding.UTF8.GetBytes(SseInit + SseResult))));
+        var ex = await Assert.ThrowsAsync<StreamingException>(() =>
+            MakeClient(handler).RunStreamingAgentAndWaitWithOptionsAsync("a", Hi, ThrowOnIncomplete));
+        Assert.Equal("answer", ex.Run!.Output);
+        Assert.Equal("2026-11-05T00:00:00Z", ex.Run.ResultReportedAt);
+        Assert.Contains("reported its result", ex.Message);
+
+        // Before result: the init snapshot is attached.
+        handler = new FakeHttpMessageHandler(_ =>
+            SseResponse(new System.IO.MemoryStream(Encoding.UTF8.GetBytes(SseInit))));
+        ex = await Assert.ThrowsAsync<StreamingException>(() =>
+            MakeClient(handler).RunStreamingAgentAndWaitWithOptionsAsync("a", Hi, ThrowOnIncomplete));
+        Assert.Equal("processing", ex.Run!.Status);
+        Assert.Contains("not reported a result", ex.Message);
+    }
+
+    [Fact]
+    public async Task RunStreamingAgentAndWait_ThrowOnIncomplete_TimeoutAfterResult_ThrowsWithResult()
     {
         var handler = new FakeHttpMessageHandler(_ =>
             SseResponse(new NeverEndingStream(Encoding.UTF8.GetBytes(SseInit + SseResult))));
-        var res = await MakeClient(handler).RunStreamingAgentAndWaitAsync(
-            "a", new AgentRunStreamRequest { Input = "hi" }, timeout: TimeSpan.FromMilliseconds(100));
+        var ex = await Assert.ThrowsAsync<StreamingException>(() => MakeClient(handler).RunStreamingAgentAndWaitWithOptionsAsync(
+            "a", Hi, new RunStreamingAgentAndWaitOptions { Timeout = TimeSpan.FromMilliseconds(100), ThrowOnIncomplete = true }));
+        Assert.Equal("answer", ex.Run!.Output);
+        Assert.StartsWith("Timed out", ex.Message);
+    }
+
+    [Fact]
+    public async Task RunStreamingAgentAndWait_ThrowOnIncomplete_CallerCancellation_ThrowsOperationCanceled()
+    {
+        var handler = new FakeHttpMessageHandler(_ =>
+            SseResponse(new NeverEndingStream(Encoding.UTF8.GetBytes(SseInit + SseResult))));
+        using var cts = new CancellationTokenSource(TimeSpan.FromMilliseconds(100));
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(() => MakeClient(handler).RunStreamingAgentAndWaitWithOptionsAsync(
+            "a", Hi, new RunStreamingAgentAndWaitOptions { Timeout = TimeSpan.FromSeconds(30), ThrowOnIncomplete = true }, cts.Token));
+    }
+
+    [Fact]
+    public async Task RunStreamingAgentAndWait_ThrowOnIncomplete_CancellationReadAsEndOfStream_IsNotTreatedAsEof()
+    {
+        // Disposing this stream makes reads return 0, so cancellation surfaces as a clean end of stream.
+        var handler = new FakeHttpMessageHandler(_ =>
+            SseResponse(new NeverEndingStream(Encoding.UTF8.GetBytes(SseInit + SseResult), eofOnDispose: true)));
+        using var cts = new CancellationTokenSource(TimeSpan.FromMilliseconds(100));
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(() => MakeClient(handler).RunStreamingAgentAndWaitWithOptionsAsync(
+            "a", Hi, new RunStreamingAgentAndWaitOptions { Timeout = TimeSpan.FromSeconds(30), ThrowOnIncomplete = true }, cts.Token));
+
+        handler = new FakeHttpMessageHandler(_ =>
+            SseResponse(new NeverEndingStream(Encoding.UTF8.GetBytes(SseInit), eofOnDispose: true)));
+        var ex = await Assert.ThrowsAsync<StreamingException>(() => MakeClient(handler).RunStreamingAgentAndWaitWithOptionsAsync(
+            "a", Hi, new RunStreamingAgentAndWaitOptions { Timeout = TimeSpan.FromMilliseconds(100), ThrowOnIncomplete = true }));
+        Assert.StartsWith("Timed out", ex.Message);
+        Assert.Equal("processing", ex.Run!.Status);
+    }
+
+    [Fact]
+    public async Task RunStreamingAgentAndWait_ThrowOnIncomplete_TransportErrorMidStream_ThrowsWithLatestSnapshot()
+    {
+        var handler = new FakeHttpMessageHandler(_ => SseResponse(new NeverEndingStream(
+            Encoding.UTF8.GetBytes(SseInit + SseResult), failAfterPrefix: new System.IO.IOException("connection reset"))));
+        var ex = await Assert.ThrowsAsync<StreamingException>(() =>
+            MakeClient(handler).RunStreamingAgentAndWaitWithOptionsAsync("a", Hi, ThrowOnIncomplete));
+        Assert.Equal("answer", ex.Run!.Output);
+        Assert.IsType<System.IO.IOException>(ex.InnerException);
+    }
+
+    [Fact]
+    public async Task RunStreamingAgentAndWait_ReturnOnResult_ReturnsResultWithoutWaitingForDone()
+    {
+        var handler = new FakeHttpMessageHandler(_ =>
+            SseResponse(new NeverEndingStream(Encoding.UTF8.GetBytes(SseInit + SseResult))));
+        var res = await MakeClient(handler).RunStreamingAgentAndWaitWithOptionsAsync("a", Hi,
+            new RunStreamingAgentAndWaitOptions { Timeout = TimeSpan.FromSeconds(30), ReturnOnResult = true });
         Assert.Equal("answer", res.Output);
         Assert.Equal("processing", res.Status);
     }
 
     [Fact]
-    public async Task RunStreamingAgentAndWait_CallerCancellationAfterResult_Throws()
+    public async Task RunStreamingAgentAndWait_ExistingCallShapesStillCompile()
     {
-        var handler = new FakeHttpMessageHandler(_ =>
-            SseResponse(new NeverEndingStream(Encoding.UTF8.GetBytes(SseInit + SseResult))));
-        using var cts = new CancellationTokenSource(TimeSpan.FromMilliseconds(100));
-        await Assert.ThrowsAsync<StreamingException>(() => MakeClient(handler).RunStreamingAgentAndWaitAsync(
-            "a", new AgentRunStreamRequest { Input = "hi" }, timeout: TimeSpan.FromSeconds(30), cancellationToken: cts.Token));
+        var sse = "event: done\ndata: {\"run_id\":\"run_1\",\"status\":\"completed\",\"attempts\":[],\"error_count\":0,\"priority\":false}\n\n";
+        var handler = new FakeHttpMessageHandler(_ => SseResponse(new System.IO.MemoryStream(Encoding.UTF8.GetBytes(sse))));
+        var client = MakeClient(handler);
+        var body = Hi;
+        var token = CancellationToken.None;
+        // Each of these compiled against 1.7.0 and must still compile and bind to the original overload.
+        Assert.Equal("completed", (await client.RunStreamingAgentAndWaitAsync("a", body)).Status);
+        Assert.Equal("completed", (await client.RunStreamingAgentAndWaitAsync("a", body, null)).Status);
+        Assert.Equal("completed", (await client.RunStreamingAgentAndWaitAsync("a", body, default)).Status);
+        Assert.Equal("completed", (await client.RunStreamingAgentAndWaitAsync("a", body, null, token)).Status);
+        Assert.Equal("completed", (await client.RunStreamingAgentAndWaitAsync("a", body, default, token)).Status);
+        Assert.Equal("completed", (await client.RunStreamingAgentAndWaitAsync("a", body, default, default)).Status);
+        Assert.Equal("completed", (await client.RunStreamingAgentAndWaitAsync("a", body, default, cancellationToken: token)).Status);
+        Assert.Equal("completed", (await client.RunStreamingAgentAndWaitAsync("a", body, TimeSpan.FromSeconds(5), token)).Status);
+        Assert.Equal("completed", (await client.RunStreamingAgentAndWaitAsync("a", body, timeout: default)).Status);
+        Assert.Equal("completed", (await client.RunStreamingAgentAndWaitAsync("a", body, cancellationToken: token)).Status);
     }
 
     [Fact]
@@ -2169,22 +2329,55 @@ public sealed class SeclaiClientTests
                 new AgentRunRequest { Input = "go" },
                 pollInterval: TimeSpan.FromMilliseconds(10),
                 timeout: TimeSpan.FromMilliseconds(50)));
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(() =>
+            client.RunAgentAndPollAsync("a1", new AgentRunRequest { Input = "go" },
+                new RunAgentAndPollOptions { PollInterval = TimeSpan.FromMilliseconds(10), Timeout = TimeSpan.FromMilliseconds(50) }));
+    }
+
+    [Fact]
+    public async Task RunAgentAndPoll_ThrowOnIncomplete_TimesOut()
+    {
+        var handler = new FakeHttpMessageHandler(_ =>
+            JsonResponse("{\"run_id\":\"r1\",\"status\":\"running\",\"attempts\":[],\"error_count\":0,\"priority\":false}"));
+        var ex = await Assert.ThrowsAsync<StreamingException>(() =>
+            MakeClient(handler).RunAgentAndPollAsync("a1", new AgentRunRequest { Input = "go" },
+                new RunAgentAndPollOptions { PollInterval = TimeSpan.FromMilliseconds(10), Timeout = TimeSpan.FromMilliseconds(50), ThrowOnIncomplete = true }));
+        Assert.Equal("running", ex.Run!.Status);
+        Assert.Contains("not reported a result", ex.Message);
+    }
+
+    [Fact]
+    public async Task RunAgentAndPoll_TimeoutCoversStartRequest()
+    {
+        // The request that starts the run hangs past the timeout.
+        var handler = new FakeHttpMessageHandler(async (req, ct) =>
+        {
+            await Task.Delay(TimeSpan.FromSeconds(2), ct);
+            return JsonResponse("{\"run_id\":\"r1\",\"status\":\"completed\",\"attempts\":[],\"error_count\":0,\"priority\":false}");
+        });
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(() =>
+            MakeClient(handler).RunAgentAndPollAsync("a1", new AgentRunRequest { Input = "go" },
+                new RunAgentAndPollOptions { Timeout = TimeSpan.FromMilliseconds(50) }));
+        var ex = await Assert.ThrowsAsync<StreamingException>(() =>
+            MakeClient(handler).RunAgentAndPollAsync("a1", new AgentRunRequest { Input = "go" },
+                new RunAgentAndPollOptions { Timeout = TimeSpan.FromMilliseconds(50), ThrowOnIncomplete = true }));
+        Assert.Null(ex.Run);
     }
 
     private const string PollRunning = "{\"run_id\":\"r1\",\"status\":\"processing\",\"attempts\":[],\"error_count\":0,\"priority\":false}";
     private const string PollReported = "{\"run_id\":\"r1\",\"status\":\"processing\",\"output\":\"answer\",\"result_reported_at\":\"2026-11-05T00:00:00Z\",\"attempts\":[],\"error_count\":0,\"priority\":false}";
 
     [Fact]
-    public async Task RunAgentAndPoll_TimeoutAfterResult_ReturnsLastSnapshot()
+    public async Task RunAgentAndPoll_ThrowOnIncomplete_TimeoutAfterResult_ThrowsWithLastSnapshot()
     {
         var handler = new FakeHttpMessageHandler(req =>
             JsonResponse(req.Method == HttpMethod.Post ? PollRunning : PollReported));
-        var res = await MakeClient(handler).RunAgentAndPollAsync("a1",
+        var ex = await Assert.ThrowsAsync<StreamingException>(() => MakeClient(handler).RunAgentAndPollAsync("a1",
             new AgentRunRequest { Input = "go" },
-            pollInterval: TimeSpan.FromMilliseconds(10),
-            timeout: TimeSpan.FromMilliseconds(100));
-        Assert.Equal("answer", res.Output);
-        Assert.Equal("2026-11-05T00:00:00Z", res.ResultReportedAt);
+            new RunAgentAndPollOptions { PollInterval = TimeSpan.FromMilliseconds(10), Timeout = TimeSpan.FromMilliseconds(100), ThrowOnIncomplete = true }));
+        Assert.Equal("answer", ex.Run!.Output);
+        Assert.Equal("2026-11-05T00:00:00Z", ex.Run.ResultReportedAt);
+        Assert.Contains("reported its result", ex.Message);
     }
 
     [Fact]
@@ -2219,6 +2412,30 @@ public sealed class SeclaiClientTests
         Assert.Equal("processing", res.Status);
         Assert.Equal("answer", res.Output);
         Assert.Equal(1, gets);
+    }
+
+    [Fact]
+    public async Task RunAgentAndPoll_IncludeStepOutputs_FetchesEvenWhenStartResponseIsTerminal()
+    {
+        var gets = 0;
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            if (req.Method == HttpMethod.Post)
+                return JsonResponse("{\"run_id\":\"r1\",\"status\":\"completed\",\"output\":\"answer\",\"attempts\":[],\"error_count\":0,\"priority\":false}");
+            gets++;
+            Assert.Equal("include_step_outputs=true", req.RequestUri!.Query.TrimStart('?'));
+            return JsonResponse("{\"run_id\":\"r1\",\"status\":\"completed\",\"output\":\"answer\",\"steps\":[{\"step_id\":\"s1\",\"output\":\"step\"}],\"attempts\":[],\"error_count\":0,\"priority\":false}");
+        });
+        var res = await MakeClient(handler).RunAgentAndPollAsync("a1", new AgentRunRequest { Input = "go" },
+            new RunAgentAndPollOptions { PollInterval = TimeSpan.FromSeconds(30), IncludeStepOutputs = true, ReturnOnResult = true });
+        Assert.Equal(1, gets);
+        Assert.Equal("completed", res.Status);
+
+        // Without step outputs, a terminal start response ends the poll at once.
+        gets = 0;
+        res = await MakeClient(handler).RunAgentAndPollAsync("a1", new AgentRunRequest { Input = "go" },
+            new RunAgentAndPollOptions { PollInterval = TimeSpan.FromSeconds(30) });
+        Assert.Equal(0, gets);
     }
 
     [Fact]
@@ -4906,14 +5123,11 @@ public sealed class SeclaiClientTests
                 + "\"metadata_keys\":[{\"key\":\"customer\",\"origin\":\"custom\",\"required\":true},{\"key\":\"run_id\",\"origin\":\"system\",\"required\":false}],"
                 + "\"declarable_keys\":[],\"warnings\":[\"agent caller1 maps a key the declaration no longer has\"]}");
         });
-        var res = await MakeClient(handler).SetMetadataKeysAsync("a1", "t1", new SetMetadataKeysRequest
+        var res = await MakeClient(handler).SetMetadataKeysAsync("a1", "t1", new SetMetadataKeysRequest(new List<MetadataKeyDeclaration>
         {
-            MetadataKeys = new List<MetadataKeyDeclaration>
-            {
-                new() { Key = "customer", Origin = "custom", Required = true },
-                new() { Key = "run_id", Origin = "system" },
-            },
-        });
+            new() { Key = "customer", Origin = "custom", Required = true },
+            new() { Key = "run_id", Origin = "system" },
+        }));
         Assert.Equal("{\"metadata_keys\":[{\"key\":\"customer\",\"origin\":\"custom\",\"required\":true},{\"key\":\"run_id\",\"origin\":\"system\"}]}", body);
         Assert.Equal(2, res.MetadataKeys.Count);
         Assert.Equal("agent caller1 maps a key the declaration no longer has", Assert.Single(res.Warnings));
@@ -4929,16 +5143,27 @@ public sealed class SeclaiClientTests
             return JsonResponse("{\"trigger_id\":\"t1\",\"agent_id\":\"a1\",\"accepts_any_source_key\":false,\"metadata_keys\":[],\"declarable_keys\":[],\"warnings\":[]}");
         });
         var client = MakeClient(handler);
-        await client.SetMetadataKeysAsync("a1", "t1", new SetMetadataKeysRequest { MetadataKeys = new List<MetadataKeyDeclaration>() });
+        await client.SetMetadataKeysAsync("a1", "t1", new SetMetadataKeysRequest(new List<MetadataKeyDeclaration>()));
         Assert.Equal("{\"metadata_keys\":[]}", body);
         await Assert.ThrowsAsync<ArgumentNullException>(() => client.SetMetadataKeysAsync("a1", "t1", null!));
-        await Assert.ThrowsAsync<ArgumentException>(() => client.SetMetadataKeysAsync("a1", " ", new SetMetadataKeysRequest { MetadataKeys = new List<MetadataKeyDeclaration>() }));
+        await Assert.ThrowsAsync<ArgumentException>(() => client.SetMetadataKeysAsync("a1", " ", new SetMetadataKeysRequest(new List<MetadataKeyDeclaration>())));
+    }
+
+    [Fact]
+    public void SetMetadataKeysRequest_IsBuiltWithItsList()
+    {
+        // The list is set by the constructor, so building it up incrementally cannot hit a null list.
+        var request = new SetMetadataKeysRequest(new List<MetadataKeyDeclaration>());
+        request.MetadataKeys.Add(new MetadataKeyDeclaration { Key = "customer", Origin = "custom" });
+        Assert.Single(request.MetadataKeys);
+        var ex = Assert.Throws<ArgumentNullException>(() => new SetMetadataKeysRequest(null!));
+        Assert.Equal("metadataKeys", ex.ParamName);
     }
 
     [Fact]
     public async Task SetMetadataKeys_RejectsRequestWithoutMetadataKeys()
     {
-        // A request built without MetadataKeys must not go out as a declaration that wipes every key.
+        // A request whose MetadataKeys was set to null must not go out as a declaration that wipes every key.
         var requests = 0;
         var handler = new FakeHttpMessageHandler(req =>
         {
@@ -4946,7 +5171,7 @@ public sealed class SeclaiClientTests
             return JsonResponse("{\"trigger_id\":\"t1\",\"agent_id\":\"a1\",\"accepts_any_source_key\":false,\"metadata_keys\":[],\"declarable_keys\":[],\"warnings\":[]}");
         });
         var client = MakeClient(handler);
-        var ex = await Assert.ThrowsAsync<ArgumentException>(() => client.SetMetadataKeysAsync("a1", "t1", new SetMetadataKeysRequest()));
+        var ex = await Assert.ThrowsAsync<ArgumentException>(() => client.SetMetadataKeysAsync("a1", "t1", new SetMetadataKeysRequest(new List<MetadataKeyDeclaration>()) { MetadataKeys = null! }));
         Assert.Equal("body", ex.ParamName);
         Assert.Equal(0, requests);
     }
@@ -5025,13 +5250,20 @@ public sealed class SeclaiClientTests
     private sealed class NeverEndingStream : System.IO.Stream
     {
         private readonly byte[] _prefix;
+        private readonly bool _eofOnDispose;
+        private readonly Exception? _failAfterPrefix;
         private int _offset;
         private volatile bool _disposed;
         private readonly ManualResetEventSlim _disposedEvent = new(false);
 
-        public NeverEndingStream(byte[] prefix)
+        /// <param name="prefix">Bytes served before the stream blocks.</param>
+        /// <param name="eofOnDispose">Once disposed, read as a clean end (0) rather than throw, as some .NET HTTP content streams do.</param>
+        /// <param name="failAfterPrefix">Thrown by the first read after the prefix, instead of blocking: a transport error.</param>
+        public NeverEndingStream(byte[] prefix, bool eofOnDispose = false, Exception? failAfterPrefix = null)
         {
             _prefix = prefix;
+            _eofOnDispose = eofOnDispose;
+            _failAfterPrefix = failAfterPrefix;
         }
 
         public override bool CanRead => true;
@@ -5042,7 +5274,7 @@ public sealed class SeclaiClientTests
 
         public override int Read(byte[] buffer, int offset, int count)
         {
-            if (_disposed) throw new ObjectDisposedException(nameof(NeverEndingStream));
+            if (_disposed) return _eofOnDispose ? 0 : throw new ObjectDisposedException(nameof(NeverEndingStream));
 
             if (_offset < _prefix.Length)
             {
@@ -5053,12 +5285,14 @@ public sealed class SeclaiClientTests
                 return toCopy;
             }
 
+            if (_failAfterPrefix is not null) throw _failAfterPrefix;
+
             // Block until disposed.
             while (!_disposed)
             {
                 _disposedEvent.Wait(5);
             }
-            throw new ObjectDisposedException(nameof(NeverEndingStream));
+            return _eofOnDispose ? 0 : throw new ObjectDisposedException(nameof(NeverEndingStream));
         }
 
         protected override void Dispose(bool disposing)

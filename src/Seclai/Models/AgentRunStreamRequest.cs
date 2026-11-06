@@ -16,8 +16,8 @@ public sealed class AgentRunStreamRequest
     /// Receive <c>stream_reasoning</c> events carrying the model's reasoning while it thinks. They are sent
     /// only for a <c>streaming_result</c> step whose author enabled <c>show_reasoning</c>, and never when a
     /// governance policy redacts that step. Null omits the field (server default false). It applies to
-    /// <see cref="SeclaiClient.RunStreamingAgentAsync"/>. <see cref="SeclaiClient.RunStreamingAgentAndWaitAsync"/>
-    /// reads only the <c>init</c> and <c>done</c> events and does not send this field, so reasoning events never
+    /// <see cref="SeclaiClient.RunStreamingAgentAsync"/>. <c>RunStreamingAgentAndWaitAsync</c>
+    /// reads only the <c>init</c>, <c>result</c> and <c>done</c> events and does not send this field, so reasoning events never
     /// count against its timeout.
     /// </summary>
     [JsonPropertyName("include_reasoning")]

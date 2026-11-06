@@ -13,18 +13,31 @@ public struct RunAgentAndPollOptions
     public TimeSpan? PollInterval { get; set; }
 
     /// <summary>
-    /// Maximum time to wait; null waits until the run ends. If it elapses after the run reported its result
-    /// (<see cref="AgentRunResponse.ResultReportedAt"/> is set), the last snapshot is returned instead of throwing.
+    /// Maximum time for the whole call, including the request that starts the run; null waits until the run ends.
+    /// When it elapses before the run finished, <see cref="System.OperationCanceledException"/> is thrown, or, with
+    /// <see cref="ThrowOnIncomplete"/>, <see cref="Seclai.Exceptions.StreamingException"/>.
     /// </summary>
     public TimeSpan? Timeout { get; set; }
 
-    /// <summary>Whether each poll asks for step outputs.</summary>
+    /// <summary>
+    /// Whether each poll asks for step outputs. The response that starts the run carries none, so the run is then
+    /// fetched at least once, even when it ended at once.
+    /// </summary>
     public bool IncludeStepOutputs { get; set; }
 
     /// <summary>
     /// Return as soon as the run reports its result (<see cref="AgentRunResponse.ResultReportedAt"/> is set and
     /// <see cref="AgentRunResponse.Output"/> is the answer), instead of waiting for the remaining steps.
-    /// <see cref="AgentRunResponse.Status"/> may then still be <c>processing</c>, and the run can still fail after it.
+    /// <see cref="AgentRunResponse.Status"/> may then still be <c>processing</c>, and the run can still fail after it,
+    /// so check <see cref="AgentRunResponse.ResultReportedAt"/>, not <see cref="AgentRunResponse.Status"/>.
     /// </summary>
     public bool ReturnOnResult { get; set; }
+
+    /// <summary>
+    /// When <see cref="Timeout"/> elapses, throw <see cref="Seclai.Exceptions.StreamingException"/> carrying the last
+    /// polled snapshot in <see cref="Seclai.Exceptions.StreamingException.Run"/>, instead of
+    /// <see cref="System.OperationCanceledException"/>. Cancelling the caller's token still throws
+    /// <see cref="System.OperationCanceledException"/>. This becomes the default in the next major version.
+    /// </summary>
+    public bool ThrowOnIncomplete { get; set; }
 }

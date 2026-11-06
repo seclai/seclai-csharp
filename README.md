@@ -392,23 +392,20 @@ run you start is refused with a 400 when it lacks a required key or sends a cust
 trigger does not declare, on every API version, so declare custom keys with `SetMetadataKeysAsync`
 before sending them in a run's metadata.
 
-`SetMetadataKeysRequest.MetadataKeys` is required: `SetMetadataKeysAsync` throws
-`ArgumentException` when it is null, so a request built without it cannot wipe the declaration.
-To declare no keys, set an empty list.
+`SetMetadataKeysRequest` is built with its list, and its constructor throws
+`ArgumentNullException` on null, so a request cannot go out without a declaration and wipe it.
+To declare no keys, pass an empty list.
 
 ```csharp
 var keys = await client.GetMetadataKeysAsync(agent.Id!, agent.TriggerId!);
 foreach (var k in keys.DeclarableKeys) Console.WriteLine($"{k.Key} ({k.Origin}) always present: {k.AlwaysPresent}");
 
 // Replaces the whole declaration. Refused with a 400 if the agent references a key it leaves out.
-var updated = await client.SetMetadataKeysAsync(agent.Id!, agent.TriggerId!, new SetMetadataKeysRequest
+var updated = await client.SetMetadataKeysAsync(agent.Id!, agent.TriggerId!, new SetMetadataKeysRequest(new List<MetadataKeyDeclaration>
 {
-    MetadataKeys = new List<MetadataKeyDeclaration>
-    {
-        new() { Key = "customer_id", Origin = "custom", Required = true },
-        new() { Key = "title", Origin = "source" },   // Required omitted: false
-    },
-});
+    new() { Key = "customer_id", Origin = "custom", Required = true },
+    new() { Key = "title", Origin = "source" },   // Required omitted: false
+}));
 foreach (var w in updated.Warnings) Console.WriteLine(w);   // callers whose call_agent mapping no longer fits
 ```
 
@@ -458,32 +455,68 @@ await foreach (var evt in client.RunStreamingAgentAsync("ag1",
     Console.WriteLine($"[{evt.Event}] {evt.Run?.Status}");
 }
 
-// Wait for the final result from the SSE stream. It reads only the init, result and
-// done events, so it does not send IncludeReasoning. The done snapshot wins; if the
-// stream ends or the timeout elapses after the result event but before done, the
-// result snapshot (ResultReportedAt set, Output final) is returned instead of throwing.
+// Wait for the done event of the SSE stream. It reads only the init, result and done
+// events, so it does not send IncludeReasoning.
 var final = await client.RunStreamingAgentAndWaitAsync("ag1",
     new AgentRunStreamRequest { Input = "hello" },
     timeout: TimeSpan.FromSeconds(120));
 
-// Poll-based alternative. If the timeout elapses after the run reported its result,
-// the last snapshot is returned instead of throwing.
+// Recommended: ThrowOnIncomplete never returns a run that has not finished.
+// ReturnOnResult returns the result event's snapshot without waiting for done.
+var answer = await client.RunStreamingAgentAndWaitWithOptionsAsync("ag1",
+    new AgentRunStreamRequest { Input = "hello" },
+    new RunStreamingAgentAndWaitOptions
+    {
+        Timeout = TimeSpan.FromSeconds(120),
+        ReturnOnResult = true,
+        ThrowOnIncomplete = true,
+    });
+
+// Poll-based alternative, with the same two options.
 var polled = await client.RunAgentAndPollAsync("ag1",
     new AgentRunRequest { Input = "hello" },
     pollInterval: TimeSpan.FromSeconds(2),
     timeout: TimeSpan.FromMinutes(5));
-
-// Return as soon as the run reports its result, without waiting for the remaining
-// steps. Status may still be "processing", and the run can still fail afterwards.
 var early = await client.RunAgentAndPollAsync("ag1",
     new AgentRunRequest { Input = "hello" },
-    new RunAgentAndPollOptions { Timeout = TimeSpan.FromMinutes(5), ReturnOnResult = true });
-Console.WriteLine(early.Output);
+    new RunAgentAndPollOptions { Timeout = TimeSpan.FromMinutes(5), ReturnOnResult = true, ThrowOnIncomplete = true });
+```
+
+A run returned because of `ReturnOnResult` may still be in progress: its `Status` is not
+terminal yet and the run can still fail. Check `ResultReportedAt`, not `Status`; once it is set,
+`Output` is the answer.
+
+By default `RunStreamingAgentAndWaitAsync` can return a run that has not finished: when the stream
+ends without a `done` event it returns the latest snapshot (the `result` one if that event arrived,
+else `init`), so check `Status` and `ResultReportedAt`. A connection cut mid-stream throws the
+transport's `IOException` or `HttpRequestException`. Its own timeout, or cancelling your
+`CancellationToken`, throws `StreamingException`. `RunAgentAndPollAsync`'s timeout throws
+`OperationCanceledException`, and `RunAgentAndPollOptions.Timeout` covers the request that starts the
+run too.
+
+We recommend setting `ThrowOnIncomplete`, which becomes the default in the next major version. With
+it, neither helper returns an unfinished run: its own timeout, or a stream that ends or breaks
+without `done`, throws `StreamingException`, whose `Run` holds the latest snapshot (for polling, the
+last poll). Cancelling your `CancellationToken` throws `OperationCanceledException`.
+
+```csharp
+try
+{
+    var run = await client.RunStreamingAgentAndWaitWithOptionsAsync("ag1",
+        new AgentRunStreamRequest { Input = "hello" },
+        new RunStreamingAgentAndWaitOptions { Timeout = TimeSpan.FromSeconds(30), ThrowOnIncomplete = true });
+    Console.WriteLine(run.Output);
+}
+catch (StreamingException ex) when (ex.Run?.ResultReportedAt is not null)
+{
+    Console.WriteLine(ex.Run.Output);   // the answer, though the run had not finished
+}
 ```
 
 `RunStreamingAgentAsync` yields a `result` event once the run has reported its result: take the
 answer from it rather than from `stream_token` events. `done.Status` says whether the whole run
-succeeded, which can still fail after its result.
+succeeded, which can still fail after its result. When the server answers with plain JSON instead of
+an SSE stream, `RunStreamingAgentAsync` yields only a `done` event, so read the answer from it.
 
 ### Sources & Content
 
