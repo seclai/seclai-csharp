@@ -3242,19 +3242,7 @@ public sealed class SeclaiClient : IDisposable
             IncludeStepOutputs = includeStepOutputs,
         }, cancellationToken);
 
-    /// <summary>
-    /// Runs an agent and polls until it reaches a terminal status (completed or failed), or, with
-    /// <see cref="RunAgentAndPollOptions.ReturnOnResult"/>, until it reports its result.
-    /// </summary>
-    /// <exception cref="StreamingException">
-    /// With <see cref="RunAgentAndPollOptions.ThrowOnIncomplete"/>, <see cref="RunAgentAndPollOptions.Timeout"/>
-    /// elapsed before the run finished. <see cref="StreamingException.Run"/> holds the last polled snapshot.
-    /// </exception>
-    /// <exception cref="OperationCanceledException">
-    /// Without <see cref="RunAgentAndPollOptions.ThrowOnIncomplete"/>, <see cref="RunAgentAndPollOptions.Timeout"/>
-    /// elapsed before the run finished; or, with or without it, the <see cref="HttpClient"/>'s timeout elapsed on one
-    /// of its requests (<see cref="TaskCanceledException"/>).
-    /// </exception>
+    /// <inheritdoc cref="RunAgentAndPollAsync(string, AgentRunRequest, RunAgentAndPollOptions, CancellationToken)"/>
     public Task<AgentRunResponse> RunAgentAndPollAsync(string agentId, AgentRunRequest body, RunAgentAndPollOptions options)
         => RunAgentAndPollAsync(agentId, body, options, CancellationToken.None);
 

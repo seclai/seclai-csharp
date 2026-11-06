@@ -494,14 +494,14 @@ transport's `IOException` or `HttpRequestException`. Its own timeout, or cancell
 `OperationCanceledException`. `RunAgentAndPollOptions.Timeout` bounds only waiting for an unfinished
 run. As in 1.7.0, the request that starts the run is bounded by the `HttpClient`'s timeout
 (`SeclaiClientOptions.Timeout` when the SDK creates the client) and your `CancellationToken`, not by
-`Timeout`.
+`Timeout`. The `HttpClient`'s timeout on any request `RunAgentAndPollAsync` makes throws
+`OperationCanceledException` (a `TaskCanceledException`), with or without `ThrowOnIncomplete`, even
+when your token was not cancelled.
 
 We recommend setting `ThrowOnIncomplete`, which becomes the default in the next major version. With
 it, neither helper returns an unfinished run: its own timeout, or a stream that ends or breaks
 without `done`, throws `StreamingException`, whose `Run` holds the latest snapshot (for polling, the
-last poll). Cancelling your `CancellationToken` throws `OperationCanceledException`, and so does the
-`HttpClient`'s timeout on a request `RunAgentAndPollAsync` makes (a `TaskCanceledException`), even when
-your token was not cancelled.
+last poll). Cancelling your `CancellationToken` throws `OperationCanceledException`.
 
 ```csharp
 try
