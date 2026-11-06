@@ -3260,8 +3260,8 @@ public sealed class SeclaiClient : IDisposable
     /// <remarks>
     /// <see cref="RunAgentAndPollOptions.Timeout"/> bounds only waiting for an unfinished run. The request that starts
     /// the run is bounded, as in 1.7.0, by the <see cref="HttpClient"/>'s timeout
-    /// (<see cref="SeclaiClientOptions.Timeout"/> when the SDK creates the client) and the caller's cancellation
-    /// token, since the server may already have created the run. With
+    /// (<see cref="SeclaiClientOptions.Timeout"/> when the SDK creates the client), plus the cancellation token on the
+    /// overload that takes one, since the server may already have created the run. With
     /// <see cref="RunAgentAndPollOptions.IncludeStepOutputs"/>, a start response that would end the poll is fetched
     /// again with its step outputs, so the returned snapshot carries them even when the run ended at once; that fetch
     /// is not bounded by <see cref="RunAgentAndPollOptions.Timeout"/> either.
