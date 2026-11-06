@@ -2460,7 +2460,7 @@ public sealed class SeclaiClientTests
     [Fact]
     public async Task RunAgentAndPoll_IncludeStepOutputs_FailedFetchThrows()
     {
-        // The step-outputs fetch fails like any other request, so an auth or config error is never swallowed.
+        // The step-outputs fetch fails like any other request: a server error is not swallowed.
         var handler = new FakeHttpMessageHandler(req => req.Method == HttpMethod.Post
             ? JsonResponse("{\"run_id\":\"r1\",\"status\":\"completed\",\"output\":\"answer\",\"attempts\":[],\"error_count\":0,\"priority\":false}")
             : new HttpResponseMessage(HttpStatusCode.InternalServerError) { Content = new StringContent("{\"detail\":\"boom\"}", Encoding.UTF8, "application/json") });

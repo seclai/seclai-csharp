@@ -16,7 +16,7 @@ public struct RunAgentAndPollOptions
     /// Maximum time to wait for an unfinished run; null waits until the run ends. The request that starts the run is
     /// not bounded by it, since the server may already have created the run: as in 1.7.0, the <c>HttpClient</c>'s
     /// timeout (<see cref="SeclaiClientOptions.Timeout"/> when the SDK creates the client) and the caller's token
-    /// bound it. Nor is the fetch of step outputs for a run that ended at once.
+    /// bound it. Nor is the fetch of step outputs for a start response that already ends the poll.
     /// When it elapses before the run finished, <see cref="System.OperationCanceledException"/> is thrown, or, with
     /// <see cref="ThrowOnIncomplete"/>, <see cref="Seclai.Exceptions.StreamingException"/>.
     /// </summary>

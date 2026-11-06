@@ -3224,7 +3224,9 @@ public sealed class SeclaiClient : IDisposable
     /// <see cref="RunAgentAndPollOptions.ThrowOnIncomplete"/>.
     /// </remarks>
     /// <exception cref="OperationCanceledException">
-    /// <paramref name="timeout"/> elapsed before the run finished, or <paramref name="cancellationToken"/> was cancelled.
+    /// <paramref name="timeout"/> elapsed before the run finished, <paramref name="cancellationToken"/> was cancelled,
+    /// or the <see cref="HttpClient"/>'s timeout elapsed on one of its requests (<see cref="TaskCanceledException"/>,
+    /// even when the token was not cancelled).
     /// </exception>
     public Task<AgentRunResponse> RunAgentAndPollAsync(
         string agentId,
@@ -3250,7 +3252,8 @@ public sealed class SeclaiClient : IDisposable
     /// </exception>
     /// <exception cref="OperationCanceledException">
     /// Without <see cref="RunAgentAndPollOptions.ThrowOnIncomplete"/>, <see cref="RunAgentAndPollOptions.Timeout"/>
-    /// elapsed before the run finished.
+    /// elapsed before the run finished; or, with or without it, the <see cref="HttpClient"/>'s timeout elapsed on one
+    /// of its requests (<see cref="TaskCanceledException"/>).
     /// </exception>
     public Task<AgentRunResponse> RunAgentAndPollAsync(string agentId, AgentRunRequest body, RunAgentAndPollOptions options)
         => RunAgentAndPollAsync(agentId, body, options, CancellationToken.None);
@@ -3274,8 +3277,10 @@ public sealed class SeclaiClient : IDisposable
     /// <see cref="AgentRunResponse.ResultReportedAt"/> is set, <see cref="AgentRunResponse.Output"/> is the answer.
     /// </exception>
     /// <exception cref="OperationCanceledException">
-    /// <paramref name="cancellationToken"/> was cancelled, or, without
-    /// <see cref="RunAgentAndPollOptions.ThrowOnIncomplete"/>, <see cref="RunAgentAndPollOptions.Timeout"/> elapsed.
+    /// <paramref name="cancellationToken"/> was cancelled; without
+    /// <see cref="RunAgentAndPollOptions.ThrowOnIncomplete"/>, <see cref="RunAgentAndPollOptions.Timeout"/> elapsed;
+    /// or, with or without it, the <see cref="HttpClient"/>'s timeout elapsed on one of its requests
+    /// (<see cref="TaskCanceledException"/>, even when <paramref name="cancellationToken"/> was not cancelled).
     /// </exception>
     public async Task<AgentRunResponse> RunAgentAndPollAsync(
         string agentId,
