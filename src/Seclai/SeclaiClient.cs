@@ -253,10 +253,11 @@ public sealed class SeclaiClient : IDisposable
         using var req = new HttpRequestMessage(HttpMethod.Post, url);
         await ApplyHeadersAsync(req, cancellationToken, "text/event-stream", "application/json").ConfigureAwait(false);
 
-        // This method reads only init, result and done, so stream_reasoning events would be traffic counted
-        // against the timeout. The field is dropped from a copy; the caller's object is unchanged.
+        // This method reads only init, result and done, so stream_reasoning and stream_commentary events would be
+        // traffic counted against the timeout. The fields are dropped from a copy; the caller's object is unchanged.
         var node = JsonSerializer.SerializeToNode(body, JsonOptions);
         (node as JsonObject)?.Remove("include_reasoning");
+        (node as JsonObject)?.Remove("include_commentary");
         req.Content = new StringContent(node?.ToJsonString() ?? "null", Encoding.UTF8, "application/json");
 
         var effectiveTimeout = options.Timeout ?? TimeSpan.FromSeconds(60);
@@ -971,11 +972,12 @@ public sealed class SeclaiClient : IDisposable
     /// undisposed response on success; on an error status the body is read, the response is
     /// disposed, and the error is thrown.
     /// </summary>
-    private async Task<HttpResponseMessage> SendStreamAsync(HttpMethod method, string path, Dictionary<string, string?>? query, CancellationToken cancellationToken)
+    private async Task<HttpResponseMessage> SendStreamAsync(HttpMethod method, string path, Dictionary<string, string?>? query, CancellationToken cancellationToken, RangeHeaderValue? range = null)
     {
         var url = BuildUri(path, query);
         using var req = new HttpRequestMessage(method, url);
         await ApplyHeadersAsync(req, cancellationToken).ConfigureAwait(false);
+        if (range is not null) req.Headers.Range = range;
 
         var resp = await _http.SendAsync(req, HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
         if (resp.IsSuccessStatusCode) return resp;
@@ -1218,7 +1220,9 @@ public sealed class SeclaiClient : IDisposable
     /// <see cref="CreateAgentAsync"/>, with <see cref="CreateAgentRequest.ResourceBindings"/> for the
     /// resources it needs.
     /// </remarks>
-    /// <param name="query">Words every match must contain.</param>
+    /// <param name="query">What the agent should do. From API version <c>2026-11-09</c> entries are ranked by how well
+    /// they match its words and meaning, best first, and a query of several words that are all filler (such as
+    /// "create an agent") counts as no query; older versions list only entries containing every word.</param>
     /// <param name="useCase">Only entries for this use case.</param>
     /// <param name="page">1-indexed page number.</param>
     /// <param name="limit">Items per page, 1-100 (server default 20).</param>
@@ -1313,11 +1317,16 @@ public sealed class SeclaiClient : IDisposable
         return await SendJsonAsync<AgentTraceSearchResponse>(HttpMethod.Post, "/agents/runs/search", query: null, body, cancellationToken).ConfigureAwait(false);
     }
 
-    /// <summary>Cancels an in-progress agent run.</summary>
+    /// <summary>Cancels an agent run that has not ended.</summary>
     /// <remarks>
     /// Cancellation is DELETE on the run resource — the API exposes no
-    /// POST .../cancel route, and no operation that deletes a run. Rejected when
-    /// the run has already reached a terminal state.
+    /// POST .../cancel route, and no operation that deletes a run. A run that is
+    /// <c>queued</c>, <c>pending</c>, <c>processing</c>, <c>waiting_human</c> or <c>waiting_scheduled</c>
+    /// can be cancelled; one that has ended (<c>completed</c>, <c>failed</c> or <c>cancelled</c>) is rejected.
+    /// The run ends with status <c>cancelled</c> from API version <c>2026-11-08</c>
+    /// (<see cref="SeclaiApiVersion.V2026_11_08"/>) and <c>failed</c> before it. A run started by another
+    /// agent's <c>call_agent</c> step that is still waiting for it cancels the outermost such calling run instead,
+    /// with every run below it that has not reported its result.
     /// </remarks>
     public async Task<AgentRunResponse> CancelAgentRunAsync(string runId, CancellationToken cancellationToken = default)
     {
@@ -2061,7 +2070,7 @@ public sealed class SeclaiClient : IDisposable
     }
 
     /// <summary>
-    /// Downloads a file attachment emitted by a step in an agent run. Returns the raw HTTP
+    /// Downloads a file of an agent run, one a step emitted or one the run started with. Returns the raw HTTP
     /// response so the caller can stream the body. The caller must dispose the returned
     /// <see cref="HttpResponseMessage"/>.
     /// </summary>
@@ -2072,15 +2081,73 @@ public sealed class SeclaiClient : IDisposable
     /// </param>
     /// <param name="downloadName">Optional filename hint for the download disposition.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
-    public async Task<HttpResponseMessage> DownloadAgentRunAttachmentAsync(string runId, string attachmentId, string? downloadName = null, CancellationToken cancellationToken = default)
+    /// <remarks>
+    /// To download part of the file, use
+    /// <see cref="DownloadAgentRunAttachmentWithOptionsAsync(string, string, DownloadAgentRunAttachmentOptions, CancellationToken)"/>.
+    /// </remarks>
+    public Task<HttpResponseMessage> DownloadAgentRunAttachmentAsync(string runId, string attachmentId, string? downloadName = null, CancellationToken cancellationToken = default)
+        => DownloadAgentRunAttachmentWithOptionsAsync(runId, attachmentId, new DownloadAgentRunAttachmentOptions { DownloadName = downloadName }, cancellationToken);
+
+    /// <summary>
+    /// Downloads a file of an agent run (one a step emitted or one the run started with), or one byte range of it.
+    /// Returns the raw HTTP response so the caller can stream the body. The caller must dispose the
+    /// returned <see cref="HttpResponseMessage"/>.
+    /// </summary>
+    /// <remarks>
+    /// With a range set, the response is <c>206 Partial Content</c> carrying <c>Content-Range</c> for a range
+    /// of a non-empty file. A range on an empty file is ignored and answered with <c>200</c> and
+    /// the whole (empty) file, so check <see cref="HttpResponseMessage.StatusCode"/> before treating the body as
+    /// the requested range. A range that starts at or past the end of a non-empty file is answered with <c>416</c>,
+    /// which throws <see cref="ApiException"/> like any other error status. Every <c>200</c> and <c>206</c>
+    /// carries <c>Accept-Ranges: bytes</c> and <c>Content-Length</c>. This applies on every API version.
+    /// </remarks>
+    /// <param name="runId">Run identifier.</param>
+    /// <param name="attachmentId">
+    /// The <c>Id</c> of an entry in the run's or a step's <c>Attachments</c>, or the
+    /// URL-safe-base64-encoded storage key that webhook and email links carry.
+    /// </param>
+    /// <param name="options">The download name and the byte range. A <c>default</c> value downloads the whole file.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="runId"/> or <paramref name="attachmentId"/> is blank, or the range fields are combined in a
+    /// way <see cref="DownloadAgentRunAttachmentOptions"/> does not allow. Thrown before any request is sent.
+    /// </exception>
+    public async Task<HttpResponseMessage> DownloadAgentRunAttachmentWithOptionsAsync(string runId, string attachmentId, DownloadAgentRunAttachmentOptions options, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(runId)) throw new ArgumentException("runId is required", nameof(runId));
         if (string.IsNullOrWhiteSpace(attachmentId)) throw new ArgumentException("attachmentId is required", nameof(attachmentId));
+        var range = BuildRangeHeader(options.RangeStart, options.RangeEnd, options.RangeSuffix);
 
-        var query = string.IsNullOrWhiteSpace(downloadName)
+        var query = string.IsNullOrWhiteSpace(options.DownloadName)
             ? null
-            : new Dictionary<string, string?> { ["download_name"] = downloadName };
-        return await SendStreamAsync(HttpMethod.Get, $"/v2/agent-runs/{Uri.EscapeDataString(runId)}/attachments/{Uri.EscapeDataString(attachmentId)}", query, cancellationToken).ConfigureAwait(false);
+            : new Dictionary<string, string?> { ["download_name"] = options.DownloadName };
+        return await SendStreamAsync(HttpMethod.Get, $"/v2/agent-runs/{Uri.EscapeDataString(runId)}/attachments/{Uri.EscapeDataString(attachmentId)}", query, cancellationToken, range).ConfigureAwait(false);
+    }
+
+    // The single-range Range header for start/end/suffix, or null when none is set. Throws on an
+    // invalid combination before anything is sent.
+    private static RangeHeaderValue? BuildRangeHeader(long? start, long? end, long? suffix)
+    {
+        const string param = "options";
+        if (suffix is not null)
+        {
+            if (start is not null || end is not null)
+                throw new ArgumentException("RangeSuffix cannot be combined with RangeStart or RangeEnd", param);
+            if (suffix <= 0)
+                throw new ArgumentException("RangeSuffix must be greater than zero", param);
+            return new RangeHeaderValue(null, suffix);
+        }
+        if (start is null)
+        {
+            if (end is not null)
+                throw new ArgumentException("RangeEnd requires RangeStart", param);
+            return null;
+        }
+        if (start < 0)
+            throw new ArgumentException("RangeStart must not be negative", param);
+        if (end is not null && end < start)
+            throw new ArgumentException("RangeEnd must not be less than RangeStart", param);
+        return new RangeHeaderValue(start, end);
     }
 
     /// <summary>Estimates the cost/size of a source export.</summary>
@@ -2950,7 +3017,7 @@ public sealed class SeclaiClient : IDisposable
         return await SendJsonAsync<InboundEmailStatusResponse>(HttpMethod.Get, "/agents/inbound-email-status", null, null, cancellationToken).ConfigureAwait(false);
     }
 
-    /// <summary>Fails all of the account's QUEUED (over-quota parked) inbound-email runs. Requires an account owner or admin.</summary>
+    /// <summary>Cancels all of the account's QUEUED (over-quota parked) inbound-email runs. Each ends <c>cancelled</c> from API version <c>2026-11-08</c> and <c>failed</c> before it. Requires an account owner or admin.</summary>
     public async Task<CancelQueuedRunsResponse> CancelQueuedEmailRunsAsync(CancellationToken cancellationToken = default)
     {
         return await SendJsonAsync<CancelQueuedRunsResponse>(HttpMethod.Post, "/agents/inbound-email-status/cancel-queued", null, null, cancellationToken).ConfigureAwait(false);
@@ -3216,7 +3283,7 @@ public sealed class SeclaiClient : IDisposable
     }
 
     /// <summary>
-    /// Runs an agent and polls until it reaches a terminal status (completed or failed).
+    /// Runs an agent and polls until it reaches a terminal status (completed, failed or cancelled).
     /// </summary>
     /// <remarks>
     /// To return as soon as the run reports its result, or to get the last snapshot when the timeout elapses, use
@@ -3254,7 +3321,7 @@ public sealed class SeclaiClient : IDisposable
         => RunAgentAndPollAsync(agentId, body, options, CancellationToken.None);
 
     /// <summary>
-    /// Runs an agent and polls until it reaches a terminal status (completed or failed), or, with
+    /// Runs an agent and polls until it reaches a terminal status (completed, failed or cancelled), or, with
     /// <see cref="RunAgentAndPollOptions.ReturnOnResult"/>, until it reports its result.
     /// </summary>
     /// <remarks>
@@ -3294,7 +3361,7 @@ public sealed class SeclaiClient : IDisposable
         // The start response carries no step outputs, so when it would end the poll, fetch them first. This is not
         // waiting for the run, so the timeout does not apply: it cannot turn a finished run into a timeout.
         if (options.IncludeStepOutputs &&
-            (run.Status == "completed" || run.Status == "failed" ||
+            (IsTerminalRunStatus(run.Status) ||
              (options.ReturnOnResult && !string.IsNullOrEmpty(run.ResultReportedAt))))
         {
             run = await GetAgentRunAsync(run.RunId!, true, cancellationToken).ConfigureAwait(false);
@@ -3310,12 +3377,7 @@ public sealed class SeclaiClient : IDisposable
         {
             while (true)
             {
-                switch (run.Status)
-                {
-                    case "completed":
-                    case "failed":
-                        return run;
-                }
+                if (IsTerminalRunStatus(run.Status)) return run;
                 if (options.ReturnOnResult && !string.IsNullOrEmpty(run.ResultReportedAt)) return run;
 
                 await Task.Delay(interval, ct).ConfigureAwait(false);
@@ -3332,6 +3394,11 @@ public sealed class SeclaiClient : IDisposable
                 $"Timed out after {options.Timeout!.Value.TotalMilliseconds}ms waiting for agent run to complete; {reported}.", ex, run);
         }
     }
+
+    // A run ends as completed, failed or cancelled. A cancelled run reports cancelled from API version 2026-11-08
+    // and failed before it.
+    private static bool IsTerminalRunStatus(string? status)
+        => status is "completed" or "failed" or "cancelled";
 
     // ── Shared upload helper ────────────────────────────────────────────────
 

@@ -14,7 +14,7 @@ public sealed class AgentRunStreamRequest
 
     /// <summary>
     /// Receive <c>stream_reasoning</c> events carrying the model's reasoning while it thinks. They are sent
-    /// only for a <c>streaming_result</c> step whose author enabled <c>show_reasoning</c>, and never when a
+    /// only for a <c>prompt_call</c> step whose <c>run_result</c> enables <c>show_reasoning</c>, and never when a
     /// governance policy redacts that step. Null omits the field (server default false). It applies to
     /// <see cref="SeclaiClient.RunStreamingAgentAsync"/>. <c>RunStreamingAgentAndWaitAsync</c>
     /// reads only the <c>init</c>, <c>result</c> and <c>done</c> events and does not send this field, so reasoning events never
@@ -22,6 +22,18 @@ public sealed class AgentRunStreamRequest
     /// </summary>
     [JsonPropertyName("include_reasoning")]
     public bool? IncludeReasoning { get; set; }
+
+    /// <summary>
+    /// Receive <c>stream_commentary</c> events carrying the text a model on OpenAI's Responses API writes outside
+    /// its final answer, with its <c>phase</c> and <c>message</c> number. They are sent only for a
+    /// <c>prompt_call</c> step whose <c>run_result</c> enables <c>show_commentary</c>, and never when a governance
+    /// policy redacts that step. Null omits the field (server default false). It applies to
+    /// <see cref="SeclaiClient.RunStreamingAgentAsync"/>. <c>RunStreamingAgentAndWaitAsync</c>
+    /// reads only the <c>init</c>, <c>result</c> and <c>done</c> events and does not send this field, so commentary events never
+    /// count against its timeout.
+    /// </summary>
+    [JsonPropertyName("include_commentary")]
+    public bool? IncludeCommentary { get; set; }
 
     /// <summary>ID of a previously uploaded file to use as the run input for a dynamic-input trigger. Mutually exclusive with <see cref="InputUploadIds"/>; may be combined with <see cref="Input"/>. Must fit the trigger's <c>accepted_attachments</c>, as on <see cref="AgentRunRequest.InputUploadId"/>.</summary>
     [JsonPropertyName("input_upload_id")]

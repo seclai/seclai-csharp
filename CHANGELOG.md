@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.9.0] - 2026-11-27
+
+### Changed
+
+- Stop `RunAgentAndPollAsync` on status `cancelled` as on `completed` and `failed`. From API version `2026-11-08` a cancelled run ends `cancelled`, where it ended `failed` before, and the helper would have polled it until its timeout, or forever without one. With `IncludeStepOutputs`, a start response that is already `cancelled` is fetched once with its step outputs, as a finished one is
+- Move `SeclaiApiVersion.Latest` from `2026-11-04` to `2026-11-19`, which opts a client that sends `Latest` into four more versions: from `2026-11-08` a run cancelled with `CancelAgentRunAsync` or `CancelQueuedEmailRunsAsync` ends with status `cancelled`, where older versions show `failed`; from `2026-11-09` `ListAgentExamplesAsync`'s `query` describes what the agent should do and entries are ranked by how well they match its words and meaning, best first, with a query of several words that are all filler (such as "create an agent") counting as no query, where older versions list only entries containing every word; from `2026-11-14` `RunAgentAsync`, `RunAgentAndPollAsync` and the streaming run methods refuse an agent whose definition fails to validate with a 409 and start no run, where older versions return the run already failed with the validation error as its cause; and from `2026-11-19` `CreateAlertConfigAsync` accepts the agent alert type `step_failure_continued`. It is a `const`, so code compiled against an earlier release keeps the old value until it is rebuilt
+- Note server-side changes that apply on every API version, whatever `ApiVersion` a client sends: `CancelAgentRunAsync` also accepts a `pending`, `waiting_human` or `waiting_scheduled` run; and cancelling a run started by a `call_agent` step that is still waiting for it ends the outermost calling run, with every run below it that has not reported its result
+- Describe a run's answer as the output of the step carrying `run_result` (a `prompt_call`, `text`, `call_agent` or `generate_*` step), as the API reference now does, instead of a `streaming_result` or `display_result` step, which it no longer describes: `stream_reasoning` events come from a `prompt_call` whose `run_result` enables `show_reasoning`, and from `2026-11-04` an evaluation criterion's `StepId` must name the step carrying `run_result`
+
+### Added
+
+- Add `DownloadAgentRunAttachmentWithOptionsAsync` and `DownloadAgentRunAttachmentOptions` to download one byte range of a run attachment, on every API version: `RangeStart` alone sends `Range: bytes=start-`, `RangeStart` and `RangeEnd` (inclusive) send `bytes=start-end`, and `RangeSuffix` alone sends `bytes=-suffix` for the last bytes of the file. Any other combination, a negative offset, an end before the start or a suffix below 1 throws `ArgumentException` before a request is sent, and with no range set the SDK adds no `Range` header. The raw response is `206` with `Content-Range` for a range of a non-empty file, and `200` with the whole file for a range on an empty file; a range starting at or past the end of a non-empty file is answered `416`, which throws `ApiException`. `DownloadAgentRunAttachmentAsync` is unchanged
+- Add `AgentRunStreamRequest.IncludeCommentary` to receive `stream_commentary` events from `RunStreamingAgentAsync`, carrying the text a model on OpenAI's Responses API writes outside its final answer (`phase`, `message` and `text` in the event's `Data`), for a `prompt_call` whose `run_result` enables `show_commentary`. Null omits the field. `RunStreamingAgentAndWaitAsync` and `RunStreamingAgentAndWaitWithOptionsAsync` do not send it, as with `IncludeReasoning`
+- Add `AspectRatios` to `GenerationTierResponse`, the aspect ratios the tier's model can be asked for
+- Add the `SeclaiApiVersion.V2026_11_08`, `V2026_11_09`, `V2026_11_14` and `V2026_11_19` constants, so those versions are accepted as `ApiVersion`
+
 ## [1.8.0] - 2026-11-05
 
 ### Changed
@@ -281,6 +297,7 @@ _Stable release. Packaging only; no API changes since 0.0.1._
 
 _Initial release._
 
+[1.9.0]: https://github.com/seclai/seclai-csharp/releases/tag/1.9.0
 [1.8.0]: https://github.com/seclai/seclai-csharp/releases/tag/1.8.0
 [1.7.0]: https://github.com/seclai/seclai-csharp/releases/tag/1.7.0
 [1.6.0]: https://github.com/seclai/seclai-csharp/releases/tag/1.6.0

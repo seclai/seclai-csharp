@@ -396,6 +396,32 @@ public sealed class SeclaiClientTests
     }
 
     [Fact]
+    public async Task RunStreamingAgentAndWait_DoesNotAskForCommentary()
+    {
+        var sent = new List<string>();
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            sent.Add(req.Content!.ReadAsStringAsync().GetAwaiter().GetResult());
+            var sse = "event: done\n" +
+                "data: {\"run_id\":\"run_1\",\"status\":\"completed\",\"output\":\"ok\",\"attempts\":[],\"error_count\":0,\"priority\":false}\n\n";
+            return new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(sse, Encoding.UTF8, "text/event-stream") };
+        });
+        var client = MakeClient(handler);
+        var body = new AgentRunStreamRequest { Input = "hi", IncludeReasoning = true, IncludeCommentary = true };
+
+        await client.RunStreamingAgentAndWaitAsync("a", body);
+        await client.RunStreamingAgentAndWaitWithOptionsAsync("a", body, new RunStreamingAgentAndWaitOptions { ReturnOnResult = true });
+        await foreach (var _ in client.RunStreamingAgentAsync("a", body)) { }
+
+        Assert.Equal("{\"input\":\"hi\"}", sent[0]);
+        Assert.Equal("{\"input\":\"hi\"}", sent[1]);
+        // RunStreamingAgentAsync yields every event, so it sends both fields as set.
+        Assert.Equal("{\"input\":\"hi\",\"include_reasoning\":true,\"include_commentary\":true}", sent[2]);
+        Assert.True(body.IncludeCommentary);
+        Assert.True(body.IncludeReasoning);
+    }
+
+    [Fact]
     public async Task RunStreamingAgentAndWait_TimesOut()
     {
         var handler = new FakeHttpMessageHandler(_ =>
@@ -1021,6 +1047,146 @@ public sealed class SeclaiClientTests
         var client = MakeClient(handler);
         using var res = await client.DownloadAgentRunAttachmentAsync("run1", "att1", "report.pdf");
         Assert.Equal("file-bytes", await res.Content.ReadAsStringAsync());
+    }
+
+    [Theory]
+    [InlineData(5L, null, null, "bytes=5-")]
+    [InlineData(0L, 99L, null, "bytes=0-99")]
+    [InlineData(7L, 7L, null, "bytes=7-7")]
+    [InlineData(null, null, 500L, "bytes=-500")]
+    public async Task DownloadAgentRunAttachmentWithOptions_SendsRangeHeader(long? start, long? end, long? suffix, string expected)
+    {
+        string? range = null;
+        string? pathAndQuery = null;
+        var client = MakeClient(new FakeHttpMessageHandler(req =>
+        {
+            range = req.Headers.TryGetValues("Range", out var v) ? string.Join(",", v) : null;
+            pathAndQuery = req.RequestUri!.PathAndQuery;
+            return new HttpResponseMessage(HttpStatusCode.OK) { Content = new ByteArrayContent(Array.Empty<byte>()) };
+        }));
+        using var res = await client.DownloadAgentRunAttachmentWithOptionsAsync("run1", "att1",
+            new DownloadAgentRunAttachmentOptions { DownloadName = "a.pdf", RangeStart = start, RangeEnd = end, RangeSuffix = suffix });
+        Assert.Equal(expected, range);
+        Assert.Equal("/v2/agent-runs/run1/attachments/att1?download_name=a.pdf", pathAndQuery);
+    }
+
+    [Fact]
+    public async Task DownloadAgentRunAttachment_SendsNoRangeHeaderWhenUnset()
+    {
+        var requests = new List<(string PathAndQuery, bool HasRange)>();
+        var client = MakeClient(new FakeHttpMessageHandler(req =>
+        {
+            requests.Add((req.RequestUri!.PathAndQuery, req.Headers.Contains("Range")));
+            return new HttpResponseMessage(HttpStatusCode.OK) { Content = new ByteArrayContent(Array.Empty<byte>()) };
+        }));
+        (await client.DownloadAgentRunAttachmentAsync("r1", "att1")).Dispose();
+        (await client.DownloadAgentRunAttachmentAsync("r1", "att1", "a.pdf")).Dispose();
+        (await client.DownloadAgentRunAttachmentWithOptionsAsync("r1", "att1", default)).Dispose();
+        (await client.DownloadAgentRunAttachmentWithOptionsAsync("r1", "att1", new DownloadAgentRunAttachmentOptions { DownloadName = "a.pdf" })).Dispose();
+        Assert.Equal(new[]
+        {
+            ("/v2/agent-runs/r1/attachments/att1", false),
+            ("/v2/agent-runs/r1/attachments/att1?download_name=a.pdf", false),
+            ("/v2/agent-runs/r1/attachments/att1", false),
+            ("/v2/agent-runs/r1/attachments/att1?download_name=a.pdf", false),
+        }, requests);
+    }
+
+    public static IEnumerable<object?[]> InvalidRanges() => new[]
+    {
+        new object?[] { null, 10L, null },      // end without start
+        new object?[] { 0L, null, 5L },         // suffix with start
+        new object?[] { null, 10L, 5L },        // suffix with end
+        new object?[] { 0L, 10L, 5L },          // suffix with start and end
+        new object?[] { -1L, null, null },      // negative start
+        new object?[] { -5L, 10L, null },       // negative start with end
+        new object?[] { 0L, -1L, null },        // negative end
+        new object?[] { 10L, 9L, null },        // end before start
+        new object?[] { null, null, 0L },       // zero suffix
+        new object?[] { null, null, -3L },      // negative suffix
+    };
+
+    [Theory]
+    [MemberData(nameof(InvalidRanges))]
+    public async Task DownloadAgentRunAttachmentWithOptions_InvalidRangeThrowsBeforeSending(long? start, long? end, long? suffix)
+    {
+        var sent = 0;
+        var client = MakeClient(new FakeHttpMessageHandler(_ =>
+        {
+            sent++;
+            return new HttpResponseMessage(HttpStatusCode.OK);
+        }));
+        var ex = await Assert.ThrowsAsync<ArgumentException>(() => client.DownloadAgentRunAttachmentWithOptionsAsync("r1", "att1",
+            new DownloadAgentRunAttachmentOptions { RangeStart = start, RangeEnd = end, RangeSuffix = suffix }));
+        Assert.Equal("options", ex.ParamName);
+        Assert.Equal(0, sent);
+    }
+
+    [Fact]
+    public async Task DownloadAgentRunAttachmentWithOptions_ReturnsPartialContent()
+    {
+        var client = MakeClient(new FakeHttpMessageHandler(_ =>
+        {
+            var res = new HttpResponseMessage(HttpStatusCode.PartialContent) { Content = new ByteArrayContent(Encoding.UTF8.GetBytes("ile")) };
+            res.Content.Headers.ContentRange = new System.Net.Http.Headers.ContentRangeHeaderValue(1, 3, 10);
+            res.Headers.AcceptRanges.Add("bytes");
+            return res;
+        }));
+        using var res = await client.DownloadAgentRunAttachmentWithOptionsAsync("r1", "att1", new DownloadAgentRunAttachmentOptions { RangeStart = 1, RangeEnd = 3 });
+        Assert.Equal(HttpStatusCode.PartialContent, res.StatusCode);
+        Assert.Equal("bytes 1-3/10", res.Content.Headers.ContentRange!.ToString());
+        Assert.Equal("ile", await res.Content.ReadAsStringAsync());
+    }
+
+    [Fact]
+    public async Task DownloadAgentRunAttachmentWithOptions_RangeNotSatisfiableThrowsApiException()
+    {
+        var client = MakeClient(new FakeHttpMessageHandler(_ =>
+        {
+            var res = new HttpResponseMessage(HttpStatusCode.RequestedRangeNotSatisfiable)
+            {
+                Content = new StringContent("{\"detail\":\"Requested range not satisfiable\"}", Encoding.UTF8, "application/json"),
+            };
+            res.Content.Headers.ContentRange = new System.Net.Http.Headers.ContentRangeHeaderValue(10);
+            return res;
+        }));
+        var ex = await Assert.ThrowsAnyAsync<ApiException>(() => client.DownloadAgentRunAttachmentWithOptionsAsync("r1", "att1", new DownloadAgentRunAttachmentOptions { RangeStart = 10 }));
+        Assert.Equal(HttpStatusCode.RequestedRangeNotSatisfiable, ex.StatusCode);
+        Assert.Contains("not satisfiable", ex.ResponseBody);
+    }
+
+    [Fact]
+    public async Task DownloadAgentRunAttachment_ReleasedCallShapesBindToTheOriginalMethod()
+    {
+        // Each call shape 1.8.0 accepted must still compile and send what it sent before: the range
+        // options are on a separately named method, so no argument (null, default) can bind to them.
+        var requests = new List<(string PathAndQuery, bool HasRange)>();
+        var client = MakeClient(new FakeHttpMessageHandler(req =>
+        {
+            requests.Add((req.RequestUri!.PathAndQuery, req.Headers.Contains("Range")));
+            return new HttpResponseMessage(HttpStatusCode.OK) { Content = new ByteArrayContent(Array.Empty<byte>()) };
+        }));
+        using var cts = new CancellationTokenSource();
+        Func<string, string, string?, CancellationToken, Task<HttpResponseMessage>> released = client.DownloadAgentRunAttachmentAsync;
+        (await client.DownloadAgentRunAttachmentAsync("r1", "att1")).Dispose();
+        (await client.DownloadAgentRunAttachmentAsync("r1", "att1", null)).Dispose();
+        (await client.DownloadAgentRunAttachmentAsync("r1", "att1", "name")).Dispose();
+        (await client.DownloadAgentRunAttachmentAsync("r1", "att1", null, cts.Token)).Dispose();
+        (await client.DownloadAgentRunAttachmentAsync("r1", "att1", downloadName: null)).Dispose();
+        (await client.DownloadAgentRunAttachmentAsync("r1", "att1", default)).Dispose();
+        (await client.DownloadAgentRunAttachmentAsync("r1", "att1", default, cts.Token)).Dispose();
+        (await released("r1", "att1", "name", cts.Token)).Dispose();
+        Assert.Equal(new[]
+        {
+            ("/v2/agent-runs/r1/attachments/att1", false),
+            ("/v2/agent-runs/r1/attachments/att1", false),
+            ("/v2/agent-runs/r1/attachments/att1?download_name=name", false),
+            ("/v2/agent-runs/r1/attachments/att1", false),
+            ("/v2/agent-runs/r1/attachments/att1", false),
+            ("/v2/agent-runs/r1/attachments/att1", false),
+            ("/v2/agent-runs/r1/attachments/att1", false),
+            ("/v2/agent-runs/r1/attachments/att1?download_name=name", false),
+        }, requests);
     }
 
     // ── Agent AI Assistant ──────────────────────────────────────────────────
@@ -2227,6 +2393,63 @@ public sealed class SeclaiClientTests
         Assert.True(callCount >= 2); // at least the initial POST + 1 GET
     }
 
+    [Fact]
+    public async Task RunAgentAndPoll_StopsOnCancelled()
+    {
+        var gets = 0;
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            if (req.Method == HttpMethod.Post)
+                return JsonResponse("{\"run_id\":\"r1\",\"status\":\"processing\",\"attempts\":[],\"error_count\":0,\"priority\":false}");
+            gets++;
+            return JsonResponse("{\"run_id\":\"r1\",\"status\":\"cancelled\",\"attempts\":[],\"error_count\":0,\"priority\":false}");
+        });
+        var res = await MakeClient(handler).RunAgentAndPollAsync("a1", new AgentRunRequest { Input = "go" },
+            new RunAgentAndPollOptions { PollInterval = TimeSpan.FromMilliseconds(10), Timeout = TimeSpan.FromSeconds(5), ThrowOnIncomplete = true });
+        Assert.Equal("cancelled", res.Status);
+        Assert.Equal(1, gets);
+    }
+
+    [Fact]
+    public async Task RunAgentAndPoll_CancelledStartResponse_EndsAtOnceAndFetchesStepOutputs()
+    {
+        var gets = 0;
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            if (req.Method == HttpMethod.Post)
+                return JsonResponse("{\"run_id\":\"r1\",\"status\":\"cancelled\",\"attempts\":[],\"error_count\":0,\"priority\":false}");
+            gets++;
+            Assert.Equal("include_step_outputs=true", req.RequestUri!.Query.TrimStart('?'));
+            return JsonResponse("{\"run_id\":\"r1\",\"status\":\"cancelled\",\"steps\":[{\"step_id\":\"s1\"}],\"attempts\":[],\"error_count\":0,\"priority\":false}");
+        });
+        var res = await MakeClient(handler).RunAgentAndPollAsync("a1", new AgentRunRequest { Input = "go" },
+            new RunAgentAndPollOptions { PollInterval = TimeSpan.FromSeconds(30), Timeout = TimeSpan.FromSeconds(1), IncludeStepOutputs = true, ThrowOnIncomplete = true });
+        Assert.Equal(1, gets);
+        Assert.Equal("cancelled", res.Status);
+        Assert.Single(res.Steps!);
+
+        gets = 0;
+        res = await MakeClient(handler).RunAgentAndPollAsync("a1", new AgentRunRequest { Input = "go" },
+            new RunAgentAndPollOptions { PollInterval = TimeSpan.FromSeconds(30), Timeout = TimeSpan.FromSeconds(1), ThrowOnIncomplete = true });
+        Assert.Equal(0, gets);
+        Assert.Equal("cancelled", res.Status);
+    }
+
+    [Fact]
+    public async Task RunAgentAndPoll_KeepsPollingUnfinishedStatuses()
+    {
+        var statuses = new Queue<string>(new[] { "queued", "pending", "waiting_human", "waiting_scheduled", "completed" });
+        var handler = new FakeHttpMessageHandler(req =>
+        {
+            var status = req.Method == HttpMethod.Post ? "processing" : statuses.Dequeue();
+            return JsonResponse("{\"run_id\":\"r1\",\"status\":\"" + status + "\",\"attempts\":[],\"error_count\":0,\"priority\":false}");
+        });
+        var res = await MakeClient(handler).RunAgentAndPollAsync("a1", new AgentRunRequest { Input = "go" },
+            new RunAgentAndPollOptions { PollInterval = TimeSpan.FromMilliseconds(5), Timeout = TimeSpan.FromSeconds(5), ThrowOnIncomplete = true });
+        Assert.Equal("completed", res.Status);
+        Assert.Empty(statuses);
+    }
+
     // ── IDisposable ───────────────────────────────────────────────────────
 
     [Fact]
@@ -2910,6 +3133,20 @@ public sealed class SeclaiClientTests
     }
 
     [Fact]
+    public async Task TypedGetGenerationTiers_ReadsAspectRatios()
+    {
+        var handler = new FakeHttpMessageHandler(req => JsonResponse(
+            "{\"tiers\":[" +
+            "{\"modality\":\"image\",\"tier\":\"fast\",\"model_id\":\"m1\",\"model_name\":\"M1\",\"credits_per_unit\":2,\"unit_label\":null,\"price_label\":null,\"aspect_ratios\":[\"1:1\",\"16:9\"]}," +
+            "{\"modality\":\"audio\",\"tier\":\"fast\",\"model_id\":\"m2\",\"model_name\":\"M2\",\"credits_per_unit\":1,\"unit_label\":null,\"price_label\":null}" +
+            "]}"));
+        var res = await MakeClient(handler).Typed.GetGenerationTiersAsync();
+        Assert.Equal(new[] { "1:1", "16:9" }, res.Tiers[0].AspectRatios);
+        // Not required by the spec: a tier without it reads as null.
+        Assert.Null(res.Tiers[1].AspectRatios);
+    }
+
+    [Fact]
     public async Task SearchDocs_SetsQueryParams()
     {
         var handler = new FakeHttpMessageHandler(req =>
@@ -3180,9 +3417,10 @@ public sealed class SeclaiClientTests
                 SeclaiApiVersion.V2026_09_28, SeclaiApiVersion.V2026_09_30, SeclaiApiVersion.V2026_10_03, SeclaiApiVersion.V2026_10_05,
                 SeclaiApiVersion.V2026_10_13, SeclaiApiVersion.V2026_10_16, SeclaiApiVersion.V2026_10_18, SeclaiApiVersion.V2026_10_19,
                 SeclaiApiVersion.V2026_10_21, SeclaiApiVersion.V2026_10_28, SeclaiApiVersion.V2026_11_02, SeclaiApiVersion.V2026_11_04,
+                SeclaiApiVersion.V2026_11_08, SeclaiApiVersion.V2026_11_09, SeclaiApiVersion.V2026_11_14, SeclaiApiVersion.V2026_11_19,
             },
             SeclaiApiVersion.Known);
-        Assert.Equal(SeclaiApiVersion.V2026_11_04, SeclaiApiVersion.Latest);
+        Assert.Equal(SeclaiApiVersion.V2026_11_19, SeclaiApiVersion.Latest);
     }
 
     [Fact]
@@ -4269,6 +4507,9 @@ public sealed class SeclaiClientTests
         Assert.Contains("\"accepted_attachments\":[", JsonSerializer.Serialize(new UpdateAgentDefinitionRequest { AcceptedAttachments = slots }, o));
         Assert.DoesNotContain("include_reasoning", JsonSerializer.Serialize(new AgentRunStreamRequest { Input = "x" }, o));
         Assert.Contains("\"include_reasoning\":true", JsonSerializer.Serialize(new AgentRunStreamRequest { Input = "x", IncludeReasoning = true }, o));
+        Assert.DoesNotContain("include_commentary", JsonSerializer.Serialize(new AgentRunStreamRequest { Input = "x" }, o));
+        Assert.Contains("\"include_commentary\":true", JsonSerializer.Serialize(new AgentRunStreamRequest { Input = "x", IncludeCommentary = true }, o));
+        Assert.Contains("\"include_commentary\":false", JsonSerializer.Serialize(new AgentRunStreamRequest { Input = "x", IncludeCommentary = false }, o));
     }
 
     [Fact]
