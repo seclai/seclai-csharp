@@ -143,7 +143,7 @@ Leave `ApiVersion` unset and the header is omitted, so the account's pinned
 baseline applies and responses keep their current shapes. Upgrading this package
 alone never changes the wire contract.
 
-Known versions are on `SeclaiApiVersion` (`V2026_07_01` through `V2026_10_28`,
+Known versions are on `SeclaiApiVersion` (`V2026_07_01` through `V2026_11_19`,
 plus `Default`, `Latest` and `Known`). A version this release was **not** built
 against is rejected with `ConfigurationException`: a newer version can reshape
 responses, and this client would decode them incorrectly rather than reject
@@ -229,7 +229,11 @@ every one:
 | `2026-10-21` | A result whose evaluator returned no verdict (`error`) is counted only in `Error` by `GetNonManualEvaluationSummaryAsync`, not in `Failed` or either rate, and `GetEvaluationCriteriaSummaryAsync` averages `AverageScore` over passed and failed results only. `TestDraftEvaluationAsync` receives a null score and verdict for an `error` result, which this client reads as `Score` 0 and `Passed` false (earlier versions send 0.5 and false), so check `Status` |
 | `2026-10-28` | An `if_else` or `switch` step's `AgentRunStepResponse.Output` is the result of the arm it took (its input when that arm is empty or it took none) rather than the decision object. The arm taken is in `AgentRunStepResponse.Decision` on every version |
 | `2026-11-02` | A definition or sampling-rule write (other than an import) that references a metadata key no trigger declares is refused (`UpdateAgentDefinitionAsync` answers 400); older versions declare each such key optional instead. Declare keys with `SetMetadataKeysAsync` |
-| `2026-11-04` | The API refuses the agent evaluation mode `eval_and_retry`, a new evaluation criterion `StepId` that does not name a result step (`display_result` or `streaming_result`), and `CreateEvaluationResultRequest.RetryTriggered = true`, each with a 400. Older versions store `eval_and_retry` as `sample_and_flag` and accept any step id |
+| `2026-11-04` | The API refuses the agent evaluation mode `eval_and_retry`, a new evaluation criterion `StepId` that does not name the step carrying `run_result`, and `CreateEvaluationResultRequest.RetryTriggered = true`, each with a 400. Older versions store `eval_and_retry` as `sample_and_flag` and accept any step id |
+| `2026-11-08` | A cancelled agent run (`CancelAgentRunAsync`, `CancelQueuedEmailRunsAsync`) ends with status `cancelled`; older versions show `failed`. `RunAgentAndPollAsync` stops on `cancelled` as on `completed` and `failed` |
+| `2026-11-09` | `ListAgentExamplesAsync`'s `query` describes what the agent should do, and entries are ranked by how well they match its words and meaning, best first; a query of several words that are all filler (such as "create an agent") counts as no query. Older versions list only entries containing every word |
+| `2026-11-14` | `RunAgentAsync`, `RunAgentAndPollAsync` and the streaming run methods refuse an agent whose definition fails to validate with a 409 and start no run; older versions return the run, already failed with the validation error as its cause |
+| `2026-11-19` | `CreateAlertConfigAsync` accepts the agent alert type `step_failure_continued` in `CreateAlertConfigRequest.AlertType` |
 
 ## Typed responses
 
@@ -441,6 +445,22 @@ foreach (var file in detail.Attachments)
 {
     using var attachment = await client.DownloadAgentRunAttachmentAsync("run1", file.Id, file.Name);
 }
+
+// Download part of one with a byte range, on every API version: RangeStart alone (bytes=start-),
+// RangeStart and RangeEnd, inclusive (bytes=start-end), or RangeSuffix alone for the last N bytes
+// (bytes=-N). Any other combination, a negative offset, an end before the start or a suffix below 1
+// throws ArgumentException before a request is sent.
+using var head = await client.DownloadAgentRunAttachmentWithOptionsAsync("run1", "att1",
+    new DownloadAgentRunAttachmentOptions { RangeStart = 0, RangeEnd = 1023 });
+// 206 PartialContent with Content-Range for a range of a non-empty file. A range on an empty file
+// is ignored and answered 200 with the whole (empty) file, so check the status. A range starting at
+// or past the end of a non-empty file is answered 416, which throws ApiException; the file size is
+// then in its Content-Range header (bytes */52341), when the server sends one:
+//   ex.Headers.TryGetValue("Content-Range", out var cr) ? cr[0] : null
+if (head.StatusCode == HttpStatusCode.PartialContent)
+{
+    Console.WriteLine(head.Content.Headers.ContentRange);   // bytes 0-1023/52341
+}
 ```
 
 ### Streaming
@@ -448,15 +468,17 @@ foreach (var file in detail.Attachments)
 ```csharp
 // SSE streaming — yields AgentRunEvent items as they arrive
 await foreach (var evt in client.RunStreamingAgentAsync("ag1",
-    new AgentRunStreamRequest { Input = "hello", IncludeReasoning = true }))
+    new AgentRunStreamRequest { Input = "hello", IncludeReasoning = true, IncludeCommentary = true }))
 {
-    // "stream_reasoning" events carry the model's reasoning for a streaming_result
-    // step whose author enabled show_reasoning; read evt.Data for those.
+    // "stream_reasoning" events carry the model's reasoning for a prompt_call step whose
+    // run_result enables show_reasoning. "stream_commentary" events carry the text a model on
+    // OpenAI's Responses API writes outside its final answer (phase, message, text), for a
+    // prompt_call whose run_result enables show_commentary. Read evt.Data for both.
     Console.WriteLine($"[{evt.Event}] {evt.Run?.Status}");
 }
 
 // Wait for the done event of the SSE stream. It reads only the init, result and done
-// events, so it does not send IncludeReasoning.
+// events, so it does not send IncludeReasoning or IncludeCommentary.
 var final = await client.RunStreamingAgentAndWaitAsync("ag1",
     new AgentRunStreamRequest { Input = "hello" },
     timeout: TimeSpan.FromSeconds(120));
@@ -874,7 +896,7 @@ var rejections = await client.ListInboundEmailRejectionsAsync(agentId: "a1");
 
 // Account-wide overload circuit breaker
 var status = await client.GetInboundEmailStatusAsync();
-await client.CancelQueuedEmailRunsAsync();   // fail all QUEUED (over-quota parked) runs
+await client.CancelQueuedEmailRunsAsync();   // cancel all QUEUED (over-quota parked) runs
 await client.ResumeInboundEmailAsync();      // one-shot; re-arms if still overloaded
 ```
 

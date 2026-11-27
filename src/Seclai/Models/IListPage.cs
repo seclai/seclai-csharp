@@ -35,15 +35,19 @@ internal sealed class ListShape
 /// <summary>A successful response as received: where it came from and its text, not yet parsed.</summary>
 internal readonly struct RawResponse
 {
-    public RawResponse(Uri url, string? text)
+    public RawResponse(Uri url, string? text, IReadOnlyDictionary<string, IReadOnlyList<string>>? headers = null)
     {
         Url = url;
         Text = text;
+        Headers = headers;
     }
 
     public Uri Url { get; }
 
     public string? Text { get; }
+
+    /// <summary>The response headers, for an error built from this response; null when unknown.</summary>
+    public IReadOnlyDictionary<string, IReadOnlyList<string>>? Headers { get; }
 
     /// <summary>The body as JSON. An empty body is an undefined element; text that is not JSON throws <see cref="JsonException"/>.</summary>
     public JsonElement ToJson()

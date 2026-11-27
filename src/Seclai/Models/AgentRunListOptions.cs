@@ -10,6 +10,6 @@ public struct AgentRunListOptions
     /// <summary>Items per page (server default 50).</summary>
     public int? Limit { get; set; }
 
-    /// <summary>Only runs in this status: <c>pending</c>, <c>processing</c>, <c>completed</c> or <c>failed</c>.</summary>
+    /// <summary>Only runs in this status: <c>pending</c>, <c>processing</c>, <c>queued</c>, <c>waiting_human</c>, <c>waiting_scheduled</c>, <c>completed</c>, <c>failed</c> or <c>cancelled</c> (reported from API version <c>2026-11-08</c>).</summary>
     public string? Status { get; set; }
 }

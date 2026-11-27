@@ -91,7 +91,7 @@ public sealed class AgentRunResponse
 
     /// <summary>
     /// When the run reported success (ISO 8601): for an agent whose <c>report_success</c> is <c>on_result</c>, once
-    /// its result step published, or once its run started if it has no result step; otherwise when the run completed.
+    /// the step carrying <c>run_result</c> published, or once its run started if no step carries it; otherwise when the run completed.
     /// From then on <see cref="Output"/> is the run's answer and never changes, so stop polling here if you only need
     /// the answer. <see cref="Status"/> still follows every step, so a run can report success and later fail.
     /// Null until the run reports, for a run that failed before reporting, and for runs that ended before this field existed.
