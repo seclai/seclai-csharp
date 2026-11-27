@@ -1156,6 +1156,95 @@ public sealed class SeclaiClientTests
     }
 
     [Fact]
+    public async Task DownloadAgentRunAttachmentWithOptions_RangeNotSatisfiableCarriesContentRangeOnTheError()
+    {
+        // Content-Range is a content header in .NET, so it reaches Headers only because content headers are merged in.
+        var client = MakeClient(new FakeHttpMessageHandler(_ =>
+        {
+            var res = new HttpResponseMessage(HttpStatusCode.RequestedRangeNotSatisfiable)
+            {
+                Content = new StringContent("{\"detail\":\"Requested range not satisfiable\"}", Encoding.UTF8, "application/json"),
+            };
+            res.Content.Headers.ContentRange = new System.Net.Http.Headers.ContentRangeHeaderValue(52341);
+            res.Headers.Add("X-Request-Id", "req-1");
+            return res;
+        }));
+        var ex = await Assert.ThrowsAnyAsync<ApiException>(() => client.DownloadAgentRunAttachmentWithOptionsAsync("r1", "att1", new DownloadAgentRunAttachmentOptions { RangeStart = 60000 }));
+        Assert.Equal(new[] { "bytes */52341" }, ex.Headers["Content-Range"]);
+        Assert.Equal(new[] { "bytes */52341" }, ex.Headers["content-range"]);
+        Assert.Equal(new[] { "req-1" }, ex.Headers["x-request-id"]);
+    }
+
+    [Fact]
+    public async Task JsonRequestError_CarriesRetryAfterOnTheError()
+    {
+        var client = MakeClient(new FakeHttpMessageHandler(_ =>
+        {
+            var res = new HttpResponseMessage(HttpStatusCode.ServiceUnavailable) { Content = new StringContent("busy") };
+            res.Headers.Add("Retry-After", "30");
+            return res;
+        }));
+        var ex = await Assert.ThrowsAsync<ApiException>(() => client.GetAgentAsync("a1"));
+        Assert.Equal(HttpStatusCode.ServiceUnavailable, ex.StatusCode);
+        Assert.Equal(new[] { "30" }, ex.Headers["retry-after"]);
+    }
+
+    [Fact]
+    public async Task ValidationError_CarriesHeadersOnTheError()
+    {
+        var client = MakeClient(new FakeHttpMessageHandler(_ =>
+        {
+            var res = new HttpResponseMessage((HttpStatusCode)422)
+            {
+                Content = new StringContent("{\"detail\":[{\"loc\":[\"query\",\"page\"],\"msg\":\"bad\",\"type\":\"value_error\"}]}", Encoding.UTF8, "application/json"),
+            };
+            res.Headers.Add("X-Request-Id", "req-422");
+            return res;
+        }));
+        var ex = await Assert.ThrowsAsync<ApiValidationException>(() => client.ListSourcesAsync(page: 0));
+        Assert.NotNull(ex.Validation);
+        Assert.Equal(new[] { "req-422" }, ex.Headers["X-REQUEST-ID"]);
+        Assert.Equal(new[] { "application/json; charset=utf-8" }, ex.Headers["Content-Type"]);
+    }
+
+    [Fact]
+    public async Task StreamingRunError_CarriesHeadersOnTheError()
+    {
+        var client = MakeClient(new FakeHttpMessageHandler(_ =>
+        {
+            var res = new HttpResponseMessage((HttpStatusCode)429) { Content = new StringContent("slow down") };
+            res.Headers.Add("Retry-After", "5");
+            return res;
+        }));
+        var ex = await Assert.ThrowsAsync<ApiException>(async () =>
+        {
+            await foreach (var _ in client.RunStreamingAgentAsync("a1", new AgentRunStreamRequest { Input = "hi" })) { }
+        });
+        Assert.Equal(new[] { "5" }, ex.Headers["Retry-After"]);
+    }
+
+    [Fact]
+    public void ApiException_HeadersAreACaseInsensitiveCopyAndNeverNull()
+    {
+        var url = new Uri("https://example.test/x");
+        Assert.Empty(new ApiException(HttpStatusCode.BadGateway, "GET", url, null).Headers);
+        Assert.Empty(new ApiException(HttpStatusCode.BadGateway, "GET", url, null, null).Headers);
+        Assert.Empty(new ApiValidationException((HttpStatusCode)422, "GET", url, null, null).Headers);
+
+        // A caller's ordinal dictionary: names differing only in case are combined, and lookups ignore case.
+        var source = new Dictionary<string, IReadOnlyList<string>>
+        {
+            ["Retry-After"] = new[] { "30" },
+            ["retry-after"] = new[] { "31" },
+        };
+        var ex = new ApiException(HttpStatusCode.ServiceUnavailable, "GET", url, null, source);
+        source.Clear();
+        Assert.Single(ex.Headers);
+        Assert.Equal(new[] { "30", "31" }, ex.Headers["RETRY-AFTER"]);
+        Assert.Equal(new[] { "30", "31" }, new ApiValidationException((HttpStatusCode)422, "GET", url, null, null, ex.Headers).Headers["retry-after"]);
+    }
+
+    [Fact]
     public async Task DownloadAgentRunAttachment_ReleasedCallShapesBindToTheOriginalMethod()
     {
         // Each call shape 1.8.0 accepted must still compile and send what it sent before: the range

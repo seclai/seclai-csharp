@@ -355,6 +355,13 @@ public sealed class GatedListTests
     }
 
     [Fact]
+    public async Task NotAListCarriesTheResponseHeaders()
+    {
+        var ex = await Assert.ThrowsAsync<ApiException>(() => ClientReturning("{\"detail\":\"x\"}").ListKnowledgeBasesAsync());
+        Assert.Equal(new[] { "application/json; charset=utf-8" }, ex.Headers["content-type"]);
+    }
+
+    [Fact]
     public async Task TypedListMethods_ReportANonJsonBodyAsReceived()
     {
         const string body = "<html>Bad gateway</html>";

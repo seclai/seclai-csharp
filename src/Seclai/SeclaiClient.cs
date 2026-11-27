@@ -282,7 +282,7 @@ public sealed class SeclaiClient : IDisposable
             if (!resp.IsSuccessStatusCode)
             {
                 var responseBody = await ReadBodyAsync(resp).ConfigureAwait(false);
-                throw CreateApiError(resp.StatusCode, req.Method.Method, url, responseBody);
+                throw CreateApiError(resp.StatusCode, req.Method.Method, url, responseBody, ResponseHeaders(resp));
             }
 
             var mediaType = resp.Content.Headers.ContentType?.MediaType ?? string.Empty;
@@ -852,7 +852,7 @@ public sealed class SeclaiClient : IDisposable
 
         if (!resp.IsSuccessStatusCode)
         {
-            throw CreateApiError(resp.StatusCode, method.Method, url, responseBody);
+            throw CreateApiError(resp.StatusCode, method.Method, url, responseBody, ResponseHeaders(resp));
         }
 
         if (!expectBody)
@@ -863,7 +863,7 @@ public sealed class SeclaiClient : IDisposable
         var parsed = JsonSerializer.Deserialize<T>(responseBody ?? string.Empty, JsonOptions);
         if (parsed is null)
         {
-            throw new ApiException(resp.StatusCode, method.Method, url, responseBody);
+            throw new ApiException(resp.StatusCode, method.Method, url, responseBody, ResponseHeaders(resp));
         }
         return parsed;
     }
@@ -913,7 +913,7 @@ public sealed class SeclaiClient : IDisposable
         }
         catch (JsonException)
         {
-            throw NotAList(method, response.Url, response.Text);
+            throw NotAList(method, response.Url, response.Text, response.Headers);
         }
         var items = ListElement(raw, legacyKey, method, response, out shape);
         return items.Deserialize<List<TItem>>(JsonOptions) ?? new List<TItem>();
@@ -924,7 +924,7 @@ public sealed class SeclaiClient : IDisposable
     {
         shape = new ListShape();
         if (raw.ValueKind == JsonValueKind.Array) return raw;
-        if (raw.ValueKind != JsonValueKind.Object) throw NotAList(method, response.Url, response.Text);
+        if (raw.ValueKind != JsonValueKind.Object) throw NotAList(method, response.Url, response.Text, response.Headers);
 
         var hasPaging = raw.TryGetProperty("pagination", out var paging) && paging.ValueKind == JsonValueKind.Object;
         if (hasPaging) shape.Pagination = paging.Deserialize<PaginationResponse>(JsonOptions);
@@ -947,7 +947,7 @@ public sealed class SeclaiClient : IDisposable
             shape.FromData = true;
             return EmptyArray;
         }
-        throw NotAList(method, response.Url, response.Text);
+        throw NotAList(method, response.Url, response.Text, response.Headers);
     }
 
     private static readonly JsonElement EmptyArray = JsonDocument.Parse("[]").RootElement.Clone();
@@ -960,11 +960,11 @@ public sealed class SeclaiClient : IDisposable
         return null;
     }
 
-    private static ApiException NotAList(string method, Uri url, string? responseBody)
+    private static ApiException NotAList(string method, Uri url, string? responseBody, IReadOnlyDictionary<string, IReadOnlyList<string>>? headers)
     {
         var message = $"seclai: expected a list from {method} {url}: an array, or an object carrying the items under `data` or the endpoint's own key."
             + (string.IsNullOrWhiteSpace(responseBody) ? " The response body was empty." : $" Got: {responseBody}");
-        return new ApiException(message, HttpStatusCode.OK, method, url, responseBody);
+        return new ApiException(message, HttpStatusCode.OK, method, url, responseBody, headers);
     }
 
     /// <summary>
@@ -983,6 +983,7 @@ public sealed class SeclaiClient : IDisposable
         if (resp.IsSuccessStatusCode) return resp;
 
         var status = resp.StatusCode;
+        var headers = ResponseHeaders(resp);
         string? responseBody;
         try
         {
@@ -992,7 +993,7 @@ public sealed class SeclaiClient : IDisposable
         {
             resp.Dispose();
         }
-        throw CreateApiError(status, method.Method, url, responseBody);
+        throw CreateApiError(status, method.Method, url, responseBody, headers);
     }
 
     private async Task SendNoContentAsync(HttpMethod method, string path, Dictionary<string, string?>? query, object? body, CancellationToken cancellationToken)
@@ -1013,7 +1014,7 @@ public sealed class SeclaiClient : IDisposable
         if (!resp.IsSuccessStatusCode)
         {
             var responseBody = await ReadBodyAsync(resp).ConfigureAwait(false);
-            throw CreateApiError(resp.StatusCode, method.Method, url, responseBody);
+            throw CreateApiError(resp.StatusCode, method.Method, url, responseBody, ResponseHeaders(resp));
         }
     }
 
@@ -1040,13 +1041,13 @@ public sealed class SeclaiClient : IDisposable
 
         if (!resp.IsSuccessStatusCode)
         {
-            throw CreateApiError(resp.StatusCode, method.Method, url, responseBody);
+            throw CreateApiError(resp.StatusCode, method.Method, url, responseBody, ResponseHeaders(resp));
         }
 
-        return new RawResponse(url, responseBody);
+        return new RawResponse(url, responseBody, ResponseHeaders(resp));
     }
 
-    private static ApiException CreateApiError(HttpStatusCode statusCode, string method, Uri url, string? responseBody)
+    private static ApiException CreateApiError(HttpStatusCode statusCode, string method, Uri url, string? responseBody, IReadOnlyDictionary<string, IReadOnlyList<string>> headers)
     {
         if ((int)statusCode == 422)
         {
@@ -1071,9 +1072,27 @@ public sealed class SeclaiClient : IDisposable
             {
                 // ignore parse issues
             }
-            return new ApiValidationException(statusCode, method, url, responseBody, validation);
+            return new ApiValidationException(statusCode, method, url, responseBody, validation, headers);
         }
-        return new ApiException(statusCode, method, url, responseBody);
+        return new ApiException(statusCode, method, url, responseBody, headers);
+    }
+
+    // The response headers and the content headers (Content-Range, Content-Type, ...) in one case-insensitive map.
+    // HttpClient keeps content headers apart from response headers, so both are read.
+    private static IReadOnlyDictionary<string, IReadOnlyList<string>> ResponseHeaders(HttpResponseMessage resp)
+    {
+        var headers = new Dictionary<string, IReadOnlyList<string>>(StringComparer.OrdinalIgnoreCase);
+        void Add(System.Net.Http.Headers.HttpHeaders source)
+        {
+            foreach (var kv in source)
+            {
+                var values = headers.TryGetValue(kv.Key, out var existing) ? existing.Concat(kv.Value) : kv.Value;
+                headers[kv.Key] = values.ToList();
+            }
+        }
+        Add(resp.Headers);
+        if (resp.Content is not null) Add(resp.Content.Headers);
+        return headers;
     }
 
     private Uri BuildUri(string path, Dictionary<string, string?>? query, Dictionary<string, IEnumerable<string>?>? repeatedQuery = null)
@@ -2098,7 +2117,8 @@ public sealed class SeclaiClient : IDisposable
     /// of a non-empty file. A range on an empty file is ignored and answered with <c>200</c> and
     /// the whole (empty) file, so check <see cref="HttpResponseMessage.StatusCode"/> before treating the body as
     /// the requested range. A range that starts at or past the end of a non-empty file is answered with <c>416</c>,
-    /// which throws <see cref="ApiException"/> like any other error status. Every <c>200</c> and <c>206</c>
+    /// which throws <see cref="ApiException"/> like any other error status; the file size is then in the error's
+    /// <c>Content-Range: bytes */size</c> header, read from <see cref="ApiException.Headers"/>. Every <c>200</c> and <c>206</c>
     /// carries <c>Accept-Ranges: bytes</c> and <c>Content-Length</c>. This applies on every API version.
     /// </remarks>
     /// <param name="runId">Run identifier.</param>
@@ -3210,7 +3230,7 @@ public sealed class SeclaiClient : IDisposable
         if (!resp.IsSuccessStatusCode)
         {
             var responseBody = await ReadBodyAsync(resp).ConfigureAwait(false);
-            throw CreateApiError(resp.StatusCode, req.Method.Method, url, responseBody);
+            throw CreateApiError(resp.StatusCode, req.Method.Method, url, responseBody, ResponseHeaders(resp));
         }
 
         // If the server returns JSON instead of SSE, emit a single done event.
@@ -3417,7 +3437,7 @@ public sealed class SeclaiClient : IDisposable
 
         if (!resp.IsSuccessStatusCode)
         {
-            throw CreateApiError(resp.StatusCode, req.Method.Method, url, responseBody);
+            throw CreateApiError(resp.StatusCode, req.Method.Method, url, responseBody, ResponseHeaders(resp));
         }
 
         return responseBody ?? string.Empty;
