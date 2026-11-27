@@ -455,7 +455,8 @@ using var head = await client.DownloadAgentRunAttachmentWithOptionsAsync("run1",
 // 206 PartialContent with Content-Range for a range of a non-empty file. A range on an empty file
 // is ignored and answered 200 with the whole (empty) file, so check the status. A range starting at
 // or past the end of a non-empty file is answered 416, which throws ApiException; the file size is
-// then in its Content-Range header (bytes */52341): ex.Headers["Content-Range"].
+// then in its Content-Range header (bytes */52341), when the server sends one:
+//   ex.Headers.TryGetValue("Content-Range", out var cr) ? cr[0] : null
 if (head.StatusCode == HttpStatusCode.PartialContent)
 {
     Console.WriteLine(head.Content.Headers.ContentRange);   // bytes 0-1023/52341
