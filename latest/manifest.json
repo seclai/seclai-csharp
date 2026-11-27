@@ -32,7 +32,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "Seclai.Exceptions.ApiException",
-      "Summary": "<p sourcefile=\"build/api/Seclai.Exceptions.ApiException.yml\" sourcestartlinenumber=\"1\">Thrown when the Seclai API returns a non-success HTTP status code, or a successful\nresponse whose body is not what the method reads (a list method given a non-list).\nContains the status code, HTTP method, request URL, and raw response body.</p>\n"
+      "Summary": "<p sourcefile=\"build/api/Seclai.Exceptions.ApiException.yml\" sourcestartlinenumber=\"1\">Thrown when the Seclai API returns a non-success HTTP status code, or a successful\nresponse whose body is not what the method reads (a list method given a non-list).\nContains the status code, HTTP method, request URL, raw response body, and response headers.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -1391,6 +1391,20 @@
       "IsMRef": true,
       "Title": "Seclai.Models.DocsSearchResultResponse",
       "Summary": null
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "build/api/Seclai.Models.DownloadAgentRunAttachmentOptions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Seclai.Models.DownloadAgentRunAttachmentOptions.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "Seclai.Models.DownloadAgentRunAttachmentOptions",
+      "Summary": "<p sourcefile=\"build/api/Seclai.Models.DownloadAgentRunAttachmentOptions.yml\" sourcestartlinenumber=\"1\">Options for <xref href=\"Seclai.SeclaiClient.DownloadAgentRunAttachmentWithOptionsAsync(System.String%2cSystem.String%2cSeclai.Models.DownloadAgentRunAttachmentOptions%2cSystem.Threading.CancellationToken)\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -3482,11 +3496,11 @@
       "type": "Toc",
       "source_relative_path": "build/api/toc.yml",
       "output": {
-        ".json": {
-          "relative_path": "api/toc.json"
-        },
         ".html": {
           "relative_path": "api/toc.html"
+        },
+        ".json": {
+          "relative_path": "api/toc.json"
         }
       },
       "version": ""
@@ -3505,11 +3519,11 @@
       "type": "Toc",
       "source_relative_path": "docs/toc.yml",
       "output": {
-        ".json": {
-          "relative_path": "toc.json"
-        },
         ".html": {
           "relative_path": "toc.html"
+        },
+        ".json": {
+          "relative_path": "toc.json"
         }
       },
       "version": ""

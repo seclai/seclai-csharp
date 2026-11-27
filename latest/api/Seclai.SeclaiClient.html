@@ -869,7 +869,7 @@ var typed = await client.Typed.SearchAsync("q");  // SearchResponse</code></pre>
 
   <a id="Seclai_SeclaiClient_CancelAgentRunAsync_" data-uid="Seclai.SeclaiClient.CancelAgentRunAsync*"></a>
   <h4 id="Seclai_SeclaiClient_CancelAgentRunAsync_System_String_System_Threading_CancellationToken_" data-uid="Seclai.SeclaiClient.CancelAgentRunAsync(System.String,System.Threading.CancellationToken)">CancelAgentRunAsync(string, CancellationToken)</h4>
-  <div class="markdown level1 summary"><p>Cancels an in-progress agent run.</p>
+  <div class="markdown level1 summary"><p>Cancels an agent run that has not ended.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="declaration">Declaration</h5>
@@ -915,8 +915,13 @@ var typed = await client.Typed.SearchAsync("q");  // SearchResponse</code></pre>
   </table>
   <h5 id="Seclai_SeclaiClient_CancelAgentRunAsync_System_String_System_Threading_CancellationToken__remarks">Remarks</h5>
   <div class="markdown level1 remarks"><p>Cancellation is DELETE on the run resource — the API exposes no
-POST .../cancel route, and no operation that deletes a run. Rejected when
-the run has already reached a terminal state.</p>
+POST .../cancel route, and no operation that deletes a run. A run that is
+<code>queued</code>, <code>pending</code>, <code>processing</code>, <code>waiting_human</code> or <code>waiting_scheduled</code>
+can be cancelled; one that has ended (<code>completed</code>, <code>failed</code> or <code>cancelled</code>) is rejected.
+The run ends with status <code>cancelled</code> from API version <code>2026-11-08</code>
+(<a class="xref" href="Seclai.SeclaiApiVersion.html#Seclai_SeclaiApiVersion_V2026_11_08">V2026_11_08</a>) and <code>failed</code> before it. A run started by another
+agent's <code>call_agent</code> step that is still waiting for it cancels the outermost such calling run instead,
+with every run below it that has not reported its result.</p>
 </div>
 
 
@@ -970,7 +975,7 @@ the run has already reached a terminal state.</p>
 
   <a id="Seclai_SeclaiClient_CancelQueuedEmailRunsAsync_" data-uid="Seclai.SeclaiClient.CancelQueuedEmailRunsAsync*"></a>
   <h4 id="Seclai_SeclaiClient_CancelQueuedEmailRunsAsync_System_Threading_CancellationToken_" data-uid="Seclai.SeclaiClient.CancelQueuedEmailRunsAsync(System.Threading.CancellationToken)">CancelQueuedEmailRunsAsync(CancellationToken)</h4>
-  <div class="markdown level1 summary"><p>Fails all of the account's QUEUED (over-quota parked) inbound-email runs. Requires an account owner or admin.</p>
+  <div class="markdown level1 summary"><p>Cancels all of the account's QUEUED (over-quota parked) inbound-email runs. Each ends <code>cancelled</code> from API version <code>2026-11-08</code> and <code>failed</code> before it. Requires an account owner or admin.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="declaration">Declaration</h5>
@@ -2873,7 +2878,7 @@ while preserving audit history.</p>
 
   <a id="Seclai_SeclaiClient_DownloadAgentRunAttachmentAsync_" data-uid="Seclai.SeclaiClient.DownloadAgentRunAttachmentAsync*"></a>
   <h4 id="Seclai_SeclaiClient_DownloadAgentRunAttachmentAsync_System_String_System_String_System_String_System_Threading_CancellationToken_" data-uid="Seclai.SeclaiClient.DownloadAgentRunAttachmentAsync(System.String,System.String,System.String,System.Threading.CancellationToken)">DownloadAgentRunAttachmentAsync(string, string, string?, CancellationToken)</h4>
-  <div class="markdown level1 summary"><p>Downloads a file attachment emitted by a step in an agent run. Returns the raw HTTP
+  <div class="markdown level1 summary"><p>Downloads a file of an agent run, one a step emitted or one the run started with. Returns the raw HTTP
 response so the caller can stream the body. The caller must dispose the returned
 <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.net.http.httpresponsemessage">HttpResponseMessage</a>.</p>
 </div>
@@ -2931,6 +2936,101 @@ URL-safe-base64-encoded storage key that webhook and email links carry.</p>
       <tr>
         <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.net.http.httpresponsemessage">HttpResponseMessage</a>&gt;</td>
         <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="Seclai_SeclaiClient_DownloadAgentRunAttachmentAsync_System_String_System_String_System_String_System_Threading_CancellationToken__remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>To download part of the file, use
+<a class="xref" href="Seclai.SeclaiClient.html#Seclai_SeclaiClient_DownloadAgentRunAttachmentWithOptionsAsync_System_String_System_String_Seclai_Models_DownloadAgentRunAttachmentOptions_System_Threading_CancellationToken_">DownloadAgentRunAttachmentWithOptionsAsync(string, string, DownloadAgentRunAttachmentOptions, CancellationToken)</a>.</p>
+</div>
+
+
+  <a id="Seclai_SeclaiClient_DownloadAgentRunAttachmentWithOptionsAsync_" data-uid="Seclai.SeclaiClient.DownloadAgentRunAttachmentWithOptionsAsync*"></a>
+  <h4 id="Seclai_SeclaiClient_DownloadAgentRunAttachmentWithOptionsAsync_System_String_System_String_Seclai_Models_DownloadAgentRunAttachmentOptions_System_Threading_CancellationToken_" data-uid="Seclai.SeclaiClient.DownloadAgentRunAttachmentWithOptionsAsync(System.String,System.String,Seclai.Models.DownloadAgentRunAttachmentOptions,System.Threading.CancellationToken)">DownloadAgentRunAttachmentWithOptionsAsync(string, string, DownloadAgentRunAttachmentOptions, CancellationToken)</h4>
+  <div class="markdown level1 summary"><p>Downloads a file of an agent run (one a step emitted or one the run started with), or one byte range of it.
+Returns the raw HTTP response so the caller can stream the body. The caller must dispose the
+returned <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.net.http.httpresponsemessage">HttpResponseMessage</a>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="declaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;HttpResponseMessage&gt; DownloadAgentRunAttachmentWithOptionsAsync(string runId, string attachmentId, DownloadAgentRunAttachmentOptions options, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
+        <td><span class="parametername">runId</span></td>
+        <td><p>Run identifier.</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
+        <td><span class="parametername">attachmentId</span></td>
+        <td><p>The <code>Id</code> of an entry in the run's or a step's <code>Attachments</code>, or the
+URL-safe-base64-encoded storage key that webhook and email links carry.</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="Seclai.Models.DownloadAgentRunAttachmentOptions.html">DownloadAgentRunAttachmentOptions</a></td>
+        <td><span class="parametername">options</span></td>
+        <td><p>The download name and the byte range. A <code>default</code> value downloads the whole file.</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.cancellationtoken">CancellationToken</a></td>
+        <td><span class="parametername">cancellationToken</span></td>
+        <td><p>Cancellation token.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.threading.tasks.task-1">Task</a>&lt;<a class="xref" href="https://learn.microsoft.com/dotnet/api/system.net.http.httpresponsemessage">HttpResponseMessage</a>&gt;</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 id="Seclai_SeclaiClient_DownloadAgentRunAttachmentWithOptionsAsync_System_String_System_String_Seclai_Models_DownloadAgentRunAttachmentOptions_System_Threading_CancellationToken__remarks">Remarks</h5>
+  <div class="markdown level1 remarks"><p>With a range set, the response is <code>206 Partial Content</code> carrying <code>Content-Range</code> for a range
+of a non-empty file. A range on an empty file is ignored and answered with <code>200</code> and
+the whole (empty) file, so check <a class="xref" href="https://learn.microsoft.com/dotnet/api/system.net.http.httpresponsemessage.statuscode">StatusCode</a> before treating the body as
+the requested range. A range that starts at or past the end of a non-empty file is answered with <code>416</code>,
+which throws <a class="xref" href="Seclai.Exceptions.ApiException.html">ApiException</a> like any other error status; the file size is then in the error's
+<code>Content-Range: bytes */size</code> header, read from <a class="xref" href="Seclai.Exceptions.ApiException.html#Seclai_Exceptions_ApiException_Headers">Headers</a>. Every <code>200</code> and <code>206</code>
+carries <code>Accept-Ranges: bytes</code> and <code>Content-Length</code>. This applies on every API version.</p>
+</div>
+  <h5 class="exceptions">Exceptions</h5>
+  <table class="table table-bordered table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Condition</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.argumentexception">ArgumentException</a></td>
+        <td><p><code class="paramref">runId</code> or <code class="paramref">attachmentId</code> is blank, or the range fields are combined in a
+way <a class="xref" href="Seclai.Models.DownloadAgentRunAttachmentOptions.html">DownloadAgentRunAttachmentOptions</a> does not allow. Thrown before any request is sent.</p>
+</td>
       </tr>
     </tbody>
   </table>
@@ -6171,7 +6271,9 @@ without a required one, is refused with HTTP 400.</p>
       <tr>
         <td><a class="xref" href="https://learn.microsoft.com/dotnet/api/system.string">string</a></td>
         <td><span class="parametername">query</span></td>
-        <td><p>Words every match must contain.</p>
+        <td><p>What the agent should do. From API version <code>2026-11-09</code> entries are ranked by how well
+they match its words and meaning, best first, and a query of several words that are all filler (such as
+&quot;create an agent&quot;) counts as no query; older versions list only entries containing every word.</p>
 </td>
       </tr>
       <tr>
@@ -9332,7 +9434,7 @@ raw body in <a class="xref" href="Seclai.Exceptions.ApiException.html#Seclai_Exc
 
   <a id="Seclai_SeclaiClient_RunAgentAndPollAsync_" data-uid="Seclai.SeclaiClient.RunAgentAndPollAsync*"></a>
   <h4 id="Seclai_SeclaiClient_RunAgentAndPollAsync_System_String_Seclai_Models_AgentRunRequest_Seclai_Models_RunAgentAndPollOptions_" data-uid="Seclai.SeclaiClient.RunAgentAndPollAsync(System.String,Seclai.Models.AgentRunRequest,Seclai.Models.RunAgentAndPollOptions)">RunAgentAndPollAsync(string, AgentRunRequest, RunAgentAndPollOptions)</h4>
-  <div class="markdown level1 summary"><p>Runs an agent and polls until it reaches a terminal status (completed or failed), or, with
+  <div class="markdown level1 summary"><p>Runs an agent and polls until it reaches a terminal status (completed, failed or cancelled), or, with
 <a class="xref" href="Seclai.Models.RunAgentAndPollOptions.html#Seclai_Models_RunAgentAndPollOptions_ReturnOnResult">ReturnOnResult</a>, until it reports its result.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
@@ -9420,7 +9522,7 @@ of its requests (<a class="xref" href="https://learn.microsoft.com/dotnet/api/sy
 
   <a id="Seclai_SeclaiClient_RunAgentAndPollAsync_" data-uid="Seclai.SeclaiClient.RunAgentAndPollAsync*"></a>
   <h4 id="Seclai_SeclaiClient_RunAgentAndPollAsync_System_String_Seclai_Models_AgentRunRequest_Seclai_Models_RunAgentAndPollOptions_System_Threading_CancellationToken_" data-uid="Seclai.SeclaiClient.RunAgentAndPollAsync(System.String,Seclai.Models.AgentRunRequest,Seclai.Models.RunAgentAndPollOptions,System.Threading.CancellationToken)">RunAgentAndPollAsync(string, AgentRunRequest, RunAgentAndPollOptions, CancellationToken)</h4>
-  <div class="markdown level1 summary"><p>Runs an agent and polls until it reaches a terminal status (completed or failed), or, with
+  <div class="markdown level1 summary"><p>Runs an agent and polls until it reaches a terminal status (completed, failed or cancelled), or, with
 <a class="xref" href="Seclai.Models.RunAgentAndPollOptions.html#Seclai_Models_RunAgentAndPollOptions_ReturnOnResult">ReturnOnResult</a>, until it reports its result.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
@@ -9514,7 +9616,7 @@ or, with or without it, the <a class="xref" href="https://learn.microsoft.com/do
 
   <a id="Seclai_SeclaiClient_RunAgentAndPollAsync_" data-uid="Seclai.SeclaiClient.RunAgentAndPollAsync*"></a>
   <h4 id="Seclai_SeclaiClient_RunAgentAndPollAsync_System_String_Seclai_Models_AgentRunRequest_System_Nullable_System_TimeSpan__System_Nullable_System_TimeSpan__System_Boolean_System_Threading_CancellationToken_" data-uid="Seclai.SeclaiClient.RunAgentAndPollAsync(System.String,Seclai.Models.AgentRunRequest,System.Nullable{System.TimeSpan},System.Nullable{System.TimeSpan},System.Boolean,System.Threading.CancellationToken)">RunAgentAndPollAsync(string, AgentRunRequest, TimeSpan?, TimeSpan?, bool, CancellationToken)</h4>
-  <div class="markdown level1 summary"><p>Runs an agent and polls until it reaches a terminal status (completed or failed).</p>
+  <div class="markdown level1 summary"><p>Runs an agent and polls until it reaches a terminal status (completed, failed or cancelled).</p>
 </div>
   <div class="markdown level1 conceptual"></div>
   <h5 class="declaration">Declaration</h5>

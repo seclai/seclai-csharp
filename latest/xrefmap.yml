@@ -28,6 +28,15 @@ references:
   fullName.vb: Seclai.Exceptions.ApiException.New(System.Net.HttpStatusCode, String, System.Uri, String)
   nameWithType: ApiException.ApiException(HttpStatusCode, string, Uri, string?)
   nameWithType.vb: ApiException.New(HttpStatusCode, String, Uri, String)
+- uid: Seclai.Exceptions.ApiException.#ctor(System.Net.HttpStatusCode,System.String,System.Uri,System.String,System.Collections.Generic.IReadOnlyDictionary{System.String,System.Collections.Generic.IReadOnlyList{System.String}})
+  name: ApiException(HttpStatusCode, string, Uri, string?, IReadOnlyDictionary<string, IReadOnlyList<string>>?)
+  href: api/Seclai.Exceptions.ApiException.html#Seclai_Exceptions_ApiException__ctor_System_Net_HttpStatusCode_System_String_System_Uri_System_String_System_Collections_Generic_IReadOnlyDictionary_System_String_System_Collections_Generic_IReadOnlyList_System_String___
+  commentId: M:Seclai.Exceptions.ApiException.#ctor(System.Net.HttpStatusCode,System.String,System.Uri,System.String,System.Collections.Generic.IReadOnlyDictionary{System.String,System.Collections.Generic.IReadOnlyList{System.String}})
+  name.vb: New(HttpStatusCode, String, Uri, String, IReadOnlyDictionary(Of String, IReadOnlyList(Of String)))
+  fullName: Seclai.Exceptions.ApiException.ApiException(System.Net.HttpStatusCode, string, System.Uri, string?, System.Collections.Generic.IReadOnlyDictionary<string, System.Collections.Generic.IReadOnlyList<string>>?)
+  fullName.vb: Seclai.Exceptions.ApiException.New(System.Net.HttpStatusCode, String, System.Uri, String, System.Collections.Generic.IReadOnlyDictionary(Of String, System.Collections.Generic.IReadOnlyList(Of String)))
+  nameWithType: ApiException.ApiException(HttpStatusCode, string, Uri, string?, IReadOnlyDictionary<string, IReadOnlyList<string>>?)
+  nameWithType.vb: ApiException.New(HttpStatusCode, String, Uri, String, IReadOnlyDictionary(Of String, IReadOnlyList(Of String)))
 - uid: Seclai.Exceptions.ApiException.#ctor*
   name: ApiException
   href: api/Seclai.Exceptions.ApiException.html#Seclai_Exceptions_ApiException__ctor_
@@ -38,6 +47,19 @@ references:
   fullName.vb: Seclai.Exceptions.ApiException.New
   nameWithType: ApiException.ApiException
   nameWithType.vb: ApiException.New
+- uid: Seclai.Exceptions.ApiException.Headers
+  name: Headers
+  href: api/Seclai.Exceptions.ApiException.html#Seclai_Exceptions_ApiException_Headers
+  commentId: P:Seclai.Exceptions.ApiException.Headers
+  fullName: Seclai.Exceptions.ApiException.Headers
+  nameWithType: ApiException.Headers
+- uid: Seclai.Exceptions.ApiException.Headers*
+  name: Headers
+  href: api/Seclai.Exceptions.ApiException.html#Seclai_Exceptions_ApiException_Headers_
+  commentId: Overload:Seclai.Exceptions.ApiException.Headers
+  isSpec: "True"
+  fullName: Seclai.Exceptions.ApiException.Headers
+  nameWithType: ApiException.Headers
 - uid: Seclai.Exceptions.ApiException.Method
   name: Method
   href: api/Seclai.Exceptions.ApiException.html#Seclai_Exceptions_ApiException_Method
@@ -105,6 +127,15 @@ references:
   fullName.vb: Seclai.Exceptions.ApiValidationException.New(System.Net.HttpStatusCode, String, System.Uri, String, Seclai.Models.HttpValidationError)
   nameWithType: ApiValidationException.ApiValidationException(HttpStatusCode, string, Uri, string?, HttpValidationError?)
   nameWithType.vb: ApiValidationException.New(HttpStatusCode, String, Uri, String, HttpValidationError)
+- uid: Seclai.Exceptions.ApiValidationException.#ctor(System.Net.HttpStatusCode,System.String,System.Uri,System.String,Seclai.Models.HttpValidationError,System.Collections.Generic.IReadOnlyDictionary{System.String,System.Collections.Generic.IReadOnlyList{System.String}})
+  name: ApiValidationException(HttpStatusCode, string, Uri, string?, HttpValidationError?, IReadOnlyDictionary<string, IReadOnlyList<string>>?)
+  href: api/Seclai.Exceptions.ApiValidationException.html#Seclai_Exceptions_ApiValidationException__ctor_System_Net_HttpStatusCode_System_String_System_Uri_System_String_Seclai_Models_HttpValidationError_System_Collections_Generic_IReadOnlyDictionary_System_String_System_Collections_Generic_IReadOnlyList_System_String___
+  commentId: M:Seclai.Exceptions.ApiValidationException.#ctor(System.Net.HttpStatusCode,System.String,System.Uri,System.String,Seclai.Models.HttpValidationError,System.Collections.Generic.IReadOnlyDictionary{System.String,System.Collections.Generic.IReadOnlyList{System.String}})
+  name.vb: New(HttpStatusCode, String, Uri, String, HttpValidationError, IReadOnlyDictionary(Of String, IReadOnlyList(Of String)))
+  fullName: Seclai.Exceptions.ApiValidationException.ApiValidationException(System.Net.HttpStatusCode, string, System.Uri, string?, Seclai.Models.HttpValidationError?, System.Collections.Generic.IReadOnlyDictionary<string, System.Collections.Generic.IReadOnlyList<string>>?)
+  fullName.vb: Seclai.Exceptions.ApiValidationException.New(System.Net.HttpStatusCode, String, System.Uri, String, Seclai.Models.HttpValidationError, System.Collections.Generic.IReadOnlyDictionary(Of String, System.Collections.Generic.IReadOnlyList(Of String)))
+  nameWithType: ApiValidationException.ApiValidationException(HttpStatusCode, string, Uri, string?, HttpValidationError?, IReadOnlyDictionary<string, IReadOnlyList<string>>?)
+  nameWithType.vb: ApiValidationException.New(HttpStatusCode, String, Uri, String, HttpValidationError, IReadOnlyDictionary(Of String, IReadOnlyList(Of String)))
 - uid: Seclai.Exceptions.ApiValidationException.#ctor*
   name: ApiValidationException
   href: api/Seclai.Exceptions.ApiValidationException.html#Seclai_Exceptions_ApiValidationException__ctor_
@@ -2113,6 +2144,19 @@ references:
   commentId: T:Seclai.Models.AgentRunStreamRequest
   fullName: Seclai.Models.AgentRunStreamRequest
   nameWithType: AgentRunStreamRequest
+- uid: Seclai.Models.AgentRunStreamRequest.IncludeCommentary
+  name: IncludeCommentary
+  href: api/Seclai.Models.AgentRunStreamRequest.html#Seclai_Models_AgentRunStreamRequest_IncludeCommentary
+  commentId: P:Seclai.Models.AgentRunStreamRequest.IncludeCommentary
+  fullName: Seclai.Models.AgentRunStreamRequest.IncludeCommentary
+  nameWithType: AgentRunStreamRequest.IncludeCommentary
+- uid: Seclai.Models.AgentRunStreamRequest.IncludeCommentary*
+  name: IncludeCommentary
+  href: api/Seclai.Models.AgentRunStreamRequest.html#Seclai_Models_AgentRunStreamRequest_IncludeCommentary_
+  commentId: Overload:Seclai.Models.AgentRunStreamRequest.IncludeCommentary
+  isSpec: "True"
+  fullName: Seclai.Models.AgentRunStreamRequest.IncludeCommentary
+  nameWithType: AgentRunStreamRequest.IncludeCommentary
 - uid: Seclai.Models.AgentRunStreamRequest.IncludeReasoning
   name: IncludeReasoning
   href: api/Seclai.Models.AgentRunStreamRequest.html#Seclai_Models_AgentRunStreamRequest_IncludeReasoning
@@ -8339,6 +8383,64 @@ references:
   isSpec: "True"
   fullName: Seclai.Models.DocsSearchResultResponse.Title
   nameWithType: DocsSearchResultResponse.Title
+- uid: Seclai.Models.DownloadAgentRunAttachmentOptions
+  name: DownloadAgentRunAttachmentOptions
+  href: api/Seclai.Models.DownloadAgentRunAttachmentOptions.html
+  commentId: T:Seclai.Models.DownloadAgentRunAttachmentOptions
+  fullName: Seclai.Models.DownloadAgentRunAttachmentOptions
+  nameWithType: DownloadAgentRunAttachmentOptions
+- uid: Seclai.Models.DownloadAgentRunAttachmentOptions.DownloadName
+  name: DownloadName
+  href: api/Seclai.Models.DownloadAgentRunAttachmentOptions.html#Seclai_Models_DownloadAgentRunAttachmentOptions_DownloadName
+  commentId: P:Seclai.Models.DownloadAgentRunAttachmentOptions.DownloadName
+  fullName: Seclai.Models.DownloadAgentRunAttachmentOptions.DownloadName
+  nameWithType: DownloadAgentRunAttachmentOptions.DownloadName
+- uid: Seclai.Models.DownloadAgentRunAttachmentOptions.DownloadName*
+  name: DownloadName
+  href: api/Seclai.Models.DownloadAgentRunAttachmentOptions.html#Seclai_Models_DownloadAgentRunAttachmentOptions_DownloadName_
+  commentId: Overload:Seclai.Models.DownloadAgentRunAttachmentOptions.DownloadName
+  isSpec: "True"
+  fullName: Seclai.Models.DownloadAgentRunAttachmentOptions.DownloadName
+  nameWithType: DownloadAgentRunAttachmentOptions.DownloadName
+- uid: Seclai.Models.DownloadAgentRunAttachmentOptions.RangeEnd
+  name: RangeEnd
+  href: api/Seclai.Models.DownloadAgentRunAttachmentOptions.html#Seclai_Models_DownloadAgentRunAttachmentOptions_RangeEnd
+  commentId: P:Seclai.Models.DownloadAgentRunAttachmentOptions.RangeEnd
+  fullName: Seclai.Models.DownloadAgentRunAttachmentOptions.RangeEnd
+  nameWithType: DownloadAgentRunAttachmentOptions.RangeEnd
+- uid: Seclai.Models.DownloadAgentRunAttachmentOptions.RangeEnd*
+  name: RangeEnd
+  href: api/Seclai.Models.DownloadAgentRunAttachmentOptions.html#Seclai_Models_DownloadAgentRunAttachmentOptions_RangeEnd_
+  commentId: Overload:Seclai.Models.DownloadAgentRunAttachmentOptions.RangeEnd
+  isSpec: "True"
+  fullName: Seclai.Models.DownloadAgentRunAttachmentOptions.RangeEnd
+  nameWithType: DownloadAgentRunAttachmentOptions.RangeEnd
+- uid: Seclai.Models.DownloadAgentRunAttachmentOptions.RangeStart
+  name: RangeStart
+  href: api/Seclai.Models.DownloadAgentRunAttachmentOptions.html#Seclai_Models_DownloadAgentRunAttachmentOptions_RangeStart
+  commentId: P:Seclai.Models.DownloadAgentRunAttachmentOptions.RangeStart
+  fullName: Seclai.Models.DownloadAgentRunAttachmentOptions.RangeStart
+  nameWithType: DownloadAgentRunAttachmentOptions.RangeStart
+- uid: Seclai.Models.DownloadAgentRunAttachmentOptions.RangeStart*
+  name: RangeStart
+  href: api/Seclai.Models.DownloadAgentRunAttachmentOptions.html#Seclai_Models_DownloadAgentRunAttachmentOptions_RangeStart_
+  commentId: Overload:Seclai.Models.DownloadAgentRunAttachmentOptions.RangeStart
+  isSpec: "True"
+  fullName: Seclai.Models.DownloadAgentRunAttachmentOptions.RangeStart
+  nameWithType: DownloadAgentRunAttachmentOptions.RangeStart
+- uid: Seclai.Models.DownloadAgentRunAttachmentOptions.RangeSuffix
+  name: RangeSuffix
+  href: api/Seclai.Models.DownloadAgentRunAttachmentOptions.html#Seclai_Models_DownloadAgentRunAttachmentOptions_RangeSuffix
+  commentId: P:Seclai.Models.DownloadAgentRunAttachmentOptions.RangeSuffix
+  fullName: Seclai.Models.DownloadAgentRunAttachmentOptions.RangeSuffix
+  nameWithType: DownloadAgentRunAttachmentOptions.RangeSuffix
+- uid: Seclai.Models.DownloadAgentRunAttachmentOptions.RangeSuffix*
+  name: RangeSuffix
+  href: api/Seclai.Models.DownloadAgentRunAttachmentOptions.html#Seclai_Models_DownloadAgentRunAttachmentOptions_RangeSuffix_
+  commentId: Overload:Seclai.Models.DownloadAgentRunAttachmentOptions.RangeSuffix
+  isSpec: "True"
+  fullName: Seclai.Models.DownloadAgentRunAttachmentOptions.RangeSuffix
+  nameWithType: DownloadAgentRunAttachmentOptions.RangeSuffix
 - uid: Seclai.Models.EffortOptionsResponse
   name: EffortOptionsResponse
   href: api/Seclai.Models.EffortOptionsResponse.html
@@ -11641,6 +11743,19 @@ references:
   commentId: T:Seclai.Models.GenerationTierResponse
   fullName: Seclai.Models.GenerationTierResponse
   nameWithType: GenerationTierResponse
+- uid: Seclai.Models.GenerationTierResponse.AspectRatios
+  name: AspectRatios
+  href: api/Seclai.Models.GenerationTierResponse.html#Seclai_Models_GenerationTierResponse_AspectRatios
+  commentId: P:Seclai.Models.GenerationTierResponse.AspectRatios
+  fullName: Seclai.Models.GenerationTierResponse.AspectRatios
+  nameWithType: GenerationTierResponse.AspectRatios
+- uid: Seclai.Models.GenerationTierResponse.AspectRatios*
+  name: AspectRatios
+  href: api/Seclai.Models.GenerationTierResponse.html#Seclai_Models_GenerationTierResponse_AspectRatios_
+  commentId: Overload:Seclai.Models.GenerationTierResponse.AspectRatios
+  isSpec: "True"
+  fullName: Seclai.Models.GenerationTierResponse.AspectRatios
+  nameWithType: GenerationTierResponse.AspectRatios
 - uid: Seclai.Models.GenerationTierResponse.CreditsPerUnit
   name: CreditsPerUnit
   href: api/Seclai.Models.GenerationTierResponse.html#Seclai_Models_GenerationTierResponse_CreditsPerUnit
@@ -20989,6 +21104,30 @@ references:
   commentId: F:Seclai.SeclaiApiVersion.V2026_11_04
   fullName: Seclai.SeclaiApiVersion.V2026_11_04
   nameWithType: SeclaiApiVersion.V2026_11_04
+- uid: Seclai.SeclaiApiVersion.V2026_11_08
+  name: V2026_11_08
+  href: api/Seclai.SeclaiApiVersion.html#Seclai_SeclaiApiVersion_V2026_11_08
+  commentId: F:Seclai.SeclaiApiVersion.V2026_11_08
+  fullName: Seclai.SeclaiApiVersion.V2026_11_08
+  nameWithType: SeclaiApiVersion.V2026_11_08
+- uid: Seclai.SeclaiApiVersion.V2026_11_09
+  name: V2026_11_09
+  href: api/Seclai.SeclaiApiVersion.html#Seclai_SeclaiApiVersion_V2026_11_09
+  commentId: F:Seclai.SeclaiApiVersion.V2026_11_09
+  fullName: Seclai.SeclaiApiVersion.V2026_11_09
+  nameWithType: SeclaiApiVersion.V2026_11_09
+- uid: Seclai.SeclaiApiVersion.V2026_11_14
+  name: V2026_11_14
+  href: api/Seclai.SeclaiApiVersion.html#Seclai_SeclaiApiVersion_V2026_11_14
+  commentId: F:Seclai.SeclaiApiVersion.V2026_11_14
+  fullName: Seclai.SeclaiApiVersion.V2026_11_14
+  nameWithType: SeclaiApiVersion.V2026_11_14
+- uid: Seclai.SeclaiApiVersion.V2026_11_19
+  name: V2026_11_19
+  href: api/Seclai.SeclaiApiVersion.html#Seclai_SeclaiApiVersion_V2026_11_19
+  commentId: F:Seclai.SeclaiApiVersion.V2026_11_19
+  fullName: Seclai.SeclaiApiVersion.V2026_11_19
+  nameWithType: SeclaiApiVersion.V2026_11_19
 - uid: Seclai.SeclaiAuth
   name: SeclaiAuth
   href: api/Seclai.SeclaiAuth.html
@@ -21979,6 +22118,22 @@ references:
   isSpec: "True"
   fullName: Seclai.SeclaiClient.DownloadAgentRunAttachmentAsync
   nameWithType: SeclaiClient.DownloadAgentRunAttachmentAsync
+- uid: Seclai.SeclaiClient.DownloadAgentRunAttachmentWithOptionsAsync(System.String,System.String,Seclai.Models.DownloadAgentRunAttachmentOptions,System.Threading.CancellationToken)
+  name: DownloadAgentRunAttachmentWithOptionsAsync(string, string, DownloadAgentRunAttachmentOptions, CancellationToken)
+  href: api/Seclai.SeclaiClient.html#Seclai_SeclaiClient_DownloadAgentRunAttachmentWithOptionsAsync_System_String_System_String_Seclai_Models_DownloadAgentRunAttachmentOptions_System_Threading_CancellationToken_
+  commentId: M:Seclai.SeclaiClient.DownloadAgentRunAttachmentWithOptionsAsync(System.String,System.String,Seclai.Models.DownloadAgentRunAttachmentOptions,System.Threading.CancellationToken)
+  name.vb: DownloadAgentRunAttachmentWithOptionsAsync(String, String, DownloadAgentRunAttachmentOptions, CancellationToken)
+  fullName: Seclai.SeclaiClient.DownloadAgentRunAttachmentWithOptionsAsync(string, string, Seclai.Models.DownloadAgentRunAttachmentOptions, System.Threading.CancellationToken)
+  fullName.vb: Seclai.SeclaiClient.DownloadAgentRunAttachmentWithOptionsAsync(String, String, Seclai.Models.DownloadAgentRunAttachmentOptions, System.Threading.CancellationToken)
+  nameWithType: SeclaiClient.DownloadAgentRunAttachmentWithOptionsAsync(string, string, DownloadAgentRunAttachmentOptions, CancellationToken)
+  nameWithType.vb: SeclaiClient.DownloadAgentRunAttachmentWithOptionsAsync(String, String, DownloadAgentRunAttachmentOptions, CancellationToken)
+- uid: Seclai.SeclaiClient.DownloadAgentRunAttachmentWithOptionsAsync*
+  name: DownloadAgentRunAttachmentWithOptionsAsync
+  href: api/Seclai.SeclaiClient.html#Seclai_SeclaiClient_DownloadAgentRunAttachmentWithOptionsAsync_
+  commentId: Overload:Seclai.SeclaiClient.DownloadAgentRunAttachmentWithOptionsAsync
+  isSpec: "True"
+  fullName: Seclai.SeclaiClient.DownloadAgentRunAttachmentWithOptionsAsync
+  nameWithType: SeclaiClient.DownloadAgentRunAttachmentWithOptionsAsync
 - uid: Seclai.SeclaiClient.DownloadContentAttachmentAsync(System.String,System.String,System.Threading.CancellationToken)
   name: DownloadContentAttachmentAsync(string, string, CancellationToken)
   href: api/Seclai.SeclaiClient.html#Seclai_SeclaiClient_DownloadContentAttachmentAsync_System_String_System_String_System_Threading_CancellationToken_

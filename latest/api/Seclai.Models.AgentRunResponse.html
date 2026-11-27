@@ -501,7 +501,7 @@ public bool Priority { get; set; }</code></pre>
   <a id="Seclai_Models_AgentRunResponse_ResultReportedAt_" data-uid="Seclai.Models.AgentRunResponse.ResultReportedAt*"></a>
   <h4 id="Seclai_Models_AgentRunResponse_ResultReportedAt" data-uid="Seclai.Models.AgentRunResponse.ResultReportedAt">ResultReportedAt</h4>
   <div class="markdown level1 summary"><p>When the run reported success (ISO 8601): for an agent whose <code>report_success</code> is <code>on_result</code>, once
-its result step published, or once its run started if it has no result step; otherwise when the run completed.
+the step carrying <code>run_result</code> published, or once its run started if no step carries it; otherwise when the run completed.
 From then on <a class="xref" href="Seclai.Models.AgentRunResponse.html#Seclai_Models_AgentRunResponse_Output">Output</a> is the run's answer and never changes, so stop polling here if you only need
 the answer. <a class="xref" href="Seclai.Models.AgentRunResponse.html#Seclai_Models_AgentRunResponse_Status">Status</a> still follows every step, so a run can report success and later fail.
 Null until the run reports, for a run that failed before reporting, and for runs that ended before this field existed.</p>
