@@ -737,7 +737,7 @@ public sealed class SeclaiClientTests
     }
 
     [Fact]
-    public async Task RunStreamingAgentAndWait_Default_OnlyInitAndResultFeedTheLatestSnapshot()
+    public async Task RunStreamingAgentAndWait_Default_SseLatestSnapshotIsResultElseInit()
     {
         // As released: the latest snapshot is the result run, else init; update events do not replace it.
         var update = "event: update\ndata: {\"run_id\":\"run_1\",\"status\":\"running\",\"attempts\":[],\"error_count\":0,\"priority\":false}\n\n";
@@ -817,6 +817,29 @@ public sealed class SeclaiClientTests
                 new RunStreamingAgentAndWaitOptions { Timeout = TimeSpan.FromMilliseconds(100), ThrowOnIncomplete = throwOnIncomplete }));
             Assert.StartsWith("Timed out", ex.Message);
         }
+    }
+
+    [Fact]
+    public async Task RunStreamingAgentAndWait_PlainJsonReplyBreaksMidRead()
+    {
+        // The JSON body's connection resets partway: a transport error, not a cancellation.
+        var handler = new FakeHttpMessageHandler(_ =>
+        {
+            var resp = new HttpResponseMessage(HttpStatusCode.OK) { Content = new StreamContent(new NeverEndingStream(
+                Encoding.UTF8.GetBytes("{\"run_id\":"), failAfterPrefix: new System.IO.IOException("connection reset"))) };
+            resp.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
+            return resp;
+        });
+
+        // Default: the transport exception, as released.
+        var raw = await Assert.ThrowsAnyAsync<Exception>(() => MakeClient(handler).RunStreamingAgentAndWaitAsync("a", Hi));
+        Assert.True(raw is System.IO.IOException || raw is HttpRequestException, raw.GetType().FullName);
+
+        // ThrowOnIncomplete: StreamingException, as for a break in an SSE stream.
+        var ex = await Assert.ThrowsAsync<StreamingException>(() =>
+            MakeClient(handler).RunStreamingAgentAndWaitWithOptionsAsync("a", Hi, ThrowOnIncomplete));
+        Assert.StartsWith("Stream broke", ex.Message);
+        Assert.True(ex.InnerException is System.IO.IOException || ex.InnerException is HttpRequestException);
     }
 
     [Fact]
@@ -2691,6 +2714,16 @@ public sealed class SeclaiClientTests
         Assert.Equal("processing", events.Single(e => e.Event == "status").Run!.Status);
         Assert.Null(events.Single(e => e.Event == "error").Run!.Status);
         Assert.Contains("boom", events.Single(e => e.Event == "error").Data);
+    }
+
+    [Fact]
+    public async Task RunStreamingAgent_DataDropsExactlyOneLeadingSpace()
+    {
+        var sse = "event: stream_token\ndata: def f():\ndata:     return 1\ndata:x\n\n";
+        var handler = new FakeHttpMessageHandler(_ => SseResponse(new System.IO.MemoryStream(Encoding.UTF8.GetBytes(sse))));
+        var events = new List<AgentRunEvent>();
+        await foreach (var evt in MakeClient(handler).RunStreamingAgentAsync("a1", new AgentRunStreamRequest { Input = "hi" })) events.Add(evt);
+        Assert.Equal("def f():\n    return 1\nx", Assert.Single(events).Data);
     }
 
     [Fact]

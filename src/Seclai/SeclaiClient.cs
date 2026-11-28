@@ -286,8 +286,8 @@ public sealed class SeclaiClient : IDisposable
         var timedOut = $"Timed out after {effectiveTimeout.TotalMilliseconds}ms waiting for streaming agent run to complete";
         const string callerCancelled = "Cancelled by the caller's cancellation token before the streaming agent run completed";
         HttpResponseMessage? resp = null;
-        // The latest snapshot of the unfinished run: result if it arrived, else init. Attached to every
-        // StreamingException.
+        // The latest snapshot of the unfinished run: result if it arrived, else init, or a plain JSON reply's run.
+        // Attached to every StreamingException.
         AgentRunResponse? latest = null;
         var resultSeen = false;
         try
@@ -306,15 +306,16 @@ public sealed class SeclaiClient : IDisposable
                 throw CreateApiError(resp.StatusCode, req.Method.Method, url, responseBody, ResponseHeaders(resp));
             }
 
-            // Opening reads a plain JSON reply whole, so the timeout or the caller's token can cut it, as it can a
-            // read in the loop below: the disposed response then throws a transport exception, mapped the same way.
+            // Opening reads a plain JSON reply whole, so the timeout, the caller's token or a transport error can cut
+            // it, as they can a read in the loop below; its exceptions are mapped the same way.
             Exception? readError = null;
             AgentRunEventReader? opened = null;
             try
             {
                 opened = await AgentRunEventReader.OpenAsync(resp).ConfigureAwait(false);
             }
-            catch (Exception ex) when (ct.IsCancellationRequested)
+            catch (Exception ex) when (ct.IsCancellationRequested ||
+                (options.ThrowOnIncomplete && (ex is IOException || ex is HttpRequestException)))
             {
                 readError = ex;
             }
@@ -3357,7 +3358,9 @@ public sealed class SeclaiClient : IDisposable
 
                 if (line.StartsWith("data:", StringComparison.OrdinalIgnoreCase))
                 {
-                    _data.Add(line.Substring("data:".Length).TrimStart());
+                    // The SSE format drops exactly one space after the colon, so indentation in the value is kept.
+                    var value = line.Substring("data:".Length);
+                    _data.Add(value.StartsWith(" ", StringComparison.Ordinal) ? value.Substring(1) : value);
                 }
             }
         }
