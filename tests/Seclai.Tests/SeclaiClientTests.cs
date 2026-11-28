@@ -664,6 +664,140 @@ public sealed class SeclaiClientTests
         Assert.Equal("completed", (await client.RunStreamingAgentAndWaitAsync("a", body, cancellationToken: token)).Status);
     }
 
+    // ── Stream endings shared with RunStreamingAgentAsync (#18) ────────────
+
+    private const string SseError = "event: error\ndata: {\"run_id\":\"run_1\",\"error\":\"database unavailable\"}\n\n";
+    private const string SseTimeout = "event: timeout\ndata: {\"run_id\":\"run_1\"}\n\n";
+    private const string RunDone = "{\"run_id\":\"run_1\",\"status\":\"completed\",\"output\":\"ok\",\"attempts\":[],\"error_count\":0,\"priority\":false}";
+
+    private static readonly RunStreamingAgentAndWaitOptions[] BothModes =
+    {
+        new() { ThrowOnIncomplete = false },
+        new() { ThrowOnIncomplete = true },
+    };
+
+    private static FakeHttpMessageHandler SseHandler(string sse)
+        => new(_ => SseResponse(new System.IO.MemoryStream(Encoding.UTF8.GetBytes(sse))));
+
+    [Fact]
+    public async Task RunStreamingAgentAndWait_ErrorEvent_ThrowsWithServerMessageAndLatestSnapshot()
+    {
+        foreach (var options in BothModes)
+        {
+            var ex = await Assert.ThrowsAsync<StreamingException>(() =>
+                MakeClient(SseHandler(SseInit + SseError)).RunStreamingAgentAndWaitWithOptionsAsync("a", Hi, options));
+            Assert.Contains("database unavailable", ex.Message);
+            Assert.Contains("not reported a result", ex.Message);
+            Assert.Equal("processing", ex.Run!.Status);
+
+            ex = await Assert.ThrowsAsync<StreamingException>(() =>
+                MakeClient(SseHandler(SseInit + SseResult + SseError)).RunStreamingAgentAndWaitWithOptionsAsync("a", Hi, options));
+            Assert.Contains("database unavailable", ex.Message);
+            Assert.Equal("answer", ex.Run!.Output);
+        }
+
+        // The overload without options too.
+        var plain = await Assert.ThrowsAsync<StreamingException>(() =>
+            MakeClient(SseHandler(SseInit + SseError)).RunStreamingAgentAndWaitAsync("a", Hi));
+        Assert.Contains("database unavailable", plain.Message);
+    }
+
+    [Fact]
+    public async Task RunStreamingAgentAndWait_TimeoutEvent_ThrowsWithLatestSnapshot()
+    {
+        foreach (var options in BothModes)
+        {
+            var ex = await Assert.ThrowsAsync<StreamingException>(() =>
+                MakeClient(SseHandler(SseInit + SseResult + SseTimeout)).RunStreamingAgentAndWaitWithOptionsAsync("a", Hi, options));
+            Assert.Contains("timed out the stream", ex.Message);
+            Assert.Contains("reported its result", ex.Message);
+            Assert.Equal("answer", ex.Run!.Output);
+        }
+    }
+
+    [Fact]
+    public async Task RunStreamingAgentAndWait_Default_UpdateDoesNotReplaceLatestSnapshot()
+    {
+        // As released: the latest snapshot is the result run, else init; update events do not replace it.
+        var update = "event: update\ndata: {\"run_id\":\"run_1\",\"status\":\"running\",\"attempts\":[],\"error_count\":0,\"priority\":false}\n\n";
+        var res = await MakeClient(SseHandler(SseInit + update)).RunStreamingAgentAndWaitAsync("a", Hi);
+        Assert.Equal("processing", res.Status);
+
+        res = await MakeClient(SseHandler(SseInit + SseResult + update)).RunStreamingAgentAndWaitAsync("a", Hi);
+        Assert.Equal("answer", res.Output);
+    }
+
+    [Fact]
+    public async Task RunStreamingAgentAndWait_Default_StatusDoesNotReplaceLatestSnapshot()
+    {
+        // A status event carries a run (id and status only), but the latest snapshot stays init, as in 1.9.0.
+        var status = "event: status\ndata: {\"run_id\":\"run_1\",\"status\":\"running\"}\n\n";
+        var res = await MakeClient(SseHandler(SseInit + status)).RunStreamingAgentAndWaitAsync("a", Hi);
+        Assert.Equal("processing", res.Status);
+    }
+
+    [Fact]
+    public async Task RunStreamingAgentAndWait_FinalEventWithoutTrailingNewline_IsParsed()
+    {
+        var sse = SseInit + "event: done\ndata: " + RunDone;
+        foreach (var options in BothModes)
+        {
+            var res = await MakeClient(SseHandler(sse)).RunStreamingAgentAndWaitWithOptionsAsync("a", Hi, options);
+            Assert.Equal("completed", res.Status);
+        }
+
+        var events = new List<AgentRunEvent>();
+        await foreach (var evt in MakeClient(SseHandler(sse)).RunStreamingAgentAsync("a", Hi)) events.Add(evt);
+        Assert.Equal("done", events[^1].Event);
+        Assert.Equal("completed", events[^1].Run!.Status);
+    }
+
+    [Fact]
+    public async Task RunStreamingAgentAndWait_PlainJsonReply_IsHandledAsTheIteratorHandlesIt()
+    {
+        foreach (var options in BothModes)
+        {
+            var res = await MakeClient(new FakeHttpMessageHandler(_ => JsonResponse(RunDone)))
+                .RunStreamingAgentAndWaitWithOptionsAsync("a", Hi, options);
+            Assert.Equal("completed", res.Status);
+
+            // JSON that cannot be read as a run is a done event without a run: StreamingException, not JsonException.
+            foreach (var reply in new[] { "not json", "null", "[]" })
+            {
+                var ex = await Assert.ThrowsAsync<StreamingException>(() => MakeClient(new FakeHttpMessageHandler(_ => JsonResponse(reply)))
+                    .RunStreamingAgentAndWaitWithOptionsAsync("a", Hi, options));
+                Assert.Contains("cannot be read as a run", ex.Message);
+            }
+        }
+
+        var events = new List<AgentRunEvent>();
+        await foreach (var evt in MakeClient(new FakeHttpMessageHandler(_ => JsonResponse("not json"))).RunStreamingAgentAsync("a", Hi)) events.Add(evt);
+        var only = Assert.Single(events);
+        Assert.Equal("done", only.Event);
+        Assert.Null(only.Run);
+    }
+
+    [Fact]
+    public async Task RunStreamingAgentAndWait_HttpClientTimeoutIsNotReportedAsTheHelpersTimeout()
+    {
+        // HttpClient.Timeout (50 ms) elapses before the headers; the helper's Timeout (60 s) does not.
+        var handler = new FakeHttpMessageHandler(async (_, ct) =>
+        {
+            await Task.Delay(Timeout.Infinite, ct);
+            throw new InvalidOperationException("unreachable");
+        });
+        foreach (var throwOnIncomplete in new[] { false, true })
+        {
+            var http = new HttpClient(handler, disposeHandler: false) { Timeout = TimeSpan.FromMilliseconds(50) };
+            var client = new SeclaiClient(new SeclaiClientOptions { ApiKey = "k", BaseUri = new Uri("https://example.invalid"), HttpClient = http });
+            var ex = await Assert.ThrowsAsync<StreamingException>(() => client.RunStreamingAgentAndWaitWithOptionsAsync("a", Hi,
+                new RunStreamingAgentAndWaitOptions { Timeout = TimeSpan.FromSeconds(60), ThrowOnIncomplete = throwOnIncomplete }));
+            Assert.DoesNotContain("60000", ex.Message);
+            Assert.Contains("HttpClient", ex.Message);
+            Assert.IsAssignableFrom<OperationCanceledException>(ex.InnerException);
+        }
+    }
+
     [Fact]
     public async Task UploadFileToSource_SendsMetadataMultipartField()
     {
@@ -2460,6 +2594,37 @@ public sealed class SeclaiClientTests
     }
 
     [Fact]
+    public async Task RunStreamingAgent_SetsRunOnlyOnRunEvents()
+    {
+        var run = "{\"run_id\":\"r1\",\"status\":\"processing\",\"attempts\":[],\"error_count\":0,\"priority\":false}";
+        var sse =
+            "event: init\ndata: " + run + "\n\n" +
+            "event: stream_token\ndata: {\"text\":\"he\"}\n\n" +
+            "event: stream_reasoning\ndata: {\"text\":\"thinking\"}\n\n" +
+            "event: stream_commentary\ndata: {\"phase\":\"p\",\"message\":\"m\",\"text\":\"t\"}\n\n" +
+            "event: update\ndata: " + run + "\n\n" +
+            "event: status\ndata: {\"run_id\":\"r1\",\"status\":\"processing\"}\n\n" +
+            "event: result\ndata: " + run + "\n\n" +
+            "event: error\ndata: {\"run_id\":\"r1\",\"error\":\"boom\"}\n\n" +
+            "event: timeout\ndata: {\"run_id\":\"r1\"}\n\n" +
+            "event: done\ndata: " + run + "\n\n";
+        var handler = new FakeHttpMessageHandler(_ => SseResponse(new System.IO.MemoryStream(Encoding.UTF8.GetBytes(sse))));
+
+        var events = new List<AgentRunEvent>();
+        await foreach (var evt in MakeClient(handler).RunStreamingAgentAsync("a1", new AgentRunStreamRequest { Input = "hi" })) events.Add(evt);
+
+        Assert.Equal(10, events.Count);
+        foreach (var evt in events)
+        {
+            if (evt.Event is "init" or "update" or "status" or "result" or "done") Assert.Equal("r1", evt.Run?.RunId);
+            else Assert.Null(evt.Run);
+        }
+        // A status event carries the run's id and status, as in 1.9.0.
+        Assert.Equal("processing", events.Single(e => e.Event == "status").Run!.Status);
+        Assert.Contains("boom", events.Single(e => e.Event == "error").Data);
+    }
+
+    [Fact]
     public async Task RunAgentAndPoll_PollsUntilCompleted()
     {
         var callCount = 0;
@@ -2766,20 +2931,37 @@ public sealed class SeclaiClientTests
         Assert.Equal(0, gets);
     }
 
+    private const string PollCompleted = "{\"run_id\":\"r1\",\"status\":\"completed\",\"output\":\"answer\",\"attempts\":[],\"error_count\":0,\"priority\":false}";
+    private const string StepsJson = "\"steps\":[{\"agent_step_id\":\"s1\",\"output\":\"step\"}],";
+
     [Fact]
     public async Task RunAgentAndPoll_IncludeStepOutputs_SlowFetchOfFinishedRunIsNotATimeout()
     {
-        // The run ended in the start response; fetching its step outputs takes longer than Timeout.
-        var handler = new FakeHttpMessageHandler(async (req, ct) =>
-        {
-            if (req.Method != HttpMethod.Post) await Task.Delay(TimeSpan.FromMilliseconds(300), ct);
-            return JsonResponse("{\"run_id\":\"r1\",\"status\":\"completed\",\"output\":\"answer\",\"attempts\":[],\"error_count\":0,\"priority\":false}");
-        });
+        // The run ended in the start response. Its step-outputs fetch is held open until the test releases it, by
+        // which time Timeout (zero) has elapsed, so a fetch bounded by Timeout would be cancelled.
         foreach (var throwOnIncomplete in new[] { false, true })
         {
-            var res = await MakeClient(handler).RunAgentAndPollAsync("a1", new AgentRunRequest { Input = "go" },
-                new RunAgentAndPollOptions { Timeout = TimeSpan.FromMilliseconds(50), IncludeStepOutputs = true, ThrowOnIncomplete = throwOnIncomplete });
+            var gets = 0;
+            var fetchStarted = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+            var release = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+            var handler = new FakeHttpMessageHandler(async (req, ct) =>
+            {
+                if (req.Method == HttpMethod.Post) return JsonResponse(PollCompleted);
+                Interlocked.Increment(ref gets);
+                fetchStarted.TrySetResult();
+                await release.Task.WaitAsync(ct);
+                return JsonResponse(PollCompleted.Insert(1, StepsJson));
+            });
+
+            var call = MakeClient(handler).RunAgentAndPollAsync("a1", new AgentRunRequest { Input = "go" },
+                new RunAgentAndPollOptions { Timeout = TimeSpan.Zero, IncludeStepOutputs = true, ThrowOnIncomplete = throwOnIncomplete });
+            await Task.WhenAny(fetchStarted.Task, call);
+            release.SetResult();
+            var res = await call;
+
+            Assert.Equal(1, gets);
             Assert.Equal("completed", res.Status);
+            Assert.Equal("s1", Assert.Single(res.Steps!).AgentStepId);
         }
     }
 
@@ -2804,12 +2986,14 @@ public sealed class SeclaiClientTests
             if (req.Method == HttpMethod.Post) return JsonResponse(PollReported);
             gets++;
             Assert.Equal("include_step_outputs=true", req.RequestUri!.Query.TrimStart('?'));
-            return JsonResponse(PollReported);
+            return JsonResponse(PollReported.Insert(1, StepsJson));
         });
         var res = await MakeClient(handler).RunAgentAndPollAsync("a1", new AgentRunRequest { Input = "go" },
             new RunAgentAndPollOptions { PollInterval = TimeSpan.FromSeconds(30), IncludeStepOutputs = true, ReturnOnResult = true });
         Assert.Equal(1, gets);
         Assert.Equal("answer", res.Output);
+        // The start response has no steps, so steps prove the returned snapshot is the fetched one.
+        Assert.Equal("s1", Assert.Single(res.Steps!).AgentStepId);
     }
 
     [Fact]

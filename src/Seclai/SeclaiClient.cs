@@ -180,22 +180,28 @@ public sealed class SeclaiClient : IDisposable
     /// Starts an agent run via SSE streaming and blocks until the final <c>done</c> event.
     /// </summary>
     /// <remarks>
-    /// The <c>done</c> snapshot is returned when it arrives. If the stream ends without it, the latest snapshot is
-    /// returned instead (the <c>result</c> one if that event arrived, else <c>init</c>), so the run may not have
+    /// The <c>done</c> snapshot is returned when it arrives. If the server ends the stream with an <c>error</c> or
+    /// <c>timeout</c> event, <see cref="StreamingException"/> is thrown. If the stream ends without any of these,
+    /// the latest snapshot is returned instead (the <c>result</c> one if that event arrived, else <c>init</c>), so the run may not have
     /// finished: check <see cref="AgentRunResponse.Status"/> and <see cref="AgentRunResponse.ResultReportedAt"/>.
     /// To throw instead, or to return as soon as the run reports its result, use
     /// <see cref="RunStreamingAgentAndWaitWithOptionsAsync(string, AgentRunStreamRequest, RunStreamingAgentAndWaitOptions, CancellationToken)"/>
     /// with <see cref="RunStreamingAgentAndWaitOptions.ThrowOnIncomplete"/>, which becomes the default in the next
     /// major version, or <see cref="RunStreamingAgentAndWaitOptions.ReturnOnResult"/>. If the server answers with
-    /// plain JSON instead of an SSE stream, that response is returned.
+    /// plain JSON instead of an SSE stream, that response is returned, and <see cref="StreamingException"/> is
+    /// thrown if it cannot be read as a run.
     /// </remarks>
     /// <param name="agentId">The agent identifier.</param>
     /// <param name="body">The run request payload.</param>
     /// <param name="timeout">Maximum time to wait for completion (default: 60 s).</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <exception cref="StreamingException">
-    /// <paramref name="timeout"/> elapsed, <paramref name="cancellationToken"/> was cancelled, or the stream ended
-    /// with no snapshot at all. <see cref="StreamingException.Run"/> holds the latest snapshot, if any.
+    /// <paramref name="timeout"/> elapsed, <paramref name="cancellationToken"/> was cancelled, the stream ended
+    /// with no snapshot at all, or the server ended it with an <c>error</c> event (the message includes the server's
+    /// error text) or a <c>timeout</c> event. It is also thrown, with a message that says so, when the request is
+    /// cancelled by neither <paramref name="timeout"/> nor <paramref name="cancellationToken"/>, as when the
+    /// <see cref="HttpClient"/>'s own timeout elapses, and when the server answers with plain JSON that cannot be
+    /// read as a run. <see cref="StreamingException.Run"/> holds the latest snapshot, if any.
     /// </exception>
     public Task<AgentRunResponse> RunStreamingAgentAndWaitAsync(
         string agentId,
@@ -222,20 +228,28 @@ public sealed class SeclaiClient : IDisposable
     /// A run returned because of <see cref="RunStreamingAgentAndWaitOptions.ReturnOnResult"/> may still be in
     /// progress: its <see cref="AgentRunResponse.Status"/> is not terminal and it can still fail, so check
     /// <see cref="AgentRunResponse.ResultReportedAt"/>, not <see cref="AgentRunResponse.Status"/>. If the server
-    /// answers with plain JSON instead of an SSE stream, that response is returned.
+    /// answers with plain JSON instead of an SSE stream, that response is returned, and
+    /// <see cref="StreamingException"/> is thrown if it cannot be read as a run.
     /// <para>
     /// With <see cref="RunStreamingAgentAndWaitOptions.ThrowOnIncomplete"/> off (the default), the endings other
     /// than <c>done</c> behave as <see cref="RunStreamingAgentAndWaitAsync(string, AgentRunStreamRequest, TimeSpan?, CancellationToken)"/>
     /// does: a stream that ends returns the latest snapshot, a broken one throws the transport exception, and the
-    /// timeout or cancelling <paramref name="cancellationToken"/> throws <see cref="StreamingException"/>. With it
+    /// timeout, cancelling <paramref name="cancellationToken"/>, or an <c>error</c> or <c>timeout</c> event throws
+    /// <see cref="StreamingException"/>. With it
     /// on, no unfinished run is returned: see the exceptions.
     /// </para>
     /// </remarks>
     /// <exception cref="StreamingException">
-    /// The run did not finish: <see cref="RunStreamingAgentAndWaitOptions.Timeout"/> elapsed, or, with
-    /// <see cref="RunStreamingAgentAndWaitOptions.ThrowOnIncomplete"/>, the stream ended without a <c>done</c> event
-    /// or broke mid-stream. <see cref="StreamingException.Run"/> holds the latest snapshot: the <c>result</c> one if
-    /// that event arrived (then <see cref="AgentRunResponse.Output"/> is the answer), else the <c>init</c> one.
+    /// The run did not finish: <see cref="RunStreamingAgentAndWaitOptions.Timeout"/> elapsed; the server ended the
+    /// stream with an <c>error</c> event (the message includes the server's error text) or a <c>timeout</c> event,
+    /// with or without <see cref="RunStreamingAgentAndWaitOptions.ThrowOnIncomplete"/>; or, with it, the stream ended
+    /// without a <c>done</c> event or broke mid-stream. It is also thrown, with a message that says so, when the
+    /// request is cancelled by neither <see cref="RunStreamingAgentAndWaitOptions.Timeout"/> nor
+    /// <paramref name="cancellationToken"/>, as when the <see cref="HttpClient"/>'s own timeout elapses, and, with
+    /// or without <see cref="RunStreamingAgentAndWaitOptions.ThrowOnIncomplete"/>, when the server answers with plain
+    /// JSON that cannot be read as a run.
+    /// <see cref="StreamingException.Run"/> holds the latest snapshot: the <c>result</c> one if that event arrived
+    /// (then <see cref="AgentRunResponse.Output"/> is the answer), else the <c>init</c> one.
     /// </exception>
     /// <exception cref="OperationCanceledException">
     /// <paramref name="cancellationToken"/> was cancelled, with <see cref="RunStreamingAgentAndWaitOptions.ThrowOnIncomplete"/>.
@@ -253,7 +267,7 @@ public sealed class SeclaiClient : IDisposable
         using var req = new HttpRequestMessage(HttpMethod.Post, url);
         await ApplyHeadersAsync(req, cancellationToken, "text/event-stream", "application/json").ConfigureAwait(false);
 
-        // This method reads only init, result and done, so stream_reasoning and stream_commentary events would be
+        // This method reads only init, result, done, error and timeout, so stream_reasoning and stream_commentary events would be
         // traffic counted against the timeout. The fields are dropped from a copy; the caller's object is unchanged.
         var node = JsonSerializer.SerializeToNode(body, JsonOptions);
         (node as JsonObject)?.Remove("include_reasoning");
@@ -267,8 +281,10 @@ public sealed class SeclaiClient : IDisposable
 
         var timedOut = $"Timed out after {effectiveTimeout.TotalMilliseconds}ms waiting for streaming agent run to complete";
         HttpResponseMessage? resp = null;
-        // The latest snapshot of the unfinished run: result if it arrived, else init. Attached to every StreamingException.
+        // The latest snapshot of the unfinished run: result if it arrived, else init. Attached to every
+        // StreamingException.
         AgentRunResponse? latest = null;
+        var resultSeen = false;
         try
         {
             resp = await _http.SendAsync(req, HttpCompletionOption.ResponseHeadersRead, ct).ConfigureAwait(false);
@@ -285,56 +301,44 @@ public sealed class SeclaiClient : IDisposable
                 throw CreateApiError(resp.StatusCode, req.Method.Method, url, responseBody, ResponseHeaders(resp));
             }
 
-            var mediaType = resp.Content.Headers.ContentType?.MediaType ?? string.Empty;
-            if (mediaType.IndexOf("application/json", StringComparison.OrdinalIgnoreCase) >= 0)
+            using var events = await AgentRunEventReader.OpenAsync(resp).ConfigureAwait(false);
+
+            // Handles one event; returns the snapshot to return (done, or result with ReturnOnResult). The server
+            // closes the stream after error or timeout, so those throw, whatever ThrowOnIncomplete says.
+            AgentRunResponse? Handle(AgentRunEvent evt)
             {
-                var responseBody = await ReadBodyAsync(resp).ConfigureAwait(false);
-                var parsed = JsonSerializer.Deserialize<AgentRunResponse>(responseBody ?? string.Empty, JsonOptions);
-                if (parsed is null) throw new StreamingException("Empty JSON response from streaming endpoint.");
-                return parsed;
-            }
-
-            using var stream = await resp.Content.ReadAsStreamAsync().ConfigureAwait(false);
-            using var reader = new StreamReader(stream, Encoding.UTF8);
-
-            string? currentEvent = null;
-            var dataLines = new List<string>();
-
-            // Dispatches the pending event; returns the snapshot to return (done, or result with ReturnOnResult).
-            AgentRunResponse? Dispatch()
-            {
-                if (currentEvent is null && dataLines.Count == 0) return null;
-                var evt = currentEvent;
-                var data = string.Join("\n", dataLines);
-                currentEvent = null;
-                dataLines.Clear();
-
-                if (string.IsNullOrWhiteSpace(evt) || string.IsNullOrWhiteSpace(data)) return null;
-                var isDone = string.Equals(evt, "done", StringComparison.OrdinalIgnoreCase);
-                var isResult = string.Equals(evt, "result", StringComparison.OrdinalIgnoreCase);
-                if (!isDone && !isResult && !string.Equals(evt, "init", StringComparison.OrdinalIgnoreCase)) return null;
-
-                try
+                if (EventIs(evt.Event, "error"))
                 {
-                    var parsed = JsonSerializer.Deserialize<AgentRunResponse>(data, JsonOptions);
-                    if (parsed is null) return null;
-                    if (isDone || (isResult && options.ReturnOnResult)) return parsed;
-                    latest = parsed;
+                    throw new StreamingException(
+                        IncompleteRunMessage($"The server reported a stream error: {StreamErrorText(evt.Data)}", latest), null, latest);
                 }
-                catch
+                if (EventIs(evt.Event, "timeout"))
                 {
-                    // ignore malformed event payloads
+                    throw new StreamingException(
+                        IncompleteRunMessage("The server timed out the stream before a 'done' event", latest), null, latest);
+                }
+                if (evt.Run is null) return null;
+                if (EventIs(evt.Event, "done")) return evt.Run;
+                if (EventIs(evt.Event, "result"))
+                {
+                    if (options.ReturnOnResult) return evt.Run;
+                    latest = evt.Run;
+                    resultSeen = true;
+                }
+                else if (EventIs(evt.Event, "init") && !resultSeen)
+                {
+                    latest = evt.Run;
                 }
                 return null;
             }
 
             Exception? readError = null;
-            while (!ct.IsCancellationRequested)
+            while (true)
             {
-                string? line;
+                AgentRunEvent? evt;
                 try
                 {
-                    line = await reader.ReadLineAsync().ConfigureAwait(false);
+                    evt = await events.ReadAsync(ct).ConfigureAwait(false);
                 }
                 catch (Exception ex) when (ct.IsCancellationRequested ||
                     (options.ThrowOnIncomplete && (ex is IOException || ex is HttpRequestException)))
@@ -343,28 +347,9 @@ public sealed class SeclaiClient : IDisposable
                     break;
                 }
 
-                if (line is null) break;
-
-                if (line.Length == 0)
-                {
-                    var done = Dispatch();
-                    if (done is not null) return done;
-                    continue;
-                }
-
-                if (line.StartsWith(":", StringComparison.Ordinal)) continue;
-
-                if (line.StartsWith("event:", StringComparison.OrdinalIgnoreCase))
-                {
-                    currentEvent = line.Substring("event:".Length).Trim();
-                    if (currentEvent.Length == 0) currentEvent = null;
-                    continue;
-                }
-
-                if (line.StartsWith("data:", StringComparison.OrdinalIgnoreCase))
-                {
-                    dataLines.Add(line.Substring("data:".Length).TrimStart());
-                }
+                if (evt is null) break;
+                var ended = Handle(evt);
+                if (ended is not null) return ended;
             }
 
             // The stream is over: it ended, broke, or was closed by cancellation. A closed stream can read as a clean
@@ -374,8 +359,14 @@ public sealed class SeclaiClient : IDisposable
                 if (options.ThrowOnIncomplete) cancellationToken.ThrowIfCancellationRequested();
                 throw new StreamingException($"{timedOut}.", readError, latest);
             }
-            var final = Dispatch();
+            var pending = events.TakePending();
+            var final = pending is null ? null : Handle(pending);
             if (final is not null) return final;
+            if (events.IsJsonReply)
+            {
+                // Its one done event carried no run.
+                throw new StreamingException("The streaming endpoint answered with JSON that cannot be read as a run.");
+            }
             if (!options.ThrowOnIncomplete && !ct.IsCancellationRequested)
             {
                 // Released behaviour: return the latest snapshot, though the run may not have finished.
@@ -383,22 +374,46 @@ public sealed class SeclaiClient : IDisposable
                 throw new StreamingException("Stream ended before receiving a 'done' event.");
             }
 
-            var reported = !string.IsNullOrEmpty(latest?.ResultReportedAt)
-                ? "the run had reported its result, which is in Run"
-                : "the run had not reported a result";
             var reason = ct.IsCancellationRequested ? timedOut
                 : readError is not null ? "Stream broke before receiving a 'done' event"
                 : "Stream ended before receiving a 'done' event";
-            throw new StreamingException($"{reason}; {reported}.", readError, latest);
+            throw new StreamingException(IncompleteRunMessage(reason, latest), readError, latest);
         }
         catch (OperationCanceledException ex) when (!options.ThrowOnIncomplete || !cancellationToken.IsCancellationRequested)
         {
+            // Cancelled by neither the timeout nor the caller: the HttpClient's own Timeout, or its handler.
+            if (!ct.IsCancellationRequested)
+            {
+                throw new StreamingException(
+                    "The HTTP request was cancelled, but not by the timeout or the cancellation token; the HttpClient's own Timeout may have elapsed.",
+                    ex, latest);
+            }
             throw new StreamingException($"{timedOut}.", ex, latest);
         }
         finally
         {
             resp?.Dispose();
         }
+    }
+
+    // The server's message from an error event's data ({"run_id": ..., "error": "<message>"}), else the raw data.
+    private static string StreamErrorText(string? data)
+    {
+        try
+        {
+            using var doc = JsonDocument.Parse(data ?? string.Empty);
+            if (doc.RootElement.ValueKind == JsonValueKind.Object &&
+                doc.RootElement.TryGetProperty("error", out var error) &&
+                error.ValueKind == JsonValueKind.String)
+            {
+                return error.GetString() ?? string.Empty;
+            }
+        }
+        catch (JsonException)
+        {
+            // not JSON: report it as sent
+        }
+        return data ?? string.Empty;
     }
 
     /// <summary>Lists runs for an agent with optional pagination.</summary>
@@ -3233,74 +3248,125 @@ public sealed class SeclaiClient : IDisposable
             throw CreateApiError(resp.StatusCode, req.Method.Method, url, responseBody, ResponseHeaders(resp));
         }
 
-        // If the server returns JSON instead of SSE, emit a single done event.
-        var mediaType = resp.Content.Headers.ContentType?.MediaType ?? string.Empty;
-        if (mediaType.IndexOf("application/json", StringComparison.OrdinalIgnoreCase) >= 0)
-        {
-            var responseBody = await ReadBodyAsync(resp).ConfigureAwait(false);
-            AgentRunResponse? parsed = null;
-            try { parsed = JsonSerializer.Deserialize<AgentRunResponse>(responseBody ?? string.Empty, JsonOptions); } catch { }
-            yield return new AgentRunEvent { Event = "done", Data = responseBody ?? string.Empty, Run = parsed };
-            yield break;
-        }
-
-        using var stream = await resp.Content.ReadAsStreamAsync().ConfigureAwait(false);
-        using var reader = new StreamReader(stream, Encoding.UTF8);
-
-        string? currentEvent = null;
-        var dataLines = new List<string>();
-
+        using var events = await AgentRunEventReader.OpenAsync(resp).ConfigureAwait(false);
         while (true)
         {
-            cancellationToken.ThrowIfCancellationRequested();
-
-            var line = await reader.ReadLineAsync().ConfigureAwait(false);
-            if (line is null)
-            {
-                // End of stream — dispatch any pending event
-                if (currentEvent is not null || dataLines.Count > 0)
-                {
-                    var data = string.Join("\n", dataLines);
-                    AgentRunResponse? run = null;
-                    try { run = JsonSerializer.Deserialize<AgentRunResponse>(data, JsonOptions); } catch { }
-                    yield return new AgentRunEvent { Event = currentEvent ?? string.Empty, Data = data, Run = run };
-                }
-                yield break;
-            }
-
-            if (line.Length == 0)
-            {
-                // Empty line = dispatch event
-                if (currentEvent is not null || dataLines.Count > 0)
-                {
-                    var data = string.Join("\n", dataLines);
-                    AgentRunResponse? run = null;
-                    if (!string.IsNullOrWhiteSpace(data))
-                    {
-                        try { run = JsonSerializer.Deserialize<AgentRunResponse>(data, JsonOptions); } catch { }
-                    }
-                    yield return new AgentRunEvent { Event = currentEvent ?? string.Empty, Data = data, Run = run };
-                    currentEvent = null;
-                    dataLines.Clear();
-                }
-                continue;
-            }
-
-            if (line.StartsWith(":", StringComparison.Ordinal)) continue;
-
-            if (line.StartsWith("event:", StringComparison.OrdinalIgnoreCase))
-            {
-                currentEvent = line.Substring("event:".Length).Trim();
-                if (currentEvent.Length == 0) currentEvent = null;
-                continue;
-            }
-
-            if (line.StartsWith("data:", StringComparison.OrdinalIgnoreCase))
-            {
-                dataLines.Add(line.Substring("data:".Length).TrimStart());
-            }
+            var evt = await events.ReadAsync(cancellationToken).ConfigureAwait(false);
+            if (evt is null) yield break;
+            yield return evt;
         }
     }
+
+    // The SSE parser behind RunStreamingAgentAsync and RunStreamingAgentAndWaitWithOptionsAsync. A plain JSON reply
+    // reads as one done event. ReadAsync returns null at the end of the stream, after the last event, which is
+    // dispatched there even without the blank line that ends it.
+    private sealed class AgentRunEventReader : IDisposable
+    {
+        private readonly StreamReader? _reader;
+        private AgentRunEvent? _jsonEvent;
+        private string? _event;
+        private readonly List<string> _data = new();
+
+        private AgentRunEventReader(StreamReader? reader, AgentRunEvent? jsonEvent)
+        {
+            IsJsonReply = reader is null;
+            _reader = reader;
+            _jsonEvent = jsonEvent;
+        }
+
+        // The server answered with plain JSON, read as one done event, instead of an SSE stream.
+        public bool IsJsonReply { get; }
+
+        public static async Task<AgentRunEventReader> OpenAsync(HttpResponseMessage resp)
+        {
+            var mediaType = resp.Content.Headers.ContentType?.MediaType ?? string.Empty;
+            if (mediaType.IndexOf("application/json", StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                var responseBody = await ReadBodyAsync(resp).ConfigureAwait(false) ?? string.Empty;
+                return new AgentRunEventReader(null, BuildEvent("done", responseBody));
+            }
+            var stream = await resp.Content.ReadAsStreamAsync().ConfigureAwait(false);
+            return new AgentRunEventReader(new StreamReader(stream, Encoding.UTF8), null);
+        }
+
+        public async Task<AgentRunEvent?> ReadAsync(CancellationToken cancellationToken)
+        {
+            if (_reader is null)
+            {
+                var evt = _jsonEvent;
+                _jsonEvent = null;
+                return evt;
+            }
+
+            while (true)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+
+                var line = await _reader.ReadLineAsync().ConfigureAwait(false);
+                if (line is null) return TakePending();
+
+                if (line.Length == 0)
+                {
+                    var evt = TakePending();
+                    if (evt is not null) return evt;
+                    continue;
+                }
+
+                if (line.StartsWith(":", StringComparison.Ordinal)) continue;
+
+                if (line.StartsWith("event:", StringComparison.OrdinalIgnoreCase))
+                {
+                    _event = line.Substring("event:".Length).Trim();
+                    if (_event.Length == 0) _event = null;
+                    continue;
+                }
+
+                if (line.StartsWith("data:", StringComparison.OrdinalIgnoreCase))
+                {
+                    _data.Add(line.Substring("data:".Length).TrimStart());
+                }
+            }
+        }
+
+        // The event whose lines were read but not yet ended by a blank line, or null.
+        public AgentRunEvent? TakePending()
+        {
+            if (_event is null && _data.Count == 0) return null;
+            var evt = BuildEvent(_event ?? string.Empty, string.Join("\n", _data));
+            _event = null;
+            _data.Clear();
+            return evt;
+        }
+
+        private static AgentRunEvent BuildEvent(string name, string data)
+        {
+            AgentRunResponse? run = null;
+            if (IsRunEvent(name) && !string.IsNullOrWhiteSpace(data))
+            {
+                try { run = JsonSerializer.Deserialize<AgentRunResponse>(data, JsonOptions); } catch { /* not a run */ }
+            }
+            return new AgentRunEvent { Event = name, Data = data, Run = run };
+        }
+
+        public void Dispose() => _reader?.Dispose();
+    }
+
+    // The events whose data is a run: the snapshots, and status ({run_id, status}). The others (stream_token,
+    // stream_reasoning, stream_commentary, error, timeout, step and tool progress, ...) carry other payloads.
+    private static bool IsRunEvent(string? name)
+        => EventIs(name, "init") || EventIs(name, "update") || EventIs(name, "result") || EventIs(name, "done")
+            || EventIs(name, "status");
+
+    private static bool EventIs(string? name, string expected)
+        => string.Equals(name, expected, StringComparison.OrdinalIgnoreCase);
+
+    // The message of a StreamingException that ends a wait with the latest snapshot attached (the poll timeout; an
+    // error or timeout event; or, with ThrowOnIncomplete, the wait's own timeout ending the read loop, or a stream
+    // that ended or broke): the reason, then whether that snapshot has the answer.
+    private static string IncompleteRunMessage(string reason, AgentRunResponse? run)
+        => !string.IsNullOrEmpty(run?.ResultReportedAt)
+            ? $"{reason}; the run had reported its result, which is in Run."
+            : $"{reason}; the run had not reported a result.";
 
     /// <summary>
     /// Runs an agent and polls until it reaches a terminal status (completed, failed or cancelled).
@@ -3380,9 +3446,7 @@ public sealed class SeclaiClient : IDisposable
 
         // The start response carries no step outputs, so when it would end the poll, fetch them first. This is not
         // waiting for the run, so the timeout does not apply: it cannot turn a finished run into a timeout.
-        if (options.IncludeStepOutputs &&
-            (IsTerminalRunStatus(run.Status) ||
-             (options.ReturnOnResult && !string.IsNullOrEmpty(run.ResultReportedAt))))
+        if (options.IncludeStepOutputs && EndsPoll(run, options))
         {
             run = await GetAgentRunAsync(run.RunId!, true, cancellationToken).ConfigureAwait(false);
         }
@@ -3397,8 +3461,7 @@ public sealed class SeclaiClient : IDisposable
         {
             while (true)
             {
-                if (IsTerminalRunStatus(run.Status)) return run;
-                if (options.ReturnOnResult && !string.IsNullOrEmpty(run.ResultReportedAt)) return run;
+                if (EndsPoll(run, options)) return run;
 
                 await Task.Delay(interval, ct).ConfigureAwait(false);
                 run = await GetAgentRunAsync(run.RunId!, options.IncludeStepOutputs, ct).ConfigureAwait(false);
@@ -3407,13 +3470,14 @@ public sealed class SeclaiClient : IDisposable
         catch (OperationCanceledException ex) when (
             options.ThrowOnIncomplete && ct.IsCancellationRequested && !cancellationToken.IsCancellationRequested)
         {
-            var reported = !string.IsNullOrEmpty(run.ResultReportedAt)
-                ? "the run had reported its result, which is in Run"
-                : "the run had not reported a result";
-            throw new StreamingException(
-                $"Timed out after {options.Timeout!.Value.TotalMilliseconds}ms waiting for agent run to complete; {reported}.", ex, run);
+            throw new StreamingException(IncompleteRunMessage(
+                $"Timed out after {options.Timeout!.Value.TotalMilliseconds}ms waiting for agent run to complete", run), ex, run);
         }
     }
+
+    // Whether a run ends the poll: it is terminal, or, with ReturnOnResult, it has reported its result.
+    private static bool EndsPoll(AgentRunResponse run, RunAgentAndPollOptions options)
+        => IsTerminalRunStatus(run.Status) || (options.ReturnOnResult && !string.IsNullOrEmpty(run.ResultReportedAt));
 
     // A run ends as completed, failed or cancelled. A cancelled run reports cancelled from API version 2026-11-08
     // and failed before it.

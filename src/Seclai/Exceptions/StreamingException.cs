@@ -5,7 +5,8 @@ namespace Seclai.Exceptions;
 
 /// <summary>
 /// Thrown when an agent run helper gives up before the run finished: an SSE streaming run times out, its stream
-/// ends without a <c>done</c> event or breaks mid-stream, or a polled run's own timeout elapses.
+/// ends without a <c>done</c> event or breaks mid-stream, the server ends its stream with an <c>error</c> or
+/// <c>timeout</c> event, or a polled run's own timeout elapses.
 /// </summary>
 public sealed class StreamingException : Exception
 {

@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.9.1] - 2026-11-27
+
+### Fixed
+
+- Throw `StreamingException` from `RunStreamingAgentAndWaitAsync` and `RunStreamingAgentAndWaitWithOptionsAsync` when the server ends the stream with an `error` event, with the server's error text in the message, or a `timeout` event, with or without `ThrowOnIncomplete`, and the latest snapshot in `Run`. By default they returned the unfinished snapshot as if the stream had just ended, and with `ThrowOnIncomplete` the server's message was lost ([#18](https://github.com/seclai/seclai-csharp/issues/18))
+- Stop reporting the `HttpClient`'s own timeout as the timeout of `RunStreamingAgentAndWaitAsync` and `RunStreamingAgentAndWaitWithOptionsAsync`: a request cancelled by neither their `Timeout` nor the caller's token, as when `HttpClient.Timeout` elapses before the response headers arrive, still throws `StreamingException`, but its message says so instead of "Timed out after <Timeout>ms" ([#18](https://github.com/seclai/seclai-csharp/issues/18))
+- Throw `StreamingException` from `RunStreamingAgentAndWaitAsync` and `RunStreamingAgentAndWaitWithOptionsAsync` when the server answers with plain JSON that cannot be read as a run, where they let a `System.Text.Json.JsonException` through (or, for `null`, threw `StreamingException` as now): the reply is now read as one `done` event, as `RunStreamingAgentAsync` reads it ([#18](https://github.com/seclai/seclai-csharp/issues/18))
+- Set `AgentRunEvent.Run` from `RunStreamingAgentAsync` only on the run snapshots `init`, `update`, `result` and `done` and on `status` events. It was set on any event whose data is a JSON object, so the other events, such as `stream_token`, `stream_reasoning`, `stream_commentary`, `error` and `timeout`, carried a non-null `Run` that was not a run ([#20](https://github.com/seclai/seclai-csharp/issues/20))
+
 ## [1.9.0] - 2026-11-27
 
 ### Changed
@@ -298,6 +307,7 @@ _Stable release. Packaging only; no API changes since 0.0.1._
 
 _Initial release._
 
+[1.9.1]: https://github.com/seclai/seclai-csharp/releases/tag/1.9.1
 [1.9.0]: https://github.com/seclai/seclai-csharp/releases/tag/1.9.0
 [1.8.0]: https://github.com/seclai/seclai-csharp/releases/tag/1.8.0
 [1.7.0]: https://github.com/seclai/seclai-csharp/releases/tag/1.7.0
