@@ -17,7 +17,7 @@ public sealed class AgentRunStreamRequest
     /// only for a <c>prompt_call</c> step whose <c>run_result</c> enables <c>show_reasoning</c>, and never when a
     /// governance policy redacts that step. Null omits the field (server default false). It applies to
     /// <see cref="SeclaiClient.RunStreamingAgentAsync"/>. <c>RunStreamingAgentAndWaitAsync</c>
-    /// reads only the <c>init</c>, <c>result</c> and <c>done</c> events and does not send this field, so reasoning events never
+    /// reads only the <c>init</c>, <c>result</c>, <c>done</c>, <c>error</c> and <c>timeout</c> events and does not send this field, so reasoning events never
     /// count against its timeout.
     /// </summary>
     [JsonPropertyName("include_reasoning")]
@@ -29,7 +29,7 @@ public sealed class AgentRunStreamRequest
     /// <c>prompt_call</c> step whose <c>run_result</c> enables <c>show_commentary</c>, and never when a governance
     /// policy redacts that step. Null omits the field (server default false). It applies to
     /// <see cref="SeclaiClient.RunStreamingAgentAsync"/>. <c>RunStreamingAgentAndWaitAsync</c>
-    /// reads only the <c>init</c>, <c>result</c> and <c>done</c> events and does not send this field, so commentary events never
+    /// reads only the <c>init</c>, <c>result</c>, <c>done</c>, <c>error</c> and <c>timeout</c> events and does not send this field, so commentary events never
     /// count against its timeout.
     /// </summary>
     [JsonPropertyName("include_commentary")]

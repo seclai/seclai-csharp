@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.9.1] - 2026-11-27
+
+### Fixed
+
+- Throw `StreamingException` from `RunStreamingAgentAndWaitAsync` and `RunStreamingAgentAndWaitWithOptionsAsync` when the server ends the stream with an `error` event, with the server's error text in the message, or a `timeout` event, with or without `ThrowOnIncomplete`, and the latest snapshot in `Run`. By default they returned the latest snapshot as if the stream had just ended, so a run that failed on the server came back looking like an unfinished success, with no exception; with `ThrowOnIncomplete` they threw a generic "Stream ended" `StreamingException` and the server's message was lost ([#18](https://github.com/seclai/seclai-csharp/issues/18))
+- Throw `StreamingException` from `RunStreamingAgentAndWaitWithOptionsAsync` with `ThrowOnIncomplete` when the server answers with plain JSON for a run that has not ended (not terminal, and, with `ReturnOnResult`, not reported), with that run in `Run`, where it was returned as finished. By default it is still returned
+- Throw `StreamingException` from `RunStreamingAgentAndWaitAsync` and `RunStreamingAgentAndWaitWithOptionsAsync` when their timeout or, without `ThrowOnIncomplete`, the caller's token fires while the response body is being opened or a plain JSON reply is being read, where the disposed response's `ObjectDisposedException` escaped while the body was being opened, and an `HttpRequestException` while a plain JSON reply was being read
+- Stop reporting a cancellation through the caller's `cancellationToken` as a timeout from `RunStreamingAgentAndWaitAsync` and `RunStreamingAgentAndWaitWithOptionsAsync` without `ThrowOnIncomplete`: it still throws `StreamingException`, as documented, with the latest snapshot in `Run`, but its message says it was cancelled by the caller instead of "Timed out after <Timeout>ms". The exception type is unchanged; with `ThrowOnIncomplete` it is still `OperationCanceledException` ([#22](https://github.com/seclai/seclai-csharp/issues/22))
+- Throw `StreamingException` from `RunStreamingAgentAndWaitWithOptionsAsync` with `ThrowOnIncomplete` when a plain JSON reply's body breaks mid-read with an `IOException` or `HttpRequestException`, as for a break in an SSE stream, where the transport exception escaped. Without `ThrowOnIncomplete` the transport exception is still thrown
+- Keep the indentation of SSE `data:` lines in `RunStreamingAgentAsync`'s `AgentRunEvent.Data` and in the wait helpers: exactly one space after the colon is dropped, as the SSE format says, where all leading whitespace was; and read a bare `data` line (no colon) as an empty line of the data, and a bare `event` line as an empty event name, where both were ignored, so an event left with neither a name nor data (such as `event: done` followed by a bare `event`) is not emitted; and match the `event` and `data` field names case-sensitively, as the SSE format says, where `EVENT:` and `DATA:` lines were read as those fields
+- Stop reporting the `HttpClient`'s own timeout as the timeout of `RunStreamingAgentAndWaitAsync` and `RunStreamingAgentAndWaitWithOptionsAsync`: a request cancelled by neither their `Timeout` nor the caller's token, as when `HttpClient.Timeout` elapses before the response headers arrive, still throws `StreamingException`, but its message says so instead of "Timed out after <Timeout>ms" ([#18](https://github.com/seclai/seclai-csharp/issues/18))
+- Throw `StreamingException` from `RunStreamingAgentAndWaitAsync` and `RunStreamingAgentAndWaitWithOptionsAsync` when the server answers with plain JSON that cannot be read as a run, where they let a `System.Text.Json.JsonException` through (or, for `null`, threw `StreamingException` as now): the reply is now read as one `done` event, as `RunStreamingAgentAsync` reads it ([#18](https://github.com/seclai/seclai-csharp/issues/18))
+- Set `AgentRunEvent.Run` from `RunStreamingAgentAsync` to null on events that carry no run, such as `stream_token`, `stream_reasoning`, `stream_commentary`, `step_progress` and `tool_call_*`. It was set on any event whose data is a JSON object, so those events carried a non-null `Run` that was not a run. It is still set as before on `init`, `result`, `done`, `status`, `error` and `timeout`, whose `RunId` is the run's ([#20](https://github.com/seclai/seclai-csharp/issues/20))
+
 ## [1.9.0] - 2026-11-27
 
 ### Changed
@@ -298,6 +312,7 @@ _Stable release. Packaging only; no API changes since 0.0.1._
 
 _Initial release._
 
+[1.9.1]: https://github.com/seclai/seclai-csharp/releases/tag/1.9.1
 [1.9.0]: https://github.com/seclai/seclai-csharp/releases/tag/1.9.0
 [1.8.0]: https://github.com/seclai/seclai-csharp/releases/tag/1.8.0
 [1.7.0]: https://github.com/seclai/seclai-csharp/releases/tag/1.7.0
