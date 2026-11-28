@@ -3366,8 +3366,8 @@ public sealed class SeclaiClient : IDisposable
 
                 // A field name with no colon has an empty value: a bare data line is an empty line of the data, and
                 // a bare event line clears the event name.
-                if (string.Equals(line, "data", StringComparison.OrdinalIgnoreCase)) _data.Add(string.Empty);
-                else if (string.Equals(line, "event", StringComparison.OrdinalIgnoreCase)) _event = null;
+                if (string.Equals(line, "data", StringComparison.Ordinal)) _data.Add(string.Empty);
+                else if (string.Equals(line, "event", StringComparison.Ordinal)) _event = null;
             }
         }
 

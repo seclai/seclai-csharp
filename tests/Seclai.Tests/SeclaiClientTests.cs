@@ -2737,6 +2737,12 @@ public sealed class SeclaiClientTests
         Assert.Equal("a\n\nb", events[0].Data);
         Assert.Equal("", events[1].Event);
         Assert.Equal("c", events[1].Data);
+
+        // Bare field names are case-sensitive: DATA is not a data field.
+        handler = new FakeHttpMessageHandler(_ => SseResponse(new System.IO.MemoryStream(Encoding.UTF8.GetBytes("event: x\nDATA\ndata: a\n\n"))));
+        events.Clear();
+        await foreach (var evt in MakeClient(handler).RunStreamingAgentAsync("a1", new AgentRunStreamRequest { Input = "hi" })) events.Add(evt);
+        Assert.Equal("a", Assert.Single(events).Data);
     }
 
     [Fact]
