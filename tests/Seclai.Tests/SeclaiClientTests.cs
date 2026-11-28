@@ -515,7 +515,28 @@ public sealed class SeclaiClientTests
         using var cts = new CancellationTokenSource(TimeSpan.FromMilliseconds(100));
         var ex = await Assert.ThrowsAsync<StreamingException>(() => MakeClient(handler).RunStreamingAgentAndWaitAsync(
             "a", Hi, timeout: TimeSpan.FromSeconds(30), cancellationToken: cts.Token));
-        Assert.StartsWith("Timed out", ex.Message);
+        Assert.StartsWith("Cancelled by the caller", ex.Message);
+        Assert.Equal("processing", ex.Run!.Status);
+    }
+
+    [Fact]
+    public async Task RunStreamingAgentAndWait_Default_CallerCancellationBeforeResponse_IsNotReportedAsTimeout()
+    {
+        var handler = new FakeHttpMessageHandler(async (_, ct) =>
+        {
+            await Task.Delay(Timeout.Infinite, ct);
+            throw new InvalidOperationException("unreachable");
+        });
+        using var cts = new CancellationTokenSource(TimeSpan.FromMilliseconds(100));
+        var ex = await Assert.ThrowsAsync<StreamingException>(() => MakeClient(handler).RunStreamingAgentAndWaitAsync(
+            "a", Hi, timeout: TimeSpan.FromSeconds(30), cancellationToken: cts.Token));
+        Assert.StartsWith("Cancelled by the caller", ex.Message);
+        Assert.IsAssignableFrom<OperationCanceledException>(ex.InnerException);
+
+        // With ThrowOnIncomplete it is an OperationCanceledException, as released.
+        using var cts2 = new CancellationTokenSource(TimeSpan.FromMilliseconds(100));
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(() => MakeClient(handler).RunStreamingAgentAndWaitWithOptionsAsync(
+            "a", Hi, new RunStreamingAgentAndWaitOptions { Timeout = TimeSpan.FromSeconds(30), ThrowOnIncomplete = true }, cts2.Token));
     }
 
     [Fact]
@@ -532,7 +553,7 @@ public sealed class SeclaiClientTests
         using var cts = new CancellationTokenSource(TimeSpan.FromMilliseconds(100));
         ex = await Assert.ThrowsAsync<StreamingException>(() => MakeClient(handler).RunStreamingAgentAndWaitAsync(
             "a", Hi, timeout: TimeSpan.FromSeconds(30), cancellationToken: cts.Token));
-        Assert.StartsWith("Timed out", ex.Message);
+        Assert.StartsWith("Cancelled by the caller", ex.Message);
     }
 
     [Fact]
@@ -716,7 +737,7 @@ public sealed class SeclaiClientTests
     }
 
     [Fact]
-    public async Task RunStreamingAgentAndWait_Default_UpdateDoesNotReplaceLatestSnapshot()
+    public async Task RunStreamingAgentAndWait_Default_OnlyInitAndResultFeedTheLatestSnapshot()
     {
         // As released: the latest snapshot is the result run, else init; update events do not replace it.
         var update = "event: update\ndata: {\"run_id\":\"run_1\",\"status\":\"running\",\"attempts\":[],\"error_count\":0,\"priority\":false}\n\n";
@@ -750,6 +771,52 @@ public sealed class SeclaiClientTests
         await foreach (var evt in MakeClient(SseHandler(sse)).RunStreamingAgentAsync("a", Hi)) events.Add(evt);
         Assert.Equal("done", events[^1].Event);
         Assert.Equal("completed", events[^1].Run!.Status);
+    }
+
+    [Fact]
+    public async Task RunStreamingAgentAndWait_PlainJsonReplyForUnfinishedRun_IsTheLatestSnapshot()
+    {
+        var processing = "{\"run_id\":\"run_1\",\"status\":\"processing\",\"attempts\":[],\"error_count\":0,\"priority\":false}";
+        var reported = "{\"run_id\":\"run_1\",\"status\":\"processing\",\"output\":\"answer\",\"result_reported_at\":\"2026-11-05T00:00:00Z\",\"attempts\":[],\"error_count\":0,\"priority\":false}";
+        FakeHttpMessageHandler Json(string body) => new(_ => JsonResponse(body));
+
+        // Default: returned, as released.
+        Assert.Equal("processing", (await MakeClient(Json(processing)).RunStreamingAgentAndWaitAsync("a", Hi)).Status);
+
+        // ThrowOnIncomplete: thrown with the run attached.
+        var ex = await Assert.ThrowsAsync<StreamingException>(() =>
+            MakeClient(Json(processing)).RunStreamingAgentAndWaitWithOptionsAsync("a", Hi, ThrowOnIncomplete));
+        Assert.Equal("run_1", ex.Run!.RunId);
+        Assert.Contains("not finished", ex.Message);
+
+        ex = await Assert.ThrowsAsync<StreamingException>(() =>
+            MakeClient(Json(reported)).RunStreamingAgentAndWaitWithOptionsAsync("a", Hi, ThrowOnIncomplete));
+        Assert.Equal("answer", ex.Run!.Output);
+
+        // A reported run ends the wait with ReturnOnResult; a terminal one always does.
+        var res = await MakeClient(Json(reported)).RunStreamingAgentAndWaitWithOptionsAsync("a", Hi,
+            new RunStreamingAgentAndWaitOptions { ThrowOnIncomplete = true, ReturnOnResult = true });
+        Assert.Equal("answer", res.Output);
+        res = await MakeClient(Json(RunDone)).RunStreamingAgentAndWaitWithOptionsAsync("a", Hi, ThrowOnIncomplete);
+        Assert.Equal("completed", res.Status);
+    }
+
+    [Fact]
+    public async Task RunStreamingAgentAndWait_TimeoutWhileReadingPlainJsonReply_ThrowsStreamingException()
+    {
+        // The JSON body never finishes arriving; the helper's timeout disposes the response under the read.
+        var handler = new FakeHttpMessageHandler(_ =>
+        {
+            var resp = new HttpResponseMessage(HttpStatusCode.OK) { Content = new StreamContent(new NeverEndingStream(Encoding.UTF8.GetBytes("{\"run_id\":"))) };
+            resp.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
+            return resp;
+        });
+        foreach (var throwOnIncomplete in new[] { false, true })
+        {
+            var ex = await Assert.ThrowsAsync<StreamingException>(() => MakeClient(handler).RunStreamingAgentAndWaitWithOptionsAsync("a", Hi,
+                new RunStreamingAgentAndWaitOptions { Timeout = TimeSpan.FromMilliseconds(100), ThrowOnIncomplete = throwOnIncomplete }));
+            Assert.StartsWith("Timed out", ex.Message);
+        }
     }
 
     [Fact]
@@ -2594,7 +2661,7 @@ public sealed class SeclaiClientTests
     }
 
     [Fact]
-    public async Task RunStreamingAgent_SetsRunOnlyOnRunEvents()
+    public async Task RunStreamingAgent_SetsRunOnlyOnEventsThatCarryARun()
     {
         var run = "{\"run_id\":\"r1\",\"status\":\"processing\",\"attempts\":[],\"error_count\":0,\"priority\":false}";
         var sse =
@@ -2602,7 +2669,8 @@ public sealed class SeclaiClientTests
             "event: stream_token\ndata: {\"text\":\"he\"}\n\n" +
             "event: stream_reasoning\ndata: {\"text\":\"thinking\"}\n\n" +
             "event: stream_commentary\ndata: {\"phase\":\"p\",\"message\":\"m\",\"text\":\"t\"}\n\n" +
-            "event: update\ndata: " + run + "\n\n" +
+            "event: step_progress\ndata: {\"step_id\":\"s1\",\"progress\":0.5}\n\n" +
+            "event: tool_call_started\ndata: {\"tool\":\"search\"}\n\n" +
             "event: status\ndata: {\"run_id\":\"r1\",\"status\":\"processing\"}\n\n" +
             "event: result\ndata: " + run + "\n\n" +
             "event: error\ndata: {\"run_id\":\"r1\",\"error\":\"boom\"}\n\n" +
@@ -2613,14 +2681,15 @@ public sealed class SeclaiClientTests
         var events = new List<AgentRunEvent>();
         await foreach (var evt in MakeClient(handler).RunStreamingAgentAsync("a1", new AgentRunStreamRequest { Input = "hi" })) events.Add(evt);
 
-        Assert.Equal(10, events.Count);
+        Assert.Equal(11, events.Count);
         foreach (var evt in events)
         {
-            if (evt.Event is "init" or "update" or "status" or "result" or "done") Assert.Equal("r1", evt.Run?.RunId);
+            if (evt.Event is "init" or "status" or "result" or "error" or "timeout" or "done") Assert.Equal("r1", evt.Run?.RunId);
             else Assert.Null(evt.Run);
         }
-        // A status event carries the run's id and status, as in 1.9.0.
+        // As in 1.9.0: a status event carries the run's id and status; error and timeout carry the id to poll.
         Assert.Equal("processing", events.Single(e => e.Event == "status").Run!.Status);
+        Assert.Null(events.Single(e => e.Event == "error").Run!.Status);
         Assert.Contains("boom", events.Single(e => e.Event == "error").Data);
     }
 

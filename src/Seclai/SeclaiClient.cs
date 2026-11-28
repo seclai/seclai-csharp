@@ -228,7 +228,8 @@ public sealed class SeclaiClient : IDisposable
     /// A run returned because of <see cref="RunStreamingAgentAndWaitOptions.ReturnOnResult"/> may still be in
     /// progress: its <see cref="AgentRunResponse.Status"/> is not terminal and it can still fail, so check
     /// <see cref="AgentRunResponse.ResultReportedAt"/>, not <see cref="AgentRunResponse.Status"/>. If the server
-    /// answers with plain JSON instead of an SSE stream, that response is returned, and
+    /// answers with plain JSON instead of an SSE stream, that response is returned, unless
+    /// <see cref="RunStreamingAgentAndWaitOptions.ThrowOnIncomplete"/> is set and its run has not ended, and
     /// <see cref="StreamingException"/> is thrown if it cannot be read as a run.
     /// <para>
     /// With <see cref="RunStreamingAgentAndWaitOptions.ThrowOnIncomplete"/> off (the default), the endings other
@@ -243,13 +244,16 @@ public sealed class SeclaiClient : IDisposable
     /// The run did not finish: <see cref="RunStreamingAgentAndWaitOptions.Timeout"/> elapsed; the server ended the
     /// stream with an <c>error</c> event (the message includes the server's error text) or a <c>timeout</c> event,
     /// with or without <see cref="RunStreamingAgentAndWaitOptions.ThrowOnIncomplete"/>; or, with it, the stream ended
-    /// without a <c>done</c> event or broke mid-stream. It is also thrown, with a message that says so, when the
-    /// request is cancelled by neither <see cref="RunStreamingAgentAndWaitOptions.Timeout"/> nor
-    /// <paramref name="cancellationToken"/>, as when the <see cref="HttpClient"/>'s own timeout elapses, and, with
-    /// or without <see cref="RunStreamingAgentAndWaitOptions.ThrowOnIncomplete"/>, when the server answers with plain
-    /// JSON that cannot be read as a run.
+    /// without a <c>done</c> event or broke mid-stream, or the server answered with plain JSON for a run that had not
+    /// ended (not terminal, and, with <see cref="RunStreamingAgentAndWaitOptions.ReturnOnResult"/>, not reported).
     /// <see cref="StreamingException.Run"/> holds the latest snapshot: the <c>result</c> one if that event arrived
-    /// (then <see cref="AgentRunResponse.Output"/> is the answer), else the <c>init</c> one.
+    /// (then <see cref="AgentRunResponse.Output"/> is the answer), else the <c>init</c> one, or the plain JSON
+    /// reply's run; it is null when none was read.
+    /// It is also thrown, with <see cref="StreamingException.Run"/> null and a message that says so, with or without
+    /// <see cref="RunStreamingAgentAndWaitOptions.ThrowOnIncomplete"/>, when the request is cancelled by neither
+    /// <see cref="RunStreamingAgentAndWaitOptions.Timeout"/> nor <paramref name="cancellationToken"/> before the
+    /// response arrives, as when the <see cref="HttpClient"/>'s own timeout elapses, and when the server answers with
+    /// plain JSON that cannot be read as a run.
     /// </exception>
     /// <exception cref="OperationCanceledException">
     /// <paramref name="cancellationToken"/> was cancelled, with <see cref="RunStreamingAgentAndWaitOptions.ThrowOnIncomplete"/>.
@@ -280,6 +284,7 @@ public sealed class SeclaiClient : IDisposable
         var ct = cts.Token;
 
         var timedOut = $"Timed out after {effectiveTimeout.TotalMilliseconds}ms waiting for streaming agent run to complete";
+        const string callerCancelled = "Cancelled by the caller's cancellation token before the streaming agent run completed";
         HttpResponseMessage? resp = null;
         // The latest snapshot of the unfinished run: result if it arrived, else init. Attached to every
         // StreamingException.
@@ -301,7 +306,19 @@ public sealed class SeclaiClient : IDisposable
                 throw CreateApiError(resp.StatusCode, req.Method.Method, url, responseBody, ResponseHeaders(resp));
             }
 
-            using var events = await AgentRunEventReader.OpenAsync(resp).ConfigureAwait(false);
+            // Opening reads a plain JSON reply whole, so the timeout or the caller's token can cut it, as it can a
+            // read in the loop below: the disposed response then throws a transport exception, mapped the same way.
+            Exception? readError = null;
+            AgentRunEventReader? opened = null;
+            try
+            {
+                opened = await AgentRunEventReader.OpenAsync(resp).ConfigureAwait(false);
+            }
+            catch (Exception ex) when (ct.IsCancellationRequested)
+            {
+                readError = ex;
+            }
+            using var events = opened;
 
             // Handles one event; returns the snapshot to return (done, or result with ReturnOnResult). The server
             // closes the stream after error or timeout, so those throw, whatever ThrowOnIncomplete says.
@@ -318,7 +335,18 @@ public sealed class SeclaiClient : IDisposable
                         IncompleteRunMessage("The server timed out the stream before a 'done' event", latest), null, latest);
                 }
                 if (evt.Run is null) return null;
-                if (EventIs(evt.Event, "done")) return evt.Run;
+                if (EventIs(evt.Event, "done"))
+                {
+                    // A plain JSON reply is read as done, but its run may not have ended: then it is the latest
+                    // snapshot, handled after the loop as a stream that ended without done.
+                    if (!events!.IsJsonReply || IsTerminalRunStatus(evt.Run.Status) ||
+                        (options.ReturnOnResult && !string.IsNullOrEmpty(evt.Run.ResultReportedAt)))
+                    {
+                        return evt.Run;
+                    }
+                    latest = evt.Run;
+                    return null;
+                }
                 if (EventIs(evt.Event, "result"))
                 {
                     if (options.ReturnOnResult) return evt.Run;
@@ -332,8 +360,7 @@ public sealed class SeclaiClient : IDisposable
                 return null;
             }
 
-            Exception? readError = null;
-            while (true)
+            while (events is not null)
             {
                 AgentRunEvent? evt;
                 try
@@ -357,15 +384,19 @@ public sealed class SeclaiClient : IDisposable
             if (cancellationToken.IsCancellationRequested)
             {
                 if (options.ThrowOnIncomplete) cancellationToken.ThrowIfCancellationRequested();
-                throw new StreamingException($"{timedOut}.", readError, latest);
+                throw new StreamingException(IncompleteRunMessage(callerCancelled, latest), readError, latest);
             }
-            var pending = events.TakePending();
+            var pending = events?.TakePending();
             var final = pending is null ? null : Handle(pending);
             if (final is not null) return final;
-            if (events.IsJsonReply)
+            if (events is not null && events.IsJsonReply && !ct.IsCancellationRequested)
             {
-                // Its one done event carried no run.
-                throw new StreamingException("The streaming endpoint answered with JSON that cannot be read as a run.");
+                // Its one done event carried no run, or a run that had not ended (now in latest).
+                if (latest is null)
+                    throw new StreamingException("The streaming endpoint answered with JSON that cannot be read as a run.");
+                if (!options.ThrowOnIncomplete) return latest;
+                throw new StreamingException(
+                    IncompleteRunMessage("The streaming endpoint answered with plain JSON for a run that had not finished", latest), null, latest);
             }
             if (!options.ThrowOnIncomplete && !ct.IsCancellationRequested)
             {
@@ -388,6 +419,9 @@ public sealed class SeclaiClient : IDisposable
                     "The HTTP request was cancelled, but not by the timeout or the cancellation token; the HttpClient's own Timeout may have elapsed.",
                     ex, latest);
             }
+            // Without ThrowOnIncomplete, a cancellation by the caller is a StreamingException, as released, but says so.
+            if (cancellationToken.IsCancellationRequested)
+                throw new StreamingException(IncompleteRunMessage(callerCancelled, latest), ex, latest);
             throw new StreamingException($"{timedOut}.", ex, latest);
         }
         finally
@@ -3351,18 +3385,22 @@ public sealed class SeclaiClient : IDisposable
         public void Dispose() => _reader?.Dispose();
     }
 
-    // The events whose data is a run: the snapshots, and status ({run_id, status}). The others (stream_token,
-    // stream_reasoning, stream_commentary, error, timeout, step and tool progress, ...) carry other payloads.
+    // The events whose data is read into a run, as in 1.9.0: the snapshots (init, result, done), status
+    // ({run_id, status}), and error and timeout ({run_id, ...}). update is kept as a snapshot name, though the server
+    // sends none. The others (stream_token, stream_reasoning, stream_commentary, step_progress, tool_call_*, ...)
+    // carry no run.
     private static bool IsRunEvent(string? name)
         => EventIs(name, "init") || EventIs(name, "update") || EventIs(name, "result") || EventIs(name, "done")
-            || EventIs(name, "status");
+            || EventIs(name, "status") || EventIs(name, "error") || EventIs(name, "timeout");
 
     private static bool EventIs(string? name, string expected)
         => string.Equals(name, expected, StringComparison.OrdinalIgnoreCase);
 
     // The message of a StreamingException that ends a wait with the latest snapshot attached (the poll timeout; an
-    // error or timeout event; or, with ThrowOnIncomplete, the wait's own timeout ending the read loop, or a stream
-    // that ended or broke): the reason, then whether that snapshot has the answer.
+    // error or timeout event; the wait's own timeout ending the read loop; without ThrowOnIncomplete, the caller's
+    // cancellation of a streaming wait; with ThrowOnIncomplete, a stream that
+    // ended or broke, or a plain JSON reply for a run that had not finished): the reason, then whether that snapshot
+    // has the answer.
     private static string IncompleteRunMessage(string reason, AgentRunResponse? run)
         => !string.IsNullOrEmpty(run?.ResultReportedAt)
             ? $"{reason}; the run had reported its result, which is in Run."

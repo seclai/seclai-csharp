@@ -6,7 +6,10 @@ namespace Seclai.Exceptions;
 /// <summary>
 /// Thrown when an agent run helper gives up before the run finished: an SSE streaming run times out, its stream
 /// ends without a <c>done</c> event or breaks mid-stream, the server ends its stream with an <c>error</c> or
-/// <c>timeout</c> event, or a polled run's own timeout elapses.
+/// <c>timeout</c> event, or a polled run's own timeout elapses. A streaming wait also throws it when the server
+/// answers with plain JSON that cannot be read as a run, or when its request is cancelled before the response
+/// arrives by neither its timeout nor the caller's token, as when the <see cref="System.Net.Http.HttpClient"/>'s
+/// own timeout elapses; then <see cref="Run"/> is null.
 /// </summary>
 public sealed class StreamingException : Exception
 {
@@ -31,7 +34,8 @@ public sealed class StreamingException : Exception
 
     /// <summary>
     /// The latest snapshot of the run, which had not finished, or null if none arrived. For a streaming run it is
-    /// the <c>result</c> snapshot if that event arrived, else the <c>init</c> one; for a polled run, the last poll.
+    /// the <c>result</c> snapshot if that event arrived, else the <c>init</c> one, or the run of a plain JSON reply;
+    /// for a polled run, the last poll.
     /// When <see cref="AgentRunResponse.ResultReportedAt"/> is set, <see cref="AgentRunResponse.Output"/> is the
     /// answer even though <see cref="AgentRunResponse.Status"/> is not terminal.
     /// </summary>

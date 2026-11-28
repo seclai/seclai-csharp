@@ -512,7 +512,7 @@ By default `RunStreamingAgentAndWaitAsync` can return a run that has not finishe
 ends without a `done` event it returns the latest snapshot (the `result` one if that event arrived,
 else `init`), so check `Status` and `ResultReportedAt`. A connection cut
 mid-stream throws the transport's `IOException` or `HttpRequestException`. Its own timeout, or
-cancelling your `CancellationToken`, throws `StreamingException`. When the server ends the stream
+cancelling your `CancellationToken`, throws `StreamingException`, whose message says which. When the server ends the stream
 with an `error` event (the message includes the server's error text) or a `timeout` event, it throws
 `StreamingException` with the latest snapshot in `Run`, with or without `ThrowOnIncomplete`. When the
 `HttpClient`'s own timeout cancels its request, it throws `StreamingException` with a message saying
@@ -526,8 +526,8 @@ run. As in 1.7.0, the request that starts the run is bounded by the `HttpClient`
 when your token was not cancelled.
 
 We recommend setting `ThrowOnIncomplete`, which becomes the default in the next major version. With
-it, neither helper returns an unfinished run: its own timeout, or a stream that ends or breaks
-without `done`, throws `StreamingException`, whose `Run` holds the latest snapshot (for polling, the
+it, neither helper returns an unfinished run: its own timeout, a stream that ends or breaks
+without `done`, or a plain JSON reply for a run that has not ended, throws `StreamingException`, whose `Run` holds the latest snapshot (for polling, the
 last poll). Cancelling your `CancellationToken` throws `OperationCanceledException`.
 
 ```csharp
@@ -548,10 +548,10 @@ catch (StreamingException ex) when (ex.Run?.ResultReportedAt is not null)
 answer from it rather than from `stream_token` events. `done.Status` says whether the whole run
 succeeded, which can still fail after its result. When the server answers with plain JSON instead of
 an SSE stream, `RunStreamingAgentAsync` yields only a `done` event, so read the answer from it.
-`evt.Run` is set only on the run snapshots (`init`, `update`, `result` and `done`) and on `status`
-events (with only `RunId` and `Status`). On every other event, such as `stream_token`,
-`stream_reasoning`, `stream_commentary`, `error` and `timeout`, it is null, and the payload is in
-`evt.Data`.
+`evt.Run` holds the snapshot on `init`, `result` and `done`, only `RunId` and `Status` on `status`,
+and only `RunId` (the run to poll) on `error` and `timeout`. On events that carry no run, such as
+`stream_token`, `stream_reasoning`, `stream_commentary`, `step_progress` and `tool_call_*`, it is
+null, and the payload is in `evt.Data`.
 
 ### Sources & Content
 

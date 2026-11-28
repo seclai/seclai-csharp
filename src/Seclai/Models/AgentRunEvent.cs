@@ -12,11 +12,12 @@ public sealed class AgentRunEvent
     public string? Data { get; set; }
 
     /// <summary>
-    /// The run carried by a run snapshot (<c>init</c>, <c>update</c>, <c>result</c> or <c>done</c>) or a
-    /// <c>status</c> event (only <see cref="AgentRunResponse.RunId"/> and <see cref="AgentRunResponse.Status"/>
-    /// set), or null when its data cannot be read as a run. Null for every other event, such as
-    /// <c>stream_token</c>, <c>stream_reasoning</c>, <c>stream_commentary</c>, <c>error</c> and <c>timeout</c>,
-    /// whose payload is in <see cref="Data"/>.
+    /// The run read from the event's data: the snapshot on <c>init</c>, <c>result</c> and <c>done</c>; on a
+    /// <c>status</c> event, only <see cref="AgentRunResponse.RunId"/> and <see cref="AgentRunResponse.Status"/>; on
+    /// <c>error</c> and <c>timeout</c>, only <see cref="AgentRunResponse.RunId"/>, the run to poll. Null when the
+    /// data cannot be read as a run, and on events that carry no run, such as <c>stream_token</c>,
+    /// <c>stream_reasoning</c>, <c>stream_commentary</c>, <c>step_progress</c> and <c>tool_call_*</c>, whose payload
+    /// is in <see cref="Data"/>.
     /// </summary>
     public AgentRunResponse? Run { get; set; }
 }
