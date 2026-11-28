@@ -2727,6 +2727,19 @@ public sealed class SeclaiClientTests
     }
 
     [Fact]
+    public async Task RunStreamingAgent_BareFieldLinesHaveEmptyValues()
+    {
+        var sse = "event: stream_token\ndata: a\ndata\ndata: b\n\nevent: stream_token\nevent\ndata: c\n\n";
+        var handler = new FakeHttpMessageHandler(_ => SseResponse(new System.IO.MemoryStream(Encoding.UTF8.GetBytes(sse))));
+        var events = new List<AgentRunEvent>();
+        await foreach (var evt in MakeClient(handler).RunStreamingAgentAsync("a1", new AgentRunStreamRequest { Input = "hi" })) events.Add(evt);
+        Assert.Equal(2, events.Count);
+        Assert.Equal("a\n\nb", events[0].Data);
+        Assert.Equal("", events[1].Event);
+        Assert.Equal("c", events[1].Data);
+    }
+
+    [Fact]
     public async Task RunAgentAndPoll_PollsUntilCompleted()
     {
         var callCount = 0;

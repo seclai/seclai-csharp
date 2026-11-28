@@ -3361,7 +3361,13 @@ public sealed class SeclaiClient : IDisposable
                     // The SSE format drops exactly one space after the colon, so indentation in the value is kept.
                     var value = line.Substring("data:".Length);
                     _data.Add(value.StartsWith(" ", StringComparison.Ordinal) ? value.Substring(1) : value);
+                    continue;
                 }
+
+                // A field name with no colon has an empty value: a bare data line is an empty line of the data, and
+                // a bare event line clears the event name.
+                if (string.Equals(line, "data", StringComparison.OrdinalIgnoreCase)) _data.Add(string.Empty);
+                else if (string.Equals(line, "event", StringComparison.OrdinalIgnoreCase)) _event = null;
             }
         }
 
