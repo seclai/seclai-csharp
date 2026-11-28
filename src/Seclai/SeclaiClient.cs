@@ -3349,14 +3349,14 @@ public sealed class SeclaiClient : IDisposable
 
                 if (line.StartsWith(":", StringComparison.Ordinal)) continue;
 
-                if (line.StartsWith("event:", StringComparison.OrdinalIgnoreCase))
+                if (line.StartsWith("event:", StringComparison.Ordinal))
                 {
                     _event = line.Substring("event:".Length).Trim();
                     if (_event.Length == 0) _event = null;
                     continue;
                 }
 
-                if (line.StartsWith("data:", StringComparison.OrdinalIgnoreCase))
+                if (line.StartsWith("data:", StringComparison.Ordinal))
                 {
                     // The SSE format drops exactly one space after the colon, so indentation in the value is kept.
                     var value = line.Substring("data:".Length);

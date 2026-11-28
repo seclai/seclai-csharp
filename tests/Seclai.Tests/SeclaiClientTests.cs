@@ -2738,11 +2738,22 @@ public sealed class SeclaiClientTests
         Assert.Equal("", events[1].Event);
         Assert.Equal("c", events[1].Data);
 
-        // Bare field names are case-sensitive: DATA is not a data field.
-        handler = new FakeHttpMessageHandler(_ => SseResponse(new System.IO.MemoryStream(Encoding.UTF8.GetBytes("event: x\nDATA\ndata: a\n\n"))));
-        events.Clear();
-        await foreach (var evt in MakeClient(handler).RunStreamingAgentAsync("a1", new AgentRunStreamRequest { Input = "hi" })) events.Add(evt);
-        Assert.Equal("a", Assert.Single(events).Data);
+        async Task<List<AgentRunEvent>> Read(string stream)
+        {
+            var h = new FakeHttpMessageHandler(_ => SseResponse(new System.IO.MemoryStream(Encoding.UTF8.GetBytes(stream))));
+            var list = new List<AgentRunEvent>();
+            await foreach (var evt in MakeClient(h).RunStreamingAgentAsync("a1", new AgentRunStreamRequest { Input = "hi" })) list.Add(evt);
+            return list;
+        }
+
+        // Field names are case-sensitive, bare or followed by a colon: DATA and DATA: are not data fields, nor EVENT: an event name.
+        Assert.Equal("a", Assert.Single(await Read("event: x\nDATA\ndata: a\n\n")).Data);
+        var one = Assert.Single(await Read("event: x\nDATA: b\nEVENT: y\ndata: a\n\n"));
+        Assert.Equal("x", one.Event);
+        Assert.Equal("a", one.Data);
+
+        // An event left with neither a name nor data is not emitted.
+        Assert.Equal("x", Assert.Single(await Read("event: done\nevent\n\nevent: x\ndata: a\n\n")).Event);
     }
 
     [Fact]
